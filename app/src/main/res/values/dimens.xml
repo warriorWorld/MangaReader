@@ -1,0 +1,27 @@
+<resources>
+    <!-- Default screen margins, per the Android Design guidelines. -->
+    <dimen name="activity_horizontal_margin">16dp</dimen>
+    <dimen name="activity_vertical_margin">16dp</dimen>
+    <!--主流的几个长度-->
+    <dimen name="main_text_size">15sp</dimen>
+    <dimen name="main_text_size_large">17sp</dimen>
+    <dimen name="button_text_size">18sp</dimen>
+    <dimen name="main_padding_horizontal">15dp</dimen>
+    <dimen name="top_bar_padding_vertical">7dp</dimen>
+    <!--主流的几个长度-->
+    <dimen name="main_tab_icon">22dp</dimen>
+    <dimen name="main_divide_h">10dp</dimen>
+    <dimen name="cross_size">21dp</dimen>
+    <dimen name="line_margin_tb">7dp</dimen>
+    <dimen name="invest_item_text_l">28sp</dimen>
+    <dimen name="invest_item_text_s">14sp</dimen>
+
+    <dimen name="top_bar_text">22sp</dimen>
+
+    <dimen name="user_item_h">50dp</dimen>
+    <dimen name="item_padding_horizontal">17dp</dimen>
+    <dimen name="item_padding_vertical">10dp</dimen>
+    <dimen name="item_margin_top">10dp</dimen>
+
+    <dimen name="tip_circle_wh">20dp</dimen>
+</resources>

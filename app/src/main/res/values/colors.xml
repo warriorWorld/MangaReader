@@ -1,6 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <color name="transparency">#00000000</color>
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
+    <!--主流的几个颜色-->
+    <color name="manga_reader">#e66c25</color>
+    <color name="white">#ffffff</color>
+    <color name="main_text_color">#444444</color>
+    <color name="main_text_color_gray">#c2c2c2</color>
+    <color name="clickable_text_color">#98c2f5</color>
+    <color name="divide">#f6f6f6</color>
+    <color name="divide_line">#e1e1e1</color>
+    <!--主流的几个颜色-->
+    <color name="tag_blue">#94b1d4</color>
+    <color name="user_explain_text">#83b0d4</color>
+    <!-- 轮子選擇器 -->
+    <color name="province_line_border">#C7C7C7</color>
+    <color name="wheelview_ok_bg">#f9f9f9</color>
+    <color name="wheelview_ok_text">#c90000</color>
+    <color name="wheelview_wheel_bg">#d2d6db</color>
+    <color name="wheelview_text">#444444</color>
+    <color name="wheelview_divider">#b0b4b9</color>
+    <!-- 轮子選擇器 -->
+    <color name="object_2_days_color">#b0b4b9</color>
+    <color name="object_7_days_color">#b0b4b9</color>
+    <color name="object_31_days_color">#b0b4b9</color>
 </resources>
