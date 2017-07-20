@@ -1,0 +1,38 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="237dp"
+    android:background="@color/wheelview_wheel_bg"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:id="@+id/btn"
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:layout_alignParentTop="true"
+        android:background="@color/wheelview_ok_bg"
+        android:padding="10dp">
+
+        <TextView
+            android:id="@+id/btn_confirm"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:gravity="center"
+            android:text="确认"
+            android:textColor="@color/manga_reader"
+            android:textSize="17sp" />
+    </RelativeLayout>
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/btn"
+        android:orientation="horizontal">
+
+        <com.truthower.suhang.mangareader.widget.wheelview.WheelView
+            android:id="@+id/id_selector"
+            android:layout_width="fill_parent"
+            android:layout_height="match_parent"></com.truthower.suhang.mangareader.widget.wheelview.WheelView>
+    </LinearLayout>
+
+</RelativeLayout>

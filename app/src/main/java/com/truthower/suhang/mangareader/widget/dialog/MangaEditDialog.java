@@ -16,6 +16,7 @@ import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.truthower.suhang.mangareader.R;
 
@@ -30,7 +31,6 @@ public class MangaEditDialog extends Dialog implements View.OnClickListener {
     private TextView titleTv;
     private ImageView crossIv;
     private TextView messageTv;
-    private TextView forgetPasswordTv;
     private TextView cancelTv;
     private TextView okTv;
 
@@ -70,12 +70,10 @@ public class MangaEditDialog extends Dialog implements View.OnClickListener {
         crossIv = (ImageView) findViewById(R.id.cross_iv);
         messageTv = (TextView) findViewById(R.id.message_tv);
         editTextV = (EditText) findViewById(R.id.edit_et);
-        forgetPasswordTv = (TextView) findViewById(R.id.forget_password_tv);
         okTv = (TextView) findViewById(R.id.ok_tv);
         cancelTv = (TextView) findViewById(R.id.cancel_tv);
 
         crossIv.setOnClickListener(this);
-        forgetPasswordTv.setOnClickListener(this);
         okTv.setOnClickListener(this);
         cancelTv.setOnClickListener(this);
 
@@ -88,7 +86,6 @@ public class MangaEditDialog extends Dialog implements View.OnClickListener {
 
     public void setMessage(String message) {
         messageTv.setVisibility(View.VISIBLE);
-        forgetPasswordTv.setVisibility(View.GONE);
         messageTv.setText(message);
     }
 
@@ -96,9 +93,6 @@ public class MangaEditDialog extends Dialog implements View.OnClickListener {
         editTextV.setHint(message);
     }
 
-    public void setEmptyMessage(String message) {
-        this.emptyMessage = message;
-    }
 
     public void setOkText(String text) {
         okTv.setText(text);
@@ -123,10 +117,6 @@ public class MangaEditDialog extends Dialog implements View.OnClickListener {
             case R.id.cross_iv:
                 dismiss();
                 break;
-            case R.id.forget_password_tv:
-                Intent intent = new Intent(context, ModifyDealPasswordAct.class);
-                context.startActivity(intent);
-                break;
             case R.id.cancel_tv:
                 dismiss();
                 if (null != onPeanutEditDialogClickListener) {
@@ -135,7 +125,7 @@ public class MangaEditDialog extends Dialog implements View.OnClickListener {
                 break;
             case R.id.ok_tv:
                 if (TextUtils.isEmpty(editTextV.getText().toString())) {
-                    ToastUtil.tipShort(context, emptyMessage);
+                    Toast.makeText(context, "空的啊", Toast.LENGTH_SHORT).show();
                     return;
                 }
                 dismiss();

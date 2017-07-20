@@ -1,0 +1,11 @@
+<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+   android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center"
+    android:layout_marginBottom="10dp"
+    android:layout_marginTop="10dp"
+    android:singleLine="true"
+    android:textColor="@color/wheelview_text"
+    android:textSize="19sp" >
+
+</TextView>

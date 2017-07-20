@@ -41,7 +41,7 @@
         android:paddingLeft="17dp"
         android:paddingRight="17dp"
         android:text="message"
-        android:textColor="@color/peanut_blue"
+        android:textColor="@color/manga_reader_blue"
         android:textSize="14sp"
         android:visibility="gone" />
 
@@ -52,22 +52,13 @@
         android:layout_marginLeft="17dp"
         android:layout_marginRight="17dp"
         android:layout_marginTop="17dp"
-        android:background="@drawable/peanut_btn_bg_empty_gray"
+        android:background="@drawable/btn_bg_empty_gray"
         android:gravity="center"
         android:inputType="textPassword"
         android:textColor="@color/main_text_color"
         android:textColorHint="@color/main_text_color_gray"
         android:textSize="@dimen/main_text_size" />
 
-    <TextView
-        android:id="@+id/forget_password_tv"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="right"
-        android:layout_marginRight="17dp"
-        android:layout_marginTop="11dp"
-        android:text="忘记密码?"
-        android:textColor="@color/peanut_blue" />
 
     <View
         android:layout_width="match_parent"
@@ -104,7 +95,7 @@
             android:layout_weight="1"
             android:gravity="center"
             android:text="确定"
-            android:textColor="@color/peanut_orange"
+            android:textColor="@color/manga_reader"
             android:textSize="18sp" />
     </LinearLayout>
 </LinearLayout>
