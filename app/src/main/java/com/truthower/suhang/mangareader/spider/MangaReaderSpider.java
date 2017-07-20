@@ -30,6 +30,7 @@ public class MangaReaderSpider extends SpiderBase {
 
     @Override
     public ArrayList<MangaBean> getMangaList(String type, String page) {
+
         return null;
     }
 

@@ -10,9 +10,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.view.WindowManager;
 
 import com.truthower.suhang.mangareader.R;
 import com.truthower.suhang.mangareader.eventbus.EventBusEvent;
+import com.truthower.suhang.mangareader.utils.ActivityPoor;
 import com.truthower.suhang.mangareader.widget.bar.TopBar;
 import com.truthower.suhang.mangareader.widget.toast.EasyToast;
 
@@ -30,10 +32,14 @@ public abstract class BaseActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        //状态栏透明
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS,
+                WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
         initUI();
         baseToast = new EasyToast(this);
         // 在oncreate里订阅
         EventBus.getDefault().register(this);
+        ActivityPoor.addActivity(this);
     }
 
     private void initUI() {
@@ -109,5 +115,6 @@ public abstract class BaseActivity extends Activity {
         super.onDestroy();
         // 每次必须取消订阅
         EventBus.getDefault().unregister(this);
+        ActivityPoor.finishSingleActivity(this);
     }
 }
