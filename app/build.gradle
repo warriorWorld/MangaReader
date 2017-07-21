@@ -31,4 +31,5 @@ dependencies {
     compile 'org.jsoup:jsoup:1.10.3'
     compile 'org.greenrobot:eventbus:3.0.0'
     compile files('libs/universal-image-loader-1.9.5.jar')
+    compile 'pub.devrel:easypermissions:0.4.2'
 }
