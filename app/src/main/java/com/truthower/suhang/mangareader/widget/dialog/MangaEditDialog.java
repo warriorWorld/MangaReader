@@ -7,6 +7,7 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.InputType;
 import android.text.TextUtils;
 import android.view.Display;
 import android.view.Gravity;
@@ -93,6 +94,13 @@ public class MangaEditDialog extends Dialog implements View.OnClickListener {
         editTextV.setHint(message);
     }
 
+    public void setOnlyNumInput(boolean onlyNumInput) {
+        if (onlyNumInput) {
+            editTextV.setInputType(InputType.TYPE_CLASS_NUMBER);
+        } else {
+            editTextV.setInputType(InputType.TYPE_CLASS_TEXT);
+        }
+    }
 
     public void setOkText(String text) {
         okTv.setText(text);

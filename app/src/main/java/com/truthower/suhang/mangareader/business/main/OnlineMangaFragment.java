@@ -13,11 +13,12 @@ import com.truthower.suhang.mangareader.base.BaseFragment;
 import com.truthower.suhang.mangareader.bean.MangaBean;
 import com.truthower.suhang.mangareader.bean.MangaListBean;
 import com.truthower.suhang.mangareader.listener.JsoupCallBack;
-import com.truthower.suhang.mangareader.spider.MangaReaderSpider;
 import com.truthower.suhang.mangareader.spider.SpiderBase;
 import com.truthower.suhang.mangareader.widget.bar.TopBar;
+import com.truthower.suhang.mangareader.widget.dialog.MangaEditDialog;
 import com.truthower.suhang.mangareader.widget.pulltorefresh.PullToRefreshBase;
 import com.truthower.suhang.mangareader.widget.pulltorefresh.PullToRefreshListView;
+import com.truthower.suhang.mangareader.widget.wheelview.wheelselector.WheelSelectorDialog;
 
 import java.util.ArrayList;
 
@@ -34,9 +35,13 @@ public class OnlineMangaFragment extends BaseFragment implements PullToRefreshBa
 
     private TopBar topBar;
     private int gradientMagicNum = 500;
-
+    private String[] optionsList = {"切换站点", "搜索", "分类", "跳转"};
+    private String[] websList = {"MangaReader"};
+    private WheelSelectorDialog optionsSelector, typesSelector, webSelector;
+    private MangaEditDialog searchDialog, toPageDialog;
     private boolean isHidden = true;
-    private int nowPage = 1;
+    private int nowPage = 1, startPage = 1;
+    private String nowTypeName = "all";
 
 
     @Override
@@ -45,7 +50,7 @@ public class OnlineMangaFragment extends BaseFragment implements PullToRefreshBa
         View v = inflater.inflate(R.layout.fragment_online_manga_list, container, false);
         initUI(v);
         initPullListView();
-        initSpider("MangaReader");
+        initSpider(websList[0]);
 
         doGetData();
         return v;
@@ -66,6 +71,7 @@ public class OnlineMangaFragment extends BaseFragment implements PullToRefreshBa
 
             @Override
             public void onRightClick() {
+                showOptionsSelector();
             }
 
             @Override
@@ -107,7 +113,7 @@ public class OnlineMangaFragment extends BaseFragment implements PullToRefreshBa
     }
 
     private void doGetData() {
-        spider.getMangaList("all", nowPage + "", new JsoupCallBack<MangaListBean>() {
+        spider.getMangaList(nowTypeName, nowPage + "", new JsoupCallBack<MangaListBean>() {
             @Override
             public void loadSucceed(final MangaListBean result) {
                 getActivity().runOnUiThread(new Runnable() {
@@ -127,7 +133,13 @@ public class OnlineMangaFragment extends BaseFragment implements PullToRefreshBa
     }
 
     private void initListView() {
-        totalMangaList.addAll(currentMangaList);
+        if (nowPage > startPage) {
+            //如果不是首页 那就加上之后的
+            totalMangaList.addAll(currentMangaList);
+        } else {
+            totalMangaList = currentMangaList;
+        }
+
 
         if (null == onlineMangaListAdapter) {
             onlineMangaListAdapter = new OnlineMangaListAdapter(
@@ -171,6 +183,164 @@ public class OnlineMangaFragment extends BaseFragment implements PullToRefreshBa
         return -top + firstVisibleItem * gradientMagicNum;
     }
 
+    private void showOptionsSelector() {
+        if (null == optionsList || optionsList.length == 0) {
+            baseToast.showToast("没有筛选条件");
+            return;
+        }
+        if (null == optionsSelector) {
+            optionsSelector = new WheelSelectorDialog(getActivity());
+            optionsSelector.setCancelable(true);
+        }
+        optionsSelector.setOnSingleSelectedListener(new WheelSelectorDialog.OnSingleSelectedListener() {
+
+            @Override
+            public void onOkBtnClick(String selectedRes, String selectedCodeRes) {
+            }
+
+            @Override
+            public void onOkBtnClick(String selectedRes, String selectedCodeRes, String selectedTypeRes) {
+            }
+
+            @Override
+            public void onOkBtnClick(int position) {
+                switch (position) {
+                    case 0:
+                        //切换站点
+                        showWebsSelector();
+                        break;
+                    case 1:
+                        //搜索
+                        showSearchDialog("搜索漫画");
+                        break;
+                    case 2:
+                        //分类
+                        showTypesSelector();
+                        break;
+                    case 3:
+                        //跳转
+                        showToPageDialog("跳转");
+                        break;
+                }
+            }
+        });
+        optionsSelector.show();
+
+        optionsSelector.initOptionsData(optionsList);
+    }
+
+    private void showTypesSelector() {
+        if (null == typesSelector) {
+            typesSelector = new WheelSelectorDialog(getActivity());
+            typesSelector.setCancelable(true);
+        }
+        typesSelector.setOnSingleSelectedListener(new WheelSelectorDialog.OnSingleSelectedListener() {
+
+            @Override
+            public void onOkBtnClick(String selectedRes, String selectedCodeRes) {
+                initToFirstPage();
+                nowTypeName = selectedRes;
+                topBar.setTitle("漫画(" + nowTypeName + ")");
+                doGetData();
+            }
+
+            @Override
+            public void onOkBtnClick(String selectedRes, String selectedCodeRes, String selectedTypeRes) {
+            }
+
+            @Override
+            public void onOkBtnClick(int position) {
+            }
+        });
+        typesSelector.show();
+
+        typesSelector.initOptionsData(spider.getMangaTypes());
+    }
+
+    private void showWebsSelector() {
+        if (null == webSelector) {
+            webSelector = new WheelSelectorDialog(getActivity());
+            webSelector.setCancelable(true);
+        }
+        webSelector.setOnSingleSelectedListener(new WheelSelectorDialog.OnSingleSelectedListener() {
+
+            @Override
+            public void onOkBtnClick(String selectedRes, String selectedCodeRes) {
+                initSpider(selectedRes);
+                initToFirstPage();
+                nowTypeName = spider.getMangaTypes()[0];
+                topBar.setTitle("漫画(" + nowTypeName + ")");
+                doGetData();
+            }
+
+            @Override
+            public void onOkBtnClick(String selectedRes, String selectedCodeRes, String selectedTypeRes) {
+            }
+
+            @Override
+            public void onOkBtnClick(int position) {
+            }
+        });
+        webSelector.show();
+
+        webSelector.initOptionsData(websList);
+    }
+
+    private void showSearchDialog(String title) {
+        if (null == searchDialog) {
+            searchDialog = new MangaEditDialog(getActivity());
+            searchDialog.setOnPeanutEditDialogClickListener(new MangaEditDialog.OnPeanutEditDialogClickListener() {
+                @Override
+                public void onOkClick(String text) {
+                    text = text.replaceAll(" ", "-");
+                    //TODO 跳转到具体页面
+                    baseToast.showToast(text);
+                }
+
+                @Override
+                public void onCancelClick() {
+
+                }
+            });
+            searchDialog.setCancelable(true);
+        }
+        searchDialog.show();
+        searchDialog.setTitle(title);
+        searchDialog.setHint("单词间空格分隔,如one piece");
+        searchDialog.clearEdit();
+    }
+
+    private void showToPageDialog(String title) {
+        if (null == toPageDialog) {
+            toPageDialog = new MangaEditDialog(getActivity());
+            toPageDialog.setOnPeanutEditDialogClickListener(new MangaEditDialog.OnPeanutEditDialogClickListener() {
+                @Override
+                public void onOkClick(String text) {
+                    try {
+                        nowPage = (Integer.valueOf(text) - 1) * spider.nextPageNeedAddCount();
+                        startPage = nowPage;
+                        int actualPage = (startPage / spider.nextPageNeedAddCount()) + 1;
+                        topBar.setTitle("漫画(" + actualPage + ")");
+                        doGetData();
+                    } catch (NumberFormatException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+                @Override
+                public void onCancelClick() {
+
+                }
+            });
+            toPageDialog.setCancelable(true);
+        }
+        toPageDialog.show();
+        toPageDialog.setTitle(title);
+        toPageDialog.setHint("输入要跳转的页数");
+        toPageDialog.setOnlyNumInput(true);
+        toPageDialog.clearEdit();
+    }
+
     private void initPullListView() {
         // 上拉加载更多
         pullListView.setPullLoadEnabled(true);
@@ -186,12 +356,14 @@ public class OnlineMangaFragment extends BaseFragment implements PullToRefreshBa
 //        pullListView.doPullRefreshing(true, 500);
     }
 
+    private void initToFirstPage() {
+        nowPage = 1;
+        startPage = 1;
+    }
 
     @Override
     public void onPullDownToRefresh(PullToRefreshBase<ListView> refreshView) {
-        //下拉不刷新这个 暂定
-//        doGetBannerData();
-        nowPage = 1;
+        initToFirstPage();
         doGetData();
     }
 

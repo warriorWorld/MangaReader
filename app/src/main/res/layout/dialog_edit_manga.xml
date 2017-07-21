@@ -54,7 +54,7 @@
         android:layout_marginTop="17dp"
         android:background="@drawable/btn_bg_empty_gray"
         android:gravity="center"
-        android:inputType="textPassword"
+        android:inputType="text"
         android:textColor="@color/main_text_color"
         android:textColorHint="@color/main_text_color_gray"
         android:textSize="@dimen/main_text_size" />

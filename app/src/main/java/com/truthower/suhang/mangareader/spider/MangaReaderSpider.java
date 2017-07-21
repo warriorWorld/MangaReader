@@ -103,8 +103,12 @@ public class MangaReaderSpider extends SpiderBase {
     }
 
     @Override
-    public String[] getMangaTypes(JsoupCallBack jsoupCallBack) {
-        return new String[0];
+    public String[] getMangaTypes() {
+        String[] mangaTypeCodes = {"all", "action", "adventure", "comedy", "demons", "drama", "ecchi", "fantasy", "gender-bender",
+                "harem", "historical", "horror", "josei", "magic", "martial-arts", "mature", "mecha", "military", "mystery", "one-shot",
+                "psychological", "romance", "school-life", "sci-fi", "seinen", "shoujo", "shoujoai", "shounen", "shounenai", "slice-of-life", "smut", "sports",
+                "super-power", "supernatural", "tragedy", "vampire", "yaoi", "yuri"};
+        return mangaTypeCodes;
     }
 
     @Override

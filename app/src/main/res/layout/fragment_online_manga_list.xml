@@ -1,7 +1,8 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="fill_parent"
-    android:layout_height="fill_parent">
+    android:layout_height="fill_parent"
+    android:background="@color/divide">
 
 
     <com.truthower.suhang.mangareader.widget.pulltorefresh.PullToRefreshListView
@@ -14,9 +15,17 @@
         android:id="@+id/gradient_bar"
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:layout_alignParentTop="true"
+        android:layout_below="@+id/color_holder"
         android:background="@color/manga_reader"
+        app:right_text="选项"
         app:title_text="漫画"></com.truthower.suhang.mangareader.widget.bar.TopBar>
+
+    <View
+        android:id="@+id/color_holder"
+        android:layout_width="match_parent"
+        android:layout_height="10dp"
+        android:layout_alignParentTop="true"
+        android:background="@color/manga_reader"></View>
 
     <include
         android:id="@+id/empty_view"

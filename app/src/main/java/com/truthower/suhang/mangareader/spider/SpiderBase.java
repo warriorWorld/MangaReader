@@ -19,7 +19,7 @@ public abstract class SpiderBase {
 
     public abstract boolean isOneShot();
 
-    public abstract String[] getMangaTypes(final JsoupCallBack jsoupCallBack);
+    public abstract String[] getMangaTypes();
 
     public abstract ArrayList<ChapterBean> getMangaChapterPics(String mangaName, String chapter, int picCount, final JsoupCallBack jsoupCallBack);
 
