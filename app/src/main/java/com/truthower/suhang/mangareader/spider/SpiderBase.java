@@ -2,6 +2,7 @@ package com.truthower.suhang.mangareader.spider;
 
 import com.truthower.suhang.mangareader.bean.ChapterBean;
 import com.truthower.suhang.mangareader.bean.MangaBean;
+import com.truthower.suhang.mangareader.listener.JsoupCallBack;
 
 import java.util.ArrayList;
 
@@ -10,13 +11,18 @@ import java.util.ArrayList;
  */
 
 public abstract class SpiderBase {
-    public abstract ArrayList<MangaBean> getMangaList(String type, String page);
+    protected org.jsoup.nodes.Document doc;
 
-    public abstract MangaBean getMangaDetail(String mangaName);
+    public abstract <ResultObj> void getMangaList(String type, String page, final JsoupCallBack<ResultObj> jsoupCallBack);
+
+    public abstract MangaBean getMangaDetail(String mangaName, final JsoupCallBack jsoupCallBack);
 
     public abstract boolean isOneShot();
 
-    public abstract String[] getMangaTypes();
+    public abstract String[] getMangaTypes(final JsoupCallBack jsoupCallBack);
 
-    public abstract ArrayList<ChapterBean> getMangaChapterPics(String mangaName, String chapter, int picCount);
+    public abstract ArrayList<ChapterBean> getMangaChapterPics(String mangaName, String chapter, int picCount, final JsoupCallBack jsoupCallBack);
+
+    //很多网页的下一页并不是在网址后+1 而是+n
+    public abstract int nextPageNeedAddCount();
 }

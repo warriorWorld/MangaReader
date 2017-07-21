@@ -24,7 +24,7 @@ public class MainActivity extends BaseFragmentActivity implements View.OnClickLi
     /**
      * Fragment
      */
-    private BaseFragment onlinePageFg;
+    private OnlineMangaFragment onlinePageFg;
     private BaseFragment localFg;
     private BaseFragment userFg;
     /**
@@ -77,7 +77,7 @@ public class MainActivity extends BaseFragmentActivity implements View.OnClickLi
     private void initFragment() {
         localFg = new BaseFragment();
         userFg = new BaseFragment();
-        onlinePageFg = new BaseFragment();
+        onlinePageFg = new OnlineMangaFragment();
 
         switchContent(null, onlinePageFg);
     }

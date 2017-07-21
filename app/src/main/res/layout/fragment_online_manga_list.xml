@@ -1,0 +1,28 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent">
+
+
+    <com.truthower.suhang.mangareader.widget.pulltorefresh.PullToRefreshListView
+        android:id="@+id/home_ptf"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/gradient_bar"></com.truthower.suhang.mangareader.widget.pulltorefresh.PullToRefreshListView>
+
+    <com.truthower.suhang.mangareader.widget.bar.TopBar
+        android:id="@+id/gradient_bar"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_alignParentTop="true"
+        android:background="@color/manga_reader"
+        app:title_text="漫画"></com.truthower.suhang.mangareader.widget.bar.TopBar>
+
+    <include
+        android:id="@+id/empty_view"
+        layout="@layout/emptyview_list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_centerInParent="true"
+        android:visibility="gone" />
+</RelativeLayout>
