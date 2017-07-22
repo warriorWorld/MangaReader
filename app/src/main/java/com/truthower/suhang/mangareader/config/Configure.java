@@ -12,7 +12,7 @@ import com.truthower.suhang.mangareader.R;
 public class Configure {
     public static String versionName = "";
     public static String versionCode = "";
-
+    public static String[] websList = {"MangaReader"};
     public static DisplayImageOptions normalImageOptions = new DisplayImageOptions.Builder()
             .cacheInMemory(true)
             .cacheOnDisk(true)

@@ -34,6 +34,9 @@ public class OnlineMangaDetailAdapter extends BaseAdapter {
 
     @Override
     public int getCount() {
+        if (null == chapters) {
+            return 0;
+        }
         return chapters.size();
     }
 

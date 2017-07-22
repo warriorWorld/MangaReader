@@ -1,8 +1,6 @@
 package com.truthower.suhang.mangareader.business.detail;
 
-import android.app.AlertDialog;
 import android.app.ProgressDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -18,10 +16,17 @@ import com.truthower.suhang.mangareader.adapter.OnlineMangaDetailAdapter;
 import com.truthower.suhang.mangareader.base.BaseActivity;
 import com.truthower.suhang.mangareader.bean.MangaBean;
 import com.truthower.suhang.mangareader.config.Configure;
+import com.truthower.suhang.mangareader.listener.JsoupCallBack;
+import com.truthower.suhang.mangareader.spider.SpiderBase;
 import com.truthower.suhang.mangareader.widget.bar.TopBar;
+import com.truthower.suhang.mangareader.widget.pulltorefresh.PullToRefreshBase;
+import com.truthower.suhang.mangareader.widget.pulltorefresh.PullToRefreshGridView;
 import com.truthower.suhang.mangareader.widget.wheelview.wheelselector.WheelSelectorDialog;
 
-public class WebMangaDetailsActivity extends BaseActivity implements AdapterView.OnItemClickListener, View.OnClickListener {
+public class WebMangaDetailsActivity extends BaseActivity implements AdapterView.OnItemClickListener, View.OnClickListener,
+        PullToRefreshBase.OnRefreshListener<GridView> {
+    private SpiderBase spider;
+    private PullToRefreshGridView pullToRefreshGridView;
     private GridView mangaGV;
     private View collectV;
     private boolean chooseing = false;//判断是否在选择状态
@@ -32,34 +37,74 @@ public class WebMangaDetailsActivity extends BaseActivity implements AdapterView
     private ImageView thumbnailIV;
     private TextView mangaNameTv, mangaAuthorTv, mangaTypeTv, lastUpdateTv;
     private String[] optionsList = {"下载全部", "选择起始点下载"};
-    private ProgressDialog progressBar;
+    private ProgressDialog loadBar;
     private WheelSelectorDialog optionsSelector;
+    private String mangaUrl;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Intent intent = getIntent();
-        String mangaUrl = intent.getStringExtra("mangaUrl");
+        mangaUrl = intent.getStringExtra("mangaUrl");
         if (TextUtils.isEmpty(mangaUrl)) {
             this.finish();
         }
+        initSpider(Configure.websList[0]);
+
         initUI();
+        initPullGridView();
         initProgressBar();
         initWebManga(mangaUrl);
     }
 
+    private void initSpider(String spiderName) {
+        try {
+            spider = (SpiderBase) Class.forName
+                    ("com.truthower.suhang.mangareader.spider." + spiderName + "Spider").newInstance();
+        } catch (ClassNotFoundException e) {
+            baseToast.showToast(e + "");
+            e.printStackTrace();
+        } catch (java.lang.InstantiationException e) {
+            baseToast.showToast(e + "");
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            baseToast.showToast(e + "");
+            e.printStackTrace();
+        }
+    }
+
     private void initProgressBar() {
-        progressBar = new ProgressDialog(WebMangaDetailsActivity.this);
-        progressBar.setCancelable(false);
-        progressBar.setMessage("加载中...");
+        loadBar = new ProgressDialog(WebMangaDetailsActivity.this);
+        loadBar.setCancelable(true);
+        loadBar.setMessage("加载中...");
     }
 
     private void initWebManga(String url) {
-        progressBar.show();
+        loadBar.show();
+        spider.getMangaDetail(url, new JsoupCallBack<MangaBean>() {
+            @Override
+            public void loadSucceed(final MangaBean result) {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        loadBar.dismiss();
+                        currentManga = result;
+                        refreshUI();
+                    }
+                });
+            }
 
+            @Override
+            public void loadFailed(String error) {
+                loadBar.dismiss();
+            }
+        });
     }
 
     private void refreshUI() {
+        if (null == currentManga) {
+            return;
+        }
         baseTopBar.setTitle(currentManga.getName());
         ImageLoader.getInstance().displayImage(currentManga.getWebThumbnailUrl(), thumbnailIV, Configure.normalImageOptions);
         mangaNameTv.setText("漫画名称:" + currentManga.getName());
@@ -76,15 +121,22 @@ public class WebMangaDetailsActivity extends BaseActivity implements AdapterView
         if (null == adapter) {
             adapter = new OnlineMangaDetailAdapter(this, currentManga.getChapters());
             mangaGV.setAdapter(adapter);
+            mangaGV.setColumnWidth(50);
+            mangaGV.setNumColumns(5);
+            mangaGV.setVerticalSpacing(10);
+            mangaGV.setHorizontalSpacing(3);
             mangaGV.setOnItemClickListener(this);
         } else {
             adapter.setChapters(currentManga.getChapters());
             adapter.notifyDataSetChanged();
         }
+        pullToRefreshGridView.onPullDownRefreshComplete();// 动画结束方法
+        pullToRefreshGridView.onPullUpRefreshComplete();
     }
 
     private void initUI() {
-        mangaGV = (GridView) findViewById(R.id.manga_gv);
+        pullToRefreshGridView = (PullToRefreshGridView) findViewById(R.id.manga_gv);
+        mangaGV = (GridView) pullToRefreshGridView.getRefreshableView();
         thumbnailIV = (ImageView) findViewById(R.id.thumbnail);
         mangaNameTv = (TextView) findViewById(R.id.manga_name);
         mangaAuthorTv = (TextView) findViewById(R.id.manga_author);
@@ -93,6 +145,7 @@ public class WebMangaDetailsActivity extends BaseActivity implements AdapterView
         collectV = findViewById(R.id.collect_view);
 
         collectV.setOnClickListener(this);
+        baseTopBar.setRightText("下载");
         baseTopBar.setOnTopBarClickListener(new TopBar.OnTopBarClickListener() {
 
             @Override
@@ -112,6 +165,14 @@ public class WebMangaDetailsActivity extends BaseActivity implements AdapterView
         });
     }
 
+    private void initPullGridView() {
+        // 上拉加载更多
+        pullToRefreshGridView.setPullLoadEnabled(true);
+        // 滚到底部自动加载
+        pullToRefreshGridView.setScrollLoadEnabled(false);
+        pullToRefreshGridView.setOnRefreshListener(this);
+    }
+
     @Override
     protected int getLayoutId() {
         return R.layout.activity_manga_details_web;
@@ -119,6 +180,7 @@ public class WebMangaDetailsActivity extends BaseActivity implements AdapterView
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        baseToast.showToast(currentManga.getChapters().get(position).getChapterUrl());
 //        if (chooseing) {
 //            if (firstChoose) {
 //                Globle.startPoint = Integer.valueOf(mangaList.get(position).getTitle());
@@ -200,5 +262,16 @@ public class WebMangaDetailsActivity extends BaseActivity implements AdapterView
         } else {
             collectV.setBackgroundResource(R.drawable.collect);
         }
+    }
+
+    @Override
+    public void onPullDownToRefresh(PullToRefreshBase<GridView> refreshView) {
+        initWebManga(mangaUrl);
+    }
+
+    @Override
+    public void onPullUpToRefresh(PullToRefreshBase<GridView> refreshView) {
+        pullToRefreshGridView.onPullDownRefreshComplete();// 动画结束方法
+        pullToRefreshGridView.onPullUpRefreshComplete();
     }
 }

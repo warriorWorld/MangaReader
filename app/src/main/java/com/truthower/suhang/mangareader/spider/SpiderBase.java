@@ -15,7 +15,7 @@ public abstract class SpiderBase {
 
     public abstract <ResultObj> void getMangaList(String type, String page, final JsoupCallBack<ResultObj> jsoupCallBack);
 
-    public abstract MangaBean getMangaDetail(String mangaURL, final JsoupCallBack jsoupCallBack);
+    public abstract <ResultObj> void getMangaDetail(final String mangaURL, final JsoupCallBack<ResultObj> jsoupCallBack);
 
     public abstract boolean isOneShot();
 

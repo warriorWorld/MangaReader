@@ -14,6 +14,7 @@ import com.truthower.suhang.mangareader.base.BaseFragment;
 import com.truthower.suhang.mangareader.bean.MangaBean;
 import com.truthower.suhang.mangareader.bean.MangaListBean;
 import com.truthower.suhang.mangareader.business.detail.WebMangaDetailsActivity;
+import com.truthower.suhang.mangareader.config.Configure;
 import com.truthower.suhang.mangareader.listener.JsoupCallBack;
 import com.truthower.suhang.mangareader.spider.SpiderBase;
 import com.truthower.suhang.mangareader.widget.bar.TopBar;
@@ -38,7 +39,6 @@ public class OnlineMangaFragment extends BaseFragment implements PullToRefreshBa
     private TopBar topBar;
     private int gradientMagicNum = 500;
     private String[] optionsList = {"切换站点", "搜索", "分类", "跳转"};
-    private String[] websList = {"MangaReader"};
     private WheelSelectorDialog optionsSelector, typesSelector, webSelector;
     private MangaEditDialog searchDialog, toPageDialog;
     private boolean isHidden = true;
@@ -52,7 +52,7 @@ public class OnlineMangaFragment extends BaseFragment implements PullToRefreshBa
         View v = inflater.inflate(R.layout.fragment_online_manga_list, container, false);
         initUI(v);
         initPullListView();
-        initSpider(websList[0]);
+        initSpider(Configure.websList[0]);
 
         doGetData();
         return v;
@@ -287,7 +287,7 @@ public class OnlineMangaFragment extends BaseFragment implements PullToRefreshBa
         });
         webSelector.show();
 
-        webSelector.initOptionsData(websList);
+        webSelector.initOptionsData(Configure.websList);
     }
 
     private void showSearchDialog(String title) {

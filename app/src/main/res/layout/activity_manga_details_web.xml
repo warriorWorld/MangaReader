@@ -78,14 +78,15 @@
         android:layout_below="@+id/manga_info"
         android:background="@color/manga_reader"></View>
 
-    <GridView
+    <com.truthower.suhang.mangareader.widget.pulltorefresh.PullToRefreshGridView
         android:id="@+id/manga_gv"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@+id/manga_info"
+        android:layout_marginTop="8dp"
         android:columnWidth="50dp"
         android:horizontalSpacing="3dp"
         android:numColumns="5"
         android:padding="10dp"
-        android:verticalSpacing="12dp"></GridView>
+        android:verticalSpacing="12dp"></com.truthower.suhang.mangareader.widget.pulltorefresh.PullToRefreshGridView>
 </RelativeLayout>
