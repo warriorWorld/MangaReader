@@ -195,4 +195,9 @@ public class MangaReaderSpider extends SpiderBase {
     public int nextPageNeedAddCount() {
         return 30;
     }
+
+    @Override
+    public String getWebUrl() {
+        return webUrl;
+    }
 }

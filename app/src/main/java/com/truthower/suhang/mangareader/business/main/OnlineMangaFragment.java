@@ -43,7 +43,7 @@ public class OnlineMangaFragment extends BaseFragment implements PullToRefreshBa
     private MangaEditDialog searchDialog, toPageDialog;
     private boolean isHidden = true;
     private int nowPage = 1, startPage = 1;
-    private String nowTypeName = "all";
+    private String nowTypeName = "all", nowWeb = Configure.websList[0];
 
 
     @Override
@@ -244,7 +244,7 @@ public class OnlineMangaFragment extends BaseFragment implements PullToRefreshBa
             public void onOkBtnClick(String selectedRes, String selectedCodeRes) {
                 initToFirstPage();
                 nowTypeName = selectedRes;
-                topBar.setTitle("漫画(" + nowTypeName + ")");
+                topBar.setTitle(nowWeb + "(" + nowTypeName + ")");
                 doGetData();
             }
 
@@ -273,7 +273,8 @@ public class OnlineMangaFragment extends BaseFragment implements PullToRefreshBa
                 initSpider(selectedRes);
                 initToFirstPage();
                 nowTypeName = spider.getMangaTypes()[0];
-                topBar.setTitle("漫画(" + nowTypeName + ")");
+                nowWeb = selectedRes;
+                topBar.setTitle(nowWeb + "(" + nowTypeName + ")");
                 doGetData();
             }
 
@@ -297,8 +298,12 @@ public class OnlineMangaFragment extends BaseFragment implements PullToRefreshBa
                 @Override
                 public void onOkClick(String text) {
                     text = text.replaceAll(" ", "-");
-                    //TODO 跳转到具体页面
-                    baseToast.showToast(text);
+                    text = spider.getWebUrl() + text;
+                    if (!spider.isOneShot()) {
+                        Intent intent = new Intent(getActivity(), WebMangaDetailsActivity.class);
+                        intent.putExtra("mangaUrl", text);
+                        startActivity(intent);
+                    }
                 }
 
                 @Override
@@ -324,7 +329,7 @@ public class OnlineMangaFragment extends BaseFragment implements PullToRefreshBa
                         nowPage = (Integer.valueOf(text) - 1) * spider.nextPageNeedAddCount();
                         startPage = nowPage;
                         int actualPage = (startPage / spider.nextPageNeedAddCount()) + 1;
-                        topBar.setTitle("漫画(" + actualPage + ")");
+                        topBar.setTitle(nowWeb + "(" + actualPage + ")");
                         doGetData();
                     } catch (NumberFormatException e) {
                         e.printStackTrace();

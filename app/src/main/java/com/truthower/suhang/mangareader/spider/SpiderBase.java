@@ -25,4 +25,6 @@ public abstract class SpiderBase {
 
     //很多网页的下一页并不是在网址后+1 而是+n
     public abstract int nextPageNeedAddCount();
+
+    public abstract String getWebUrl();
 }

@@ -25,7 +25,7 @@ public class MainActivity extends BaseFragmentActivity implements View.OnClickLi
      * Fragment
      */
     private OnlineMangaFragment onlinePageFg;
-    private BaseFragment localFg;
+    private LocalMangaFragment localFg;
     private BaseFragment userFg;
     /**
      * 当前选中页
@@ -75,7 +75,7 @@ public class MainActivity extends BaseFragmentActivity implements View.OnClickLi
     }
 
     private void initFragment() {
-        localFg = new BaseFragment();
+        localFg = new LocalMangaFragment();
         userFg = new BaseFragment();
         onlinePageFg = new OnlineMangaFragment();
 

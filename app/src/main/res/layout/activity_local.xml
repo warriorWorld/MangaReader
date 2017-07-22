@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+
+    <com.truthower.suhang.mangareader.widget.pulltorefresh.PullToRefreshGridView
+        android:id="@+id/ptf_local_grid_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/gradient_bar"
+        android:layout_marginTop="7dp"
+        android:columnWidth="120dp"
+        android:horizontalSpacing="15dp"
+        android:numColumns="3"
+        android:padding="10dp"
+        android:verticalSpacing="12dp"></com.truthower.suhang.mangareader.widget.pulltorefresh.PullToRefreshGridView>
+
+    <com.truthower.suhang.mangareader.widget.bar.TopBar
+        android:id="@+id/gradient_bar"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_below="@+id/color_holder"
+        android:background="@color/manga_reader"
+        app:left_text=""
+        app:right_text=""
+        app:title_text="本地"></com.truthower.suhang.mangareader.widget.bar.TopBar>
+
+    <include
+        android:id="@+id/empty_view"
+        layout="@layout/emptyview_list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_centerInParent="true"
+        android:visibility="gone" />
+
+</RelativeLayout>
