@@ -1,35 +1,19 @@
-package com.truthower.suhang.mangareader.business.main;
+package com.truthower.suhang.mangareader.business.detail;
 
-import android.app.AlertDialog;
-import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.os.Bundle;
-import android.os.Environment;
-import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 import android.view.Gravity;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.AbsListView;
 import android.widget.AdapterView;
-import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.nostra13.universalimageloader.core.ImageLoader;
 import com.truthower.suhang.mangareader.R;
 import com.truthower.suhang.mangareader.adapter.LocalMangaListAdapter;
-import com.truthower.suhang.mangareader.base.BaseFragment;
+import com.truthower.suhang.mangareader.base.BaseActivity;
 import com.truthower.suhang.mangareader.bean.MangaBean;
-import com.truthower.suhang.mangareader.bean.MangaListBean;
-import com.truthower.suhang.mangareader.business.detail.LocalMangaDetailsActivity;
-import com.truthower.suhang.mangareader.config.Configure;
-import com.truthower.suhang.mangareader.listener.JsoupCallBack;
 import com.truthower.suhang.mangareader.spider.FileSpider;
 import com.truthower.suhang.mangareader.widget.bar.TopBar;
 import com.truthower.suhang.mangareader.widget.dialog.MangaDialog;
@@ -39,8 +23,8 @@ import com.truthower.suhang.mangareader.widget.pulltorefresh.PullToRefreshGridVi
 import java.io.File;
 import java.util.ArrayList;
 
-public class LocalMangaFragment extends BaseFragment implements AdapterView.OnItemClickListener, AdapterView.OnItemLongClickListener,
-        PullToRefreshBase.OnRefreshListener<GridView> {
+public class LocalMangaDetailsActivity extends BaseActivity implements AdapterView.OnItemClickListener,
+        PullToRefreshBase.OnRefreshListener<GridView>, AdapterView.OnItemLongClickListener {
     private View mainView;
     private PullToRefreshGridView pullToRefreshGridView;
     private View emptyView;
@@ -50,36 +34,34 @@ public class LocalMangaFragment extends BaseFragment implements AdapterView.OnIt
     private ArrayList<MangaBean> mangaList = new ArrayList<MangaBean>();
     private LocalMangaListAdapter adapter;
     private TopBar topBar;
-    private String storagePath;
+    private String filePath;
 
-    @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        mainView = inflater.inflate(R.layout.activity_local, null);
-        initUI(mainView);
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        Intent intent = getIntent();
+        filePath = intent.getStringExtra("filePath");
+        if (TextUtils.isEmpty(filePath)) {
+            this.finish();
+        }
+
+        initUI();
         initPullGridView();
         initGridView();
 
-        initFilePath();
         initFile();
-        return mainView;
     }
 
-    private void initFilePath() {
-        File parentPath = Environment
-                .getExternalStorageDirectory();
-        storagePath = parentPath.getAbsolutePath() + "/" + Configure.DST_FOLDER_NAME;
-    }
 
     public void initFile() {
         mangaList.clear();
-        mangaList = FileSpider.getInstance().getMangaList(storagePath);
+        mangaList = FileSpider.getInstance().getMangaList(filePath);
         initGridView();
     }
 
     private void initGridView() {
         if (null == adapter) {
-            adapter = new LocalMangaListAdapter(getActivity(), mangaList);
+            adapter = new LocalMangaListAdapter(this, mangaList);
             mangaGV.setAdapter(adapter);
             mangaGV.setOnItemClickListener(this);
             mangaGV.setOnItemLongClickListener(this);
@@ -98,36 +80,22 @@ public class LocalMangaFragment extends BaseFragment implements AdapterView.OnIt
     }
 
 
-    private void initUI(View v) {
-        pullToRefreshGridView = (PullToRefreshGridView) v.findViewById(R.id.ptf_local_grid_view);
-        topBar = (TopBar) v.findViewById(R.id.gradient_bar);
-        topBar.setOnTopBarClickListener(new TopBar.OnTopBarClickListener() {
-            @Override
-            public void onLeftClick() {
-
-            }
-
-            @Override
-            public void onRightClick() {
-
-            }
-
-            @Override
-            public void onTitleClick() {
-
-            }
-        });
+    private void initUI() {
+        pullToRefreshGridView = (PullToRefreshGridView) findViewById(R.id.ptf_local_grid_view);
+        topBar = (TopBar) findViewById(R.id.gradient_bar);
+        topBar.setVisibility(View.GONE);
+        baseTopBar.setTitle("详情");
         mangaGV = (GridView) pullToRefreshGridView.getRefreshableView();
-        emptyView = v.findViewById(R.id.empty_view);
-        emptyIV = (ImageView) v.findViewById(R.id.image);
+        emptyView = findViewById(R.id.empty_view);
+        emptyIV = (ImageView) findViewById(R.id.image);
         emptyIV.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 initFile();
             }
         });
-        emptyTV = (TextView) v.findViewById(R.id.text);
-        emptyTV.setText("还没有本地漫画哦~");
+        emptyTV = (TextView) findViewById(R.id.text);
+        emptyTV.setText("没有内容~");
     }
 
     private void initPullGridView() {
@@ -140,10 +108,29 @@ public class LocalMangaFragment extends BaseFragment implements AdapterView.OnIt
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        baseToast.showToast(mangaList.get(position).getUrl());
-        Intent intent = new Intent(getActivity(), LocalMangaDetailsActivity.class);
-        intent.putExtra("filePath", mangaList.get(position).getUrl());
-        startActivity(intent);
+//        baseToast.showToast(mangaList.get(position).getUrl());
+        Intent intent = null;
+        if (isNextDirectory(mangaList.get(position).getUrl())) {
+            intent = new Intent(LocalMangaDetailsActivity.this, LocalMangaDetailsActivity.class);
+            intent.putExtra("filePath", mangaList.get(position).getUrl());
+        } else {
+            baseToast.showToast("接下来就要进入看漫画页了" + mangaList.get(position).getUrl());
+        }
+        if (null != intent) {
+            startActivity(intent);
+        }
+    }
+
+    private boolean isNextDirectory(String path) {
+        File f = new File(path);
+        if (!f.exists()) {
+            return false;
+        }
+        if (f.isDirectory()) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     @Override
@@ -153,7 +140,7 @@ public class LocalMangaFragment extends BaseFragment implements AdapterView.OnIt
     }
 
     private void showDeleteDialog(final int i) {
-        MangaDialog deleteDialog = new MangaDialog(getActivity());
+        MangaDialog deleteDialog = new MangaDialog(this);
         deleteDialog.setOnPeanutDialogClickListener(new MangaDialog.OnPeanutDialogClickListener() {
             @Override
             public void onOkClick() {
@@ -183,5 +170,10 @@ public class LocalMangaFragment extends BaseFragment implements AdapterView.OnIt
     public void onPullUpToRefresh(PullToRefreshBase<GridView> refreshView) {
         pullToRefreshGridView.onPullDownRefreshComplete();// 动画结束方法
         pullToRefreshGridView.onPullUpRefreshComplete();
+    }
+
+    @Override
+    protected int getLayoutId() {
+        return R.layout.activity_local;
     }
 }

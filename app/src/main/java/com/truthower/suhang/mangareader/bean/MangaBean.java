@@ -1,5 +1,7 @@
 package com.truthower.suhang.mangareader.bean;
 
+import android.text.TextUtils;
+
 import java.util.ArrayList;
 
 /**
@@ -57,7 +59,7 @@ public class MangaBean extends BaseBean {
     }
 
     public String getLocalThumbnailUrl() {
-        if (!localThumbnailUrl.contains("file://")) {
+        if (!TextUtils.isEmpty(localThumbnailUrl) && !localThumbnailUrl.contains("file://")) {
             return "file://" + localThumbnailUrl;
         } else {
             return localThumbnailUrl;
