@@ -151,7 +151,7 @@ public class TopBar extends GradientBar {
     }
 public void hideTitle(boolean hide){
     if (hide) {
-        titleIv.setVisibility(GONE);
+        titleIv.setVisibility(INVISIBLE);
     }else {
         titleIv.setVisibility(VISIBLE);
     }
@@ -180,18 +180,18 @@ public void hideTitle(boolean hide){
     }
 
     public void hideLeftButton() {
-        leftLayout.setVisibility(View.GONE);
+        leftLayout.setVisibility(View.INVISIBLE);
     }
 
     public void hideRightButton() {
-        rightLayout.setVisibility(View.GONE);
+        rightLayout.setVisibility(View.INVISIBLE);
     }
 
     public void setRightBackground(int bg) {
         rightLayout.setVisibility(VISIBLE);
         rightIV.setVisibility(View.VISIBLE);
         rightIV.setImageResource(bg);
-        rightTV.setVisibility(View.GONE);
+        rightTV.setVisibility(View.INVISIBLE);
     }
 
     public void setTitle(String title) {
@@ -206,14 +206,14 @@ public void hideTitle(boolean hide){
     public void setRightText(String text) {
         rightTV.setVisibility(View.VISIBLE);
         rightTV.setText(text);
-        rightIV.setVisibility(View.GONE);
+        rightIV.setVisibility(View.INVISIBLE);
         showRightButton();
     }
 
     public void setLeftText(String text) {
         leftTV.setVisibility(View.VISIBLE);
         leftTV.setText(text);
-        leftIV.setVisibility(View.GONE);
+        leftIV.setVisibility(View.INVISIBLE);
         showLeftButton();
     }
 

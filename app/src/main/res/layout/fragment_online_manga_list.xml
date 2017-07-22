@@ -17,6 +17,7 @@
         android:layout_height="50dp"
         android:layout_below="@+id/color_holder"
         android:background="@color/manga_reader"
+        app:left_text=""
         app:right_text="选项"
         app:title_text="漫画"></com.truthower.suhang.mangareader.widget.bar.TopBar>
 

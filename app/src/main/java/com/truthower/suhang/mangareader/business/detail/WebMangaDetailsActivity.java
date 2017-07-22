@@ -135,7 +135,7 @@ public class WebMangaDetailsActivity extends BaseActivity implements AdapterView
     }
 
     private void initUI() {
-        pullToRefreshGridView = (PullToRefreshGridView) findViewById(R.id.manga_gv);
+        pullToRefreshGridView = (PullToRefreshGridView) findViewById(R.id.ptf_grid_view);
         mangaGV = (GridView) pullToRefreshGridView.getRefreshableView();
         thumbnailIV = (ImageView) findViewById(R.id.thumbnail);
         mangaNameTv = (TextView) findViewById(R.id.manga_name);

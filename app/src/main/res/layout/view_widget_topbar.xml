@@ -10,7 +10,7 @@
         android:layout_height="match_parent"
         android:layout_alignParentLeft="true"
         android:clickable="true"
-        android:visibility="gone">
+        android:visibility="invisible">
 
         <ImageView
             android:id="@+id/left_iv"
@@ -39,7 +39,9 @@
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true">
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="38dp"
+        android:layout_marginRight="38dp">
 
         <TextView
             android:id="@+id/title_tv"
@@ -48,6 +50,7 @@
             android:layout_centerHorizontal="true"
             android:layout_centerVertical="true"
             android:gravity="center_vertical"
+            android:singleLine="true"
             android:text=""
             android:textColor="#000000"
             android:textSize="21sp" />
