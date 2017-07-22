@@ -19,6 +19,7 @@ import com.truthower.suhang.mangareader.widget.bar.TopBar;
 import com.truthower.suhang.mangareader.widget.toast.EasyToast;
 
 import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
 
 
 /**
@@ -95,6 +96,7 @@ public abstract class BaseActivity extends Activity {
      *
      * @param event
      */
+    @Subscribe
     public void onEventMainThread(EventBusEvent event) {
         if (null == event)
             return;

@@ -92,7 +92,7 @@ public class MangaReaderSpider extends SpiderBase {
     }
 
     @Override
-    public MangaBean getMangaDetail(String mangaName, JsoupCallBack jsoupCallBack) {
+    public MangaBean getMangaDetail(String mangaURL, JsoupCallBack jsoupCallBack) {
         return null;
     }
 

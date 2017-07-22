@@ -8,13 +8,12 @@
     <dimen name="button_text_size">18sp</dimen>
     <dimen name="main_padding_horizontal">15dp</dimen>
     <dimen name="top_bar_padding_vertical">7dp</dimen>
+    <dimen name="details_text_size">14sp</dimen>
     <!--主流的几个长度-->
     <dimen name="main_tab_icon">22dp</dimen>
     <dimen name="main_divide_h">10dp</dimen>
     <dimen name="cross_size">21dp</dimen>
     <dimen name="line_margin_tb">7dp</dimen>
-    <dimen name="invest_item_text_l">28sp</dimen>
-    <dimen name="invest_item_text_s">14sp</dimen>
 
     <dimen name="top_bar_text">22sp</dimen>
 

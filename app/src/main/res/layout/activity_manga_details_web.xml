@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:id="@+id/manga_info"
+        android:layout_width="match_parent"
+        android:layout_height="180dp"
+        android:padding="10dp">
+
+        <ImageView
+            android:id="@+id/thumbnail"
+            android:layout_width="122dp"
+            android:layout_height="match_parent"
+            android:layout_alignParentLeft="true" />
+
+        <TextView
+            android:id="@+id/manga_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="5dp"
+            android:layout_toLeftOf="@+id/collect_view"
+            android:layout_toRightOf="@+id/thumbnail"
+            android:textColor="@color/main_text_color"
+            android:textSize="@dimen/details_text_size" />
+
+        <View
+            android:id="@+id/collect_view"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="3dp"
+            android:layout_marginTop="3dp"
+            android:background="@drawable/collect"></View>
+
+        <TextView
+            android:id="@+id/manga_author"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/manga_name"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="5dp"
+            android:layout_toRightOf="@+id/thumbnail"
+            android:textColor="@color/main_text_color"
+            android:textSize="@dimen/details_text_size" />
+
+        <TextView
+            android:id="@+id/manga_type"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/manga_author"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="5dp"
+            android:layout_toRightOf="@+id/thumbnail"
+            android:textColor="@color/main_text_color"
+            android:textSize="@dimen/details_text_size" />
+
+        <TextView
+            android:id="@+id/manga_update_date"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/manga_type"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="5dp"
+            android:layout_toRightOf="@+id/thumbnail"
+            android:textColor="@color/main_text_color"
+            android:textSize="14sp" />
+    </RelativeLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:layout_below="@+id/manga_info"
+        android:background="@color/manga_reader"></View>
+
+    <GridView
+        android:id="@+id/manga_gv"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/manga_info"
+        android:columnWidth="50dp"
+        android:horizontalSpacing="3dp"
+        android:numColumns="5"
+        android:padding="10dp"
+        android:verticalSpacing="12dp"></GridView>
+</RelativeLayout>

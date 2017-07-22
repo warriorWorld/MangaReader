@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="60dp"
+    android:layout_height="40dp"
+    android:orientation="vertical"
+    android:padding="2dp">
+
+
+    <TextView
+        android:id="@+id/chapter"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/btn_click_rewrite"
+        android:gravity="center"
+        android:text="第888话"
+        android:textColor="@drawable/btn_text_click_rewrite"
+        android:textSize="15sp" />
+
+</LinearLayout>

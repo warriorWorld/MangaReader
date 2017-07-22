@@ -4,9 +4,9 @@ package com.truthower.suhang.mangareader.bean;
  * Created by Administrator on 2017/7/18.
  */
 
-public class ChapterBean extends BaseBean{
+public class ChapterBean extends BaseBean {
     private String chapterUrl;
-    private String chapterName;
+    private String chapterPosition;
 
     public String getChapterUrl() {
         return chapterUrl;
@@ -16,11 +16,11 @@ public class ChapterBean extends BaseBean{
         this.chapterUrl = chapterUrl;
     }
 
-    public String getChapterName() {
-        return chapterName;
+    public String getChapterPosition() {
+        return chapterPosition;
     }
 
-    public void setChapterName(String chapterName) {
-        this.chapterName = chapterName;
+    public void setChapterPosition(String chapterPosition) {
+        this.chapterPosition = chapterPosition;
     }
 }
