@@ -52,7 +52,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="3dp"
                     android:gravity="center"
-                    android:text="首页"
+                    android:text="在线"
                     android:textColor="@color/manga_reader"
                     android:textSize="11sp" />
             </LinearLayout>
@@ -80,7 +80,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="3dp"
                     android:gravity="center"
-                    android:text="投资"
+                    android:text="本地"
                     android:textColor="@color/main_text_color_gray"
                     android:textSize="11sp" />
             </LinearLayout>
@@ -107,7 +107,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="3dp"
                     android:gravity="center"
-                    android:text="账户"
+                    android:text="我的"
                     android:textColor="@color/main_text_color_gray"
                     android:textSize="11sp" />
             </LinearLayout>

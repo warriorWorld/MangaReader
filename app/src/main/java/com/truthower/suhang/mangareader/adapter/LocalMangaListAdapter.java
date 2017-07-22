@@ -25,13 +25,14 @@ public class LocalMangaListAdapter extends BaseAdapter {
     private ArrayList<MangaBean> mangaList = new ArrayList<MangaBean>();
 
     public LocalMangaListAdapter(Context context) {
-        this(context,null);
+        this(context, null);
     }
 
-    public LocalMangaListAdapter(Context context,ArrayList<MangaBean> mangaList) {
+    public LocalMangaListAdapter(Context context, ArrayList<MangaBean> mangaList) {
         this.context = context;
-        this.mangaList=mangaList;
+        this.mangaList = mangaList;
     }
+
     @Override
     public int getCount() {
         if (null == mangaList)

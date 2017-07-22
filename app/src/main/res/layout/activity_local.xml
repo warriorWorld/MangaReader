@@ -12,11 +12,7 @@
         android:layout_height="match_parent"
         android:layout_below="@+id/gradient_bar"
         android:layout_marginTop="7dp"
-        android:columnWidth="120dp"
-        android:horizontalSpacing="15dp"
-        android:numColumns="3"
-        android:padding="10dp"
-        android:verticalSpacing="12dp"></com.truthower.suhang.mangareader.widget.pulltorefresh.PullToRefreshGridView>
+        android:padding="10dp"></com.truthower.suhang.mangareader.widget.pulltorefresh.PullToRefreshGridView>
 
     <com.truthower.suhang.mangareader.widget.bar.TopBar
         android:id="@+id/gradient_bar"
