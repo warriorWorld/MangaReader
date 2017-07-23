@@ -75,7 +75,7 @@ public class MangaImgEditDialog extends Dialog {
         imgIv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                inputEnd();
+                dismiss();
             }
         });
     }

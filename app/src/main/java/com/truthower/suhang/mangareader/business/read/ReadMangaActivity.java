@@ -291,7 +291,7 @@ public class ReadMangaActivity extends BaseActivity implements OnClickListener {
                     //从网络上获取到图片
                     bp = loadImageFromNetwork(path);
                     if (null != bp) {
-                        //把图片保存到本地
+                        //TODO 把图片保存到本地
 //                        FileUtil.saveBitmap(bp, Globle.mangaTitle + "_" + Globle.currentChapter
 //                                + "_" + historyPosition + ".jpg", Globle.mangaTitle);
                     }
