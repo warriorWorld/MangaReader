@@ -14,6 +14,7 @@ public class Configure {
     public static String versionCode = "";
     public static String[] websList = {"MangaReader"};
     public static String DST_FOLDER_NAME = "aSpider";
+    public static String currentMangaName = "";
     public static DisplayImageOptions normalImageOptions = new DisplayImageOptions.Builder()
             .cacheInMemory(true)
             .cacheOnDisk(true)

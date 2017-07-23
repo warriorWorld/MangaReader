@@ -33,4 +33,7 @@ dependencies {
     compile files('libs/universal-image-loader-1.9.5.jar')
     compile 'pub.devrel:easypermissions:0.4.2'
     compile files('libs/afinal-0.3.32-bin.jar')
+    //可缩放的view
+    compile 'com.commit451:PhotoView:1.2.5'
+    compile 'org.adw.library:discrete-seekbar:1.0.1'
 }

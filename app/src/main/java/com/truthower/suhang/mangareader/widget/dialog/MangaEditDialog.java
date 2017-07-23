@@ -14,6 +14,7 @@ import android.view.Gravity;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -63,6 +64,7 @@ public class MangaEditDialog extends Dialog implements View.OnClickListener {
         // lp.height = 30;
         // lp.width = 20;
         window.setAttributes(lp);
+
     }
 
 
@@ -78,6 +80,33 @@ public class MangaEditDialog extends Dialog implements View.OnClickListener {
         okTv.setOnClickListener(this);
         cancelTv.setOnClickListener(this);
 
+    }
+
+    @Override
+    public void show() {
+        super.show();
+        showKeyBroad();
+    }
+
+    @Override
+    public void dismiss() {
+        closeKeyBroad();
+        super.dismiss();
+    }
+
+    public void showKeyBroad() {
+        // 自动弹出键盘
+        InputMethodManager imm = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
+//        imm.showSoftInput(translateET, InputMethodManager.RESULT_SHOWN);
+        imm.toggleSoftInput(InputMethodManager.SHOW_FORCED,
+                InputMethodManager.HIDE_IMPLICIT_ONLY);
+    }
+
+    private void closeKeyBroad() {
+        // 隐藏键盘
+        InputMethodManager imm = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.showSoftInput(editTextV, InputMethodManager.SHOW_FORCED);
+        imm.hideSoftInputFromWindow(editTextV.getWindowToken(), 0);
     }
 
     public void setTitle(String title) {

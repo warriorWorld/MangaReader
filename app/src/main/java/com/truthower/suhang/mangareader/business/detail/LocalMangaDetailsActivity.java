@@ -15,6 +15,7 @@ import com.truthower.suhang.mangareader.R;
 import com.truthower.suhang.mangareader.adapter.LocalMangaListAdapter;
 import com.truthower.suhang.mangareader.base.BaseActivity;
 import com.truthower.suhang.mangareader.bean.MangaBean;
+import com.truthower.suhang.mangareader.business.read.ReadMangaActivity;
 import com.truthower.suhang.mangareader.sort.FileComparator;
 import com.truthower.suhang.mangareader.sort.FileComparatorAllNum;
 import com.truthower.suhang.mangareader.sort.FileComparatorWithBracket;
@@ -39,6 +40,7 @@ public class LocalMangaDetailsActivity extends BaseActivity implements AdapterVi
     private LocalMangaListAdapter adapter;
     private TopBar topBar;
     private String filePath;
+    private ArrayList<String> pathList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,7 +70,7 @@ public class LocalMangaDetailsActivity extends BaseActivity implements AdapterVi
         if (!isNextDirectory(mangaList.get(0).getUrl())) {
             //只有这页是阅读页的前一页才重新排序
 
-            ArrayList<String> pathList = new ArrayList<>();
+            pathList = new ArrayList<>();
             for (int i = 0; i < mangaList.size(); i++) {
                 pathList.add(mangaList.get(i).getLocalThumbnailUrl());
             }
@@ -175,7 +177,12 @@ public class LocalMangaDetailsActivity extends BaseActivity implements AdapterVi
             intent = new Intent(LocalMangaDetailsActivity.this, LocalMangaDetailsActivity.class);
             intent.putExtra("filePath", mangaList.get(position).getUrl());
         } else {
-            baseToast.showToast("接下来就要进入看漫画页了" + mangaList.get(position).getLocalThumbnailUrl());
+//            baseToast.showToast("接下来就要进入看漫画页了" + mangaList.get(position).getLocalThumbnailUrl());
+            intent = new Intent(LocalMangaDetailsActivity.this, ReadMangaActivity.class);
+            Bundle pathListBundle = new Bundle();
+            pathListBundle.putSerializable("pathList", pathList);
+            intent.putExtras(pathListBundle);
+            intent.putExtra("img_position", position);
         }
         if (null != intent) {
             startActivity(intent);

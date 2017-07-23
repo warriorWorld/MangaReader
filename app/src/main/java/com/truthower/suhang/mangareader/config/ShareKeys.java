@@ -6,4 +6,5 @@ package com.truthower.suhang.mangareader.config;
 
 public class ShareKeys {
     public static final String AUTO_TO_LAST_POSITION = "auto_to_last_position";
+
 }

@@ -20,7 +20,7 @@
             android:adjustViewBounds="true"
             android:clickable="false"
             android:focusable="false"
-            android:padding="15dp"
+            android:padding="7dp"
             android:scaleType="fitCenter" />
 
         <TextView
@@ -82,6 +82,7 @@
             android:adjustViewBounds="true"
             android:clickable="false"
             android:focusable="false"
+            android:padding="7dp"
             android:scaleType="fitCenter" />
 
         <TextView
