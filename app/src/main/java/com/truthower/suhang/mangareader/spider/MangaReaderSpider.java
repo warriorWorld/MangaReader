@@ -188,7 +188,32 @@ public class MangaReaderSpider extends SpiderBase {
 
     @Override
     public ArrayList<ChapterBean> getMangaChapterPics(String mangaName, String chapter, int picCount, JsoupCallBack jsoupCallBack) {
+
         return null;
+    }
+
+    private <ResultObj> void getPageSize(final String url, final JsoupCallBack<ResultObj> jsoupCallBack) {
+        new Thread() {
+            @Override
+            public void run() {
+                try {
+                    doc = Jsoup.connect(url + "/" + 1)
+                            .timeout(10000).get();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    jsoupCallBack.loadFailed(e.toString());
+                }
+                if (null != doc) {
+                    Element page = doc.getElementById("selectpage");
+                    Element lastPage = page.select("select option").last();
+
+                    jsoupCallBack.loadSucceed((ResultObj) Integer.valueOf(lastPage.text()));
+                } else {
+                    jsoupCallBack.loadFailed("getPageSize doc load failed");
+                }
+            }
+        }.start();
+
     }
 
     @Override

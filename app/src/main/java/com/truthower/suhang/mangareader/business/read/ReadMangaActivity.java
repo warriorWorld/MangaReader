@@ -13,19 +13,20 @@ import android.text.ClipboardManager;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.WindowManager;
 import android.widget.TextView;
 
-
+import com.android.volley.Request;
+import com.android.volley.VolleyError;
 import com.truthower.suhang.mangareader.R;
 import com.truthower.suhang.mangareader.adapter.ReadMangaAdapter;
 import com.truthower.suhang.mangareader.base.BaseActivity;
-import com.truthower.suhang.mangareader.business.detail.WebMangaDetailsActivity;
+import com.truthower.suhang.mangareader.bean.YoudaoResponse;
 import com.truthower.suhang.mangareader.config.Configure;
-import com.truthower.suhang.mangareader.config.ShareKeys;
 import com.truthower.suhang.mangareader.spider.FileSpider;
 import com.truthower.suhang.mangareader.utils.Logger;
 import com.truthower.suhang.mangareader.utils.SharedPreferencesUtils;
+import com.truthower.suhang.mangareader.volley.VolleyCallBack;
+import com.truthower.suhang.mangareader.volley.VolleyTool;
 import com.truthower.suhang.mangareader.widget.bar.TopBar;
 import com.truthower.suhang.mangareader.widget.dialog.MangaDialog;
 import com.truthower.suhang.mangareader.widget.dialog.MangaEditDialog;
@@ -39,6 +40,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * /storage/sdcard0/reptile/one-piece
@@ -62,6 +64,7 @@ public class ReadMangaActivity extends BaseActivity implements OnClickListener {
     private MangaEditDialog searchDialog;
     private MangaImgEditDialog mangaImgEditDialog;
     private ClipboardManager clip;//复制文本用
+    private MangaDialog translateResultDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,17 +76,22 @@ public class ReadMangaActivity extends BaseActivity implements OnClickListener {
         pathList = (ArrayList<String>) intent.getSerializableExtra("pathList");
         if (null == pathList || pathList.size() == 0) {
             isLocalManga = false;
+            doGetWebPics();
         } else {
             isLocalManga = true;
             refresh();
         }
     }
 
+
     @Override
     protected int getLayoutId() {
         return R.layout.activity_read_manga;
     }
 
+    private void doGetWebPics() {
+
+    }
 
     private void initProgressBar() {
         loadBar = new ProgressDialog(ReadMangaActivity.this);
@@ -227,10 +235,57 @@ public class ReadMangaActivity extends BaseActivity implements OnClickListener {
         mangaImgEditDialog.clearEdit();
     }
 
-    private void translateWord(String text) {
+    private void translateWord(final String word) {
         //TODO 翻译
-        clip.setText(text);
-        baseToast.showToast(text);
+        clip.setText(word);
+        String url = Configure.YOUDAO + word;
+        HashMap<String, String> params = new HashMap<String, String>();
+        VolleyCallBack<YoudaoResponse> callback = new VolleyCallBack<YoudaoResponse>() {
+
+            @Override
+            public void loadSucceed(YoudaoResponse result) {
+                if (null != result && result.getErrorCode() == 0) {
+                    YoudaoResponse.BasicBean item = result.getBasic();
+                    String t = "";
+                    if (null != item) {
+                        for (int i = 0; i < item.getExplains().size(); i++) {
+                            t = t + item.getExplains().get(i) + ";";
+                        }
+
+                        showTranslateResultDialog(word, result.getQuery() + "  [" + item.getPhonetic() + "]: " + "\n" + t);
+                    } else {
+                        baseToast.showToast("没查到该词");
+                    }
+                } else {
+                    baseToast.showToast("没查到该词");
+                }
+            }
+
+            @Override
+            public void loadFailed(VolleyError error) {
+                baseToast.showToast("error\n" + error);
+            }
+
+            @Override
+            public void loadSucceedButNotNormal(YoudaoResponse result) {
+
+            }
+        };
+        VolleyTool.getInstance(this).requestData(Request.Method.GET,
+                ReadMangaActivity.this, url, params,
+                YoudaoResponse.class, callback);
+    }
+
+    private void showTranslateResultDialog(final String title, String msg) {
+        if (null == translateResultDialog) {
+            translateResultDialog = new MangaDialog(this);
+        }
+        translateResultDialog.show();
+
+        translateResultDialog.setTitle(title);
+        translateResultDialog.setMessage(msg);
+        translateResultDialog.setOkText("确定");
+        translateResultDialog.setCancelable(true);
     }
 
     private void showDeleteDialog(final String fileName) {

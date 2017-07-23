@@ -36,4 +36,6 @@ dependencies {
     //可缩放的view
     compile 'com.commit451:PhotoView:1.2.5'
     compile 'org.adw.library:discrete-seekbar:1.0.1'
+    compile files('libs/Volley.jar')
+    compile files('libs/gson-2.1.jar')
 }

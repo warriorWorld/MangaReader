@@ -15,6 +15,8 @@ public class Configure {
     public static String[] websList = {"MangaReader"};
     public static String DST_FOLDER_NAME = "aSpider";
     public static String currentMangaName = "";
+    public static String YOUDAO = "http://fanyi.youdao.com/openapi.do?keyfrom=mangaeasywa" +
+            "tch&key=986400551&type=data&doctype=json&version=1.1&q=";
     public static DisplayImageOptions normalImageOptions = new DisplayImageOptions.Builder()
             .cacheInMemory(true)
             .cacheOnDisk(true)
