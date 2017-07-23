@@ -6,7 +6,7 @@ import java.util.Comparator;
 /**
  * 这个是给文件排序并重命名的
  */
-public class FileComparator3 implements Comparator<File> {
+public class FileComparatorByTime implements Comparator<File> {
 
     @Override
     public int compare(File file, File t1) {

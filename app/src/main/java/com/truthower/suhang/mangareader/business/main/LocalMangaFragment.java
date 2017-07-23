@@ -1,43 +1,35 @@
 package com.truthower.suhang.mangareader.business.main;
 
-import android.app.AlertDialog;
-import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
-import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AbsListView;
 import android.widget.AdapterView;
-import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.nostra13.universalimageloader.core.ImageLoader;
 import com.truthower.suhang.mangareader.R;
 import com.truthower.suhang.mangareader.adapter.LocalMangaListAdapter;
 import com.truthower.suhang.mangareader.base.BaseFragment;
 import com.truthower.suhang.mangareader.bean.MangaBean;
-import com.truthower.suhang.mangareader.bean.MangaListBean;
 import com.truthower.suhang.mangareader.business.detail.LocalMangaDetailsActivity;
 import com.truthower.suhang.mangareader.config.Configure;
-import com.truthower.suhang.mangareader.listener.JsoupCallBack;
+import com.truthower.suhang.mangareader.sort.FileComparatorByTime;
 import com.truthower.suhang.mangareader.spider.FileSpider;
 import com.truthower.suhang.mangareader.widget.bar.TopBar;
 import com.truthower.suhang.mangareader.widget.dialog.MangaDialog;
+import com.truthower.suhang.mangareader.widget.dialog.MangaEditDialog;
 import com.truthower.suhang.mangareader.widget.pulltorefresh.PullToRefreshBase;
 import com.truthower.suhang.mangareader.widget.pulltorefresh.PullToRefreshGridView;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
 
 public class LocalMangaFragment extends BaseFragment implements AdapterView.OnItemClickListener, AdapterView.OnItemLongClickListener,
         PullToRefreshBase.OnRefreshListener<GridView> {
@@ -114,7 +106,7 @@ public class LocalMangaFragment extends BaseFragment implements AdapterView.OnIt
 
             @Override
             public void onTitleClick() {
-
+                showSortAndRenameFilesDialog();
             }
         });
         mangaGV = (GridView) pullToRefreshGridView.getRefreshableView();
@@ -150,6 +142,55 @@ public class LocalMangaFragment extends BaseFragment implements AdapterView.OnIt
     public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
         showDeleteDialog(i);
         return true;
+    }
+
+    private void sortAndRenameFile(String manganame) {
+        String oldPath = storagePath + "/" + "download";
+        String newPath = storagePath + "/" + manganame;
+        File f = new File(oldPath);
+        File[] files = f.listFiles();
+        ArrayList<File> fileArrayList = new ArrayList<File>();
+        for (int i = 0; i < files.length; i++) {
+            fileArrayList.add(files[i]);
+        }
+        Collections.sort(fileArrayList, new FileComparatorByTime());//通过重写Comparator的实现类
+
+        //如果子目录不存在 建立一个子目录
+        File folder = new File(newPath);
+        if (!folder.exists()) {
+            folder.mkdirs();
+        } else {
+            baseToast.showToast("该文件夹已存在,请重新命名!");
+            return;
+        }
+        for (int i = 0; i < fileArrayList.size(); i++) {
+            if (!fileArrayList.get(i).toString().contains("gif")) {
+                File to = new File(newPath, manganame + "(" + i + ")" + ".jpg");
+
+                fileArrayList.get(i).renameTo(to);
+            }
+        }
+        baseToast.showToast("完成");
+    }
+
+
+    private void showSortAndRenameFilesDialog() {
+        MangaEditDialog mangaEditDialog = new MangaEditDialog(getActivity());
+        mangaEditDialog.setOnPeanutEditDialogClickListener(new MangaEditDialog.OnPeanutEditDialogClickListener() {
+            @Override
+            public void onOkClick(String text) {
+                sortAndRenameFile(text);
+            }
+
+            @Override
+            public void onCancelClick() {
+
+            }
+        });
+        mangaEditDialog.show();
+        mangaEditDialog.setTitle("是否按修改时间重新排序?");
+        mangaEditDialog.setOkText("是的");
+        mangaEditDialog.setCancelText("算了");
     }
 
     private void showDeleteDialog(final int i) {
