@@ -19,7 +19,7 @@ public class Configure {
             .cacheOnDisk(true)
             .considerExifParams(true)
             .bitmapConfig(Bitmap.Config.ARGB_8888)
-            .showImageOnLoading(R.drawable.back)
+            .showImageOnLoading(R.drawable.empty_list)
             .showImageOnFail(R.drawable.empty_list)
             .build();
 }

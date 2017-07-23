@@ -75,6 +75,9 @@ public class FileSpider {
 
 
     public static void deleteFile(String file) {
+        if (file.contains("file://")) {
+            file = file.substring(7, file.length());
+        }
         File f = new File(file);
         deleteFile(f);
     }

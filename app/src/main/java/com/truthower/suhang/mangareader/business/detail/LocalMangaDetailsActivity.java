@@ -30,7 +30,6 @@ import java.util.Collections;
 
 public class LocalMangaDetailsActivity extends BaseActivity implements AdapterView.OnItemClickListener,
         PullToRefreshBase.OnRefreshListener<GridView>, AdapterView.OnItemLongClickListener {
-    private View mainView;
     private PullToRefreshGridView pullToRefreshGridView;
     private View emptyView;
     private ImageView emptyIV;
@@ -66,53 +65,58 @@ public class LocalMangaDetailsActivity extends BaseActivity implements AdapterVi
     }
 
     private void sortFiles() {
-        ArrayList<String> pathList = new ArrayList<>();
-        for (int i = 0; i < mangaList.size(); i++) {
-            pathList.add(mangaList.get(i).getLocalThumbnailUrl());
-        }
+        if (!isNextDirectory(mangaList.get(0).getUrl())) {
+            //只有这页是阅读页的前一页才重新排序
 
-        //获取第一张图片的路径
-        String firstImgName = pathList.get(0);
-        if (firstImgName.contains(".jpg") || firstImgName.contains(".png") || firstImgName.contains(".bmp")) {
-            firstImgName = firstImgName.substring(0, firstImgName.length() - 1 - 3);
-            Log.d("s", "裁剪后的字符串" + firstImgName);
-        } else if (firstImgName.contains(".jpeg")) {
-            firstImgName = firstImgName.substring(0, firstImgName.length() - 1 - 4);
-            Log.d("s", "裁剪后的字符串" + firstImgName);
-        }
-        String[] arr = firstImgName.split("_");
-        if (arr.length == 0) {
-            arr = firstImgName.split("-");
-        }
-
-        if (pathList.get(0).contains("_") ||
-                pathList.get(0).contains("-")) {
-            //正常的漫画
-            if (arr.length != 3) {
-                return;
+            ArrayList<String> pathList = new ArrayList<>();
+            for (int i = 0; i < mangaList.size(); i++) {
+                pathList.add(mangaList.get(i).getLocalThumbnailUrl());
             }
-            FileComparator comparator = new FileComparator();
-            Collections.sort(pathList, comparator);
-        } else if (pathList.get(0).contains("(")) {
-            FileComparatorWithBracket comparator1 = new FileComparatorWithBracket();
-            Collections.sort(pathList, comparator1);
-        } else {
-            String[] arri = firstImgName.split("/");
-            //最终获得图片名字
-            firstImgName = arri[arri.length - 1];
-            try {
-                //用于判断是否位数字的异教徒写法
-                int isInt = Integer.valueOf(firstImgName);
-                //没抛出异常 所以是纯数字
-                FileComparatorAllNum comparator2 = new FileComparatorAllNum();
-                Collections.sort(pathList, comparator2);
-            } catch (NumberFormatException e) {
 
+            //获取第一张图片的路径
+            String firstImgName = pathList.get(0);
+            if (firstImgName.contains(".jpg") || firstImgName.contains(".png") || firstImgName.contains(".bmp")) {
+                firstImgName = firstImgName.substring(0, firstImgName.length() - 1 - 3);
+                Log.d("s", "裁剪后的字符串" + firstImgName);
+            } else if (firstImgName.contains(".jpeg")) {
+                firstImgName = firstImgName.substring(0, firstImgName.length() - 1 - 4);
+                Log.d("s", "裁剪后的字符串" + firstImgName);
             }
-        }
-        for (int i = 0; i < pathList.size(); i++) {
-            mangaList.get(i).setLocalThumbnailUrl(pathList.get(i));
-            mangaList.get(i).setName((i + 1) + "");
+            String[] arr = firstImgName.split("_");
+            if (arr.length == 0) {
+                arr = firstImgName.split("-");
+            }
+
+            if (pathList.get(0).contains("_") ||
+                    pathList.get(0).contains("-")) {
+                //正常的漫画
+                if (arr.length != 3) {
+                    return;
+                }
+                FileComparator comparator = new FileComparator();
+                Collections.sort(pathList, comparator);
+            } else if (pathList.get(0).contains("(")) {
+                FileComparatorWithBracket comparator1 = new FileComparatorWithBracket();
+                Collections.sort(pathList, comparator1);
+            } else {
+                String[] arri = firstImgName.split("/");
+                //最终获得图片名字
+                firstImgName = arri[arri.length - 1];
+                try {
+                    //用于判断是否位数字的异教徒写法
+                    int isInt = Integer.valueOf(firstImgName);
+                    //没抛出异常 所以是纯数字
+                    FileComparatorAllNum comparator2 = new FileComparatorAllNum();
+                    Collections.sort(pathList, comparator2);
+                } catch (NumberFormatException e) {
+
+                }
+            }
+
+            for (int i = 0; i < pathList.size(); i++) {
+                mangaList.get(i).setLocalThumbnailUrl(pathList.get(i));
+                mangaList.get(i).setName((i + 1) + "");
+            }
         }
     }
 
@@ -201,7 +205,12 @@ public class LocalMangaDetailsActivity extends BaseActivity implements AdapterVi
         deleteDialog.setOnPeanutDialogClickListener(new MangaDialog.OnPeanutDialogClickListener() {
             @Override
             public void onOkClick() {
-                FileSpider.getInstance().deleteFile(mangaList.get(i).getUrl());
+                if (isNextDirectory(mangaList.get(i).getUrl())) {
+                    //是文件夹就删这个路径的
+                    FileSpider.getInstance().deleteFile(mangaList.get(i).getUrl());
+                } else {
+                    FileSpider.getInstance().deleteFile(mangaList.get(i).getLocalThumbnailUrl());
+                }
                 initFile();
             }
 

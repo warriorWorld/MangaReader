@@ -8,12 +8,16 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.truthower.suhang.mangareader.R;
 import com.truthower.suhang.mangareader.base.BaseFragment;
 import com.truthower.suhang.mangareader.config.Configure;
+import com.truthower.suhang.mangareader.config.ShareKeys;
+import com.truthower.suhang.mangareader.utils.SharedPreferencesUtils;
 import com.truthower.suhang.mangareader.widget.dialog.DownloadDialog;
 import com.truthower.suhang.mangareader.widget.dialog.MangaDialog;
 import com.truthower.suhang.mangareader.widget.imageview.CircleImage;
@@ -36,6 +40,7 @@ public class UserFragment extends BaseFragment implements View.OnClickListener {
     private TextView userNameTv;
     private TextView choosedDirectoryTv;
     private CircleImage userHeadCiv;
+    private CheckBox autoToLastReadPositionCb;
     private boolean isHidden = true;
 
     private MangaDialog versionDialog;
@@ -84,7 +89,18 @@ public class UserFragment extends BaseFragment implements View.OnClickListener {
         userHeadCiv = (CircleImage) v.findViewById(R.id.user_head_civ);
         userTopBarRl = (RelativeLayout) v.findViewById(R.id.user_top_bar_rl);
         userNameTv = (TextView) v.findViewById(R.id.user_name_tv);
+        autoToLastReadPositionCb = (CheckBox) v.findViewById(R.id.auto_last_position_cb);
+        autoToLastReadPositionCb.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                SharedPreferencesUtils.setSharedPreferencesData
+                        (getActivity(), ShareKeys.AUTO_TO_LAST_POSITION, isChecked);
+            }
+        });
 
+        autoToLastReadPositionCb.setChecked
+                (SharedPreferencesUtils.getBooleanSharedPreferencesData(getActivity(),
+                        ShareKeys.AUTO_TO_LAST_POSITION, false));
         collectRl.setOnClickListener(this);
         statisticsRl.setOnClickListener(this);
         newWordBookRl.setOnClickListener(this);
