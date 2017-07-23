@@ -1,5 +1,8 @@
 package com.truthower.suhang.mangareader.business.main;
 
+import android.app.Activity;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
 import android.view.View;
@@ -10,7 +13,9 @@ import android.widget.TextView;
 import com.truthower.suhang.mangareader.R;
 import com.truthower.suhang.mangareader.base.BaseFragment;
 import com.truthower.suhang.mangareader.base.BaseFragmentActivity;
+import com.truthower.suhang.mangareader.config.Configure;
 import com.truthower.suhang.mangareader.eventbus.EventBusEvent;
+import com.truthower.suhang.mangareader.utils.Logger;
 import com.truthower.suhang.mangareader.widget.dialog.MangaDialog;
 
 
@@ -166,6 +171,18 @@ public class MainActivity extends BaseFragmentActivity implements View.OnClickLi
         }
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode == Activity.RESULT_OK) {//是否选择，没选择就不会继续
+            Uri uri = data.getData();//得到uri，后面就是将uri转化成file的过程。
+            Logger.d("地址:" + uri.toString());
+            String path = data.getDataString();
+            //得解码下 不然中文乱码
+            path = Uri.decode(path);
+            Configure.DST_FOLDER_NAME = path;
+            userFg.refreshDirctoryPath();
+        }
+    }
 
     @Override
     public void onClick(View v) {

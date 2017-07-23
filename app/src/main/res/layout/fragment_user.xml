@@ -146,6 +146,55 @@
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1px"
+                android:background="@color/divide_line"
+                android:visibility="gone" />
+
+
+            <RelativeLayout
+                android:id="@+id/choose_directory_rl"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/user_item_h"
+                android:background="@color/white"
+                android:paddingLeft="@dimen/item_padding_horizontal"
+                android:paddingRight="@dimen/item_padding_horizontal"
+                android:visibility="gone">
+
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_gravity="center_vertical"
+                    android:gravity="center_vertical"
+                    android:text="存储位置"
+                    android:textColor="@color/main_text_color"
+                    android:textSize="@dimen/main_text_size" />
+
+                <TextView
+                    android:id="@+id/directory_name_tv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginRight="5dp"
+                    android:layout_toLeftOf="@+id/directory_forward_iv"
+                    android:gravity="center_vertical"
+                    android:text="a_spider"
+                    android:textColor="@color/main_text_color_gray"
+                    android:textSize="@dimen/main_text_size" />
+
+                <ImageView
+                    android:id="@+id/directory_forward_iv"
+                    android:layout_width="10dp"
+                    android:layout_height="10dp"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:src="@drawable/forward" />
+            </RelativeLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1px"
                 android:background="@color/divide_line" />
 
 

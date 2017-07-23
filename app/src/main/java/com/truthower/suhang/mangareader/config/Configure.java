@@ -13,7 +13,7 @@ public class Configure {
     public static String versionName = "";
     public static String versionCode = "";
     public static String[] websList = {"MangaReader"};
-    public static String DST_FOLDER_NAME = "a_spider";
+    public static String DST_FOLDER_NAME = "aSpider";
     public static DisplayImageOptions normalImageOptions = new DisplayImageOptions.Builder()
             .cacheInMemory(true)
             .cacheOnDisk(true)

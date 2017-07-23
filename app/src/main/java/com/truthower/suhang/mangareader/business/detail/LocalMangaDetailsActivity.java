@@ -3,6 +3,7 @@ package com.truthower.suhang.mangareader.business.detail;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.AdapterView;
@@ -14,6 +15,9 @@ import com.truthower.suhang.mangareader.R;
 import com.truthower.suhang.mangareader.adapter.LocalMangaListAdapter;
 import com.truthower.suhang.mangareader.base.BaseActivity;
 import com.truthower.suhang.mangareader.bean.MangaBean;
+import com.truthower.suhang.mangareader.sort.FileComparator;
+import com.truthower.suhang.mangareader.sort.FileComparatorWithBracket;
+import com.truthower.suhang.mangareader.sort.FileComparatorAllNum;
 import com.truthower.suhang.mangareader.spider.FileSpider;
 import com.truthower.suhang.mangareader.widget.bar.TopBar;
 import com.truthower.suhang.mangareader.widget.dialog.MangaDialog;
@@ -22,6 +26,7 @@ import com.truthower.suhang.mangareader.widget.pulltorefresh.PullToRefreshGridVi
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
 
 public class LocalMangaDetailsActivity extends BaseActivity implements AdapterView.OnItemClickListener,
         PullToRefreshBase.OnRefreshListener<GridView>, AdapterView.OnItemLongClickListener {
@@ -53,10 +58,62 @@ public class LocalMangaDetailsActivity extends BaseActivity implements AdapterVi
     }
 
 
-    public void initFile() {
+    private void initFile() {
         mangaList.clear();
         mangaList = FileSpider.getInstance().getMangaList(filePath);
+        sortFiles();
         initGridView();
+    }
+
+    private void sortFiles() {
+        ArrayList<String> pathList = new ArrayList<>();
+        for (int i = 0; i < mangaList.size(); i++) {
+            pathList.add(mangaList.get(i).getLocalThumbnailUrl());
+        }
+
+        //获取第一张图片的路径
+        String firstImgName = pathList.get(0);
+        if (firstImgName.contains(".jpg") || firstImgName.contains(".png") || firstImgName.contains(".bmp")) {
+            firstImgName = firstImgName.substring(0, firstImgName.length() - 1 - 3);
+            Log.d("s", "裁剪后的字符串" + firstImgName);
+        } else if (firstImgName.contains(".jpeg")) {
+            firstImgName = firstImgName.substring(0, firstImgName.length() - 1 - 4);
+            Log.d("s", "裁剪后的字符串" + firstImgName);
+        }
+        String[] arr = firstImgName.split("_");
+        if (arr.length == 0) {
+            arr = firstImgName.split("-");
+        }
+
+        if (pathList.get(0).contains("_") ||
+                pathList.get(0).contains("-")) {
+            //正常的漫画
+            if (arr.length != 3) {
+                return;
+            }
+            FileComparator comparator = new FileComparator();
+            Collections.sort(pathList, comparator);
+        } else if (pathList.get(0).contains("(")) {
+            FileComparatorWithBracket comparator1 = new FileComparatorWithBracket();
+            Collections.sort(pathList, comparator1);
+        } else {
+            String[] arri = firstImgName.split("/");
+            //最终获得图片名字
+            firstImgName = arri[arri.length - 1];
+            try {
+                //用于判断是否位数字的异教徒写法
+                int isInt = Integer.valueOf(firstImgName);
+                //没抛出异常 所以是纯数字
+                FileComparatorAllNum comparator2 = new FileComparatorAllNum();
+                Collections.sort(pathList, comparator2);
+            } catch (NumberFormatException e) {
+
+            }
+        }
+        for (int i = 0; i < pathList.size(); i++) {
+            mangaList.get(i).setLocalThumbnailUrl(pathList.get(i));
+            mangaList.get(i).setName((i + 1) + "");
+        }
     }
 
     private void initGridView() {
@@ -114,7 +171,7 @@ public class LocalMangaDetailsActivity extends BaseActivity implements AdapterVi
             intent = new Intent(LocalMangaDetailsActivity.this, LocalMangaDetailsActivity.class);
             intent.putExtra("filePath", mangaList.get(position).getUrl());
         } else {
-            baseToast.showToast("接下来就要进入看漫画页了" + mangaList.get(position).getUrl());
+            baseToast.showToast("接下来就要进入看漫画页了" + mangaList.get(position).getLocalThumbnailUrl());
         }
         if (null != intent) {
             startActivity(intent);

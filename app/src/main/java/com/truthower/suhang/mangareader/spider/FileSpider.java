@@ -1,22 +1,10 @@
 package com.truthower.suhang.mangareader.spider;
 
 import android.graphics.Bitmap;
-import android.os.Environment;
-import android.text.TextUtils;
 
-import com.truthower.suhang.mangareader.bean.ChapterBean;
 import com.truthower.suhang.mangareader.bean.MangaBean;
-import com.truthower.suhang.mangareader.bean.MangaListBean;
-import com.truthower.suhang.mangareader.config.Configure;
-import com.truthower.suhang.mangareader.listener.JsoupCallBack;
-import com.truthower.suhang.mangareader.utils.StringUtil;
-
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Element;
-import org.jsoup.select.Elements;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 
 /**

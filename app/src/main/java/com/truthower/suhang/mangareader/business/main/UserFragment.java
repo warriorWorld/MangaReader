@@ -11,7 +11,6 @@ import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-
 import com.truthower.suhang.mangareader.R;
 import com.truthower.suhang.mangareader.base.BaseFragment;
 import com.truthower.suhang.mangareader.config.Configure;
@@ -23,7 +22,6 @@ import net.tsz.afinal.FinalHttp;
 import net.tsz.afinal.http.AjaxCallBack;
 
 import java.io.File;
-import java.util.HashMap;
 
 public class UserFragment extends BaseFragment implements View.OnClickListener {
     private RelativeLayout collectRl;
@@ -31,10 +29,12 @@ public class UserFragment extends BaseFragment implements View.OnClickListener {
     private RelativeLayout newWordBookRl;
     private RelativeLayout downloadRl;
     private RelativeLayout versionRl;
+    private RelativeLayout chooseDirectoryRl;
     private TextView versionNameTv;
     private TextView logoutTv;
     private RelativeLayout userTopBarRl;
     private TextView userNameTv;
+    private TextView choosedDirectoryTv;
     private CircleImage userHeadCiv;
     private boolean isHidden = true;
 
@@ -72,6 +72,8 @@ public class UserFragment extends BaseFragment implements View.OnClickListener {
     }
 
     private void initUI(View v) {
+        chooseDirectoryRl = (RelativeLayout) v.findViewById(R.id.choose_directory_rl);
+        choosedDirectoryTv = (TextView) v.findViewById(R.id.directory_name_tv);
         collectRl = (RelativeLayout) v.findViewById(R.id.collect_rl);
         statisticsRl = (RelativeLayout) v.findViewById(R.id.statistics_rl);
         newWordBookRl = (RelativeLayout) v.findViewById(R.id.new_word_book_rl);
@@ -90,6 +92,7 @@ public class UserFragment extends BaseFragment implements View.OnClickListener {
         versionRl.setOnClickListener(this);
         logoutTv.setOnClickListener(this);
         userTopBarRl.setOnClickListener(this);
+        chooseDirectoryRl.setOnClickListener(this);
     }
 
     private void refreshUI() {
@@ -215,6 +218,20 @@ public class UserFragment extends BaseFragment implements View.OnClickListener {
         downloadDialog.setCancelable(false);
     }
 
+    public void refreshDirctoryPath() {
+        choosedDirectoryTv.setText(Configure.DST_FOLDER_NAME);
+    }
+
+    /**
+     * 调用文件选择软件来选择文件
+     **/
+    private void showFileChooser() {
+        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+        intent.setType("file/*");//设置类型和后缀
+        intent.addCategory(Intent.CATEGORY_OPENABLE);
+        startActivityForResult(intent, 1);
+    }
+
     @Override
     public void onClick(View v) {
         Intent intent = null;
@@ -234,6 +251,9 @@ public class UserFragment extends BaseFragment implements View.OnClickListener {
                 doLogout();
                 break;
             case R.id.user_top_bar_rl:
+                break;
+            case R.id.choose_directory_rl:
+                showFileChooser();
                 break;
         }
         if (null != intent) {
