@@ -11,6 +11,7 @@ import android.text.InputType;
 import android.text.TextUtils;
 import android.view.Display;
 import android.view.Gravity;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -73,6 +74,20 @@ public class MangaEditDialog extends Dialog implements View.OnClickListener {
         crossIv = (ImageView) findViewById(R.id.cross_iv);
         messageTv = (TextView) findViewById(R.id.message_tv);
         editTextV = (EditText) findViewById(R.id.edit_et);
+        editTextV.setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+                //因为DOWN和UP都算回车 所以这样写 避免调用两次
+                if (event.getAction() == KeyEvent.ACTION_DOWN) {
+                    switch (keyCode) {
+                        case KeyEvent.KEYCODE_ENTER:
+                            inputEnd();
+                            break;
+                    }
+                }
+                return false;
+            }
+        });
         okTv = (TextView) findViewById(R.id.ok_tv);
         cancelTv = (TextView) findViewById(R.id.cancel_tv);
 
@@ -161,18 +176,21 @@ public class MangaEditDialog extends Dialog implements View.OnClickListener {
                 }
                 break;
             case R.id.ok_tv:
-                if (TextUtils.isEmpty(editTextV.getText().toString())) {
-                    Toast.makeText(context, "空的啊", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-                dismiss();
-                if (null != onPeanutEditDialogClickListener) {
-                    onPeanutEditDialogClickListener.onOkClick(editTextV.getText().toString());
-                }
+                inputEnd();
                 break;
         }
     }
 
+    private void inputEnd() {
+        if (TextUtils.isEmpty(editTextV.getText().toString())) {
+            Toast.makeText(context, "空的啊", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        dismiss();
+        if (null != onPeanutEditDialogClickListener) {
+            onPeanutEditDialogClickListener.onOkClick(editTextV.getText().toString());
+        }
+    }
 
     public interface OnPeanutEditDialogClickListener {
         void onOkClick(String text);

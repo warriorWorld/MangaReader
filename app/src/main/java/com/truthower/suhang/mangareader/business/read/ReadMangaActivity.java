@@ -14,6 +14,7 @@ import android.text.TextUtils;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.WindowManager;
+import android.widget.TextView;
 
 
 import com.truthower.suhang.mangareader.R;
@@ -21,6 +22,7 @@ import com.truthower.suhang.mangareader.adapter.ReadMangaAdapter;
 import com.truthower.suhang.mangareader.base.BaseActivity;
 import com.truthower.suhang.mangareader.business.detail.WebMangaDetailsActivity;
 import com.truthower.suhang.mangareader.config.Configure;
+import com.truthower.suhang.mangareader.config.ShareKeys;
 import com.truthower.suhang.mangareader.spider.FileSpider;
 import com.truthower.suhang.mangareader.utils.Logger;
 import com.truthower.suhang.mangareader.utils.SharedPreferencesUtils;
@@ -47,6 +49,7 @@ public class ReadMangaActivity extends BaseActivity implements OnClickListener {
     private HackyViewPager mangaPager;
     private DiscreteSeekBar seekBar;
     private View showSeekBar;
+    private TextView readProgressTv;
     // 截图的view
     private ShotView shotView = null;
     private ReadMangaAdapter adapter;
@@ -122,6 +125,7 @@ public class ReadMangaActivity extends BaseActivity implements OnClickListener {
     private void refresh() {
         initViewPager();
         initSeekBar();
+        readProgressTv.setText(historyPosition + 1 + "/" + pathList.size());
     }
 
 
@@ -129,6 +133,7 @@ public class ReadMangaActivity extends BaseActivity implements OnClickListener {
         mangaPager = (HackyViewPager) findViewById(R.id.manga_viewpager);
         seekBar = (DiscreteSeekBar) findViewById(R.id.seekbar);
         showSeekBar = findViewById(R.id.show_seek_bar);
+        readProgressTv = (TextView) findViewById(R.id.read_progress_tv);
 
         showSeekBar.setOnClickListener(this);
         showSeekBar.setOnLongClickListener(new View.OnLongClickListener() {
@@ -175,7 +180,6 @@ public class ReadMangaActivity extends BaseActivity implements OnClickListener {
 
             @Override
             public void onTitleClick() {
-                //TODO 翻译
                 showSearchDialog();
             }
 
@@ -220,9 +224,11 @@ public class ReadMangaActivity extends BaseActivity implements OnClickListener {
         }
         mangaImgEditDialog.show();
         mangaImgEditDialog.setImgRes(bp);
+        mangaImgEditDialog.clearEdit();
     }
 
     private void translateWord(String text) {
+        //TODO 翻译
         clip.setText(text);
         baseToast.showToast(text);
     }
@@ -311,8 +317,6 @@ public class ReadMangaActivity extends BaseActivity implements OnClickListener {
         return bitmap;
     }
 
-    private void startTranslate() {
-    }
 
     private void initViewPager() {
         if (null == adapter) {
@@ -335,6 +339,7 @@ public class ReadMangaActivity extends BaseActivity implements OnClickListener {
                 @Override
                 public void onPageSelected(int position) {
                     historyPosition = position;
+                    readProgressTv.setText(position + 1 + "/" + pathList.size());
                 }
 
                 @Override
@@ -399,9 +404,6 @@ public class ReadMangaActivity extends BaseActivity implements OnClickListener {
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-//            case R.id.ok_btn:
-//                cutTopBar();
-//                break;
             case R.id.show_seek_bar:
                 cutSeekBar();
                 break;

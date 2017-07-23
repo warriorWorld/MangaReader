@@ -9,6 +9,7 @@ import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.Display;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -56,20 +57,38 @@ public class MangaImgEditDialog extends Dialog {
 
     private void init() {
         editText = (EditText) findViewById(R.id.edit_et);
+        editText.setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+                //因为DOWN和UP都算回车 所以这样写 避免调用两次
+                if (event.getAction() == KeyEvent.ACTION_DOWN) {
+                    switch (keyCode) {
+                        case KeyEvent.KEYCODE_ENTER:
+                            inputEnd();
+                            break;
+                    }
+                }
+                return false;
+            }
+        });
         imgIv = (ImageView) findViewById(R.id.image_view);
         imgIv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (TextUtils.isEmpty(editText.getText().toString())) {
-                    Toast.makeText(context, "空的啊", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-                if (null != onImgEditDialogListener) {
-                    dismiss();
-                    onImgEditDialogListener.finish(editText.getText().toString().trim());
-                }
+                inputEnd();
             }
         });
+    }
+
+    private void inputEnd() {
+        if (TextUtils.isEmpty(editText.getText().toString())) {
+            Toast.makeText(context, "空的啊", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        if (null != onImgEditDialogListener) {
+            dismiss();
+            onImgEditDialogListener.finish(editText.getText().toString().trim());
+        }
     }
 
     @Override
@@ -90,6 +109,10 @@ public class MangaImgEditDialog extends Dialog {
 //        imm.showSoftInput(translateET, InputMethodManager.RESULT_SHOWN);
         imm.toggleSoftInput(InputMethodManager.SHOW_FORCED,
                 InputMethodManager.HIDE_IMPLICIT_ONLY);
+    }
+
+    public void clearEdit() {
+        editText.setText("");
     }
 
     private void closeKeyBroad() {

@@ -58,6 +58,17 @@
             android:layout_width="60dp"
             android:layout_height="60dp"
             android:layout_centerInParent="true"></View>
+
+        <TextView
+            android:id="@+id/read_progress_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginBottom="7dp"
+            android:layout_marginRight="7dp"
+            android:textColor="@color/main_text_color"
+            android:textSize="10sp" />
     </RelativeLayout>
 
     <com.truthower.suhang.mangareader.widget.shotview.ShotView
