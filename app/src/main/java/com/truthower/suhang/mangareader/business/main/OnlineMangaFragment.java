@@ -44,7 +44,7 @@ public class OnlineMangaFragment extends BaseFragment implements PullToRefreshBa
     private MangaEditDialog searchDialog, toPageDialog;
     private boolean isHidden = true;
     private int nowPage = 1, startPage = 1;
-    private String nowTypeName = "all", nowWeb = Configure.websList[0];
+    private String nowTypeName = "all";
 
 
     @Override
@@ -53,7 +53,7 @@ public class OnlineMangaFragment extends BaseFragment implements PullToRefreshBa
         View v = inflater.inflate(R.layout.fragment_online_manga_list, container, false);
         initUI(v);
         initPullListView();
-        initSpider(Configure.websList[0]);
+        initSpider(Configure.currentWebSite);
 
         doGetData();
         return v;
@@ -66,6 +66,7 @@ public class OnlineMangaFragment extends BaseFragment implements PullToRefreshBa
         emptyView = v.findViewById(R.id.empty_view);
 
         topBar = (TopBar) v.findViewById(R.id.gradient_bar);
+        topBar.setTitle(Configure.currentWebSite);
         topBar.setOnTopBarClickListener(new TopBar.OnTopBarClickListener() {
             @Override
             public void onLeftClick() {
@@ -245,7 +246,7 @@ public class OnlineMangaFragment extends BaseFragment implements PullToRefreshBa
             public void onOkBtnClick(String selectedRes, String selectedCodeRes) {
                 initToFirstPage();
                 nowTypeName = selectedRes;
-                topBar.setTitle(nowWeb + "(" + nowTypeName + ")");
+                topBar.setTitle(Configure.currentWebSite + "(" + nowTypeName + ")");
                 doGetData();
             }
 
@@ -274,8 +275,8 @@ public class OnlineMangaFragment extends BaseFragment implements PullToRefreshBa
                 initSpider(selectedRes);
                 initToFirstPage();
                 nowTypeName = spider.getMangaTypes()[0];
-                nowWeb = selectedRes;
-                topBar.setTitle(nowWeb + "(" + nowTypeName + ")");
+                Configure.currentWebSite = selectedRes;
+                topBar.setTitle(Configure.currentWebSite + "(" + nowTypeName + ")");
                 doGetData();
             }
 
@@ -330,7 +331,7 @@ public class OnlineMangaFragment extends BaseFragment implements PullToRefreshBa
                         nowPage = (Integer.valueOf(text) - 1) * spider.nextPageNeedAddCount();
                         startPage = nowPage;
                         int actualPage = (startPage / spider.nextPageNeedAddCount()) + 1;
-                        topBar.setTitle(nowWeb + "(" + actualPage + ")");
+                        topBar.setTitle(Configure.currentWebSite + "(" + actualPage + ")");
                         doGetData();
                     } catch (NumberFormatException e) {
                         e.printStackTrace();

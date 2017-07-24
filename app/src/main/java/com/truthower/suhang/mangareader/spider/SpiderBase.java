@@ -1,5 +1,7 @@
 package com.truthower.suhang.mangareader.spider;
 
+import android.content.Context;
+
 import com.truthower.suhang.mangareader.bean.ChapterBean;
 import com.truthower.suhang.mangareader.bean.MangaBean;
 import com.truthower.suhang.mangareader.listener.JsoupCallBack;
@@ -21,7 +23,8 @@ public abstract class SpiderBase {
 
     public abstract String[] getMangaTypes();
 
-    public abstract ArrayList<ChapterBean> getMangaChapterPics(String mangaName, String chapter, int picCount, final JsoupCallBack jsoupCallBack);
+    public abstract <ResultObj> void getMangaChapterPics
+            (final Context context, final String chapterUrl, final JsoupCallBack<ResultObj> jsoupCallBack);
 
     //很多网页的下一页并不是在网址后+1 而是+n
     public abstract int nextPageNeedAddCount();

@@ -22,8 +22,10 @@ import com.truthower.suhang.mangareader.adapter.ReadMangaAdapter;
 import com.truthower.suhang.mangareader.base.BaseActivity;
 import com.truthower.suhang.mangareader.bean.YoudaoResponse;
 import com.truthower.suhang.mangareader.config.Configure;
+import com.truthower.suhang.mangareader.listener.JsoupCallBack;
 import com.truthower.suhang.mangareader.listener.OnEditResultListener;
 import com.truthower.suhang.mangareader.spider.FileSpider;
+import com.truthower.suhang.mangareader.spider.SpiderBase;
 import com.truthower.suhang.mangareader.utils.Logger;
 import com.truthower.suhang.mangareader.utils.SharedPreferencesUtils;
 import com.truthower.suhang.mangareader.volley.VolleyCallBack;
@@ -51,6 +53,7 @@ import java.util.HashMap;
  */
 public class ReadMangaActivity extends BaseActivity implements OnClickListener {
     private HackyViewPager mangaPager;
+    private SpiderBase spider;
     private DiscreteSeekBar seekBar;
     private View showSeekBar;
     private TextView readProgressTv;
@@ -67,17 +70,20 @@ public class ReadMangaActivity extends BaseActivity implements OnClickListener {
     private MangaImgEditDialog mangaImgEditDialog;
     private ClipboardManager clip;//复制文本用
     private MangaDialog translateResultDialog;
+    private String chapterUrl;//线上漫画章节地址
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         clip = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+        initSpider();
         initUI();
         initProgressBar();
         Intent intent = getIntent();
         pathList = (ArrayList<String>) intent.getSerializableExtra("pathList");
         if (null == pathList || pathList.size() == 0) {
             isLocalManga = false;
+            chapterUrl = intent.getStringExtra("chapterUrl");
             doGetWebPics();
         } else {
             isLocalManga = true;
@@ -92,7 +98,36 @@ public class ReadMangaActivity extends BaseActivity implements OnClickListener {
     }
 
     private void doGetWebPics() {
+        loadBar.show();
+        spider.getMangaChapterPics(this, chapterUrl, new JsoupCallBack<ArrayList<String>>() {
+            @Override
+            public void loadSucceed(ArrayList<String> result) {
+                loadBar.dismiss();
+                pathList = result;
+                refresh();
+            }
 
+            @Override
+            public void loadFailed(String error) {
+                loadBar.dismiss();
+            }
+        });
+    }
+
+    private void initSpider() {
+        try {
+            spider = (SpiderBase) Class.forName
+                    ("com.truthower.suhang.mangareader.spider." + Configure.currentWebSite + "Spider").newInstance();
+        } catch (ClassNotFoundException e) {
+            baseToast.showToast(e + "");
+            e.printStackTrace();
+        } catch (java.lang.InstantiationException e) {
+            baseToast.showToast(e + "");
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            baseToast.showToast(e + "");
+            e.printStackTrace();
+        }
     }
 
     private void initProgressBar() {

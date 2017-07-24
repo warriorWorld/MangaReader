@@ -15,6 +15,7 @@ import com.truthower.suhang.mangareader.R;
 import com.truthower.suhang.mangareader.adapter.OnlineMangaDetailAdapter;
 import com.truthower.suhang.mangareader.base.BaseActivity;
 import com.truthower.suhang.mangareader.bean.MangaBean;
+import com.truthower.suhang.mangareader.business.read.ReadMangaActivity;
 import com.truthower.suhang.mangareader.config.Configure;
 import com.truthower.suhang.mangareader.listener.JsoupCallBack;
 import com.truthower.suhang.mangareader.spider.SpiderBase;
@@ -49,7 +50,7 @@ public class WebMangaDetailsActivity extends BaseActivity implements AdapterView
         if (TextUtils.isEmpty(mangaUrl)) {
             this.finish();
         }
-        initSpider(Configure.websList[0]);
+        initSpider();
 
         initUI();
         initPullGridView();
@@ -57,10 +58,10 @@ public class WebMangaDetailsActivity extends BaseActivity implements AdapterView
         initWebManga(mangaUrl);
     }
 
-    private void initSpider(String spiderName) {
+    private void initSpider() {
         try {
             spider = (SpiderBase) Class.forName
-                    ("com.truthower.suhang.mangareader.spider." + spiderName + "Spider").newInstance();
+                    ("com.truthower.suhang.mangareader.spider." + Configure.currentWebSite + "Spider").newInstance();
         } catch (ClassNotFoundException e) {
             baseToast.showToast(e + "");
             e.printStackTrace();
@@ -180,7 +181,6 @@ public class WebMangaDetailsActivity extends BaseActivity implements AdapterView
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        baseToast.showToast(currentManga.getChapters().get(position).getChapterUrl());
 //        if (chooseing) {
 //            if (firstChoose) {
 //                Globle.startPoint = Integer.valueOf(mangaList.get(position).getTitle());
@@ -194,11 +194,10 @@ public class WebMangaDetailsActivity extends BaseActivity implements AdapterView
 //                WebMangaDetailsActivity.this.finish();
 //            }
 //        } else {
-//            Globle.sourceFrom = Globle.Source.web;
-//            Globle.mangaPath = mangaList.get(position).getPath();
-//            Globle.currentChapter = position + "";
-//            Intent intent = new Intent(WebMangaDetailsActivity.this, ReadMangaActivity.class);
-//            startActivity(intent);
+        Configure.currentMangaName = currentManga.getName();
+        Intent intent = new Intent(WebMangaDetailsActivity.this, ReadMangaActivity.class);
+        intent.putExtra("chapterUrl", currentManga.getChapters().get(position).getChapterUrl());
+        startActivity(intent);
 //        }
     }
 

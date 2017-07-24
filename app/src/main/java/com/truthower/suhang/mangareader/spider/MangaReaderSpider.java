@@ -1,15 +1,20 @@
 package com.truthower.suhang.mangareader.spider;
 
+import android.content.Context;
 import android.os.Handler;
 import android.os.Message;
 import android.text.TextUtils;
 
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
 import com.truthower.suhang.mangareader.bean.ChapterBean;
 import com.truthower.suhang.mangareader.bean.MangaBean;
 import com.truthower.suhang.mangareader.bean.MangaListBean;
 import com.truthower.suhang.mangareader.listener.JsoupCallBack;
 import com.truthower.suhang.mangareader.utils.Logger;
 import com.truthower.suhang.mangareader.utils.StringUtil;
+import com.truthower.suhang.mangareader.volley.MStringRequest;
+import com.truthower.suhang.mangareader.volley.VolleyTool;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Element;
@@ -17,6 +22,9 @@ import org.jsoup.select.Elements;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * http://www.mangareader.net/
@@ -24,6 +32,7 @@ import java.util.ArrayList;
 public class MangaReaderSpider extends SpiderBase {
     private String webUrl = "http://www.mangareader.net/";
     private String webUrlNoLastLine = "http://www.mangareader.net";
+    private ArrayList<String> pathList = new ArrayList<String>();
 //    private MangaReaderSpider() {
 //    }
 //
@@ -187,9 +196,73 @@ public class MangaReaderSpider extends SpiderBase {
     }
 
     @Override
-    public ArrayList<ChapterBean> getMangaChapterPics(String mangaName, String chapter, int picCount, JsoupCallBack jsoupCallBack) {
+    public <ResultObj> void getMangaChapterPics(final Context context, final String chapterUrl, final JsoupCallBack<ResultObj> jsoupCallBack) {
+        getPageSize(chapterUrl, new JsoupCallBack<Integer>() {
+            @Override
+            public void loadSucceed(Integer result) {
+                initPicPathList(context, chapterUrl, 1, result, jsoupCallBack);
+            }
 
-        return null;
+            @Override
+            public void loadFailed(String error) {
+
+            }
+        });
+    }
+
+
+    private <ResultObj> void initPicPathList(final Context context, final String chapterUrl, final int page,
+                                             final int pageSize, final JsoupCallBack<ResultObj> jsoupCallBack) {
+        String url = chapterUrl + "/" + page;
+        HashMap<String, String> params = new HashMap<String, String>();
+        MStringRequest request = new MStringRequest(url, params,
+                new Response.Listener<String>() {
+
+                    @Override
+                    public void onResponse(String arg0) {
+                        // 得到包含某正则表达式的字符串
+                        Pattern p;
+                        p = Pattern.compile("http:[^\f\n\r\t]*?(jpg|png|gif|jpeg)");
+                        Matcher m;
+                        m = p.matcher(arg0);
+                        // String xxx;
+                        int cycle = 0;
+                        String urlResult = "", prefetch = "";
+                        while (m.find()) {
+                            // 获取到图片的URL 先获取到的第二个后获取到的第一个
+                            if (cycle == 1) {
+                                urlResult = m.group();
+                            } else if (cycle == 0) {
+                                prefetch = m.group();
+                            }
+                            cycle++;
+                        }
+                        if (page != pageSize) {
+                            pathList.add(urlResult);
+                            pathList.add(prefetch);
+                            Logger.d(urlResult + "\n" + prefetch);
+                        } else {
+                            //到最后一页时 只有一个图片
+                            pathList.add(prefetch);
+                            Logger.d(prefetch);
+                        }
+                        if (page == pageSize || page + 1 == pageSize) {
+                            //已找到所有的图片地址
+                            //TODO 得到结果
+                            jsoupCallBack.loadSucceed((ResultObj) pathList);
+                        } else {
+                            initPicPathList(context, chapterUrl, page + 2, pageSize, jsoupCallBack);
+                        }
+                    }
+                }, new Response.ErrorListener() {
+
+            @Override
+            public void onErrorResponse(VolleyError arg0) {
+                jsoupCallBack.loadFailed(arg0.toString());
+            }
+        });
+        VolleyTool.getInstance(context).getRequestQueue()
+                .add(request);
     }
 
     private <ResultObj> void getPageSize(final String url, final JsoupCallBack<ResultObj> jsoupCallBack) {
