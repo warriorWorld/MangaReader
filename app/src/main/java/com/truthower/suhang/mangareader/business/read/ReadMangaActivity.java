@@ -71,6 +71,7 @@ public class ReadMangaActivity extends BaseActivity implements OnClickListener {
     private ClipboardManager clip;//复制文本用
     private MangaDialog translateResultDialog;
     private String chapterUrl;//线上漫画章节地址
+    private String progressSaveKey = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -133,7 +134,6 @@ public class ReadMangaActivity extends BaseActivity implements OnClickListener {
     private void initProgressBar() {
         loadBar = new ProgressDialog(ReadMangaActivity.this);
         loadBar.setCancelable(false);
-        loadBar.setTitle("读取中");
         loadBar.setMessage("每20页大约需耗时4秒");
     }
 
@@ -482,13 +482,26 @@ public class ReadMangaActivity extends BaseActivity implements OnClickListener {
     }
 
     private void saveState() {
-        SharedPreferencesUtils.setSharedPreferencesData(this, Configure.currentMangaName + "progress",
+        initProgressKey();
+        SharedPreferencesUtils.setSharedPreferencesData(this, progressSaveKey + "progress",
                 historyPosition);
     }
 
+    private void initProgressKey() {
+        if (TextUtils.isEmpty(progressSaveKey)) {
+            if (isLocalManga) {
+                int pos = pathList.get(0).lastIndexOf("/");
+                progressSaveKey = pathList.get(0).substring(0, pos);
+            } else {
+                progressSaveKey = chapterUrl;
+            }
+        }
+    }
+
     private void recoverState() {
+        initProgressKey();
         int p = SharedPreferencesUtils.getIntSharedPreferencesData(this,
-                Configure.currentMangaName + "progress");
+                progressSaveKey + "progress");
         if (p >= 0) {
             historyPosition = p;
             mangaPager.setCurrentItem(p);
