@@ -28,13 +28,12 @@ import com.truthower.suhang.mangareader.listener.OnEditResultListener;
  * 作者：苏航 on 2016/11/4 11:08
  * 邮箱：772192594@qq.com
  */
-public class MangaImgEditDialog extends Dialog {
+public class OnlyEditDialog extends Dialog {
     private Context context;
-    private ImageView imgIv;
     private EditText editText;
     private OnEditResultListener onEditResultListener;
 
-    public MangaImgEditDialog(Context context) {
+    public OnlyEditDialog(Context context) {
         super(context);
         this.context = context;
     }
@@ -43,7 +42,7 @@ public class MangaImgEditDialog extends Dialog {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
-        setContentView(R.layout.dialog_image_edit_manga);
+        setContentView(R.layout.dialog_only_edit_manga);
         init();
 
         Window window = this.getWindow();
@@ -72,13 +71,6 @@ public class MangaImgEditDialog extends Dialog {
                 return false;
             }
         });
-        imgIv = (ImageView) findViewById(R.id.image_view);
-        imgIv.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dismiss();
-            }
-        });
     }
 
     private void inputEnd() {
@@ -87,9 +79,8 @@ public class MangaImgEditDialog extends Dialog {
             return;
         }
         if (null != onEditResultListener) {
-//            dismiss();
+            dismiss();
             onEditResultListener.onResult(editText.getText().toString().trim());
-            clearEdit();
         }
     }
 
@@ -122,15 +113,6 @@ public class MangaImgEditDialog extends Dialog {
         InputMethodManager imm = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.showSoftInput(editText, InputMethodManager.SHOW_FORCED);
         imm.hideSoftInputFromWindow(editText.getWindowToken(), 0);
-    }
-
-    public void setImgRes(String uri) {
-        ImageLoader.getInstance().displayImage(uri, imgIv, Configure.normalImageOptions);
-//        ImageLoader.getInstance().displayImage(uri, imgIv);
-    }
-
-    public void setImgRes(Bitmap bitmap) {
-        imgIv.setImageBitmap(bitmap);
     }
 
     public void setOnEditResultListener(OnEditResultListener onEditResultListener) {

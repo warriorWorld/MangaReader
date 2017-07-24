@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    style="@style/TransparentDialog"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/transparency"
+    android:orientation="vertical">
+
+    <EditText
+        android:id="@+id/edit_et"
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:layout_marginLeft="17dp"
+        android:layout_marginRight="17dp"
+        android:layout_marginTop="17dp"
+        android:background="@drawable/btn_bg_empty_gray"
+        android:gravity="center"
+        android:hint="输入单个单词"
+        android:inputType="text"
+        android:textColor="@color/white"
+        android:textColorHint="@color/white"
+        android:textSize="@dimen/main_text_size" />
+</RelativeLayout>

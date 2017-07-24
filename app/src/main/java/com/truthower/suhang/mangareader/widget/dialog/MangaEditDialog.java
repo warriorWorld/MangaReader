@@ -22,6 +22,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.truthower.suhang.mangareader.R;
+import com.truthower.suhang.mangareader.listener.OnEditResultListener;
 
 
 /**
@@ -37,7 +38,7 @@ public class MangaEditDialog extends Dialog implements View.OnClickListener {
     private TextView cancelTv;
     private TextView okTv;
 
-    private OnPeanutEditDialogClickListener onPeanutEditDialogClickListener;
+    private OnEditResultListener onEditResultListener;
 
     public MangaEditDialog(Context context) {
         super(context);
@@ -159,9 +160,6 @@ public class MangaEditDialog extends Dialog implements View.OnClickListener {
         editTextV.setText("");
     }
 
-    public void setOnPeanutEditDialogClickListener(OnPeanutEditDialogClickListener onPeanutEditDialogClickListener) {
-        this.onPeanutEditDialogClickListener = onPeanutEditDialogClickListener;
-    }
 
     @Override
     public void onClick(View v) {
@@ -171,8 +169,8 @@ public class MangaEditDialog extends Dialog implements View.OnClickListener {
                 break;
             case R.id.cancel_tv:
                 dismiss();
-                if (null != onPeanutEditDialogClickListener) {
-                    onPeanutEditDialogClickListener.onCancelClick();
+                if (null != onEditResultListener) {
+                    onEditResultListener.onCancelClick();
                 }
                 break;
             case R.id.ok_tv:
@@ -187,14 +185,12 @@ public class MangaEditDialog extends Dialog implements View.OnClickListener {
             return;
         }
         dismiss();
-        if (null != onPeanutEditDialogClickListener) {
-            onPeanutEditDialogClickListener.onOkClick(editTextV.getText().toString());
+        if (null != onEditResultListener) {
+            onEditResultListener.onResult(editTextV.getText().toString());
         }
     }
 
-    public interface OnPeanutEditDialogClickListener {
-        void onOkClick(String text);
-
-        void onCancelClick();
+    public void setOnEditResultListener(OnEditResultListener onEditResultListener) {
+        this.onEditResultListener = onEditResultListener;
     }
 }

@@ -22,6 +22,7 @@ import com.truthower.suhang.mangareader.adapter.ReadMangaAdapter;
 import com.truthower.suhang.mangareader.base.BaseActivity;
 import com.truthower.suhang.mangareader.bean.YoudaoResponse;
 import com.truthower.suhang.mangareader.config.Configure;
+import com.truthower.suhang.mangareader.listener.OnEditResultListener;
 import com.truthower.suhang.mangareader.spider.FileSpider;
 import com.truthower.suhang.mangareader.utils.Logger;
 import com.truthower.suhang.mangareader.utils.SharedPreferencesUtils;
@@ -31,6 +32,7 @@ import com.truthower.suhang.mangareader.widget.bar.TopBar;
 import com.truthower.suhang.mangareader.widget.dialog.MangaDialog;
 import com.truthower.suhang.mangareader.widget.dialog.MangaEditDialog;
 import com.truthower.suhang.mangareader.widget.dialog.MangaImgEditDialog;
+import com.truthower.suhang.mangareader.widget.dialog.OnlyEditDialog;
 import com.truthower.suhang.mangareader.widget.shotview.ScreenShot;
 import com.truthower.suhang.mangareader.widget.shotview.ShotView;
 
@@ -61,7 +63,7 @@ public class ReadMangaActivity extends BaseActivity implements OnClickListener {
     private ProgressDialog loadBar;
     private boolean isLocalManga = false;
     private TopBar topBar;
-    private MangaEditDialog searchDialog;
+    private OnlyEditDialog searchDialog;
     private MangaImgEditDialog mangaImgEditDialog;
     private ClipboardManager clip;//复制文本用
     private MangaDialog translateResultDialog;
@@ -200,10 +202,10 @@ public class ReadMangaActivity extends BaseActivity implements OnClickListener {
 
     private void showSearchDialog() {
         if (null == searchDialog) {
-            searchDialog = new MangaEditDialog(this);
-            searchDialog.setOnPeanutEditDialogClickListener(new MangaEditDialog.OnPeanutEditDialogClickListener() {
+            searchDialog = new OnlyEditDialog(this);
+            searchDialog.setOnEditResultListener(new OnEditResultListener() {
                 @Override
-                public void onOkClick(String text) {
+                public void onResult(String text) {
                     translateWord(text);
                 }
 
@@ -215,18 +217,21 @@ public class ReadMangaActivity extends BaseActivity implements OnClickListener {
             searchDialog.setCancelable(true);
         }
         searchDialog.show();
-        searchDialog.setTitle("查单词");
-        searchDialog.setHint("输入单个单词");
         searchDialog.clearEdit();
     }
 
     private void showImgEditDialog(Bitmap bp) {
         if (null == mangaImgEditDialog) {
             mangaImgEditDialog = new MangaImgEditDialog(this);
-            mangaImgEditDialog.setOnImgEditDialogListener(new MangaImgEditDialog.OnImgEditDialogListener() {
+            mangaImgEditDialog.setOnEditResultListener(new OnEditResultListener() {
                 @Override
-                public void finish(String text) {
+                public void onResult(String text) {
                     translateWord(text);
+                }
+
+                @Override
+                public void onCancelClick() {
+
                 }
             });
         }

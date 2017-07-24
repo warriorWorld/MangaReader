@@ -19,6 +19,7 @@ import com.truthower.suhang.mangareader.base.BaseFragment;
 import com.truthower.suhang.mangareader.bean.MangaBean;
 import com.truthower.suhang.mangareader.business.detail.LocalMangaDetailsActivity;
 import com.truthower.suhang.mangareader.config.Configure;
+import com.truthower.suhang.mangareader.listener.OnEditResultListener;
 import com.truthower.suhang.mangareader.sort.FileComparatorByTime;
 import com.truthower.suhang.mangareader.spider.FileSpider;
 import com.truthower.suhang.mangareader.widget.bar.TopBar;
@@ -177,9 +178,9 @@ public class LocalMangaFragment extends BaseFragment implements AdapterView.OnIt
 
     private void showSortAndRenameFilesDialog() {
         MangaEditDialog mangaEditDialog = new MangaEditDialog(getActivity());
-        mangaEditDialog.setOnPeanutEditDialogClickListener(new MangaEditDialog.OnPeanutEditDialogClickListener() {
+        mangaEditDialog.setOnEditResultListener(new OnEditResultListener() {
             @Override
-            public void onOkClick(String text) {
+            public void onResult(String text) {
                 sortAndRenameFile(text);
             }
 

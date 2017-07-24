@@ -16,6 +16,7 @@ import com.truthower.suhang.mangareader.bean.MangaListBean;
 import com.truthower.suhang.mangareader.business.detail.WebMangaDetailsActivity;
 import com.truthower.suhang.mangareader.config.Configure;
 import com.truthower.suhang.mangareader.listener.JsoupCallBack;
+import com.truthower.suhang.mangareader.listener.OnEditResultListener;
 import com.truthower.suhang.mangareader.spider.SpiderBase;
 import com.truthower.suhang.mangareader.widget.bar.TopBar;
 import com.truthower.suhang.mangareader.widget.dialog.MangaEditDialog;
@@ -294,9 +295,9 @@ public class OnlineMangaFragment extends BaseFragment implements PullToRefreshBa
     private void showSearchDialog(String title) {
         if (null == searchDialog) {
             searchDialog = new MangaEditDialog(getActivity());
-            searchDialog.setOnPeanutEditDialogClickListener(new MangaEditDialog.OnPeanutEditDialogClickListener() {
+            searchDialog.setOnEditResultListener(new OnEditResultListener() {
                 @Override
-                public void onOkClick(String text) {
+                public void onResult(String text) {
                     text = text.replaceAll(" ", "-");
                     text = spider.getWebUrl() + text;
                     if (!spider.isOneShot()) {
@@ -322,9 +323,9 @@ public class OnlineMangaFragment extends BaseFragment implements PullToRefreshBa
     private void showToPageDialog(String title) {
         if (null == toPageDialog) {
             toPageDialog = new MangaEditDialog(getActivity());
-            toPageDialog.setOnPeanutEditDialogClickListener(new MangaEditDialog.OnPeanutEditDialogClickListener() {
+            toPageDialog.setOnEditResultListener(new OnEditResultListener() {
                 @Override
-                public void onOkClick(String text) {
+                public void onResult(String text) {
                     try {
                         nowPage = (Integer.valueOf(text) - 1) * spider.nextPageNeedAddCount();
                         startPage = nowPage;
