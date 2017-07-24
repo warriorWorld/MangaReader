@@ -58,6 +58,7 @@
         <activity android:name=".business.detail.WebMangaDetailsActivity"></activity>
         <activity android:name=".business.detail.LocalMangaDetailsActivity"></activity>
         <activity android:name=".business.read.ReadMangaActivity"></activity>
+        <activity android:name=".business.download.DownloadActivity"></activity>
     </application>
 
 </manifest>

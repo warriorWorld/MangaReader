@@ -194,7 +194,7 @@ public class WebMangaDetailsActivity extends BaseActivity implements AdapterView
 //                WebMangaDetailsActivity.this.finish();
 //            }
 //        } else {
-        Configure.currentMangaName = currentManga.getName();
+        Configure.currentMangaName = currentManga.getName() +"(" +position+")";
         Intent intent = new Intent(WebMangaDetailsActivity.this, ReadMangaActivity.class);
         intent.putExtra("chapterUrl", currentManga.getChapters().get(position).getChapterUrl());
         startActivity(intent);

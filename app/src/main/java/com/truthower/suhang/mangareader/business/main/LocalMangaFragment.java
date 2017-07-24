@@ -134,7 +134,7 @@ public class LocalMangaFragment extends BaseFragment implements AdapterView.OnIt
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         baseToast.showToast(mangaList.get(position).getUrl());
-        Configure.currentMangaName = mangaList.get(position).getName() + "(local)";
+        Configure.currentMangaName = mangaList.get(position).getName();
         Intent intent = new Intent(getActivity(), LocalMangaDetailsActivity.class);
         intent.putExtra("filePath", mangaList.get(position).getUrl());
         startActivity(intent);
