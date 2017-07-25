@@ -1,9 +1,12 @@
 package com.truthower.suhang.mangareader.config;
 
 import android.graphics.Bitmap;
+import android.os.Environment;
 
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.truthower.suhang.mangareader.R;
+
+import java.io.File;
 
 /**
  * Created by Administrator on 2017/7/19.
@@ -14,6 +17,8 @@ public class Configure {
     public static String versionCode = "";
     public static String[] websList = {"MangaReader"};
     public static String DST_FOLDER_NAME = "aSpider";
+    public static String storagePath = Environment
+            .getExternalStorageDirectory().getAbsolutePath() + "/" + DST_FOLDER_NAME;
     public static String currentMangaName = "";
     public static String currentWebSite = websList[0];
     public static String YOUDAO = "http://fanyi.youdao.com/openapi.do?keyfrom=mangaeasywa" +

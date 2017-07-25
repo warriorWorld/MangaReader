@@ -1,10 +1,23 @@
 package com.truthower.suhang.mangareader.spider;
 
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.os.Environment;
+import android.os.Message;
+import android.text.TextUtils;
 
 import com.truthower.suhang.mangareader.bean.MangaBean;
+import com.truthower.suhang.mangareader.config.Configure;
+import com.truthower.suhang.mangareader.listener.DownloadCallBack;
+import com.truthower.suhang.mangareader.listener.JsoupCallBack;
+import com.truthower.suhang.mangareader.utils.ImageUtil;
 
+import java.io.BufferedOutputStream;
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
 import java.util.ArrayList;
 
 /**
@@ -12,6 +25,8 @@ import java.util.ArrayList;
  */
 public class FileSpider {
     private String webUrl = "file://";
+    private final int TRY_COUNT_LIMIT = 3;
+    private int tryCount = 0;
 
     private FileSpider() {
     }
@@ -103,5 +118,106 @@ public class FileSpider {
             }
             file.delete();
         }
+    }
+
+
+    /**
+     * 下载一整个章节的图片
+     *
+     * @param mangaName
+     * @param imgs
+     * @param episode
+     * @param page
+     * @param <ResultObj>
+     */
+    public <ResultObj> void downloadImgs(final String mangaName, final ArrayList<String> imgs,
+                                         final int episode, final int page, final int folderSize,
+                                         final JsoupCallBack<ResultObj> jsoupCallBack) {
+        // 将图片下载并保存
+        new Thread() {
+            public void run() {
+                Bitmap bp = null;
+                if (!TextUtils.isEmpty(imgs.get(page - 1))) {
+                    //从网络上获取到图片
+                    try {
+                        InputStream is = new URL(imgs.get(page - 1)).openStream();
+                        bp = BitmapFactory.decodeStream(is);
+                    } catch (IOException e) {
+                        tryCount++;
+                        if (tryCount <= TRY_COUNT_LIMIT) {
+                            downloadImgs(mangaName, imgs, episode, page, folderSize, jsoupCallBack);
+                        } else {
+                            tryCount = 0;
+                            downloadImgs(mangaName, imgs, episode, page + 1, folderSize, jsoupCallBack);
+                        }
+                    }
+                    if (null != bp) {
+                        //把图片保存到本地
+                        saveBitmap(bp, mangaName + "_" + episode
+                                        + "_" + page + ".jpg",
+                                getChildFolderName(episode, folderSize), mangaName);
+
+                        if (page + 1 <= imgs.size()) {
+                            downloadImgs(mangaName, imgs, episode, page + 1, folderSize, jsoupCallBack);
+                        } else {
+                            //下载完成
+                            jsoupCallBack.loadSucceed((ResultObj) null);
+                        }
+                    } else {
+                        tryCount++;
+                        if (tryCount <= TRY_COUNT_LIMIT) {
+                            downloadImgs(mangaName, imgs, episode, page, folderSize, jsoupCallBack);
+                        } else {
+                            tryCount = 0;
+                            downloadImgs(mangaName, imgs, episode, page + 1, folderSize, jsoupCallBack);
+                        }
+                    }
+                } else {
+                    downloadImgs(mangaName, imgs, episode, page + 1, folderSize, jsoupCallBack);
+                }
+            }
+        }.start();
+    }
+
+
+    /**
+     * 存图片 TODO
+     *
+     * @param b
+     * @param bmpName
+     * @param mangaName
+     * @return
+     * @childFolder 子文件夹名 因为漫画图片数量太大 所以在多一层子文件夹 自动建立
+     */
+    public static String saveBitmap(Bitmap b, String bmpName,
+                                    String childFolder, String mangaName) {
+        b = ImageUtil.imageZoom(b, 480);
+        String path = Configure.storagePath + "/" + mangaName;
+        String jpegName = path + "/" + childFolder + "/" + bmpName;
+        String folderName = path + "/" + childFolder;
+        File f = new File(folderName);
+        if (!f.exists()) {
+            // 如果不存在 就创建
+            f.mkdirs();
+        }
+        try {
+            FileOutputStream fout = new FileOutputStream(jpegName);
+            BufferedOutputStream bos = new BufferedOutputStream(fout);
+            b.compress(Bitmap.CompressFormat.JPEG, 100, bos);
+            bos.flush();
+            bos.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return jpegName;
+    }
+
+    private String getChildFolderName(int episode, int folderSize) {
+        String res;
+        int start = ((int) (episode / folderSize)) * folderSize + 1;
+        int end = start + folderSize - 1;
+        res = start + "-" + end;
+        return res;
     }
 }
