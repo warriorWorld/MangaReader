@@ -15,6 +15,7 @@ import android.widget.TextView;
 
 import com.truthower.suhang.mangareader.R;
 import com.truthower.suhang.mangareader.base.BaseFragment;
+import com.truthower.suhang.mangareader.business.download.DownloadActivity;
 import com.truthower.suhang.mangareader.config.Configure;
 import com.truthower.suhang.mangareader.config.ShareKeys;
 import com.truthower.suhang.mangareader.utils.SharedPreferencesUtils;
@@ -259,6 +260,7 @@ public class UserFragment extends BaseFragment implements View.OnClickListener {
             case R.id.new_word_book_rl:
                 break;
             case R.id.download_rl:
+                intent = new Intent(getActivity(), DownloadActivity.class);
                 break;
             case R.id.version_rl:
                 doGetVersionInfo();

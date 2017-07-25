@@ -1,0 +1,133 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/details_view"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="10dp">
+
+    <TextView
+        android:id="@+id/explain"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="12dp"
+        android:gravity="center_horizontal"
+        android:text="hello_world"
+        android:textSize="22sp" />
+
+    <TextView
+        android:id="@+id/amount"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/explain"
+        android:layout_marginTop="12dp"
+        android:gravity="center_horizontal"
+        android:text="说明" />
+
+    <EditText
+        android:id="@+id/episode"
+        android:layout_width="60dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/amount"
+        android:hint="第n话"
+        android:inputType="number" />
+
+    <EditText
+        android:id="@+id/page"
+        android:layout_width="60dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/amount"
+        android:layout_toRightOf="@+id/episode"
+        android:hint="第n页"
+        android:inputType="number" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/amount"
+        android:layout_marginTop="@dimen/details_text_size"
+        android:layout_toRightOf="@id/page"
+        android:text="--开始话,页" />
+
+    <EditText
+        android:id="@+id/end_episode"
+        android:layout_width="60dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/episode"
+        android:hint="第n话"
+        android:inputType="number" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/episode"
+        android:layout_marginTop="@dimen/details_text_size"
+        android:layout_toRightOf="@id/page"
+        android:text="--结束话" />
+
+    <Button
+        android:id="@+id/folder_size"
+        android:layout_width="50dp"
+        android:layout_height="40dp"
+        android:layout_below="@+id/end_episode"
+        android:layout_marginTop="12dp"
+        android:background="@drawable/btn_click_rewrite"
+        android:inputType="number"
+        android:text="5"
+        android:textColor="@drawable/btn_text_click_rewrite" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/end_episode"
+        android:layout_marginTop="30dp"
+        android:layout_toRightOf="@id/page"
+        android:text="--每隔N话建立一个文件夹" />
+
+    <EditText
+        android:id="@+id/manga_name"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/folder_size"
+        android:layout_marginTop="12dp"
+        android:hint="名称" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/folder_size"
+        android:layout_marginTop="30dp"
+        android:layout_toRightOf="@id/manga_name"
+        android:text="--漫画名称" />
+
+
+    <View
+        android:id="@+id/view_holder"
+        android:layout_width="5dp"
+        android:layout_height="1dp"
+        android:layout_centerInParent="true"></View>
+
+    <Button
+        android:id="@+id/start"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_toLeftOf="@id/view_holder"
+        android:background="@drawable/btn_click_rewrite"
+        android:text="开始下载"
+        android:textColor="@drawable/btn_text_click_rewrite" />
+
+
+    <Button
+        android:id="@+id/stop"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_toRightOf="@+id/view_holder"
+        android:background="@drawable/btn_click_rewrite"
+        android:gravity="center"
+        android:text="停止下载"
+        android:textColor="@drawable/btn_text_click_rewrite" />
+</RelativeLayout>

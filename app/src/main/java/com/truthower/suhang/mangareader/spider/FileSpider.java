@@ -8,9 +8,13 @@ import android.text.TextUtils;
 
 import com.truthower.suhang.mangareader.bean.MangaBean;
 import com.truthower.suhang.mangareader.config.Configure;
+import com.truthower.suhang.mangareader.eventbus.DownLoadEvent;
+import com.truthower.suhang.mangareader.eventbus.EventBusEvent;
 import com.truthower.suhang.mangareader.listener.DownloadCallBack;
 import com.truthower.suhang.mangareader.listener.JsoupCallBack;
 import com.truthower.suhang.mangareader.utils.ImageUtil;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -27,6 +31,7 @@ public class FileSpider {
     private String webUrl = "file://";
     private final int TRY_COUNT_LIMIT = 3;
     private int tryCount = 0;
+    private DownLoadEvent downLoadEvent = new DownLoadEvent(EventBusEvent.DOWNLOAD_EVENT);
 
     private FileSpider() {
     }
@@ -133,6 +138,7 @@ public class FileSpider {
     public <ResultObj> void downloadImgs(final String mangaName, final ArrayList<String> imgs,
                                          final int episode, final int page, final int folderSize,
                                          final JsoupCallBack<ResultObj> jsoupCallBack) {
+
         // 将图片下载并保存
         new Thread() {
             public void run() {
@@ -145,6 +151,16 @@ public class FileSpider {
                     } catch (IOException e) {
                         tryCount++;
                         if (tryCount <= TRY_COUNT_LIMIT) {
+                            downLoadEvent = new DownLoadEvent(EventBusEvent.DOWNLOAD_FAIL_EVENT);
+                            downLoadEvent.setCurrentDownloadEpisode(episode);
+                            downLoadEvent.setCurrentDownloadPage(page);
+                            downLoadEvent.setDownloadExplain("第" + episode + "话" +
+                                    "第" + page + "页下载失败!正在第" + (tryCount + 1) + "次尝试");
+                            downLoadEvent.setDownloadFolderSize(folderSize);
+                            downLoadEvent.setDownloadMangaName(mangaName);
+                            downLoadEvent.setDownloadEndEpisode(999);
+
+                            EventBus.getDefault().post(downLoadEvent);
                             downloadImgs(mangaName, imgs, episode, page, folderSize, jsoupCallBack);
                         } else {
                             tryCount = 0;
@@ -158,14 +174,43 @@ public class FileSpider {
                                 getChildFolderName(episode, folderSize), mangaName);
 
                         if (page + 1 <= imgs.size()) {
+                            //下载完成
+                            downLoadEvent = new DownLoadEvent(EventBusEvent.DOWNLOAD_EVENT);
+                            downLoadEvent.setCurrentDownloadEpisode(episode);
+                            downLoadEvent.setCurrentDownloadPage(page);
+                            downLoadEvent.setDownloadExplain("第" + episode + "话" +
+                                    "第" + page + "页下载完成!");
+                            downLoadEvent.setDownloadFolderSize(folderSize);
+                            downLoadEvent.setDownloadMangaName(mangaName);
+                            downLoadEvent.setDownloadEndEpisode(999);
+                            EventBus.getDefault().post(downLoadEvent);
                             downloadImgs(mangaName, imgs, episode, page + 1, folderSize, jsoupCallBack);
                         } else {
                             //下载完成
+                            downLoadEvent = new DownLoadEvent(EventBusEvent.DOWNLOAD_EVENT);
+                            downLoadEvent.setCurrentDownloadEpisode(episode);
+                            downLoadEvent.setCurrentDownloadPage(page);
+                            downLoadEvent.setDownloadExplain("第" + episode + "话下载完成!");
+                            downLoadEvent.setDownloadFolderSize(folderSize);
+                            downLoadEvent.setDownloadMangaName(mangaName);
+                            downLoadEvent.setDownloadEndEpisode(999);
+
+                            EventBus.getDefault().post(downLoadEvent);
                             jsoupCallBack.loadSucceed((ResultObj) null);
                         }
                     } else {
                         tryCount++;
                         if (tryCount <= TRY_COUNT_LIMIT) {
+                            downLoadEvent = new DownLoadEvent(EventBusEvent.DOWNLOAD_FAIL_EVENT);
+                            downLoadEvent.setCurrentDownloadEpisode(episode);
+                            downLoadEvent.setCurrentDownloadPage(page);
+                            downLoadEvent.setDownloadExplain("第" + episode + "话" +
+                                    "第" + page + "页下载失败!正在第" + (tryCount + 1) + "次尝试");
+                            downLoadEvent.setDownloadFolderSize(folderSize);
+                            downLoadEvent.setDownloadMangaName(mangaName);
+                            downLoadEvent.setDownloadEndEpisode(999);
+
+                            EventBus.getDefault().post(downLoadEvent);
                             downloadImgs(mangaName, imgs, episode, page, folderSize, jsoupCallBack);
                         } else {
                             tryCount = 0;
