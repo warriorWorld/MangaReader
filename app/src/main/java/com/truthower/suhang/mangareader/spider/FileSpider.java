@@ -129,16 +129,17 @@ public class FileSpider {
     /**
      * 下载一整个章节的图片
      *
-     * @param mangaName
-     * @param imgs
-     * @param episode
-     * @param page
+     * @param mangaName   仅用于给文件命名
+     * @param imgs        url列表
+     * @param episode     仅用于命名
+     * @param endEpisode  仅用于刷新下载页UI
+     * @param page        起始页
+     * @param folderSize  几话放在同一个文件夹中
      * @param <ResultObj>
      */
     public <ResultObj> void downloadImgs(final String mangaName, final ArrayList<String> imgs,
-                                         final int episode, final int page, final int folderSize,
+                                         final int episode, final int endEpisode, final int page, final int folderSize,
                                          final JsoupCallBack<ResultObj> jsoupCallBack) {
-
         // 将图片下载并保存
         new Thread() {
             public void run() {
@@ -158,13 +159,13 @@ public class FileSpider {
                                     "第" + page + "页下载失败!正在第" + (tryCount + 1) + "次尝试");
                             downLoadEvent.setDownloadFolderSize(folderSize);
                             downLoadEvent.setDownloadMangaName(mangaName);
-                            downLoadEvent.setDownloadEndEpisode(999);
+                            downLoadEvent.setDownloadEndEpisode(endEpisode);
 
                             EventBus.getDefault().post(downLoadEvent);
-                            downloadImgs(mangaName, imgs, episode, page, folderSize, jsoupCallBack);
+                            downloadImgs(mangaName, imgs, episode, endEpisode, page, folderSize, jsoupCallBack);
                         } else {
                             tryCount = 0;
-                            downloadImgs(mangaName, imgs, episode, page + 1, folderSize, jsoupCallBack);
+                            downloadImgs(mangaName, imgs, episode, endEpisode, page + 1, folderSize, jsoupCallBack);
                         }
                     }
                     if (null != bp) {
@@ -182,9 +183,9 @@ public class FileSpider {
                                     "第" + page + "页下载完成!");
                             downLoadEvent.setDownloadFolderSize(folderSize);
                             downLoadEvent.setDownloadMangaName(mangaName);
-                            downLoadEvent.setDownloadEndEpisode(999);
+                            downLoadEvent.setDownloadEndEpisode(endEpisode);
                             EventBus.getDefault().post(downLoadEvent);
-                            downloadImgs(mangaName, imgs, episode, page + 1, folderSize, jsoupCallBack);
+                            downloadImgs(mangaName, imgs, episode, endEpisode, page + 1, folderSize, jsoupCallBack);
                         } else {
                             //下载完成
                             downLoadEvent = new DownLoadEvent(EventBusEvent.DOWNLOAD_EVENT);
@@ -193,7 +194,7 @@ public class FileSpider {
                             downLoadEvent.setDownloadExplain("第" + episode + "话下载完成!");
                             downLoadEvent.setDownloadFolderSize(folderSize);
                             downLoadEvent.setDownloadMangaName(mangaName);
-                            downLoadEvent.setDownloadEndEpisode(999);
+                            downLoadEvent.setDownloadEndEpisode(endEpisode);
 
                             EventBus.getDefault().post(downLoadEvent);
                             jsoupCallBack.loadSucceed((ResultObj) null);
@@ -208,17 +209,17 @@ public class FileSpider {
                                     "第" + page + "页下载失败!正在第" + (tryCount + 1) + "次尝试");
                             downLoadEvent.setDownloadFolderSize(folderSize);
                             downLoadEvent.setDownloadMangaName(mangaName);
-                            downLoadEvent.setDownloadEndEpisode(999);
+                            downLoadEvent.setDownloadEndEpisode(endEpisode);
 
                             EventBus.getDefault().post(downLoadEvent);
-                            downloadImgs(mangaName, imgs, episode, page, folderSize, jsoupCallBack);
+                            downloadImgs(mangaName, imgs, episode, endEpisode, page, folderSize, jsoupCallBack);
                         } else {
                             tryCount = 0;
-                            downloadImgs(mangaName, imgs, episode, page + 1, folderSize, jsoupCallBack);
+                            downloadImgs(mangaName, imgs, episode, endEpisode, page + 1, folderSize, jsoupCallBack);
                         }
                     }
                 } else {
-                    downloadImgs(mangaName, imgs, episode, page + 1, folderSize, jsoupCallBack);
+                    downloadImgs(mangaName, imgs, episode, endEpisode, page + 1, folderSize, jsoupCallBack);
                 }
             }
         }.start();
@@ -260,8 +261,8 @@ public class FileSpider {
 
     private String getChildFolderName(int episode, int folderSize) {
         String res;
-        int start = ((int) (episode / folderSize)) * folderSize + 1;
-        int end = start + folderSize - 1;
+        int start = ((int) (episode / folderSize)) * folderSize;
+        int end = start + folderSize - 2;
         res = start + "-" + end;
         return res;
     }

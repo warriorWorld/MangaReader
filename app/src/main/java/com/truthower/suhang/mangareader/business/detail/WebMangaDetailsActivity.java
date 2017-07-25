@@ -15,6 +15,7 @@ import com.truthower.suhang.mangareader.R;
 import com.truthower.suhang.mangareader.adapter.OnlineMangaDetailAdapter;
 import com.truthower.suhang.mangareader.base.BaseActivity;
 import com.truthower.suhang.mangareader.bean.MangaBean;
+import com.truthower.suhang.mangareader.business.download.DownloadService;
 import com.truthower.suhang.mangareader.business.read.ReadMangaActivity;
 import com.truthower.suhang.mangareader.config.Configure;
 import com.truthower.suhang.mangareader.listener.JsoupCallBack;
@@ -32,7 +33,7 @@ public class WebMangaDetailsActivity extends BaseActivity implements AdapterView
     private View collectV;
     private boolean chooseing = false;//判断是否在选择状态
     private boolean firstChoose = true;
-
+    private int downloadStartPoint = 0;
     private MangaBean currentManga;
     private OnlineMangaDetailAdapter adapter;
     private ImageView thumbnailIV;
@@ -181,34 +182,36 @@ public class WebMangaDetailsActivity extends BaseActivity implements AdapterView
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-//        if (chooseing) {
-//            if (firstChoose) {
-//                Globle.startPoint = Integer.valueOf(mangaList.get(position).getTitle());
-//                firstChoose = false;
-//            } else {
-//                Globle.mangaName = Globle.mangaTitle;
-//                Globle.endPoint = Integer.valueOf(mangaList.get(position).getTitle());
-//                Globle.friendlyDownload = true;
-//                Intent intent = new Intent(WebMangaDetailsActivity.this, ReptileMangaReaderActivity.class);
-//                startActivity(intent);
-//                WebMangaDetailsActivity.this.finish();
-//            }
-//        } else {
-        Configure.currentMangaName = currentManga.getName() +"(" +position+")";
-        Intent intent = new Intent(WebMangaDetailsActivity.this, ReadMangaActivity.class);
-        intent.putExtra("chapterUrl", currentManga.getChapters().get(position).getChapterUrl());
-        startActivity(intent);
-//        }
+        if (chooseing) {
+            if (firstChoose) {
+                downloadStartPoint = position;
+                firstChoose = false;
+            } else {
+                doDownload(downloadStartPoint, position);
+            }
+        } else {
+            Configure.currentMangaName = currentManga.getName() + "(" + position + ")";
+            Intent intent = new Intent(WebMangaDetailsActivity.this, ReadMangaActivity.class);
+            intent.putExtra("chapterUrl", currentManga.getChapters().get(position).getChapterUrl());
+            startActivity(intent);
+        }
     }
 
     private void downloadAll() {
-//        Globle.startPoint = 1;
-//        Globle.mangaName = Globle.mangaTitle;
-//        Globle.endPoint = Integer.valueOf(mangaList.get(mangaList.size() - 1).getTitle());
-//        Globle.friendlyDownload = true;
-//        Intent intent = new Intent(WebMangaDetailsActivity.this, ReptileMangaReaderActivity.class);
-//        startActivity(intent);
-//        WebMangaDetailsActivity.this.finish();
+        doDownload(0, currentManga.getChapters().size() - 1);
+    }
+
+    private void doDownload(int start, int end) {
+        Intent intent = new Intent(WebMangaDetailsActivity.this, DownloadService.class);
+        Bundle mangaBundle = new Bundle();
+        mangaBundle.putSerializable("download_MangaBean", currentManga);
+        intent.putExtras(mangaBundle);
+        intent.putExtra("download_folderSize", 3);
+        intent.putExtra("download_startPage", 1);
+        intent.putExtra("download_currentChapter", start);
+        intent.putExtra("download_endChapter", end);
+        startService(intent);
+        baseToast.showToast("开始下载!");
     }
 
     private void showOptionsSelector() {

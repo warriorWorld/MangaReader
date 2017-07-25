@@ -58,8 +58,8 @@ public class DownloadService extends Service {
             currentManga = (MangaBean) intent.getSerializableExtra("download_MangaBean");
             folderSize = intent.getIntExtra("download_folderSize", 3);
             startPage = intent.getIntExtra("download_startPage", 1);
-            currentChapter = intent.getIntExtra("download_currentChapter", 1);
-            endChapter = intent.getIntExtra("download_endChapter", 1);
+            currentChapter = intent.getIntExtra("download_currentChapter", 0);
+            endChapter = intent.getIntExtra("download_endChapter", 0);
 
             doGetChaptersPics(currentManga.getChapters().get(currentChapter), startPage);
         }
@@ -76,11 +76,12 @@ public class DownloadService extends Service {
         downLoadEvent.setDownloadFolderSize(folderSize);
         downLoadEvent.setDownloadMangaName(currentManga.getName());
         EventBus.getDefault().post(downLoadEvent);
+
         spider.getMangaChapterPics(this, chapter.getChapterUrl(), new JsoupCallBack<ArrayList<String>>() {
             @Override
             public void loadSucceed(ArrayList<String> result) {
                 FileSpider.getInstance().downloadImgs(currentManga.getName(), result,
-                        Integer.valueOf(chapter.getChapterPosition()), startPage, folderSize,
+                        Integer.valueOf(chapter.getChapterPosition()), endChapter, startPage, folderSize,
                         new JsoupCallBack<Objects>() {
                             @Override
                             public void loadSucceed(Objects result) {
@@ -92,6 +93,7 @@ public class DownloadService extends Service {
                                     EventBus.getDefault().post(new EventBusEvent("全部下载完成!",
                                             EventBusEvent.DOWNLOAD_FINISH_EVENT));
                                     isRunning = false;
+                                    stopSelf();
                                 }
                             }
 

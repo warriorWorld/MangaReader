@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import com.truthower.suhang.mangareader.R;
 import com.truthower.suhang.mangareader.base.BaseActivity;
+import com.truthower.suhang.mangareader.business.detail.WebMangaDetailsActivity;
 import com.truthower.suhang.mangareader.config.ShareKeys;
 import com.truthower.suhang.mangareader.eventbus.DownLoadEvent;
 import com.truthower.suhang.mangareader.eventbus.EventBusEvent;
@@ -132,8 +133,16 @@ public class DownloadActivity extends BaseActivity implements View.OnClickListen
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.start:
-                Intent startIntent = new Intent(this, DownloadService.class);
-                startService(startIntent);
+                //TODO
+//                Intent intent = new Intent(DownloadActivity.this, DownloadService.class);
+//                Bundle pathListBundle = new Bundle();
+//                pathListBundle.putSerializable("download_MangaBean", currentManga);
+//                intent.putExtra("download_folderSize", 3);
+//                intent.putExtra("download_startPage", 1);
+//                intent.putExtra("download_currentChapter", 0);
+//                intent.putExtra("download_endChapter", currentManga.getChapters().size());
+//                startService(intent);
+//                baseToast.showToast("开始下载!");
                 break;
             case R.id.stop:
                 Intent stopIntent = new Intent(this, DownloadService.class);
