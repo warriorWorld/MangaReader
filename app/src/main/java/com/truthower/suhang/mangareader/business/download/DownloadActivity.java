@@ -52,8 +52,8 @@ public class DownloadActivity extends BaseActivity implements View.OnClickListen
     }
 
     private void initUI() {
-        explainTv = (TextView) findViewById(R.id.explain);
-        tryAmountTv = (TextView) findViewById(R.id.amount);
+        explainTv = (TextView) findViewById(R.id.download_explain);
+        tryAmountTv = (TextView) findViewById(R.id.try_amount);
         episodeET = (EditText) findViewById(R.id.episode);
         endEpisodeET = (EditText) findViewById(R.id.end_episode);
         mangaNameET = (EditText) findViewById(R.id.manga_name);

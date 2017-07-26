@@ -6,7 +6,7 @@
     android:padding="10dp">
 
     <TextView
-        android:id="@+id/explain"
+        android:id="@+id/download_explain"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
@@ -17,10 +17,10 @@
         android:textSize="22sp" />
 
     <TextView
-        android:id="@+id/amount"
+        android:id="@+id/try_amount"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/explain"
+        android:layout_below="@+id/download_explain"
         android:layout_marginTop="12dp"
         android:gravity="center_horizontal"
         android:text="说明" />
@@ -30,7 +30,7 @@
         android:layout_width="60dp"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
-        android:layout_below="@+id/amount"
+        android:layout_below="@+id/try_amount"
         android:hint="第n话"
         android:inputType="number" />
 
@@ -38,7 +38,7 @@
         android:id="@+id/page"
         android:layout_width="60dp"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/amount"
+        android:layout_below="@+id/try_amount"
         android:layout_toRightOf="@+id/episode"
         android:hint="第n页"
         android:inputType="number" />
@@ -46,7 +46,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/amount"
+        android:layout_below="@+id/try_amount"
         android:layout_marginTop="@dimen/details_text_size"
         android:layout_toRightOf="@id/page"
         android:text="--开始话,页" />

@@ -66,7 +66,12 @@ public class DownloadService extends Service {
         return super.onStartCommand(intent, flags, startId);
     }
 
-
+    /**
+     * 获取某个章节的所有图片 然后递归获取图片,一个章节完成后再递归获取下一个章节
+     *
+     * @param chapter
+     * @param startPage
+     */
     private void doGetChaptersPics(final ChapterBean chapter, final int startPage) {
         isRunning = true;
         downLoadEvent.setCurrentDownloadEpisode(Integer.valueOf(chapter.getChapterPosition()));
