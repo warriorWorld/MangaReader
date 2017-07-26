@@ -29,9 +29,6 @@ import java.util.ArrayList;
  */
 public class FileSpider {
     private String webUrl = "file://";
-    private final int TRY_COUNT_LIMIT = 3;
-    private int tryCount = 0;
-    private DownLoadEvent downLoadEvent = new DownLoadEvent(EventBusEvent.DOWNLOAD_EVENT);
 
     private FileSpider() {
     }
@@ -127,106 +124,6 @@ public class FileSpider {
 
 
     /**
-     * 下载一整个章节的图片
-     *
-     * @param mangaName   仅用于给文件命名
-     * @param imgs        url列表
-     * @param episode     仅用于命名
-     * @param endEpisode  仅用于刷新下载页UI
-     * @param page        起始页
-     * @param folderSize  几话放在同一个文件夹中
-     * @param <ResultObj>
-     */
-    public <ResultObj> void downloadImgs(final String mangaName, final ArrayList<String> imgs,
-                                         final int episode, final int endEpisode, final int page, final int folderSize,
-                                         final JsoupCallBack<ResultObj> jsoupCallBack) {
-        // 将图片下载并保存
-        new Thread() {
-            public void run() {
-                Bitmap bp = null;
-                if (!TextUtils.isEmpty(imgs.get(page - 1))) {
-                    //从网络上获取到图片
-                    try {
-                        InputStream is = new URL(imgs.get(page - 1)).openStream();
-                        bp = BitmapFactory.decodeStream(is);
-                    } catch (IOException e) {
-                        tryCount++;
-                        if (tryCount <= TRY_COUNT_LIMIT) {
-                            downLoadEvent = new DownLoadEvent(EventBusEvent.DOWNLOAD_FAIL_EVENT);
-                            downLoadEvent.setCurrentDownloadEpisode(episode);
-                            downLoadEvent.setCurrentDownloadPage(page);
-                            downLoadEvent.setDownloadExplain("第" + episode + "话" +
-                                    "第" + page + "页下载失败!正在第" + (tryCount + 1) + "次尝试");
-                            downLoadEvent.setDownloadFolderSize(folderSize);
-                            downLoadEvent.setDownloadMangaName(mangaName);
-                            downLoadEvent.setDownloadEndEpisode(endEpisode);
-
-                            EventBus.getDefault().post(downLoadEvent);
-                            downloadImgs(mangaName, imgs, episode, endEpisode, page, folderSize, jsoupCallBack);
-                        } else {
-                            tryCount = 0;
-                            downloadImgs(mangaName, imgs, episode, endEpisode, page + 1, folderSize, jsoupCallBack);
-                        }
-                    }
-                    if (null != bp) {
-                        //把图片保存到本地
-                        saveBitmap(bp, mangaName + "_" + episode
-                                        + "_" + page + ".jpg",
-                                getChildFolderName(episode, folderSize), mangaName);
-
-                        if (page + 1 <= imgs.size()) {
-                            //下载完成
-                            downLoadEvent = new DownLoadEvent(EventBusEvent.DOWNLOAD_EVENT);
-                            downLoadEvent.setCurrentDownloadEpisode(episode);
-                            downLoadEvent.setCurrentDownloadPage(page);
-                            downLoadEvent.setDownloadExplain("第" + episode + "话" +
-                                    "第" + page + "页下载完成!");
-                            downLoadEvent.setDownloadFolderSize(folderSize);
-                            downLoadEvent.setDownloadMangaName(mangaName);
-                            downLoadEvent.setDownloadEndEpisode(endEpisode);
-                            EventBus.getDefault().post(downLoadEvent);
-                            downloadImgs(mangaName, imgs, episode, endEpisode, page + 1, folderSize, jsoupCallBack);
-                        } else {
-                            //下载完成
-                            downLoadEvent = new DownLoadEvent(EventBusEvent.DOWNLOAD_EVENT);
-                            downLoadEvent.setCurrentDownloadEpisode(episode);
-                            downLoadEvent.setCurrentDownloadPage(page);
-                            downLoadEvent.setDownloadExplain("第" + episode + "话下载完成!");
-                            downLoadEvent.setDownloadFolderSize(folderSize);
-                            downLoadEvent.setDownloadMangaName(mangaName);
-                            downLoadEvent.setDownloadEndEpisode(endEpisode);
-
-                            EventBus.getDefault().post(downLoadEvent);
-                            jsoupCallBack.loadSucceed((ResultObj) null);
-                        }
-                    } else {
-                        tryCount++;
-                        if (tryCount <= TRY_COUNT_LIMIT) {
-                            downLoadEvent = new DownLoadEvent(EventBusEvent.DOWNLOAD_FAIL_EVENT);
-                            downLoadEvent.setCurrentDownloadEpisode(episode);
-                            downLoadEvent.setCurrentDownloadPage(page);
-                            downLoadEvent.setDownloadExplain("第" + episode + "话" +
-                                    "第" + page + "页下载失败!正在第" + (tryCount + 1) + "次尝试");
-                            downLoadEvent.setDownloadFolderSize(folderSize);
-                            downLoadEvent.setDownloadMangaName(mangaName);
-                            downLoadEvent.setDownloadEndEpisode(endEpisode);
-
-                            EventBus.getDefault().post(downLoadEvent);
-                            downloadImgs(mangaName, imgs, episode, endEpisode, page, folderSize, jsoupCallBack);
-                        } else {
-                            tryCount = 0;
-                            downloadImgs(mangaName, imgs, episode, endEpisode, page + 1, folderSize, jsoupCallBack);
-                        }
-                    }
-                } else {
-                    downloadImgs(mangaName, imgs, episode, endEpisode, page + 1, folderSize, jsoupCallBack);
-                }
-            }
-        }.start();
-    }
-
-
-    /**
      * 存图片 TODO
      *
      * @param b
@@ -259,11 +156,12 @@ public class FileSpider {
         return jpegName;
     }
 
-    private String getChildFolderName(int episode, int folderSize) {
+    public String getChildFolderName(int episode, int folderSize) {
         String res;
         int start = ((int) (episode / folderSize)) * folderSize;
         int end = start + folderSize - 1;
         res = start + "-" + end;
         return res;
     }
+
 }

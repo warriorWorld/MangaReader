@@ -202,6 +202,10 @@ public class WebMangaDetailsActivity extends BaseActivity implements AdapterView
     }
 
     private void doDownload(int start, int end) {
+        //先停掉服务
+        Intent stopServiceIntent = new Intent(WebMangaDetailsActivity.this, DownloadService.class);
+        stopService(stopServiceIntent);
+        //再打开
         Intent intent = new Intent(WebMangaDetailsActivity.this, DownloadService.class);
         Bundle mangaBundle = new Bundle();
         mangaBundle.putSerializable("download_MangaBean", currentManga);

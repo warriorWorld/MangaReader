@@ -64,6 +64,7 @@ public class DownloadActivity extends BaseActivity implements View.OnClickListen
         startBtn.setOnClickListener(this);
         stopBtn.setOnClickListener(this);
         folderSizeBtn.setOnClickListener(this);
+        baseTopBar.setTitle("下载");
     }
 
     /**
@@ -72,50 +73,50 @@ public class DownloadActivity extends BaseActivity implements View.OnClickListen
      * @param event
      */
     @Subscribe
-    public void onEventMainThread(DownLoadEvent event) {
+    public void onEventMainThread(final DownLoadEvent event) {
         if (null == event)
             return;
-
-        baseToast.showToast("download event \n" + event.getMsg() + "\n" + event.getDownloadExplain());
         switch (event.getEventType()) {
             case EventBusEvent.DOWNLOAD_EVENT:
-                saveStatus(event);
-                explainTv.setText(event.getDownloadExplain());
+                refreshVar(event);
+                refreshUI();
                 break;
             case EventBusEvent.DOWNLOAD_FINISH_EVENT:
-                Intent stopIntent = new Intent(this, DownloadService.class);
+                Intent stopIntent = new Intent(DownloadActivity.this, DownloadService.class);
                 stopService(stopIntent);
                 break;
             case EventBusEvent.DOWNLOAD_FAIL_EVENT:
-                saveStatus(event);
-                tryAmountTv.setText(event.getDownloadExplain());
+                refreshVar(event);
+                baseToast.showToast(event.getDownloadExplain());
+                refreshUI();
                 break;
         }
     }
 
     private void refreshUI() {
-        explainTv.setText(explain);
-        mangaNameET.setText(mangaName);
-        episodeET.setText(String.valueOf(nowEpisode));
-        endEpisodeET.setText(String.valueOf(endEpisode));
-        pageET.setText(String.valueOf(nowPage));
-        folderSizeBtn.setText(String.valueOf(folderSize));
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                explainTv.setText(explain);
+                mangaNameET.setText(mangaName);
+                episodeET.setText(String.valueOf(nowEpisode));
+                endEpisodeET.setText(String.valueOf(endEpisode));
+                pageET.setText(String.valueOf(nowPage));
+                folderSizeBtn.setText(String.valueOf(folderSize));
+            }
+        });
     }
 
-    private void saveStatus(DownLoadEvent event) {
-        SharedPreferencesUtils.setSharedPreferencesData(this, ShareKeys.DOWNLOAD_EXPLAIN,
-                event.getDownloadExplain());
-        SharedPreferencesUtils.setSharedPreferencesData(this, ShareKeys.CURRENT_DOWNLOAD_EPISODE,
-                event.getCurrentDownloadEpisode());
-        SharedPreferencesUtils.setSharedPreferencesData(this, ShareKeys.CURRENT_DOWNLOAD_PAGE,
-                event.getCurrentDownloadPage());
-        SharedPreferencesUtils.setSharedPreferencesData(this, ShareKeys.DOWNLOAD_FOLDER_SIZE,
-                event.getDownloadFolderSize());
-        SharedPreferencesUtils.setSharedPreferencesData(this, ShareKeys.DOWNLOAD_END_EPISODE,
-                event.getDownloadEndEpisode());
-        SharedPreferencesUtils.setSharedPreferencesData(this,
-                ShareKeys.DOWNLOAD_MANGA_NAME, event.getDownloadMangaName());
+    private void refreshVar(DownLoadEvent event) {
+        explain = event.getDownloadExplain();
+        nowEpisode = event.getCurrentDownloadEpisode();
+        nowPage = event.getCurrentDownloadPage();
+        folderSize = event.getDownloadFolderSize();
+        endEpisode = event.getDownloadEndEpisode();
+        mangaName = event.getDownloadMangaName();
     }
+
+
 
     private void recoverStatus() {
         if (null != SharedPreferencesUtils.getSharedPreferencesData(this,
@@ -153,6 +154,8 @@ public class DownloadActivity extends BaseActivity implements View.OnClickListen
             case R.id.stop:
                 Intent stopIntent = new Intent(this, DownloadService.class);
                 stopService(stopIntent);
+                refreshUI();
+                explainTv.setText("已停止");
                 break;
             case R.id.folder_size:
                 break;
