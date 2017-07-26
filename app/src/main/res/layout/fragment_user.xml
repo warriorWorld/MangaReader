@@ -113,7 +113,8 @@
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1px"
-                android:background="@color/divide_line" />
+                android:background="@color/divide_line"
+                android:visibility="gone" />
 
             <RelativeLayout
                 android:id="@+id/download_rl"
@@ -121,7 +122,8 @@
                 android:layout_height="@dimen/user_item_h"
                 android:background="@color/white"
                 android:paddingLeft="@dimen/item_padding_horizontal"
-                android:paddingRight="@dimen/item_padding_horizontal">
+                android:paddingRight="@dimen/item_padding_horizontal"
+                android:visibility="gone">
 
 
                 <TextView

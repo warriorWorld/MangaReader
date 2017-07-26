@@ -195,13 +195,14 @@ public class DownloadService extends Service {
 
     private void sendEvent(int eventType, String explain, int episode, int page) {
         downLoadEvent = new DownLoadEvent(eventType);
-        downLoadEvent.setCurrentDownloadEpisode(episode);
+        //这里存的是chapterslist意义上的位置
+        downLoadEvent.setCurrentDownloadEpisode(currentChapter);
         downLoadEvent.setCurrentDownloadPage(page);
         downLoadEvent.setDownloadExplain(explain);
         downLoadEvent.setDownloadFolderSize(folderSize);
         downLoadEvent.setDownloadMangaName(currentManga.getName());
-        downLoadEvent.setDownloadEndEpisode(Integer.valueOf
-                (currentManga.getChapters().get(endChapter).getChapterPosition()));
+        //这里存的是chapterslist意义上的位置
+        downLoadEvent.setDownloadEndEpisode(endChapter);
 
         EventBus.getDefault().post(downLoadEvent);
 
