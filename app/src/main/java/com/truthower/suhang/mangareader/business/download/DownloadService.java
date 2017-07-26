@@ -64,6 +64,7 @@ public class DownloadService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+        Configure.isDownloadServiceRunning = true;
         stopDownload = false;
         currentManga = (MangaBean) intent.getSerializableExtra("download_MangaBean");
         folderSize = intent.getIntExtra("download_folderSize", 3);
@@ -151,7 +152,7 @@ public class DownloadService extends Service {
                             tryCount++;
                             if (tryCount <= TRY_COUNT_LIMIT) {
                                 sendEvent(EventBusEvent.DOWNLOAD_FAIL_EVENT, "第" + episode + "话" +
-                                        "第" + page + "页下载失败!正在第" + (tryCount + 1) + "次尝试", episode, page);
+                                        "第" + page + "页下载失败!正在第" + (tryCount + 1) + "次尝试", page);
                                 downloadImgs(imgs, episode, page, jsoupCallBack);
                             } else {
                                 tryCount = 0;
@@ -167,18 +168,18 @@ public class DownloadService extends Service {
                             if (page + 1 <= imgs.size()) {
                                 //下载完成
                                 sendEvent(EventBusEvent.DOWNLOAD_EVENT, "第" + episode + "话" +
-                                        "第" + page + "页下载完成!", episode, page);
+                                        "第" + page + "页下载完成!", page);
                                 downloadImgs(imgs, episode, page + 1, jsoupCallBack);
                             } else {
                                 //下载完成
-                                sendEvent(EventBusEvent.DOWNLOAD_EVENT, "第" + episode + "话下载完成!", episode, page);
+                                sendEvent(EventBusEvent.DOWNLOAD_EVENT, "第" + episode + "话下载完成!", page);
                                 jsoupCallBack.loadSucceed((ResultObj) null);
                             }
                         } else {
                             tryCount++;
                             if (tryCount <= TRY_COUNT_LIMIT) {
                                 sendEvent(EventBusEvent.DOWNLOAD_FAIL_EVENT, "第" + episode + "话" +
-                                        "第" + page + "页下载失败!正在第" + (tryCount + 1) + "次尝试", episode, page);
+                                        "第" + page + "页下载失败!正在第" + (tryCount + 1) + "次尝试", page);
                                 downloadImgs(imgs, episode, page, jsoupCallBack);
                             } else {
                                 tryCount = 0;
@@ -193,7 +194,7 @@ public class DownloadService extends Service {
         }
     }
 
-    private void sendEvent(int eventType, String explain, int episode, int page) {
+    private void sendEvent(int eventType, String explain, int page) {
         downLoadEvent = new DownLoadEvent(eventType);
         //这里存的是chapterslist意义上的位置
         downLoadEvent.setCurrentDownloadEpisode(currentChapter);
@@ -227,6 +228,7 @@ public class DownloadService extends Service {
     @Override
     public void onDestroy() {
         stopDownload = true;
+        Configure.isDownloadServiceRunning = false;
         super.onDestroy();
     }
 

@@ -53,6 +53,7 @@ public class WebMangaDetailsActivity extends BaseActivity implements AdapterView
     private String mangaUrl;
     private MangaDialog downloadDialog;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -72,7 +73,6 @@ public class WebMangaDetailsActivity extends BaseActivity implements AdapterView
     @Override
     protected void onResume() {
         super.onResume();
-        toggleDownload();
     }
 
     private void initSpider() {
@@ -108,6 +108,7 @@ public class WebMangaDetailsActivity extends BaseActivity implements AdapterView
                         loadBar.dismiss();
                         currentManga = result;
                         refreshUI();
+                        toggleDownload();
                     }
                 });
             }
@@ -286,10 +287,8 @@ public class WebMangaDetailsActivity extends BaseActivity implements AdapterView
 
                         break;
                     case EventBusEvent.DOWNLOAD_FINISH_EVENT:
-                        Intent stopIntent = new Intent(WebMangaDetailsActivity.this, DownloadService.class);
-                        stopService(stopIntent);
+                        stopDownload();
                         showDownloadDialog();
-                        toggleDownload();
                         break;
                     case EventBusEvent.DOWNLOAD_FAIL_EVENT:
                         baseToast.showToast(event.getDownloadExplain());
@@ -315,17 +314,21 @@ public class WebMangaDetailsActivity extends BaseActivity implements AdapterView
         }
     }
 
+    private void stopDownload() {
+        Intent stopIntent = new Intent(WebMangaDetailsActivity.this, DownloadService.class);
+        stopService(stopIntent);
+        toggleDownload();
+        baseToast.showToast("已停止");
+    }
+
     private void showDownloadDialog() {
         if (null == downloadDialog) {
             downloadDialog = new MangaDialog(this);
             downloadDialog.setOnPeanutDialogClickListener(new MangaDialog.OnPeanutDialogClickListener() {
                 @Override
                 public void onOkClick() {
-                    if (ServiceUtil.isServiceWork(WebMangaDetailsActivity.this, "com.truthower.suhang.mangareader.business.download.DownloadService")) {
-                        Intent stopIntent = new Intent(WebMangaDetailsActivity.this, DownloadService.class);
-                        stopService(stopIntent);
-                        toggleDownload();
-                        baseToast.showToast("已停止");
+                    if (Configure.isDownloadServiceRunning) {
+                        stopDownload();
                     } else {
                         doDownload(SharedPreferencesUtils.getIntSharedPreferencesData
                                         (WebMangaDetailsActivity.this, ShareKeys.CURRENT_DOWNLOAD_EPISODE),
@@ -345,18 +348,18 @@ public class WebMangaDetailsActivity extends BaseActivity implements AdapterView
         downloadDialog.show();
         String downloadingMangaName = SharedPreferencesUtils.getSharedPreferencesData(this, ShareKeys.DOWNLOAD_MANGA_NAME);
         if (TextUtils.isEmpty(downloadingMangaName)) {
-            downloadingMangaName = "没有正在下载的漫画";
+            downloadingMangaName = currentManga.getName();
         } else {
             downloadingMangaName = "下载" + downloadingMangaName;
         }
         downloadDialog.setTitle(downloadingMangaName);
         String downloadMsg = SharedPreferencesUtils.getSharedPreferencesData(this, ShareKeys.DOWNLOAD_EXPLAIN);
         if (TextUtils.isEmpty(downloadMsg)) {
-            downloadMsg = "没有正在下载的漫画";
+            downloadMsg = "开始下载";
         }
         downloadDialog.setMessage(downloadMsg);
         downloadDialog.setCancelText("知道了");
-        if (ServiceUtil.isServiceWork(this, "com.truthower.suhang.mangareader.business.download.DownloadService")) {
+        if (Configure.isDownloadServiceRunning) {
             downloadDialog.setOkText("停止下载");
         } else {
             downloadDialog.setOkText("继续下载");
@@ -373,10 +376,18 @@ public class WebMangaDetailsActivity extends BaseActivity implements AdapterView
     }
 
     private void toggleDownload() {
-        if (ServiceUtil.isServiceWork(WebMangaDetailsActivity.this, "com.truthower.suhang.mangareader.business.download.DownloadService")) {
+        if (Configure.isDownloadServiceRunning && currentManga.getName().equals
+                (SharedPreferencesUtils.getSharedPreferencesData(this, ShareKeys.DOWNLOAD_MANGA_NAME))) {
             downloadTagTv.setVisibility(View.VISIBLE);
         } else {
             downloadTagTv.setVisibility(View.GONE);
+        }
+        if (currentManga.getName().equals
+                (SharedPreferencesUtils.getSharedPreferencesData(this, ShareKeys.DOWNLOAD_MANGA_NAME))) {
+            //只有当前下载的漫画才看得到这个
+            downloadIv.setVisibility(View.VISIBLE);
+        } else {
+            downloadIv.setVisibility(View.GONE);
         }
     }
 

@@ -21,6 +21,8 @@ public class Configure {
             .getExternalStorageDirectory().getAbsolutePath() + "/" + DST_FOLDER_NAME;
     public static String currentMangaName = "";
     public static String currentWebSite = websList[0];
+    //获取正在运行的服务 有的手机获取不到 所以换一种方式
+    public static boolean isDownloadServiceRunning = false;
     public static String YOUDAO = "http://fanyi.youdao.com/openapi.do?keyfrom=mangaeasywa" +
             "tch&key=986400551&type=data&doctype=json&version=1.1&q=";
     public static DisplayImageOptions normalImageOptions = new DisplayImageOptions.Builder()

@@ -53,7 +53,8 @@
                 android:id="@+id/download_iv"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
-                android:src="@drawable/download" />
+                android:src="@drawable/download"
+                android:visibility="gone" />
 
             <TextView
                 android:id="@+id/download_tag_tv"
@@ -62,7 +63,8 @@
                 android:layout_marginTop="4dp"
                 android:text="下载中..."
                 android:textColor="@color/manga_reader"
-                android:textSize="12sp" />
+                android:textSize="12sp"
+                android:visibility="gone" />
         </LinearLayout>
 
         <TextView
