@@ -262,7 +262,7 @@ public class FileSpider {
     private String getChildFolderName(int episode, int folderSize) {
         String res;
         int start = ((int) (episode / folderSize)) * folderSize;
-        int end = start + folderSize - 2;
+        int end = start + folderSize - 1;
         res = start + "-" + end;
         return res;
     }

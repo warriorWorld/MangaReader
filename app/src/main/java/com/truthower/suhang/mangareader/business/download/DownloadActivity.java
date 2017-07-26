@@ -16,6 +16,9 @@ import com.truthower.suhang.mangareader.eventbus.DownLoadEvent;
 import com.truthower.suhang.mangareader.eventbus.EventBusEvent;
 import com.truthower.suhang.mangareader.utils.SharedPreferencesUtils;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+
 /**
  * Created by Administrator on 2017/7/24.
  */
@@ -68,9 +71,12 @@ public class DownloadActivity extends BaseActivity implements View.OnClickListen
      *
      * @param event
      */
+    @Subscribe
     public void onEventMainThread(DownLoadEvent event) {
         if (null == event)
             return;
+
+        baseToast.showToast("download event \n" + event.getMsg() + "\n" + event.getDownloadExplain());
         switch (event.getEventType()) {
             case EventBusEvent.DOWNLOAD_EVENT:
                 saveStatus(event);
@@ -151,5 +157,10 @@ public class DownloadActivity extends BaseActivity implements View.OnClickListen
             case R.id.folder_size:
                 break;
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
     }
 }

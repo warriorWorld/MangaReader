@@ -197,6 +197,7 @@ public class MangaReaderSpider extends SpiderBase {
 
     @Override
     public <ResultObj> void getMangaChapterPics(final Context context, final String chapterUrl, final JsoupCallBack<ResultObj> jsoupCallBack) {
+        pathList = new ArrayList<String>();
         getPageSize(chapterUrl, new JsoupCallBack<Integer>() {
             @Override
             public void loadSucceed(Integer result) {
