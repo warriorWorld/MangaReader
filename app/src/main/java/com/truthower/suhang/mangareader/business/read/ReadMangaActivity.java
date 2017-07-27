@@ -22,6 +22,7 @@ import com.truthower.suhang.mangareader.adapter.ReadMangaAdapter;
 import com.truthower.suhang.mangareader.base.BaseActivity;
 import com.truthower.suhang.mangareader.bean.YoudaoResponse;
 import com.truthower.suhang.mangareader.config.Configure;
+import com.truthower.suhang.mangareader.config.ShareKeys;
 import com.truthower.suhang.mangareader.listener.JsoupCallBack;
 import com.truthower.suhang.mangareader.listener.OnEditResultListener;
 import com.truthower.suhang.mangareader.spider.FileSpider;
@@ -276,7 +277,10 @@ public class ReadMangaActivity extends BaseActivity implements OnClickListener {
     }
 
     private void translateWord(final String word) {
-        //TODO 翻译
+        if (SharedPreferencesUtils.getBooleanSharedPreferencesData(this, ShareKeys.CLOSE_TRANSLATE, false)) {
+            //关闭自动翻译
+            return;
+        }
         clip.setText(word);
         String url = Configure.YOUDAO + word;
         HashMap<String, String> params = new HashMap<String, String>();

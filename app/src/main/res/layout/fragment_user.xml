@@ -204,6 +204,7 @@
                 android:id="@+id/auto_last_position_rl"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/user_item_h"
+                android:visibility="gone"
                 android:background="@color/white"
                 android:paddingLeft="@dimen/item_padding_horizontal"
                 android:paddingRight="@dimen/item_padding_horizontal">
@@ -231,8 +232,42 @@
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1px"
+                android:visibility="gone"
                 android:background="@color/divide_line" />
 
+            <RelativeLayout
+                android:id="@+id/close_translate_rl"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/user_item_h"
+                android:background="@color/white"
+                android:paddingLeft="@dimen/item_padding_horizontal"
+                android:paddingRight="@dimen/item_padding_horizontal">
+
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_gravity="center_vertical"
+                    android:gravity="center_vertical"
+                    android:text="关闭应用内自带的翻译"
+                    android:textColor="@color/main_text_color"
+                    android:textSize="@dimen/main_text_size" />
+
+
+                <CheckBox
+                    android:id="@+id/close_translate_cb"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:checked="false" />
+            </RelativeLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1px"
+                android:background="@color/divide_line" />
 
             <RelativeLayout
                 android:id="@+id/version_rl"

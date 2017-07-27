@@ -41,7 +41,7 @@ public class UserFragment extends BaseFragment implements View.OnClickListener {
     private TextView userNameTv;
     private TextView choosedDirectoryTv;
     private CircleImage userHeadCiv;
-    private CheckBox autoToLastReadPositionCb;
+    private CheckBox autoToLastReadPositionCb, closeTranslateCb;
     private boolean isHidden = true;
 
     private MangaDialog versionDialog;
@@ -98,10 +98,22 @@ public class UserFragment extends BaseFragment implements View.OnClickListener {
                         (getActivity(), ShareKeys.AUTO_TO_LAST_POSITION, isChecked);
             }
         });
+        closeTranslateCb = (CheckBox) v.findViewById(R.id.close_translate_cb);
+        closeTranslateCb.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                SharedPreferencesUtils.setSharedPreferencesData
+                        (getActivity(), ShareKeys.CLOSE_TRANSLATE, isChecked);
+            }
+        });
 
         autoToLastReadPositionCb.setChecked
                 (SharedPreferencesUtils.getBooleanSharedPreferencesData(getActivity(),
                         ShareKeys.AUTO_TO_LAST_POSITION, false));
+        closeTranslateCb.setChecked
+                (SharedPreferencesUtils.getBooleanSharedPreferencesData(getActivity(),
+                        ShareKeys.CLOSE_TRANSLATE, false));
+
         collectRl.setOnClickListener(this);
         statisticsRl.setOnClickListener(this);
         newWordBookRl.setOnClickListener(this);
