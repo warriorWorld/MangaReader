@@ -1,5 +1,6 @@
 package com.truthower.suhang.mangareader.business.detail;
 
+import android.Manifest;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -16,6 +17,7 @@ import com.truthower.suhang.mangareader.adapter.LocalMangaListAdapter;
 import com.truthower.suhang.mangareader.base.BaseActivity;
 import com.truthower.suhang.mangareader.bean.MangaBean;
 import com.truthower.suhang.mangareader.business.read.ReadMangaActivity;
+import com.truthower.suhang.mangareader.config.Configure;
 import com.truthower.suhang.mangareader.sort.FileComparator;
 import com.truthower.suhang.mangareader.sort.FileComparatorAllNum;
 import com.truthower.suhang.mangareader.sort.FileComparatorWithBracket;
@@ -28,9 +30,14 @@ import com.truthower.suhang.mangareader.widget.pulltorefresh.PullToRefreshGridVi
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
+
+import pub.devrel.easypermissions.AfterPermissionGranted;
+import pub.devrel.easypermissions.EasyPermissions;
 
 public class LocalMangaDetailsActivity extends BaseActivity implements AdapterView.OnItemClickListener,
-        PullToRefreshBase.OnRefreshListener<GridView>, AdapterView.OnItemLongClickListener {
+        PullToRefreshBase.OnRefreshListener<GridView>, AdapterView.OnItemLongClickListener,
+        EasyPermissions.PermissionCallbacks {
     private PullToRefreshGridView pullToRefreshGridView;
     private View emptyView;
     private ImageView emptyIV;
@@ -58,12 +65,21 @@ public class LocalMangaDetailsActivity extends BaseActivity implements AdapterVi
         initFile();
     }
 
-
+    @AfterPermissionGranted(Configure.PERMISSION_FILE_REQUST_CODE)
     private void initFile() {
-        mangaList.clear();
-        mangaList = FileSpider.getInstance().getMangaList(filePath);
-        sortFiles();
-        initGridView();
+        String[] perms = {Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE};
+        if (EasyPermissions.hasPermissions(this, perms)) {
+            // Already have permission, do the thing
+            // ...
+            mangaList.clear();
+            mangaList = FileSpider.getInstance().getMangaList(filePath);
+            sortFiles();
+            initGridView();
+        } else {
+            // Do not have permissions, request them now
+            EasyPermissions.requestPermissions(this, "我们需要写入/读取权限",
+                    Configure.PERMISSION_FILE_REQUST_CODE, perms);
+        }
     }
 
     private void sortFiles() {
@@ -249,5 +265,15 @@ public class LocalMangaDetailsActivity extends BaseActivity implements AdapterVi
     @Override
     protected int getLayoutId() {
         return R.layout.activity_local;
+    }
+
+    @Override
+    public void onPermissionsGranted(int requestCode, List<String> perms) {
+        baseToast.showToast("已获得授权,请继续!");
+    }
+
+    @Override
+    public void onPermissionsDenied(int requestCode, List<String> perms) {
+        baseToast.showToast("没文件读取/写入授权,你让我怎么读取本地漫画?", true);
     }
 }

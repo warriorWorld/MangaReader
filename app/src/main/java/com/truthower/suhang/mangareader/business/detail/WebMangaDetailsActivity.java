@@ -1,5 +1,6 @@
 package com.truthower.suhang.mangareader.business.detail;
 
+import android.Manifest;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
@@ -34,8 +35,14 @@ import com.truthower.suhang.mangareader.widget.wheelview.wheelselector.WheelSele
 
 import org.greenrobot.eventbus.Subscribe;
 
+import java.util.List;
+
+import pub.devrel.easypermissions.AfterPermissionGranted;
+import pub.devrel.easypermissions.EasyPermissions;
+
 public class WebMangaDetailsActivity extends BaseActivity implements AdapterView.OnItemClickListener, View.OnClickListener,
-        PullToRefreshBase.OnRefreshListener<GridView> {
+        PullToRefreshBase.OnRefreshListener<GridView>,
+        EasyPermissions.PermissionCallbacks {
     private SpiderBase spider;
     private PullToRefreshGridView pullToRefreshGridView;
     private GridView mangaGV;
@@ -222,22 +229,32 @@ public class WebMangaDetailsActivity extends BaseActivity implements AdapterView
         doDownload(0, currentManga.getChapters().size() - 1, 1);
     }
 
+    @AfterPermissionGranted(Configure.PERMISSION_FILE_REQUST_CODE)
     private void doDownload(int start, int end, int startPage) {
-        //先停掉服务
-        Intent stopServiceIntent = new Intent(WebMangaDetailsActivity.this, DownloadService.class);
-        stopService(stopServiceIntent);
-        //再打开
-        Intent intent = new Intent(WebMangaDetailsActivity.this, DownloadService.class);
-        Bundle mangaBundle = new Bundle();
-        mangaBundle.putSerializable("download_MangaBean", currentManga);
-        intent.putExtras(mangaBundle);
-        intent.putExtra("download_folderSize", 3);
-        intent.putExtra("download_startPage", startPage);
-        intent.putExtra("download_currentChapter", start);
-        intent.putExtra("download_endChapter", end);
-        startService(intent);
-        baseToast.showToast("开始下载!");
-        showDownloadDialog();
+        String[] perms = {Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE};
+        if (EasyPermissions.hasPermissions(this, perms)) {
+            // Already have permission, do the thing
+            // ...
+            //先停掉服务
+            Intent stopServiceIntent = new Intent(WebMangaDetailsActivity.this, DownloadService.class);
+            stopService(stopServiceIntent);
+            //再打开
+            Intent intent = new Intent(WebMangaDetailsActivity.this, DownloadService.class);
+            Bundle mangaBundle = new Bundle();
+            mangaBundle.putSerializable("download_MangaBean", currentManga);
+            intent.putExtras(mangaBundle);
+            intent.putExtra("download_folderSize", 3);
+            intent.putExtra("download_startPage", startPage);
+            intent.putExtra("download_currentChapter", start);
+            intent.putExtra("download_endChapter", end);
+            startService(intent);
+            baseToast.showToast("开始下载!");
+            showDownloadDialog();
+        } else {
+            // Do not have permissions, request them now
+            EasyPermissions.requestPermissions(this, "我们需要写入/读取权限",
+                    Configure.PERMISSION_FILE_REQUST_CODE, perms);
+        }
     }
 
     private void showOptionsSelector() {
@@ -410,5 +427,15 @@ public class WebMangaDetailsActivity extends BaseActivity implements AdapterView
     public void onPullUpToRefresh(PullToRefreshBase<GridView> refreshView) {
         pullToRefreshGridView.onPullDownRefreshComplete();// 动画结束方法
         pullToRefreshGridView.onPullUpRefreshComplete();
+    }
+
+    @Override
+    public void onPermissionsGranted(int requestCode, List<String> perms) {
+        baseToast.showToast("已获得授权,请继续!");
+    }
+
+    @Override
+    public void onPermissionsDenied(int requestCode, List<String> perms) {
+        baseToast.showToast("没文件读取/写入授权,你让我怎么下载漫画?", true);
     }
 }

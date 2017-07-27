@@ -21,6 +21,8 @@ import org.greenrobot.eventbus.Subscribe;
 
 /**
  * Created by Administrator on 2017/7/24.
+ * <p>
+ * 已弃用
  */
 
 public class DownloadActivity extends BaseActivity implements View.OnClickListener {
@@ -115,7 +117,6 @@ public class DownloadActivity extends BaseActivity implements View.OnClickListen
         endEpisode = event.getDownloadEndEpisode();
         mangaName = event.getDownloadMangaName();
     }
-
 
 
     private void recoverStatus() {

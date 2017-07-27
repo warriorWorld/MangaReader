@@ -34,4 +34,9 @@ public class Configure {
             .showImageOnLoading(R.drawable.empty_list)
             .showImageOnFail(R.drawable.empty_list)
             .build();
+    //数字随便写的  权限request code
+    public static final int PERMISSION_CAMERA_REQUST_CODE = 8021;
+    public static final int PERMISSION_LOCATION_REQUST_CODE = 8022;
+    public static final int PERMISSION_FILE_REQUST_CODE = 8023;
+    public static final int PERMISSION_READ_PHONE_STATE_REQUST_CODE = 8024;
 }

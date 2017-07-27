@@ -277,11 +277,11 @@ public class ReadMangaActivity extends BaseActivity implements OnClickListener {
     }
 
     private void translateWord(final String word) {
+        clip.setText(word);
         if (SharedPreferencesUtils.getBooleanSharedPreferencesData(this, ShareKeys.CLOSE_TRANSLATE, false)) {
             //关闭自动翻译
             return;
         }
-        clip.setText(word);
         String url = Configure.YOUDAO + word;
         HashMap<String, String> params = new HashMap<String, String>();
         VolleyCallBack<YoudaoResponse> callback = new VolleyCallBack<YoudaoResponse>() {

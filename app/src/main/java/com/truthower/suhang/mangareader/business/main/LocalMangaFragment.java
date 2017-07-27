@@ -1,5 +1,6 @@
 package com.truthower.suhang.mangareader.business.main;
 
+import android.Manifest;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Environment;
@@ -31,9 +32,14 @@ import com.truthower.suhang.mangareader.widget.pulltorefresh.PullToRefreshGridVi
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
+
+import pub.devrel.easypermissions.AfterPermissionGranted;
+import pub.devrel.easypermissions.EasyPermissions;
 
 public class LocalMangaFragment extends BaseFragment implements AdapterView.OnItemClickListener, AdapterView.OnItemLongClickListener,
-        PullToRefreshBase.OnRefreshListener<GridView> {
+        PullToRefreshBase.OnRefreshListener<GridView>,
+        EasyPermissions.PermissionCallbacks {
     private View mainView;
     private PullToRefreshGridView pullToRefreshGridView;
     private View emptyView;
@@ -64,10 +70,20 @@ public class LocalMangaFragment extends BaseFragment implements AdapterView.OnIt
         storagePath = parentPath.getAbsolutePath() + "/" + Configure.DST_FOLDER_NAME;
     }
 
+    @AfterPermissionGranted(Configure.PERMISSION_FILE_REQUST_CODE)
     public void initFile() {
-        mangaList.clear();
-        mangaList = FileSpider.getInstance().getMangaList(storagePath);
-        initGridView();
+        String[] perms = {Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE};
+        if (EasyPermissions.hasPermissions(getActivity(), perms)) {
+            // Already have permission, do the thing
+            // ...
+            mangaList.clear();
+            mangaList = FileSpider.getInstance().getMangaList(storagePath);
+            initGridView();
+        } else {
+            // Do not have permissions, request them now
+            EasyPermissions.requestPermissions(this, "我们需要写入/读取权限",
+                    Configure.PERMISSION_FILE_REQUST_CODE, perms);
+        }
     }
 
     private void initGridView() {
@@ -226,5 +242,15 @@ public class LocalMangaFragment extends BaseFragment implements AdapterView.OnIt
     public void onPullUpToRefresh(PullToRefreshBase<GridView> refreshView) {
         pullToRefreshGridView.onPullDownRefreshComplete();// 动画结束方法
         pullToRefreshGridView.onPullUpRefreshComplete();
+    }
+
+    @Override
+    public void onPermissionsGranted(int requestCode, List<String> perms) {
+        baseToast.showToast("已获得授权,请继续!");
+    }
+
+    @Override
+    public void onPermissionsDenied(int requestCode, List<String> perms) {
+        baseToast.showToast("没文件读取/写入授权,你让我怎么读取本地漫画?", true);
     }
 }
