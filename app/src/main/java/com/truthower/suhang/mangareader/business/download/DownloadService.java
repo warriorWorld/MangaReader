@@ -162,7 +162,7 @@ public class DownloadService extends Service {
                         if (null != bp) {
                             //把图片保存到本地
                             FileSpider.getInstance().saveBitmap(bp, currentManga.getName() + "_" + episode
-                                            + "_" + page + ".jpg",
+                                            + "_" + page + ".png",
                                     FileSpider.getInstance().getChildFolderName(episode, folderSize), currentManga.getName());
 
                             if (page + 1 <= imgs.size()) {
@@ -229,6 +229,7 @@ public class DownloadService extends Service {
     public void onDestroy() {
         stopDownload = true;
         Configure.isDownloadServiceRunning = false;
+
         super.onDestroy();
     }
 

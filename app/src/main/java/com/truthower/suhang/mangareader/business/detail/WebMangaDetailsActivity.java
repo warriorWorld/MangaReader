@@ -316,6 +316,7 @@ public class WebMangaDetailsActivity extends BaseActivity implements AdapterView
     private void stopDownload() {
         Intent stopIntent = new Intent(WebMangaDetailsActivity.this, DownloadService.class);
         stopService(stopIntent);
+        toggleDownload();
         baseToast.showToast("已停止");
     }
 

@@ -134,7 +134,7 @@ public class FileSpider {
      */
     public static String saveBitmap(Bitmap b, String bmpName,
                                     String childFolder, String mangaName) {
-        b = ImageUtil.imageZoom(b, 480);
+        b = ImageUtil.imageZoom(b, 600);
         String path = Configure.storagePath + "/" + mangaName;
         String jpegName = path + "/" + childFolder + "/" + bmpName;
         String folderName = path + "/" + childFolder;
