@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 
+import com.avos.avoscloud.AVOSCloud;
 import com.nostra13.universalimageloader.cache.disc.naming.Md5FileNameGenerator;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
@@ -21,6 +22,13 @@ public class App extends Application {
         super.onCreate();
         initImageLoader(getApplicationContext());
         initParameter();
+        initLeanCloud();
+    }
+
+    private void initLeanCloud() {
+        // 初始化参数依次为 this, AppId, AppKey
+        AVOSCloud.initialize(this, "{{VeSumXxFMzSVf1kStNrOqGMS-gzGzoHsz}}", "{{djw94yHsBRwSUPxhrkAaMJPd}}");
+        AVOSCloud.setDebugLogEnabled(true);
     }
 
     private void initImageLoader(Context context) {
