@@ -27,7 +27,7 @@ public class App extends Application {
 
     private void initLeanCloud() {
         // 初始化参数依次为 this, AppId, AppKey
-        AVOSCloud.initialize(this, "{{VeSumXxFMzSVf1kStNrOqGMS-gzGzoHsz}}", "{{djw94yHsBRwSUPxhrkAaMJPd}}");
+        AVOSCloud.initialize(this, "VeSumXxFMzSVf1kStNrOqGMS-gzGzoHsz", "djw94yHsBRwSUPxhrkAaMJPd");
         AVOSCloud.setDebugLogEnabled(true);
     }
 

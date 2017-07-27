@@ -53,22 +53,8 @@ public class MainActivity extends BaseFragmentActivity implements View.OnClickLi
         hideBaseTopBar();
         initUI();
         initFragment();
-        // testLeanCloud();
     }
 
-    private void testLeanCloud() {
-        // 测试 SDK 是否正常工作的代码
-        AVObject testObject = new AVObject("TestObject");
-        testObject.put("words", "Hello World!");
-        testObject.saveInBackground(new SaveCallback() {
-            @Override
-            public void done(AVException e) {
-                if (e == null) {
-                    Log.d("saved", "success!");
-                }
-            }
-        });
-    }
 
     @Override
     public void onResume() {
