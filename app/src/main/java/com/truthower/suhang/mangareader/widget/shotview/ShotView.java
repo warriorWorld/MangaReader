@@ -330,9 +330,6 @@ public class ShotView extends SurfaceView implements SurfaceHolder.Callback,
 //    }
 
     private void finishShot() {
-        Toast.makeText(getContext(), "截图完成！", Toast.LENGTH_SHORT).show();
-
-
         saveBitmap = Bitmap.createBitmap(ShotView.this.bitmap, rect.left,
                 rect.top, rect.width(), rect.height(), matrix, false);
         if (null != l) {
