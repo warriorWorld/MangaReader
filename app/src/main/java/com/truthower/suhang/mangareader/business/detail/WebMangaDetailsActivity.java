@@ -210,7 +210,8 @@ public class WebMangaDetailsActivity extends BaseActivity implements AdapterView
                 doDownload(downloadStartPoint, position, 1);
             }
         } else {
-            Configure.currentMangaName = currentManga.getName() + "(" + position + ")";
+            Configure.currentMangaName = currentManga.getName() + "(" + currentManga.getChapters().
+                    get(position).getChapterPosition() + ")";
             Intent intent = new Intent(WebMangaDetailsActivity.this, ReadMangaActivity.class);
             intent.putExtra("chapterUrl", currentManga.getChapters().get(position).getChapterUrl());
             startActivity(intent);
@@ -237,7 +238,6 @@ public class WebMangaDetailsActivity extends BaseActivity implements AdapterView
         startService(intent);
         baseToast.showToast("开始下载!");
         showDownloadDialog();
-        toggleDownload();
     }
 
     private void showOptionsSelector() {
@@ -294,10 +294,9 @@ public class WebMangaDetailsActivity extends BaseActivity implements AdapterView
                         baseToast.showToast(event.getDownloadExplain());
                         break;
                 }
-
-                if (null != downloadDialog) {
-                    downloadDialog.setMessage(event.getDownloadExplain());
-                }
+                //刷新UI放在这里才准确
+                refreshDownloadDialogMsg(event);
+                toggleDownload();
             }
         });
     }
@@ -317,7 +316,6 @@ public class WebMangaDetailsActivity extends BaseActivity implements AdapterView
     private void stopDownload() {
         Intent stopIntent = new Intent(WebMangaDetailsActivity.this, DownloadService.class);
         stopService(stopIntent);
-        toggleDownload();
         baseToast.showToast("已停止");
     }
 
@@ -346,6 +344,10 @@ public class WebMangaDetailsActivity extends BaseActivity implements AdapterView
             });
         }
         downloadDialog.show();
+        String downloadMsg = SharedPreferencesUtils.getSharedPreferencesData(this, ShareKeys.DOWNLOAD_EXPLAIN);
+        if (TextUtils.isEmpty(downloadMsg)) {
+            downloadMsg = "开始下载";
+        }
         String downloadingMangaName = SharedPreferencesUtils.getSharedPreferencesData(this, ShareKeys.DOWNLOAD_MANGA_NAME);
         if (TextUtils.isEmpty(downloadingMangaName)) {
             downloadingMangaName = currentManga.getName();
@@ -353,10 +355,6 @@ public class WebMangaDetailsActivity extends BaseActivity implements AdapterView
             downloadingMangaName = "下载" + downloadingMangaName;
         }
         downloadDialog.setTitle(downloadingMangaName);
-        String downloadMsg = SharedPreferencesUtils.getSharedPreferencesData(this, ShareKeys.DOWNLOAD_EXPLAIN);
-        if (TextUtils.isEmpty(downloadMsg)) {
-            downloadMsg = "开始下载";
-        }
         downloadDialog.setMessage(downloadMsg);
         downloadDialog.setCancelText("知道了");
         if (Configure.isDownloadServiceRunning) {
@@ -364,7 +362,18 @@ public class WebMangaDetailsActivity extends BaseActivity implements AdapterView
         } else {
             downloadDialog.setOkText("继续下载");
         }
+    }
 
+    private void refreshDownloadDialogMsg(DownLoadEvent event) {
+        if (null != downloadDialog) {
+            downloadDialog.setMessage(event.getDownloadExplain());
+            downloadDialog.setTitle(event.getDownloadMangaName());
+            if (Configure.isDownloadServiceRunning) {
+                downloadDialog.setOkText("停止下载");
+            } else {
+                downloadDialog.setOkText("继续下载");
+            }
+        }
     }
 
     private void toggleCollect() {

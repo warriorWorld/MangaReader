@@ -19,6 +19,7 @@ public class Configure {
     public static String DST_FOLDER_NAME = "aSpider";
     public static String storagePath = Environment
             .getExternalStorageDirectory().getAbsolutePath() + "/" + DST_FOLDER_NAME;
+    //仅用于显示当前的漫画名称
     public static String currentMangaName = "";
     public static String currentWebSite = websList[0];
     //获取正在运行的服务 有的手机获取不到 所以换一种方式
