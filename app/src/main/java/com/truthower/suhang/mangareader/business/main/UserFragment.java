@@ -13,6 +13,7 @@ import android.widget.CompoundButton;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.avos.avoscloud.AVUser;
 import com.truthower.suhang.mangareader.R;
 import com.truthower.suhang.mangareader.base.BaseFragment;
 import com.truthower.suhang.mangareader.bean.LoginBean;
@@ -144,6 +145,7 @@ public class UserFragment extends BaseFragment implements View.OnClickListener {
 
 
     private void doLogout() {
+        AVUser.getCurrentUser().logOut();
         LoginBean.getInstance().clean(getActivity());
         toggleLoginStateUI();
     }
