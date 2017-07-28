@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/divide">
+
+    <ImageView
+        android:id="@+id/cross_iv"
+        android:layout_width="18dp"
+        android:layout_height="17dp"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="24dp"
+        android:layout_marginTop="25dp"
+        android:src="@drawable/cross_red" />
+
+    <ImageView
+        android:id="@+id/xhh_icon_iv"
+        android:layout_width="177dp"
+        android:layout_height="63dp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="110dp"
+        android:src="@drawable/collect" />
+
+    <RelativeLayout
+        android:id="@+id/user_id_rl"
+        android:layout_width="278dp"
+        android:layout_height="45dp"
+        android:layout_below="@+id/xhh_icon_iv"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="70dp"
+        android:background="@color/white">
+
+        <ImageView
+            android:id="@+id/user_id_icon_iv"
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="10dp"
+            android:src="@drawable/user_name" />
+
+        <EditText
+            android:id="@+id/user_id_et"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="13dp"
+            android:layout_toRightOf="@+id/user_id_icon_iv"
+            android:background="@null"
+            android:hint="请输入用户名"
+            android:inputType="number"
+            android:textColor="@color/main_text_color"
+            android:textColorHint="@color/main_text_color_gray"
+            android:textSize="@dimen/main_text_size" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/email_rl"
+        android:layout_width="278dp"
+        android:layout_height="45dp"
+        android:layout_below="@+id/user_id_rl"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="15dp"
+        android:background="@color/white">
+
+        <ImageView
+            android:id="@+id/verification_code_iv"
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="9dp"
+            android:src="@drawable/email" />
+
+        <EditText
+            android:id="@+id/email_et"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="11dp"
+            android:layout_toRightOf="@+id/verification_code_iv"
+            android:background="@null"
+            android:hint="请输入邮箱地址"
+            android:inputType="number"
+            android:textColor="@color/main_text_color"
+            android:textColorHint="@color/main_text_color_gray"
+            android:textSize="@dimen/main_text_size" />
+    </RelativeLayout>
+
+
+    <RelativeLayout
+        android:id="@+id/user_psd_rl"
+        android:layout_width="278dp"
+        android:layout_height="45dp"
+        android:layout_below="@+id/email_rl"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="15dp"
+        android:background="@color/white">
+
+        <ImageView
+            android:id="@+id/user_psd_icon_iv"
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="14dp"
+            android:src="@drawable/key" />
+
+        <EditText
+            android:id="@+id/user_psd_et"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="14dp"
+            android:layout_toRightOf="@+id/user_psd_icon_iv"
+            android:background="@null"
+            android:hint="请输入密码"
+            android:inputType="textPassword"
+            android:textColor="@color/main_text_color"
+            android:textColorHint="@color/main_text_color_gray"
+            android:textSize="@dimen/main_text_size" />
+    </RelativeLayout>
+
+    <Button
+        android:id="@+id/register_btn"
+        style="?android:attr/borderlessButtonStyle"
+        android:layout_width="278dp"
+        android:layout_height="45dp"
+        android:layout_below="@+id/user_psd_rl"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="15dp"
+        android:background="@drawable/btn_click_rewrite"
+        android:text="注册"
+        android:textColor="@drawable/btn_text_click_rewrite"
+        android:textSize="18sp" />
+
+</RelativeLayout>

@@ -16,6 +16,7 @@ import android.widget.TextView;
 import com.truthower.suhang.mangareader.R;
 import com.truthower.suhang.mangareader.base.BaseFragment;
 import com.truthower.suhang.mangareader.business.download.DownloadActivity;
+import com.truthower.suhang.mangareader.business.user.LoginActivity;
 import com.truthower.suhang.mangareader.config.Configure;
 import com.truthower.suhang.mangareader.config.ShareKeys;
 import com.truthower.suhang.mangareader.utils.SharedPreferencesUtils;
@@ -281,6 +282,7 @@ public class UserFragment extends BaseFragment implements View.OnClickListener {
                 doLogout();
                 break;
             case R.id.user_top_bar_rl:
+                intent = new Intent(getActivity(), LoginActivity.class);
                 break;
             case R.id.choose_directory_rl:
                 showFileChooser();

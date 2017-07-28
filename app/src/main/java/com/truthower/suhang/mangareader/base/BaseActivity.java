@@ -29,6 +29,7 @@ import org.greenrobot.eventbus.Subscribe;
 public abstract class BaseActivity extends Activity {
     protected TopBar baseTopBar;
     protected EasyToast baseToast;
+    private View colorHolder;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,6 +48,7 @@ public abstract class BaseActivity extends Activity {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_base);
         baseTopBar = (TopBar) findViewById(R.id.base_topbar);
+        colorHolder = findViewById(R.id.color_holder);
         ViewGroup containerView = (ViewGroup) findViewById(R.id.base_container);
         LayoutInflater.from(this).inflate(getLayoutId(), containerView);
 
@@ -89,6 +91,10 @@ public abstract class BaseActivity extends Activity {
 
     protected void topBarOnTitleClick() {
 
+    }
+
+    protected void setColorHolderColor(int color) {
+        colorHolder.setBackgroundResource(color);
     }
 
     /**
