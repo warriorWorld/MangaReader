@@ -10,12 +10,13 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.android.volley.VolleyError;
+import com.avos.avoscloud.AVException;
+import com.avos.avoscloud.AVUser;
+import com.avos.avoscloud.LogInCallback;
 import com.truthower.suhang.mangareader.R;
 import com.truthower.suhang.mangareader.base.BaseActivity;
 import com.truthower.suhang.mangareader.bean.LoginBean;
-
-import java.util.HashMap;
+import com.truthower.suhang.mangareader.business.main.MainActivity;
 
 
 public class LoginActivity extends BaseActivity implements View.OnClickListener {
@@ -41,8 +42,8 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
     @Override
     protected void onResume() {
         super.onResume();
-        if (!TextUtils.isEmpty(LoginBean.getInstance().getUsername())) {
-            userIdEt.setText(LoginBean.getInstance().getUsername());
+        if (!TextUtils.isEmpty(LoginBean.getInstance().getUserName())) {
+            userIdEt.setText(LoginBean.getInstance().getUserName());
         }
     }
 
@@ -98,6 +99,20 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
 
 
     private void doLogin() {
+        AVUser.logInInBackground(userIdEt.getText().toString(), userPsdEt.getText().toString(),
+                new LogInCallback<AVUser>() {
+                    @Override
+                    public void done(AVUser avUser, AVException e) {
+                        if (e == null) {
+                            LoginBean.getInstance().setEmail(LoginActivity.this, avUser.getEmail());
+                            LoginBean.getInstance().setUserName(LoginActivity.this, avUser.getUsername());
+                            LoginActivity.this.finish();
+                            startActivity(new Intent(LoginActivity.this, MainActivity.class));
+                        } else {
+                            baseToast.showToast(e.getMessage());
+                        }
+                    }
+                });
     }
 
     @Override

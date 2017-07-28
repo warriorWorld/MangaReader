@@ -13,7 +13,9 @@ import com.truthower.suhang.mangareader.utils.ShareObjUtil;
  * 作者：苏航 on 2016/11/2 15:52
  * 邮箱：772192594@qq.com
  */
-public class LoginBean extends AVUser {
+public class LoginBean extends BaseBean {
+    private String userName;
+    private String email;
 
     private LoginBean() {
     }
@@ -57,4 +59,21 @@ public class LoginBean extends AVUser {
         ShareObjUtil.deleteFile(context, ShareKeys.LOGIN_INFO_KEY);
     }
 
+    public void setUserName(Context context, String userName) {
+        this.userName = userName;
+        saveLoginInfo(context, instance);
+    }
+
+    public void setEmail(Context context, String email) {
+        this.email = email;
+        saveLoginInfo(context, instance);
+    }
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public String getEmail() {
+        return email;
+    }
 }

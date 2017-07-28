@@ -47,7 +47,6 @@
             android:layout_toRightOf="@+id/user_id_icon_iv"
             android:background="@null"
             android:hint="请输入用户名"
-            android:inputType="number"
             android:textColor="@color/main_text_color"
             android:textColorHint="@color/main_text_color_gray"
             android:textSize="@dimen/main_text_size" />
@@ -79,7 +78,6 @@
             android:layout_toRightOf="@+id/verification_code_iv"
             android:background="@null"
             android:hint="请输入邮箱地址"
-            android:inputType="number"
             android:textColor="@color/main_text_color"
             android:textColorHint="@color/main_text_color_gray"
             android:textSize="@dimen/main_text_size" />

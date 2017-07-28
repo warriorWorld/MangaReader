@@ -10,6 +10,7 @@ import com.nostra13.universalimageloader.cache.disc.naming.Md5FileNameGenerator;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.nostra13.universalimageloader.core.assist.QueueProcessingType;
+import com.truthower.suhang.mangareader.bean.LoginBean;
 import com.truthower.suhang.mangareader.config.Configure;
 
 /**
@@ -23,6 +24,11 @@ public class App extends Application {
         initImageLoader(getApplicationContext());
         initParameter();
         initLeanCloud();
+        initUserInfo();
+    }
+
+    private void initUserInfo() {
+        LoginBean.getInstance().setLoginInfo(this, LoginBean.getLoginInfo(this));
     }
 
     private void initLeanCloud() {

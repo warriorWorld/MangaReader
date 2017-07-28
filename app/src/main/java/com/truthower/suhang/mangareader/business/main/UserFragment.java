@@ -15,6 +15,7 @@ import android.widget.TextView;
 
 import com.truthower.suhang.mangareader.R;
 import com.truthower.suhang.mangareader.base.BaseFragment;
+import com.truthower.suhang.mangareader.bean.LoginBean;
 import com.truthower.suhang.mangareader.business.download.DownloadActivity;
 import com.truthower.suhang.mangareader.business.user.LoginActivity;
 import com.truthower.suhang.mangareader.config.Configure;
@@ -130,17 +131,20 @@ public class UserFragment extends BaseFragment implements View.OnClickListener {
     }
 
     private void toggleLoginStateUI() {
-        if (true) {
+        if (TextUtils.isEmpty(LoginBean.getInstance().getUserName())) {
             userNameTv.setText("点击登录");
             userTopBarRl.setEnabled(true);
+            logoutTv.setVisibility(View.GONE);
         } else {
-//            userNameTv.setText(LoginBean.getInstance().getMobile());
+            userNameTv.setText(LoginBean.getInstance().getUserName());
             userTopBarRl.setEnabled(false);
+            logoutTv.setVisibility(View.VISIBLE);
         }
     }
 
 
     private void doLogout() {
+        LoginBean.getInstance().clean(getActivity());
         toggleLoginStateUI();
     }
 

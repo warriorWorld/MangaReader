@@ -8,8 +8,14 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 
+import com.avos.avoscloud.AVException;
+import com.avos.avoscloud.AVUser;
+import com.avos.avoscloud.SignUpCallback;
 import com.truthower.suhang.mangareader.R;
 import com.truthower.suhang.mangareader.base.BaseActivity;
+import com.truthower.suhang.mangareader.bean.LoginBean;
+import com.truthower.suhang.mangareader.business.main.MainActivity;
+import com.truthower.suhang.mangareader.utils.MatchStringUtil;
 
 
 public class RegisterActivity extends BaseActivity implements View.OnClickListener {
@@ -52,6 +58,10 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
             baseToast.showToast("请输入邮箱地址!");
             return false;
         }
+        if (!MatchStringUtil.isEmail(emailEt.getText().toString())) {
+            baseToast.showToast("请输入正确的邮箱地址!");
+            return false;
+        }
         if (TextUtils.isEmpty(userPsdEt.getText().toString())) {
             baseToast.showToast("请输入密码!");
             return false;
@@ -61,6 +71,22 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
 
 
     private void doRegister() {
+        AVUser user = new AVUser();// 新建 AVUser 对象实例
+        user.setUsername(userIdEt.getText().toString());// 设置用户名
+        user.setPassword(userPsdEt.getText().toString());// 设置密码
+        user.setEmail(emailEt.getText().toString());//设置邮箱
+        user.signUpInBackground(new SignUpCallback() {
+            @Override
+            public void done(AVException e) {
+                if (e == null) {
+                    // 注册成功，把用户对象赋值给当前用户 AVUser.getCurrentUser()
+                    doNext();
+                } else {
+                    // 失败的原因可能有多种，常见的是用户名已经存在。
+                    baseToast.showToast(e.getMessage());
+                }
+            }
+        });
     }
 
     private void doNext() {
