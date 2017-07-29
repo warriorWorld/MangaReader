@@ -60,7 +60,7 @@ public class App extends Application {
             PackageManager manager = this.getPackageManager();
             PackageInfo info;
             info = manager.getPackageInfo(getPackageName(), 0);
-            Configure.versionCode = info.versionCode + "";
+            Configure.versionCode = info.versionCode;
             Configure.versionName = info.versionName;
         } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();

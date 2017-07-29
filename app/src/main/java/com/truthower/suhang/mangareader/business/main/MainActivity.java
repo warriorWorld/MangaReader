@@ -1,10 +1,13 @@
 package com.truthower.suhang.mangareader.business.main;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.v4.app.FragmentTransaction;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
@@ -12,18 +15,38 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.avos.avoscloud.AVException;
+import com.avos.avoscloud.AVFile;
 import com.avos.avoscloud.AVObject;
+import com.avos.avoscloud.AVQuery;
+import com.avos.avoscloud.FindCallback;
+import com.avos.avoscloud.GetDataCallback;
+import com.avos.avoscloud.ProgressCallback;
 import com.avos.avoscloud.SaveCallback;
 import com.truthower.suhang.mangareader.R;
 import com.truthower.suhang.mangareader.base.BaseFragment;
 import com.truthower.suhang.mangareader.base.BaseFragmentActivity;
+import com.truthower.suhang.mangareader.bean.LoginBean;
+import com.truthower.suhang.mangareader.bean.MangaBean;
+import com.truthower.suhang.mangareader.business.user.CollectedActivity;
 import com.truthower.suhang.mangareader.config.Configure;
 import com.truthower.suhang.mangareader.eventbus.EventBusEvent;
+import com.truthower.suhang.mangareader.listener.GetVersionListener;
+import com.truthower.suhang.mangareader.spider.FileSpider;
+import com.truthower.suhang.mangareader.utils.LeanCloundUtil;
 import com.truthower.suhang.mangareader.utils.Logger;
+import com.truthower.suhang.mangareader.widget.dialog.DownloadDialog;
 import com.truthower.suhang.mangareader.widget.dialog.MangaDialog;
 
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
-public class MainActivity extends BaseFragmentActivity implements View.OnClickListener {
+import pub.devrel.easypermissions.AfterPermissionGranted;
+import pub.devrel.easypermissions.EasyPermissions;
+
+
+public class MainActivity extends BaseFragmentActivity implements View.OnClickListener,
+        EasyPermissions.PermissionCallbacks {
     private LinearLayout mTabOnlinePageLL, mTabLocalLL, mTabUserLL;
     /**
      * Tab显示内容TextView
@@ -42,7 +65,11 @@ public class MainActivity extends BaseFragmentActivity implements View.OnClickLi
     private BaseFragment curFragment;
 
     private MangaDialog logoutDialog;
-
+    private String versionName, msg;
+    private int versionCode;
+    private MangaDialog versionDialog;
+    private DownloadDialog downloadDialog;
+    private AVFile downloadFile;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,6 +80,7 @@ public class MainActivity extends BaseFragmentActivity implements View.OnClickLi
         hideBaseTopBar();
         initUI();
         initFragment();
+        doGetVersionInfo();
     }
 
 
@@ -84,9 +112,114 @@ public class MainActivity extends BaseFragmentActivity implements View.OnClickLi
         return R.layout.activity_main;
     }
 
+    private void doGetVersionInfo() {
+        AVQuery<AVObject> query = new AVQuery<>("VersionInfo");
+        query.findInBackground(new FindCallback<AVObject>() {
+            @Override
+            public void done(List<AVObject> list, AVException e) {
+                if (LeanCloundUtil.handleLeanResult(MainActivity.this, e)) {
+                    if (null != list && list.size() > 0) {
+                        versionName = list.get(0).getString("versionName");
+                        versionCode = list.get(0).getInt("versionCode");
+                        msg = list.get(0).getString("description");
+                        downloadFile = list.get(0).getAVFile("apk");
+                        if (Configure.versionCode >= versionCode) {
+                            baseToast.showToast("已经是最新版啦~~");
+                        } else {
+                            showVersionDialog();
+                        }
+                    }
+                }
+            }
+        });
+    }
+
+    private void showVersionDialog() {
+        if (null == versionDialog) {
+            versionDialog = new MangaDialog(MainActivity.this);
+            versionDialog.setOnPeanutDialogClickListener(new MangaDialog.OnPeanutDialogClickListener() {
+                @Override
+                public void onOkClick() {
+                    doDownload();
+                }
+
+                @Override
+                public void onCancelClick() {
+                }
+            });
+        }
+        versionDialog.show();
+
+        versionDialog.setTitle("有新版本啦" + "v_" + versionName);
+        versionDialog.setMessage(msg);
+        versionDialog.setOkText("升级");
+        versionDialog.setCancelable(false);
+
+        versionDialog.setCancelText("忽略");
+    }
+
+    @AfterPermissionGranted(Configure.PERMISSION_FILE_REQUST_CODE)
+    private void doDownload() {
+        String[] perms = {Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE};
+        if (EasyPermissions.hasPermissions(this, perms)) {
+            // Already have permission, do the thing
+            // ...
+            showDownLoadDialog();
+            final String filePath = Environment.getExternalStorageDirectory().getAbsolutePath() + "/manga/apk";
+            final File file = new File(filePath);
+            if (!file.exists()) {
+                file.mkdirs();
+            }
+            downloadFile.getDataInBackground(new GetDataCallback() {
+                @Override
+                public void done(byte[] bytes, AVException e) {
+                    // bytes 就是文件的数据流
+                    if (null != downloadDialog && downloadDialog.isShowing()) {
+                        downloadDialog.dismiss();
+                    }
+                    if (LeanCloundUtil.handleLeanResult(MainActivity.this, e)) {
+                        File apkFile = FileSpider.getInstance().byte2File(bytes, filePath, "manga_reader.apk");
+
+                        Intent intent = new Intent();
+                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        intent.setAction("android.intent.action.VIEW");
+                        intent.addCategory("android.intent.category.DEFAULT");
+                        intent.setDataAndType(Uri.fromFile(apkFile), "application/vnd.android.package-archive");
+                        startActivity(intent);
+                    }
+                }
+            }, new ProgressCallback() {
+                @Override
+                public void done(Integer integer) {
+                    // 下载进度数据，integer 介于 0 和 100。
+                    downloadDialog.setProgress(integer);
+                }
+            });
+
+        } else {
+            // Do not have permissions, request them now
+            EasyPermissions.requestPermissions(this, "我们需要写入/读取权限",
+                    Configure.PERMISSION_FILE_REQUST_CODE, perms);
+        }
+    }
+
+    private void showDownLoadDialog() {
+        if (null == downloadDialog) {
+            downloadDialog = new DownloadDialog(this);
+        }
+        downloadDialog.show();
+        downloadDialog.setCancelable(false);
+    }
+
     private void initFragment() {
         localFg = new LocalMangaFragment();
         userFg = new UserFragment();
+        userFg.setGetVersionListener(new GetVersionListener() {
+            @Override
+            public void onGetVersionClick() {
+                doGetVersionInfo();
+            }
+        });
         onlinePageFg = new OnlineMangaFragment();
 
         switchContent(null, onlinePageFg);
@@ -203,5 +336,15 @@ public class MainActivity extends BaseFragmentActivity implements View.OnClickLi
                 switchContent(curFragment, userFg);
                 break;
         }
+    }
+
+    @Override
+    public void onPermissionsGranted(int requestCode, List<String> perms) {
+        baseToast.showToast("已获得授权,请继续!");
+    }
+
+    @Override
+    public void onPermissionsDenied(int requestCode, List<String> perms) {
+        baseToast.showToast("没文件读取/写入授权,你让我怎么下载最新安装包?", true);
     }
 }

@@ -20,6 +20,7 @@ import com.truthower.suhang.mangareader.utils.ShareObjUtil;
 public class LoginBean extends BaseBean {
     private String userName;
     private String email;
+    private boolean master;
 
     private LoginBean() {
     }
@@ -89,5 +90,14 @@ public class LoginBean extends BaseBean {
 
     public String getEmail() {
         return email;
+    }
+
+    public boolean isMaster() {
+        return master;
+    }
+
+    public void setMaster(Context context, boolean master) {
+        this.master = master;
+        saveLoginInfo(context, instance);
     }
 }

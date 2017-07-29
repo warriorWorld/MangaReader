@@ -14,7 +14,7 @@ import java.io.File;
 
 public class Configure {
     public static String versionName = "";
-    public static String versionCode = "";
+    public static int versionCode;
     public static String[] websList = {"MangaReader"};
     public static String DST_FOLDER_NAME = "aSpider";
     public static String storagePath = Environment

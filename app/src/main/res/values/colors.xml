@@ -14,6 +14,7 @@
     <color name="clickable_text_color">#98c2f5</color>
     <color name="divide">#f6f6f6</color>
     <color name="divide_line">#e1e1e1</color>
+    <color name="master">#beec26</color>
     <!--主流的几个颜色-->
     <color name="tag_blue">#94b1d4</color>
     <color name="user_explain_text">#83b0d4</color>

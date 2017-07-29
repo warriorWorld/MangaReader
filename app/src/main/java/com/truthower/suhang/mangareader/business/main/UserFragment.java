@@ -22,6 +22,7 @@ import com.truthower.suhang.mangareader.business.user.CollectedActivity;
 import com.truthower.suhang.mangareader.business.user.LoginActivity;
 import com.truthower.suhang.mangareader.config.Configure;
 import com.truthower.suhang.mangareader.config.ShareKeys;
+import com.truthower.suhang.mangareader.listener.GetVersionListener;
 import com.truthower.suhang.mangareader.utils.SharedPreferencesUtils;
 import com.truthower.suhang.mangareader.widget.dialog.DownloadDialog;
 import com.truthower.suhang.mangareader.widget.dialog.MangaDialog;
@@ -52,6 +53,7 @@ public class UserFragment extends BaseFragment implements View.OnClickListener {
     private DownloadDialog downloadDialog;
 
     private String versionName, msg, url;
+    private GetVersionListener getVersionListener;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -138,6 +140,11 @@ public class UserFragment extends BaseFragment implements View.OnClickListener {
             userTopBarRl.setEnabled(true);
             logoutTv.setVisibility(View.GONE);
         } else {
+            if (LoginBean.getInstance().isMaster()) {
+                userNameTv.setTextColor(getResources().getColor(R.color.master));
+            } else {
+                userNameTv.setTextColor(getResources().getColor(R.color.white));
+            }
             userNameTv.setText(LoginBean.getInstance().getUserName());
             userTopBarRl.setEnabled(false);
             logoutTv.setVisibility(View.VISIBLE);
@@ -151,8 +158,6 @@ public class UserFragment extends BaseFragment implements View.OnClickListener {
         toggleLoginStateUI();
     }
 
-    private void doGetVersionInfo() {
-    }
 
     private void showVersionDialog(final boolean alreadyNewest) {
         if (null == versionDialog) {
@@ -284,7 +289,9 @@ public class UserFragment extends BaseFragment implements View.OnClickListener {
                 intent = new Intent(getActivity(), DownloadActivity.class);
                 break;
             case R.id.version_rl:
-                doGetVersionInfo();
+                if (null != getVersionListener) {
+                    getVersionListener.onGetVersionClick();
+                }
                 break;
             case R.id.logout_tv:
                 doLogout();
@@ -299,5 +306,9 @@ public class UserFragment extends BaseFragment implements View.OnClickListener {
         if (null != intent) {
             startActivity(intent);
         }
+    }
+
+    public void setGetVersionListener(GetVersionListener getVersionListener) {
+        this.getVersionListener = getVersionListener;
     }
 }
