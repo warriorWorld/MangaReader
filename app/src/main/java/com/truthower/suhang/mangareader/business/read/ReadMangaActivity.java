@@ -88,7 +88,11 @@ public class ReadMangaActivity extends BaseActivity implements OnClickListener {
             chapterUrl = intent.getStringExtra("chapterUrl");
             doGetWebPics();
         } else {
-            isLocalManga = true;
+            if (!pathList.get(0).contains("file://")) {
+                isLocalManga = false;
+            } else {
+                isLocalManga = true;
+            }
             refresh();
         }
     }
