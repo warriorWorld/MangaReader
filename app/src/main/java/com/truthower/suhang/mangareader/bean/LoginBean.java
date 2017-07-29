@@ -2,9 +2,13 @@ package com.truthower.suhang.mangareader.bean;/**
  * Created by Administrator on 2016/11/2.
  */
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
+import android.text.TextUtils;
 
 import com.avos.avoscloud.AVUser;
+import com.truthower.suhang.mangareader.business.user.LoginActivity;
 import com.truthower.suhang.mangareader.config.ShareKeys;
 import com.truthower.suhang.mangareader.utils.ShareObjUtil;
 
@@ -72,6 +76,16 @@ public class LoginBean extends BaseBean {
     public String getUserName() {
         return userName;
     }
+
+    public String getUserName(Activity context) {
+        if (TextUtils.isEmpty(userName)) {
+            Intent intent = new Intent(context, LoginActivity.class);
+            context.startActivity(intent);
+            return "";
+        }
+        return userName;
+    }
+
 
     public String getEmail() {
         return email;

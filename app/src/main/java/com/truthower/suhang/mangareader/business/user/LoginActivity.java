@@ -107,7 +107,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
                             LoginBean.getInstance().setEmail(LoginActivity.this, avUser.getEmail());
                             LoginBean.getInstance().setUserName(LoginActivity.this, avUser.getUsername());
                             LoginActivity.this.finish();
-                            startActivity(new Intent(LoginActivity.this, MainActivity.class));
+//                            startActivity(new Intent(LoginActivity.this, MainActivity.class));
                         } else {
                             baseToast.showToast(e.getMessage());
                         }

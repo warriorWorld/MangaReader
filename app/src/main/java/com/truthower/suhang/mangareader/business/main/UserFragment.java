@@ -18,6 +18,7 @@ import com.truthower.suhang.mangareader.R;
 import com.truthower.suhang.mangareader.base.BaseFragment;
 import com.truthower.suhang.mangareader.bean.LoginBean;
 import com.truthower.suhang.mangareader.business.download.DownloadActivity;
+import com.truthower.suhang.mangareader.business.user.CollectedActivity;
 import com.truthower.suhang.mangareader.business.user.LoginActivity;
 import com.truthower.suhang.mangareader.config.Configure;
 import com.truthower.suhang.mangareader.config.ShareKeys;
@@ -273,6 +274,7 @@ public class UserFragment extends BaseFragment implements View.OnClickListener {
         Intent intent = null;
         switch (v.getId()) {
             case R.id.collect_rl:
+                intent = new Intent(getActivity(), CollectedActivity.class);
                 break;
             case R.id.statistics_rl:
                 break;

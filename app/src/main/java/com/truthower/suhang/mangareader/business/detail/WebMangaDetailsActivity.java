@@ -11,20 +11,31 @@ import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.avos.avoscloud.AVCloudQueryResult;
+import com.avos.avoscloud.AVException;
+import com.avos.avoscloud.AVObject;
+import com.avos.avoscloud.AVQuery;
+import com.avos.avoscloud.CloudQueryCallback;
+import com.avos.avoscloud.DeleteCallback;
+import com.avos.avoscloud.FindCallback;
+import com.avos.avoscloud.SaveCallback;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.truthower.suhang.mangareader.R;
 import com.truthower.suhang.mangareader.adapter.OnlineMangaDetailAdapter;
 import com.truthower.suhang.mangareader.base.BaseActivity;
+import com.truthower.suhang.mangareader.bean.LoginBean;
 import com.truthower.suhang.mangareader.bean.MangaBean;
 import com.truthower.suhang.mangareader.business.download.DownloadActivity;
 import com.truthower.suhang.mangareader.business.download.DownloadService;
 import com.truthower.suhang.mangareader.business.read.ReadMangaActivity;
+import com.truthower.suhang.mangareader.business.user.LoginActivity;
 import com.truthower.suhang.mangareader.config.Configure;
 import com.truthower.suhang.mangareader.config.ShareKeys;
 import com.truthower.suhang.mangareader.eventbus.DownLoadEvent;
 import com.truthower.suhang.mangareader.eventbus.EventBusEvent;
 import com.truthower.suhang.mangareader.listener.JsoupCallBack;
 import com.truthower.suhang.mangareader.spider.SpiderBase;
+import com.truthower.suhang.mangareader.utils.LeanCloundUtil;
 import com.truthower.suhang.mangareader.utils.ServiceUtil;
 import com.truthower.suhang.mangareader.utils.SharedPreferencesUtils;
 import com.truthower.suhang.mangareader.widget.bar.TopBar;
@@ -35,6 +46,7 @@ import com.truthower.suhang.mangareader.widget.wheelview.wheelselector.WheelSele
 
 import org.greenrobot.eventbus.Subscribe;
 
+import java.util.Arrays;
 import java.util.List;
 
 import pub.devrel.easypermissions.AfterPermissionGranted;
@@ -59,6 +71,8 @@ public class WebMangaDetailsActivity extends BaseActivity implements AdapterView
     private WheelSelectorDialog optionsSelector;
     private String mangaUrl;
     private MangaDialog downloadDialog;
+    private boolean isCollected = false;
+    private String collectedId = "";
 
 
     @Override
@@ -80,6 +94,7 @@ public class WebMangaDetailsActivity extends BaseActivity implements AdapterView
     @Override
     protected void onResume() {
         super.onResume();
+        doGetIsCollected();
     }
 
     private void initSpider() {
@@ -138,7 +153,8 @@ public class WebMangaDetailsActivity extends BaseActivity implements AdapterView
         //TODO 多类型 可点击
         mangaTypeTv.setText("类型:" + currentManga.getTypes()[0]);
         lastUpdateTv.setText("最后更新:" + currentManga.getLast_update());
-        toggleCollect();
+
+//        toggleCollect();
 
         initGridView();
     }
@@ -257,6 +273,77 @@ public class WebMangaDetailsActivity extends BaseActivity implements AdapterView
         }
     }
 
+    private void doGetIsCollected() {
+        if (TextUtils.isEmpty(LoginBean.getInstance().getUserName())) {
+            return;
+        }
+        AVQuery<AVObject> query1 = new AVQuery<>("Collected");
+        query1.whereContains("mangaUrl", mangaUrl);
+
+        AVQuery<AVObject> query2 = new AVQuery<>("Collected");
+        query2.whereContains("owner", LoginBean.getInstance().getUserName());
+        AVQuery<AVObject> query = AVQuery.and(Arrays.asList(query1, query2));
+        query.findInBackground(new FindCallback<AVObject>() {
+            @Override
+            public void done(List<AVObject> list, AVException e) {
+                if (LeanCloundUtil.handleLeanResult(WebMangaDetailsActivity.this, e)) {
+                    if (null != list && list.size() > 0) {
+                        collectedId = list.get(0).getObjectId();
+                        isCollected = true;
+
+                    } else {
+                        collectedId = "";
+                        isCollected = false;
+                    }
+                    toggleCollect();
+                }
+            }
+        });
+    }
+
+    private void doCollect() {
+        String userName = LoginBean.getInstance().getUserName(this);
+        if (TextUtils.isEmpty(userName)) {
+            return;
+        }
+        String webThumbnailUrl = currentManga.getWebThumbnailUrl();
+        String mangaName = currentManga.getName();
+
+        AVObject object = new AVObject("Collected");
+        object.put("owner", userName);
+        object.put("webThumbnailUrl", webThumbnailUrl);
+        object.put("mangaUrl", mangaUrl);
+        object.put("mangaName", mangaName);
+        object.saveInBackground(new SaveCallback() {
+            @Override
+            public void done(AVException e) {
+                if (LeanCloundUtil.handleLeanResult(WebMangaDetailsActivity.this, e)) {
+                    baseToast.showToast("收藏成功");
+                    doGetIsCollected();
+                }
+            }
+        });
+    }
+
+    private void deleteCollected() {
+        if (TextUtils.isEmpty(collectedId)) {
+            return;
+        }
+        // 执行 CQL 语句实现删除一个 Todo 对象
+        AVQuery.doCloudQueryInBackground(
+                "delete from Collected where objectId='" + collectedId + "'"
+                , new CloudQueryCallback<AVCloudQueryResult>() {
+                    @Override
+                    public void done(AVCloudQueryResult avCloudQueryResult, AVException e) {
+                        if (LeanCloundUtil.handleLeanResult(WebMangaDetailsActivity.this, e)) {
+                            baseToast.showToast("取消收藏");
+                            isCollected = false;
+                            toggleCollect();
+                        }
+                    }
+                });
+    }
+
     private void showOptionsSelector() {
         if (null == optionsSelector) {
             optionsSelector = new WheelSelectorDialog(this);
@@ -318,17 +405,23 @@ public class WebMangaDetailsActivity extends BaseActivity implements AdapterView
         });
     }
 
+
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.collect_view:
-                toggleCollect();
+                if (isCollected) {
+                    deleteCollected();
+                } else {
+                    doCollect();
+                }
                 break;
             case R.id.download_iv:
                 showDownloadDialog();
                 break;
         }
     }
+
 
     private void stopDownload() {
         Intent stopIntent = new Intent(WebMangaDetailsActivity.this, DownloadService.class);
@@ -395,7 +488,7 @@ public class WebMangaDetailsActivity extends BaseActivity implements AdapterView
     }
 
     private void toggleCollect() {
-        if (currentManga.isCollected()) {
+        if (isCollected) {
             collectV.setBackgroundResource(R.drawable.collected);
         } else {
             collectV.setBackgroundResource(R.drawable.collect);
