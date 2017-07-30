@@ -30,12 +30,16 @@ import com.truthower.suhang.mangareader.bean.MangaBean;
 import com.truthower.suhang.mangareader.business.user.CollectedActivity;
 import com.truthower.suhang.mangareader.config.Configure;
 import com.truthower.suhang.mangareader.eventbus.EventBusEvent;
+import com.truthower.suhang.mangareader.eventbus.JumpEvent;
+import com.truthower.suhang.mangareader.eventbus.TagClickEvent;
 import com.truthower.suhang.mangareader.listener.GetVersionListener;
 import com.truthower.suhang.mangareader.spider.FileSpider;
 import com.truthower.suhang.mangareader.utils.LeanCloundUtil;
 import com.truthower.suhang.mangareader.utils.Logger;
 import com.truthower.suhang.mangareader.widget.dialog.DownloadDialog;
 import com.truthower.suhang.mangareader.widget.dialog.MangaDialog;
+
+import org.greenrobot.eventbus.Subscribe;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -124,7 +128,7 @@ public class MainActivity extends BaseFragmentActivity implements View.OnClickLi
                         msg = list.get(0).getString("description");
                         downloadFile = list.get(0).getAVFile("apk");
                         if (Configure.versionCode >= versionCode) {
-                            baseToast.showToast("已经是最新版啦~~");
+//                            baseToast.showToast("已经是最新版啦~~");
                         } else {
                             showVersionDialog();
                         }
@@ -230,13 +234,36 @@ public class MainActivity extends BaseFragmentActivity implements View.OnClickLi
      *
      * @param event
      */
-    public void onEventMainThread(EventBusEvent event) {
+    @Subscribe
+    public void onEventMainThread(JumpEvent event) {
         if (null == event)
             return;
-        switch (event.getEventType()) {
+        if (event.getEventType() == EventBusEvent.JUMP_EVENT) {
+            switch (event.getJumpPoint()) {
+                case 0:
+                    switchContent(curFragment, onlinePageFg);
+                    toggleBottomBar(mTabOnlinePageLL);
+                    break;
+                case 1:
+                    switchContent(curFragment, localFg);
+                    toggleBottomBar(mTabLocalLL);
+                    break;
+                case 2:
+                    switchContent(curFragment, userFg);
+                    toggleBottomBar(mTabUserLL);
+                    break;
+            }
         }
     }
 
+    @Subscribe
+    public void onEventMainThread(TagClickEvent event) {
+        if (null == event)
+            return;
+        if (event.getEventType() == EventBusEvent.TAG_CLICK_EVENT) {
+            onlinePageFg.toggleTag(event.getSelectTag());
+        }
+    }
 
     public void switchContent(BaseFragment from, BaseFragment to) {
         if (curFragment != to) {

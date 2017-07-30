@@ -9,13 +9,13 @@
     <RelativeLayout
         android:id="@+id/manga_info"
         android:layout_width="match_parent"
-        android:layout_height="180dp"
+        android:layout_height="wrap_content"
         android:padding="10dp">
 
         <ImageView
             android:id="@+id/thumbnail"
             android:layout_width="122dp"
-            android:layout_height="match_parent"
+            android:layout_height="180dp"
             android:layout_alignParentLeft="true" />
 
         <TextView
@@ -40,6 +40,7 @@
             android:background="@drawable/collect"></View>
 
         <LinearLayout
+            android:id="@+id/download_ll"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
@@ -73,7 +74,9 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/manga_name"
             android:layout_marginLeft="10dp"
+            android:layout_marginRight="3dp"
             android:layout_marginTop="5dp"
+            android:layout_toLeftOf="@+id/download_ll"
             android:layout_toRightOf="@+id/thumbnail"
             android:textColor="@color/main_text_color"
             android:textSize="@dimen/details_text_size" />
@@ -84,7 +87,9 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/manga_author"
             android:layout_marginLeft="10dp"
+            android:layout_marginRight="3dp"
             android:layout_marginTop="5dp"
+            android:layout_toLeftOf="@+id/download_ll"
             android:layout_toRightOf="@+id/thumbnail"
             android:textColor="@color/main_text_color"
             android:textSize="@dimen/details_text_size" />
@@ -95,7 +100,9 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/manga_type"
             android:layout_marginLeft="10dp"
+            android:layout_marginRight="3dp"
             android:layout_marginTop="5dp"
+            android:layout_toLeftOf="@+id/download_ll"
             android:layout_toRightOf="@+id/thumbnail"
             android:textColor="@color/main_text_color"
             android:textSize="14sp" />

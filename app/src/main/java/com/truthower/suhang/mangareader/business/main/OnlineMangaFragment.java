@@ -11,10 +11,14 @@ import android.widget.ListView;
 import com.truthower.suhang.mangareader.R;
 import com.truthower.suhang.mangareader.adapter.OnlineMangaListAdapter;
 import com.truthower.suhang.mangareader.base.BaseFragment;
+import com.truthower.suhang.mangareader.bean.LoginBean;
 import com.truthower.suhang.mangareader.bean.MangaBean;
 import com.truthower.suhang.mangareader.bean.MangaListBean;
 import com.truthower.suhang.mangareader.business.detail.WebMangaDetailsActivity;
 import com.truthower.suhang.mangareader.config.Configure;
+import com.truthower.suhang.mangareader.eventbus.EventBusEvent;
+import com.truthower.suhang.mangareader.eventbus.JumpEvent;
+import com.truthower.suhang.mangareader.eventbus.TagClickEvent;
 import com.truthower.suhang.mangareader.listener.JsoupCallBack;
 import com.truthower.suhang.mangareader.listener.OnEditResultListener;
 import com.truthower.suhang.mangareader.spider.SpiderBase;
@@ -23,6 +27,9 @@ import com.truthower.suhang.mangareader.widget.dialog.MangaEditDialog;
 import com.truthower.suhang.mangareader.widget.pulltorefresh.PullToRefreshBase;
 import com.truthower.suhang.mangareader.widget.pulltorefresh.PullToRefreshListView;
 import com.truthower.suhang.mangareader.widget.wheelview.wheelselector.WheelSelectorDialog;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
 
 import java.util.ArrayList;
 
@@ -189,6 +196,7 @@ public class OnlineMangaFragment extends BaseFragment implements PullToRefreshBa
         return -top + firstVisibleItem * gradientMagicNum;
     }
 
+
     private void showOptionsSelector() {
         if (null == optionsList || optionsList.length == 0) {
             baseToast.showToast("没有筛选条件");
@@ -244,10 +252,7 @@ public class OnlineMangaFragment extends BaseFragment implements PullToRefreshBa
 
             @Override
             public void onOkBtnClick(String selectedRes, String selectedCodeRes) {
-                initToFirstPage();
-                nowTypeName = selectedRes;
-                topBar.setTitle(Configure.currentWebSite + "(" + nowTypeName + ")");
-                doGetData();
+                toggleTag(selectedRes);
             }
 
             @Override
@@ -261,6 +266,13 @@ public class OnlineMangaFragment extends BaseFragment implements PullToRefreshBa
         typesSelector.show();
 
         typesSelector.initOptionsData(spider.getMangaTypes());
+    }
+
+    public void toggleTag(String selectedRes) {
+        initToFirstPage();
+        nowTypeName = selectedRes;
+        topBar.setTitle(Configure.currentWebSite + "(" + nowTypeName + ")");
+        doGetData();
     }
 
     private void showWebsSelector() {
@@ -289,8 +301,11 @@ public class OnlineMangaFragment extends BaseFragment implements PullToRefreshBa
             }
         });
         webSelector.show();
-
-        webSelector.initOptionsData(Configure.websList);
+        if (LoginBean.getInstance().isMaster()) {
+            webSelector.initOptionsData(Configure.masterWebsList);
+        } else {
+            webSelector.initOptionsData(Configure.websList);
+        }
     }
 
     private void showSearchDialog(String title) {

@@ -3,6 +3,7 @@ package com.truthower.suhang.mangareader.business.detail;
 import android.Manifest;
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.nfc.Tag;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
@@ -16,7 +17,6 @@ import com.avos.avoscloud.AVException;
 import com.avos.avoscloud.AVObject;
 import com.avos.avoscloud.AVQuery;
 import com.avos.avoscloud.CloudQueryCallback;
-import com.avos.avoscloud.DeleteCallback;
 import com.avos.avoscloud.FindCallback;
 import com.avos.avoscloud.SaveCallback;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -25,25 +25,28 @@ import com.truthower.suhang.mangareader.adapter.OnlineMangaDetailAdapter;
 import com.truthower.suhang.mangareader.base.BaseActivity;
 import com.truthower.suhang.mangareader.bean.LoginBean;
 import com.truthower.suhang.mangareader.bean.MangaBean;
-import com.truthower.suhang.mangareader.business.download.DownloadActivity;
 import com.truthower.suhang.mangareader.business.download.DownloadService;
+import com.truthower.suhang.mangareader.business.main.MainActivity;
 import com.truthower.suhang.mangareader.business.read.ReadMangaActivity;
-import com.truthower.suhang.mangareader.business.user.LoginActivity;
 import com.truthower.suhang.mangareader.config.Configure;
 import com.truthower.suhang.mangareader.config.ShareKeys;
 import com.truthower.suhang.mangareader.eventbus.DownLoadEvent;
 import com.truthower.suhang.mangareader.eventbus.EventBusEvent;
+import com.truthower.suhang.mangareader.eventbus.JumpEvent;
+import com.truthower.suhang.mangareader.eventbus.TagClickEvent;
 import com.truthower.suhang.mangareader.listener.JsoupCallBack;
 import com.truthower.suhang.mangareader.spider.SpiderBase;
+import com.truthower.suhang.mangareader.utils.ActivityPoor;
 import com.truthower.suhang.mangareader.utils.LeanCloundUtil;
-import com.truthower.suhang.mangareader.utils.ServiceUtil;
 import com.truthower.suhang.mangareader.utils.SharedPreferencesUtils;
 import com.truthower.suhang.mangareader.widget.bar.TopBar;
 import com.truthower.suhang.mangareader.widget.dialog.MangaDialog;
+import com.truthower.suhang.mangareader.widget.popupwindow.EasyPopupWindow;
 import com.truthower.suhang.mangareader.widget.pulltorefresh.PullToRefreshBase;
 import com.truthower.suhang.mangareader.widget.pulltorefresh.PullToRefreshGridView;
 import com.truthower.suhang.mangareader.widget.wheelview.wheelselector.WheelSelectorDialog;
 
+import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
 import java.util.Arrays;
@@ -73,7 +76,7 @@ public class WebMangaDetailsActivity extends BaseActivity implements AdapterView
     private MangaDialog downloadDialog;
     private boolean isCollected = false;
     private String collectedId = "";
-
+    private WheelSelectorDialog tagSelector;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -151,7 +154,12 @@ public class WebMangaDetailsActivity extends BaseActivity implements AdapterView
         mangaNameTv.setText("漫画名称:" + currentManga.getName());
         mangaAuthorTv.setText("作者:" + currentManga.getAuthor());
         //TODO 多类型 可点击
-        mangaTypeTv.setText("类型:" + currentManga.getTypes()[0]);
+        String mangaTags = "";
+        for (int i = 0; i < currentManga.getTypes().length; i++) {
+            //漫画类型
+            mangaTags = mangaTags + " " + currentManga.getTypes()[i];
+        }
+        mangaTypeTv.setText("类型:" + mangaTags);
         lastUpdateTv.setText("最后更新:" + currentManga.getLast_update());
 
 //        toggleCollect();
@@ -190,6 +198,8 @@ public class WebMangaDetailsActivity extends BaseActivity implements AdapterView
 
         collectV.setOnClickListener(this);
         downloadIv.setOnClickListener(this);
+        mangaTypeTv.setOnClickListener(this);
+        thumbnailIV.setOnClickListener(this);
         baseTopBar.setRightText("下载");
         baseTopBar.setOnTopBarClickListener(new TopBar.OnTopBarClickListener() {
 
@@ -239,6 +249,38 @@ public class WebMangaDetailsActivity extends BaseActivity implements AdapterView
             intent.putExtra("chapterUrl", currentManga.getChapters().get(position).getChapterUrl());
             startActivity(intent);
         }
+    }
+
+    private void showTagsSelector() {
+        if (null == tagSelector) {
+            tagSelector = new WheelSelectorDialog(this);
+            tagSelector.setCancelable(true);
+        }
+        tagSelector.setOnSingleSelectedListener(new WheelSelectorDialog.OnSingleSelectedListener() {
+
+            @Override
+            public void onOkBtnClick(String selectedRes, String selectedCodeRes) {
+                JumpEvent jumpEvent = new JumpEvent(EventBusEvent.JUMP_EVENT);
+                jumpEvent.setJumpPoint(0);
+                TagClickEvent tagClickEvent = new TagClickEvent(EventBusEvent.TAG_CLICK_EVENT);
+                selectedRes = selectedRes.toLowerCase();
+                selectedRes = selectedRes.replaceAll(" ", "-");
+                tagClickEvent.setSelectTag(selectedRes);
+                EventBus.getDefault().post(jumpEvent);
+                EventBus.getDefault().post(tagClickEvent);
+                ActivityPoor.finishAllActivityButThis(MainActivity.class);
+            }
+
+            @Override
+            public void onOkBtnClick(String selectedRes, String selectedCodeRes, String selectedTypeRes) {
+            }
+
+            @Override
+            public void onOkBtnClick(int position) {
+            }
+        });
+        tagSelector.show();
+        tagSelector.initOptionsData(currentManga.getTypes());
     }
 
     private void downloadAll() {
@@ -405,6 +447,11 @@ public class WebMangaDetailsActivity extends BaseActivity implements AdapterView
         });
     }
 
+    private void showDescription() {
+        EasyPopupWindow ppw = new EasyPopupWindow(this);
+        ppw.adaptiveShowAsDropDown(thumbnailIV, 0, 0);
+        ppw.setMessage("偶发降温哦积分我弓箭手的发哦你范德萨范德萨发");
+    }
 
     @Override
     public void onClick(View view) {
@@ -418,6 +465,12 @@ public class WebMangaDetailsActivity extends BaseActivity implements AdapterView
                 break;
             case R.id.download_iv:
                 showDownloadDialog();
+                break;
+            case R.id.manga_type:
+                showTagsSelector();
+                break;
+            case R.id.thumbnail:
+                showDescription();
                 break;
         }
     }
