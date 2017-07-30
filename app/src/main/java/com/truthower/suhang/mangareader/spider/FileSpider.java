@@ -159,12 +159,49 @@ public class FileSpider {
         return jpegName;
     }
 
+    public static void saveBitmap(Bitmap b, String folderName, String bmpName) {
+        b = ImageUtil.imageZoom(b, 600);
+        folderName = Configure.storagePath + "/" + folderName;
+        String path = folderName + bmpName;
+        File f = new File(folderName);
+        if (!f.exists()) {
+            // 如果不存在 就创建
+            f.mkdirs();
+        }
+        try {
+            FileOutputStream fout = new FileOutputStream(path);
+            BufferedOutputStream bos = new BufferedOutputStream(fout);
+            b.compress(Bitmap.CompressFormat.JPEG, 100, bos);
+            bos.flush();
+            bos.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     public String getChildFolderName(int episode, int folderSize) {
         String res;
         int start = ((int) (episode / folderSize)) * folderSize;
         int end = start + folderSize - 1;
         res = start + "-" + end;
         return res;
+    }
+
+    /**
+     * 网络获取图片
+     *
+     * @param imageUrl
+     * @return
+     */
+    public Bitmap loadImageFromNetwork(String imageUrl, String folderName, String fileName) {
+        Bitmap bitmap = null;
+        try {
+            InputStream is = new URL(imageUrl).openStream();
+            bitmap = BitmapFactory.decodeStream(is);
+            saveBitmap(bitmap, folderName, fileName);
+        } catch (IOException e) {
+        }
+        return bitmap;
     }
 
     public byte[] File2byte(String filePath) {

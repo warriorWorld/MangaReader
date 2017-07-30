@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.text.ClipboardManager;
 import android.text.TextUtils;
+import android.text.format.DateUtils;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.TextView;
@@ -41,10 +42,12 @@ import com.truthower.suhang.mangareader.widget.shotview.ShotView;
 
 import org.adw.library.widgets.discreteseekbar.DiscreteSeekBar;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 
 /**
@@ -392,32 +395,13 @@ public class ReadMangaActivity extends BaseActivity implements OnClickListener {
                 Bitmap bp = null;
                 if (!TextUtils.isEmpty(path)) {
                     //从网络上获取到图片
-                    bp = loadImageFromNetwork(path);
-                    if (null != bp) {
-                        //TODO 把图片保存到本地
-//                        FileUtil.saveBitmap(bp, Globle.mangaTitle + "_" + Globle.currentChapter
-//                                + "_" + historyPosition + ".jpg", Globle.mangaTitle);
-                    }
+                    Long time = new Date().getTime();
+                    String timeString = time + "";
+                    timeString = timeString.substring(5);
+                    FileSpider.getInstance().loadImageFromNetwork(path, "scattered", "/scattered(" + timeString + ").png");
                 }
             }
         }.start();
-    }
-
-    /**
-     * 网络获取图片
-     *
-     * @param imageUrl
-     * @return
-     */
-    private Bitmap loadImageFromNetwork(String imageUrl) {
-        Bitmap bitmap = null;
-        try {
-            InputStream is = new URL(imageUrl).openStream();
-            bitmap = BitmapFactory.decodeStream(is);
-        } catch (IOException e) {
-            Logger.d("下载失败" + e);
-        }
-        return bitmap;
     }
 
 
