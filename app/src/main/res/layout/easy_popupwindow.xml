@@ -11,7 +11,6 @@
         android:layout_alignParentRight="true"
         android:layout_below="@+id/triangle_iv"
         android:layout_centerHorizontal="true"
-        android:layout_marginRight="13dp"
         android:background="@drawable/easy_popup_bg"
         android:orientation="vertical"
         android:paddingBottom="17dp"

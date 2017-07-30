@@ -7,6 +7,7 @@ package com.truthower.suhang.mangareader.bean;
 public class ChapterBean extends BaseBean {
     private String chapterUrl;
     private String chapterPosition;
+    private String chapterThumbnailUrl;//one shot only
 
     public String getChapterUrl() {
         return chapterUrl;
@@ -22,5 +23,13 @@ public class ChapterBean extends BaseBean {
 
     public void setChapterPosition(String chapterPosition) {
         this.chapterPosition = chapterPosition;
+    }
+
+    public String getChapterThumbnailUrl() {
+        return chapterThumbnailUrl;
+    }
+
+    public void setChapterThumbnailUrl(String chapterThumbnailUrl) {
+        this.chapterThumbnailUrl = chapterThumbnailUrl;
     }
 }

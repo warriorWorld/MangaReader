@@ -3,9 +3,9 @@ package com.truthower.suhang.mangareader.business.detail;
 import android.Manifest;
 import android.app.ProgressDialog;
 import android.content.Intent;
-import android.nfc.Tag;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.GridView;
@@ -21,6 +21,7 @@ import com.avos.avoscloud.FindCallback;
 import com.avos.avoscloud.SaveCallback;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.truthower.suhang.mangareader.R;
+import com.truthower.suhang.mangareader.adapter.OneShotDetailsAdapter;
 import com.truthower.suhang.mangareader.adapter.OnlineMangaDetailAdapter;
 import com.truthower.suhang.mangareader.base.BaseActivity;
 import com.truthower.suhang.mangareader.bean.LoginBean;
@@ -67,6 +68,7 @@ public class WebMangaDetailsActivity extends BaseActivity implements AdapterView
     private int downloadStartPoint = 0;
     private MangaBean currentManga;
     private OnlineMangaDetailAdapter adapter;
+    private OneShotDetailsAdapter oneShotAdapter;
     private ImageView thumbnailIV, downloadIv;
     private TextView mangaNameTv, mangaAuthorTv, mangaTypeTv, lastUpdateTv, downloadTagTv;
     private String[] optionsList = {"下载全部", "选择起始点下载"};
@@ -164,7 +166,11 @@ public class WebMangaDetailsActivity extends BaseActivity implements AdapterView
 
 //        toggleCollect();
 
-        initGridView();
+        if (spider.isOneShot()) {
+            initOneShotGridView();
+        } else {
+            initGridView();
+        }
     }
 
     private void initGridView() {
@@ -179,6 +185,23 @@ public class WebMangaDetailsActivity extends BaseActivity implements AdapterView
         } else {
             adapter.setChapters(currentManga.getChapters());
             adapter.notifyDataSetChanged();
+        }
+        pullToRefreshGridView.onPullDownRefreshComplete();// 动画结束方法
+        pullToRefreshGridView.onPullUpRefreshComplete();
+    }
+
+    private void initOneShotGridView() {
+        if (null == oneShotAdapter) {
+            oneShotAdapter = new OneShotDetailsAdapter(this, currentManga.getChapters());
+            mangaGV.setAdapter(oneShotAdapter);
+            mangaGV.setOnItemClickListener(this);
+            mangaGV.setNumColumns(2);
+            mangaGV.setVerticalSpacing(12);
+            mangaGV.setGravity(Gravity.CENTER);
+            mangaGV.setHorizontalSpacing(15);
+        } else {
+            oneShotAdapter.setChapterList(currentManga.getChapters());
+            oneShotAdapter.notifyDataSetChanged();
         }
         pullToRefreshGridView.onPullDownRefreshComplete();// 动画结束方法
         pullToRefreshGridView.onPullUpRefreshComplete();
