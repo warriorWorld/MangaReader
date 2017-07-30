@@ -2,10 +2,12 @@ package com.truthower.suhang.mangareader.test;
 
 import android.text.TextUtils;
 
+import com.truthower.suhang.mangareader.bean.ChapterBean;
 import com.truthower.suhang.mangareader.bean.MangaBean;
 import com.truthower.suhang.mangareader.utils.StringUtil;
 
 import org.jsoup.Jsoup;
+import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.io.IOException;
@@ -22,33 +24,55 @@ public class Test {
             @Override
             public void run() {
                 try {
-                    doc = Jsoup.connect("https://nhentai.net/?page=2")
+                    doc = Jsoup.connect("https://nhentai.net/g/202443/")
                             .timeout(10000).get();
-                    Elements test1 = doc.select("div.index-container");
-                    Elements test2 = test1.get(0).getElementsByClass("gallery");
-                    Elements hrefElements = test2.select("a");
-                    int count = test2.size();
-                    String title;
-                    String path;
-                    String url = "";
-                    MangaBean item;
-                    ArrayList<MangaBean> mangaList = new ArrayList<MangaBean>();
-                    mangaList.clear();
-                    for (int i = 0; i < count; i++) {
-                        Elements titleElements = test2.get(i).getElementsByClass("caption");
-                        title = titleElements.get(0).text();
-                        path = hrefElements.get(i).getElementsByTag("img").last().attr("src");
-                        item = new MangaBean();
-                        url = hrefElements.get(i).attr("href");
+                    Element test1 = doc.getElementById("info");
+                    Element imgElement = doc.getElementById("cover").getElementsByTag("img").last();
+                    Elements chaptersElement = doc.getElementsByClass("gallerythumb");
 
-                        item.setWebThumbnailUrl(path);
-                        item.setUrl(url);
-                        item.setName(title);
-                        mangaList.add(item);
-                        System.out.println(path);
+                    String tilte = test1.select("h1").text();
+                    String thumbnail = imgElement.attr("src");
+                    ChapterBean item = new ChapterBean();
+                    ArrayList<ChapterBean> chapters = new ArrayList<ChapterBean>();
+                    for (int i = 0; i < chaptersElement.size(); i++) {
+                        String chapterThumbnail = chaptersElement.get(i).getElementsByTag("img").last().attr("src");
+                        String url = chaptersElement.get(i).attr("href");
+                        item = new ChapterBean();
+                        item.setChapterUrl(url);
+                        item.setChapterThumbnailUrl(chapterThumbnail);
+                        chapters.add(item);
                     }
+                    Elements tagsElements = test1.getElementsByClass("tags");
+                    Elements tagElements = tagsElements.select("a");
+                    ArrayList<String> typesList = new ArrayList<String>();
 
-//                    System.out.println(doc.toString() + test2.size());
+//                    ArrayList<String> artistsList = new ArrayList<String>();
+                    for (int i = 0; i < tagElements.size(); i++) {
+                        //漫画类型
+                        String tag = tagElements.get(i).attr("href");
+                        if (tag.contains("tag")) {
+                            String[] split = tag.split("tag");
+                            tag = split[split.length - 1];
+                            tag = tag.replaceAll("/", "");
+                            typesList.add(tag);
+                        }
+//                        else if (tag.contains("artist")) {
+//                            String[] split = tag.split("artist");
+//                            tag = split[split.length - 1];
+//                            tag = tag.replaceAll("/", "");
+//                            artistsList.add(tag);
+//                        }
+                    }
+                    String[] types = new String[typesList.size()];
+//                    String[] artists = new String[artistsList.size()];
+                    for (int i = 0; i < typesList.size(); i++) {
+                        types[i] = typesList.get(i);
+                    }
+//                    for (int i = 0; i < artistsList.size(); i++) {
+//                        artists[i] = artistsList.get(i);
+//                        System.out.println(artistsList.get(i));
+//                    }
+
                 } catch (IOException e) {
                     e.printStackTrace();
                 }

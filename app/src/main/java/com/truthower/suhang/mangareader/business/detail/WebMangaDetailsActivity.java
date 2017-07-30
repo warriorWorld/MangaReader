@@ -154,16 +154,18 @@ public class WebMangaDetailsActivity extends BaseActivity implements AdapterView
         baseTopBar.setTitle(currentManga.getName());
         ImageLoader.getInstance().displayImage(currentManga.getWebThumbnailUrl(), thumbnailIV, Configure.normalImageOptions);
         mangaNameTv.setText("漫画名称:" + currentManga.getName());
-        mangaAuthorTv.setText("作者:" + currentManga.getAuthor());
-        //TODO 多类型 可点击
+        if (!TextUtils.isEmpty(currentManga.getAuthor())) {
+            mangaAuthorTv.setText("作者:" + currentManga.getAuthor());
+        }
         String mangaTags = "";
         for (int i = 0; i < currentManga.getTypes().length; i++) {
             //漫画类型
             mangaTags = mangaTags + " " + currentManga.getTypes()[i];
         }
         mangaTypeTv.setText("类型:" + mangaTags);
-        lastUpdateTv.setText("最后更新:" + currentManga.getLast_update());
-
+        if (!TextUtils.isEmpty(currentManga.getLast_update())) {
+            lastUpdateTv.setText("最后更新:" + currentManga.getLast_update());
+        }
 //        toggleCollect();
 
         if (spider.isOneShot()) {
