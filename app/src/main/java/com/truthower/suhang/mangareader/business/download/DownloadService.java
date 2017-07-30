@@ -72,7 +72,28 @@ public class DownloadService extends Service {
         currentChapter = intent.getIntExtra("download_currentChapter", 0);
         endChapter = intent.getIntExtra("download_endChapter", 0);
 
-        doGetChaptersPics(currentManga.getChapters().get(currentChapter), startPage);
+        if (spider.isOneShot() && null != currentManga.getChapters() && currentManga.getChapters().size() > 0
+                && !TextUtils.isEmpty(currentManga.getChapters().get(0).getImgUrl())) {
+            ArrayList<String> imgs = new ArrayList<>();
+            for (int i = currentChapter; i <= endChapter; i++) {
+                imgs.add(currentManga.getChapters().get(i).getImgUrl());
+            }
+            downloadImgs(imgs, 1, 1, new JsoupCallBack<Object>() {
+                @Override
+                public void loadSucceed(Object result) {
+                    EventBus.getDefault().post(new EventBusEvent("全部下载完成!",
+                            EventBusEvent.DOWNLOAD_FINISH_EVENT));
+                    stopSelf();
+                }
+
+                @Override
+                public void loadFailed(String error) {
+
+                }
+            });
+        } else {
+            doGetChaptersPics(currentManga.getChapters().get(currentChapter), startPage);
+        }
         return super.onStartCommand(intent, flags, startId);
     }
 
@@ -106,7 +127,6 @@ public class DownloadService extends Service {
                                     if (currentChapter <= endChapter) {
                                         doGetChaptersPics(currentManga.getChapters().get(currentChapter), 1);
                                     } else {
-                                        //TODO 下载结束
                                         EventBus.getDefault().post(new EventBusEvent("全部下载完成!",
                                                 EventBusEvent.DOWNLOAD_FINISH_EVENT));
                                         stopSelf();

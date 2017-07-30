@@ -164,10 +164,10 @@ public class NMangaSpider extends SpiderBase {
 
     @Override
     public String[] getMangaTypes() {
-        String[] mangaTypeCodes = {"all", "slave", "shota", "collar", "human-pet", "drama", "ecchi", "fantasy", "gender-bender",
-                "harem", "historical", "horror", "josei", "magic", "martial-arts", "mature", "mecha", "military", "mystery", "one-shot",
-                "psychological", "romance", "school-life", "sci-fi", "seinen", "shoujo", "shoujoai", "shounen", "shounenai", "slice-of-life", "smut", "sports",
-                "super-power", "supernatural", "tragedy", "vampire", "yaoi", "yuri"};
+        String[] mangaTypeCodes = {"all", "slave", "shota", "collar", "human-pet", "spanking", "sex-toy", "mind-control", "gender-bender",
+                "tomgirl", "femdom", "bondage", "bdsm", "exhibitionism", "shotacon", "nakadashi", "mind-break", "apron", "crossdressing",
+                "bodysuit", "humiliation", "torture", "dog-girl", "dog-boy", "dog", "tomboy", "shoujoai", "shounen", "shounenai",
+                "slice-of-life", "smut", "sports", "super-power", "supernatural", "tragedy", "vampire", "yaoi", "yuri"};
         return mangaTypeCodes;
     }
 
