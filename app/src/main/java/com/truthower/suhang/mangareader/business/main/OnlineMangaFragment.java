@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.truthower.suhang.mangareader.R;
 import com.truthower.suhang.mangareader.adapter.OnlineMangaListAdapter;
@@ -33,6 +34,7 @@ public class OnlineMangaFragment extends BaseFragment implements PullToRefreshBa
     private SpiderBase spider;
     private ListView mangaListLv;
     private View emptyView;
+    private TextView currentPageTv;
     private OnlineMangaListAdapter onlineMangaListAdapter;
     //总的漫画列表和一次请求获得的漫画列表
     private ArrayList<MangaBean> totalMangaList = new ArrayList<>(),
@@ -65,6 +67,7 @@ public class OnlineMangaFragment extends BaseFragment implements PullToRefreshBa
         pullListView = (PullToRefreshListView) v.findViewById(R.id.home_ptf);
         mangaListLv = pullListView.getRefreshableView();
         emptyView = v.findViewById(R.id.empty_view);
+        currentPageTv = (TextView) v.findViewById(R.id.current_page_tv);
 
         topBar = (TopBar) v.findViewById(R.id.gradient_bar);
         topBar.setTitle(Configure.currentWebSite);
@@ -179,6 +182,7 @@ public class OnlineMangaFragment extends BaseFragment implements PullToRefreshBa
         }
         pullListView.onPullDownRefreshComplete();// 动画结束方法
         pullListView.onPullUpRefreshComplete();
+        currentPageTv.setText(nowPage + "");
     }
 
     public int getScrollY(int firstVisibleItem) {

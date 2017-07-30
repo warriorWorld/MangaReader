@@ -28,6 +28,17 @@
         android:layout_alignParentTop="true"
         android:background="@color/manga_reader"></View>
 
+    <TextView
+        android:id="@+id/current_page_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginBottom="12dp"
+        android:layout_marginRight="8dp"
+        android:textColor="@color/main_text_color"
+        android:textSize="12sp" />
+
     <include
         android:id="@+id/empty_view"
         layout="@layout/emptyview_list"
