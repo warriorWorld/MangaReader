@@ -107,9 +107,10 @@ public class NMangaSpider extends SpiderBase {
                     ArrayList<ChapterBean> chapters = new ArrayList<ChapterBean>();
                     for (int i = 0; i < chaptersElement.size(); i++) {
                         String chapterThumbnail = chaptersElement.get(i).getElementsByTag("img").last().attr("src");
-                        String url = chaptersElement.get(i).attr("href");
+                        String url = chapterThumbnail.replaceAll("t.nhentai.net", "i.nhentai.net");
+                        url = url.replaceAll("t.jpg", ".jpg");
                         item = new ChapterBean();
-                        item.setChapterUrl(url);
+                        item.setImgUrl(url);
                         item.setChapterThumbnailUrl(chapterThumbnail);
                         chapters.add(item);
                     }

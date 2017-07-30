@@ -76,6 +76,7 @@ public class ReadMangaActivity extends BaseActivity implements OnClickListener {
     private MangaDialog translateResultDialog;
     private String chapterUrl;//线上漫画章节地址
     private String progressSaveKey = "";
+    private int toPage = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -92,11 +93,16 @@ public class ReadMangaActivity extends BaseActivity implements OnClickListener {
             doGetWebPics();
         } else {
             if (!pathList.get(0).contains("file://")) {
+                //这种情况说明是one shot
                 isLocalManga = false;
+                toPage = intent.getIntExtra("img_position", 0);
             } else {
                 isLocalManga = true;
             }
             refresh();
+            if (toPage != 0) {
+                mangaPager.setCurrentItem(toPage);
+            }
         }
     }
 

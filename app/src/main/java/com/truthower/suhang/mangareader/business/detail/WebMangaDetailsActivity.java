@@ -50,6 +50,7 @@ import com.truthower.suhang.mangareader.widget.wheelview.wheelselector.WheelSele
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -79,6 +80,8 @@ public class WebMangaDetailsActivity extends BaseActivity implements AdapterView
     private boolean isCollected = false;
     private String collectedId = "";
     private WheelSelectorDialog tagSelector;
+    //one shot 直接获取到了所有图片的地址
+    private ArrayList<String> oneShotPathList = new ArrayList<String>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -136,6 +139,12 @@ public class WebMangaDetailsActivity extends BaseActivity implements AdapterView
                         currentManga = result;
                         refreshUI();
                         toggleDownload();
+                        if (spider.isOneShot() && null != result.getChapters() && result.getChapters().size() > 0
+                                && !TextUtils.isEmpty(result.getChapters().get(0).getImgUrl())) {
+                            for (int i = 0; i < result.getChapters().size(); i++) {
+                                oneShotPathList.add(result.getChapters().get(i).getImgUrl());
+                            }
+                        }
                     }
                 });
             }
@@ -268,11 +277,21 @@ public class WebMangaDetailsActivity extends BaseActivity implements AdapterView
                 doDownload(downloadStartPoint, position, 1);
             }
         } else {
-            Configure.currentMangaName = currentManga.getName() + "(" + currentManga.getChapters().
-                    get(position).getChapterPosition() + ")";
             Intent intent = new Intent(WebMangaDetailsActivity.this, ReadMangaActivity.class);
-            intent.putExtra("chapterUrl", currentManga.getChapters().get(position).getChapterUrl());
-            startActivity(intent);
+            if (spider.isOneShot() && null != oneShotPathList && oneShotPathList.size() > 0) {
+                Configure.currentMangaName = currentManga.getName();
+                Bundle pathListBundle = new Bundle();
+                pathListBundle.putSerializable("pathList", oneShotPathList);
+                intent.putExtras(pathListBundle);
+                intent.putExtra("img_position", position);
+            } else {
+                Configure.currentMangaName = currentManga.getName() + "(" + currentManga.getChapters().
+                        get(position).getChapterPosition() + ")";
+                intent.putExtra("chapterUrl", currentManga.getChapters().get(position).getChapterUrl());
+            }
+            if (null != intent) {
+                startActivity(intent);
+            }
         }
     }
 
