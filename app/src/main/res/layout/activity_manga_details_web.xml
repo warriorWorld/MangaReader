@@ -30,14 +30,6 @@
             android:textColor="@color/main_text_color"
             android:textSize="@dimen/details_text_size" />
 
-        <View
-            android:id="@+id/collect_view"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:layout_alignParentRight="true"
-            android:layout_marginRight="3dp"
-            android:layout_marginTop="3dp"
-            android:background="@drawable/collect"></View>
 
         <LinearLayout
             android:id="@+id/download_ll"
@@ -106,6 +98,15 @@
             android:layout_toRightOf="@+id/thumbnail"
             android:textColor="@color/main_text_color"
             android:textSize="14sp" />
+
+        <View
+            android:id="@+id/collect_view"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="3dp"
+            android:layout_marginTop="3dp"
+            android:background="@drawable/collect"></View>
     </RelativeLayout>
 
     <View

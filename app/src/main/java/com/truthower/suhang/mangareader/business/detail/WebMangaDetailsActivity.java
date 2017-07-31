@@ -510,6 +510,7 @@ public class WebMangaDetailsActivity extends BaseActivity implements AdapterView
         EasyPopupWindow ppw = new EasyPopupWindow(this);
         ppw.adaptiveShowAsDropDown(thumbnailIV, 0, 0);
         ppw.setMessage(currentManga.getDescription());
+        ppw.hideIKnowTv();
     }
 
     @Override

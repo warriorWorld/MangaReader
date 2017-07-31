@@ -44,6 +44,8 @@ public class Configure {
             .showImageOnLoading(R.drawable.loading)
             .showImageOnFail(R.drawable.load_failed)
             .build();
+    // 3DES加密key
+    public static final String key = "iq2szojof6x1ckgejwe52urw";
     //数字随便写的  权限request code
     public static final int PERMISSION_CAMERA_REQUST_CODE = 8021;
     public static final int PERMISSION_LOCATION_REQUST_CODE = 8022;

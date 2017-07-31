@@ -193,6 +193,7 @@ public class ReadMangaActivity extends BaseActivity implements OnClickListener {
         seekBar = (DiscreteSeekBar) findViewById(R.id.seekbar);
         showSeekBar = findViewById(R.id.show_seek_bar);
         readProgressTv = (TextView) findViewById(R.id.read_progress_tv);
+        readProgressTv.setOnClickListener(this);
 
         showSeekBar.setOnClickListener(this);
         showSeekBar.setOnLongClickListener(new View.OnLongClickListener() {
@@ -512,6 +513,9 @@ public class ReadMangaActivity extends BaseActivity implements OnClickListener {
         switch (v.getId()) {
             case R.id.show_seek_bar:
                 cutSeekBar();
+                break;
+            case R.id.read_progress_tv:
+                
                 break;
         }
     }

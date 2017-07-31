@@ -58,6 +58,10 @@ public class EasyPopupWindow extends PopupWindow {
         update();
     }
 
+    public void hideIKnowTv() {
+        iKnowTv.setVisibility(View.GONE);
+    }
+
     public void adaptiveShowAsDropDown(View anchor, int xoff, int yoff) {
         showAsDropDown(anchor, xoff, yoff);
         //13是我本身的margin 这里暂时写死吧
