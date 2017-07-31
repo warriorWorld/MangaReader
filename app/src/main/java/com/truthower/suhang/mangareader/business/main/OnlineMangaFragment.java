@@ -111,12 +111,18 @@ public class OnlineMangaFragment extends BaseFragment implements PullToRefreshBa
         isHidden = hidden;
         if (!isHidden) {
         }
+        if (Configure.isTest) {
+            baseToast.showToast("online onHiddenChanged");
+        }
     }
 
     @Override
     public void onResume() {
         super.onResume();
         if (!isHidden) {
+        }
+        if (Configure.isTest) {
+            baseToast.showToast("online onResume");
         }
     }
 

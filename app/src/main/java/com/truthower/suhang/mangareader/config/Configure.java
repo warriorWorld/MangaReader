@@ -13,6 +13,7 @@ import java.io.File;
  */
 
 public class Configure {
+    public static boolean isTest = false;
     public static String versionName = "";
     public static int versionCode;
     public static String[] websList = {"MangaReader"};

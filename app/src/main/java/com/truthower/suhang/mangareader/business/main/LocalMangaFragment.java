@@ -70,6 +70,22 @@ public class LocalMangaFragment extends BaseFragment implements AdapterView.OnIt
         storagePath = parentPath.getAbsolutePath() + "/" + Configure.DST_FOLDER_NAME;
     }
 
+    @Override
+    public void onHiddenChanged(boolean hidden) {
+        super.onHiddenChanged(hidden);
+        if (Configure.isTest) {
+            baseToast.showToast("local onHiddenChanged");
+        }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (Configure.isTest) {
+            baseToast.showToast("local onResume");
+        }
+    }
+
     @AfterPermissionGranted(Configure.PERMISSION_FILE_REQUST_CODE)
     public void initFile() {
         String[] perms = {Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE};

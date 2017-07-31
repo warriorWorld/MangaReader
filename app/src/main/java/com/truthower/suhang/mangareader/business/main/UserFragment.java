@@ -73,6 +73,9 @@ public class UserFragment extends BaseFragment implements View.OnClickListener {
         if (!isHidden) {
             toggleLoginStateUI();
         }
+        if (Configure.isTest) {
+            baseToast.showToast("user onHiddenChanged");
+        }
     }
 
     @Override
@@ -80,6 +83,9 @@ public class UserFragment extends BaseFragment implements View.OnClickListener {
         super.onResume();
         if (!isHidden) {
             toggleLoginStateUI();
+        }
+        if (Configure.isTest) {
+            baseToast.showToast("user onResume");
         }
     }
 
