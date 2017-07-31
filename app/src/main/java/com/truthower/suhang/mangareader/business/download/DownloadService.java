@@ -40,6 +40,7 @@ public class DownloadService extends Service {
     private DownLoadEvent downLoadEvent;
     private final int TRY_COUNT_LIMIT = 3;
     private int tryCount = 0;
+    private String mangaFileName;//有的漫画名称太长或者带一堆特殊字符 我处理一下 这个影响到漫画的文件夹名字和图片名字
 
     @Override
     public void onCreate() {
@@ -72,6 +73,7 @@ public class DownloadService extends Service {
         currentChapter = intent.getIntExtra("download_currentChapter", 0);
         endChapter = intent.getIntExtra("download_endChapter", 0);
 
+        initMangaFileName();
         if (spider.isOneShot() && null != currentManga.getChapters() && currentManga.getChapters().size() > 0
                 && !TextUtils.isEmpty(currentManga.getChapters().get(0).getImgUrl())) {
             ArrayList<String> imgs = new ArrayList<>();
@@ -95,6 +97,14 @@ public class DownloadService extends Service {
             doGetChaptersPics(currentManga.getChapters().get(currentChapter), startPage);
         }
         return super.onStartCommand(intent, flags, startId);
+    }
+
+    private void initMangaFileName() {
+        mangaFileName = currentManga.getName();
+        mangaFileName = getWordAgain(mangaFileName);
+        if (mangaFileName.length() > 32) {
+            mangaFileName = mangaFileName.substring(0, 32);
+        }
     }
 
     /**
@@ -181,9 +191,9 @@ public class DownloadService extends Service {
                         }
                         if (null != bp) {
                             //把图片保存到本地
-                            FileSpider.getInstance().saveBitmap(bp, currentManga.getName() + "_" + episode
+                            FileSpider.getInstance().saveBitmap(bp, mangaFileName + "_" + episode
                                             + "_" + page + ".png",
-                                    FileSpider.getInstance().getChildFolderName(episode, folderSize), currentManga.getName());
+                                    FileSpider.getInstance().getChildFolderName(episode, folderSize), mangaFileName);
 
                             if (page + 1 <= imgs.size()) {
                                 //下载完成
@@ -212,6 +222,16 @@ public class DownloadService extends Service {
                 }
             }.start();
         }
+    }
+
+    private String getWordAgain(String s) {
+        String str = s.replaceAll("[`~!@#$%^&*()+=|{}':;',\\[\\].<>/?~！@#￥%……&;*（）——+|{}【】\"‘；：”“’。，、？|]", "");
+        //留着空格
+//        str = str.replaceAll("\n", "");
+//        str = str.replaceAll("\r", "");
+//        str = str.replaceAll("\\s", "");
+        str = str.replaceAll("_", "");
+        return str;
     }
 
     private void sendEvent(int eventType, String explain, int page) {

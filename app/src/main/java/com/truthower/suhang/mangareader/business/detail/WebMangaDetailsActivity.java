@@ -593,7 +593,7 @@ public class WebMangaDetailsActivity extends BaseActivity implements AdapterView
     }
 
     private void toggleDownload() {
-        if (Configure.isDownloadServiceRunning && currentManga.getName().equals
+        if (Configure.isDownloadServiceRunning && null != currentManga && currentManga.getName().equals
                 (SharedPreferencesUtils.getSharedPreferencesData(this, ShareKeys.DOWNLOAD_MANGA_NAME))) {
             downloadTagTv.setVisibility(View.VISIBLE);
         } else {
