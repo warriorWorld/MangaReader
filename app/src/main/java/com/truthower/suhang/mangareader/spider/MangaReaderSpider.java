@@ -3,6 +3,7 @@ package com.truthower.suhang.mangareader.spider;
 import android.content.Context;
 import android.os.Handler;
 import android.os.Message;
+import android.text.Html;
 import android.text.TextUtils;
 
 import com.android.volley.Response;
@@ -129,7 +130,11 @@ public class MangaReaderSpider extends SpiderBase {
                     Element imgElement = doc.getElementById("mangaimg");
                     Element imgElement1 = imgElement.getElementsByTag("img").first();
 
+                    Element readmangasumElement = doc.getElementById("readmangasum");
+                    Element descriptionElement = readmangasumElement.select("p").first();
+
                     MangaBean item = new MangaBean();
+                    item.setDescription(Html.fromHtml(descriptionElement.text()).toString());
                     item.setWebThumbnailUrl(imgElement1.attr("src"));
                     item.setName(masthead.text());
                     item.setAuthor(masthead3.text());

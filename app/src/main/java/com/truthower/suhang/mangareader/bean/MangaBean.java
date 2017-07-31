@@ -17,6 +17,7 @@ public class MangaBean extends BaseBean {
     private String[] types;
     private boolean isCollected;
     private ArrayList<ChapterBean> chapters;
+    private String description;//漫画介绍
 
     public String getAuthor() {
         return author;
@@ -92,5 +93,13 @@ public class MangaBean extends BaseBean {
 
     public void setUrl(String url) {
         this.url = url;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 }

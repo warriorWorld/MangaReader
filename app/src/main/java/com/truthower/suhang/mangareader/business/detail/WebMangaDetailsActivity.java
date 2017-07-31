@@ -139,6 +139,7 @@ public class WebMangaDetailsActivity extends BaseActivity implements AdapterView
                         currentManga = result;
                         refreshUI();
                         toggleDownload();
+                        showDescription();
                         if (spider.isOneShot() && null != result.getChapters() && result.getChapters().size() > 0
                                 && !TextUtils.isEmpty(result.getChapters().get(0).getImgUrl())) {
                             for (int i = 0; i < result.getChapters().size(); i++) {
@@ -162,9 +163,17 @@ public class WebMangaDetailsActivity extends BaseActivity implements AdapterView
         }
         baseTopBar.setTitle(currentManga.getName());
         ImageLoader.getInstance().displayImage(currentManga.getWebThumbnailUrl(), thumbnailIV, Configure.normalImageOptions);
-        mangaNameTv.setText("漫画名称:" + currentManga.getName());
+        if (spider.isOneShot()) {
+            mangaNameTv.setVisibility(View.GONE);
+        } else {
+            mangaNameTv.setVisibility(View.VISIBLE);
+            mangaNameTv.setText("漫画名称:" + currentManga.getName());
+        }
         if (!TextUtils.isEmpty(currentManga.getAuthor())) {
+            mangaAuthorTv.setVisibility(View.VISIBLE);
             mangaAuthorTv.setText("作者:" + currentManga.getAuthor());
+        } else {
+            mangaAuthorTv.setVisibility(View.GONE);
         }
         String mangaTags = "";
         for (int i = 0; i < currentManga.getTypes().length; i++) {
@@ -173,7 +182,10 @@ public class WebMangaDetailsActivity extends BaseActivity implements AdapterView
         }
         mangaTypeTv.setText("类型:" + mangaTags);
         if (!TextUtils.isEmpty(currentManga.getLast_update())) {
+            lastUpdateTv.setVisibility(View.VISIBLE);
             lastUpdateTv.setText("最后更新:" + currentManga.getLast_update());
+        } else {
+            lastUpdateTv.setVisibility(View.GONE);
         }
 //        toggleCollect();
 
@@ -492,9 +504,12 @@ public class WebMangaDetailsActivity extends BaseActivity implements AdapterView
     }
 
     private void showDescription() {
+        if (TextUtils.isEmpty(currentManga.getDescription())) {
+            return;
+        }
         EasyPopupWindow ppw = new EasyPopupWindow(this);
         ppw.adaptiveShowAsDropDown(thumbnailIV, 0, 0);
-        ppw.setMessage("偶发降温哦积分我弓箭手的发哦你范德萨范德萨发");
+        ppw.setMessage(currentManga.getDescription());
     }
 
     @Override
