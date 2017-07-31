@@ -125,7 +125,7 @@ public class MangaImgEditDialog extends Dialog {
     }
 
     public void setImgRes(String uri) {
-        ImageLoader.getInstance().displayImage(uri, imgIv, Configure.normalImageOptions);
+        ImageLoader.getInstance().displayImage(uri, imgIv, Configure.smallImageOptions);
 //        ImageLoader.getInstance().displayImage(uri, imgIv);
     }
 

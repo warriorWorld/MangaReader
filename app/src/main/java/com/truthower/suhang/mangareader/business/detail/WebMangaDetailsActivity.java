@@ -162,7 +162,7 @@ public class WebMangaDetailsActivity extends BaseActivity implements AdapterView
             return;
         }
         baseTopBar.setTitle(currentManga.getName());
-        ImageLoader.getInstance().displayImage(currentManga.getWebThumbnailUrl(), thumbnailIV, Configure.normalImageOptions);
+        ImageLoader.getInstance().displayImage(currentManga.getWebThumbnailUrl(), thumbnailIV, Configure.smallImageOptions);
         if (spider.isOneShot()) {
             mangaNameTv.setVisibility(View.GONE);
         } else {

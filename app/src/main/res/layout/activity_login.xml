@@ -16,11 +16,11 @@
 
     <ImageView
         android:id="@+id/xhh_icon_iv"
-        android:layout_width="177dp"
-        android:layout_height="63dp"
+        android:layout_width="116dp"
+        android:layout_height="128dp"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="110dp"
-        android:src="@drawable/collect" />
+        android:layout_marginTop="60dp"
+        android:src="@drawable/spider_128" />
 
     <RelativeLayout
         android:id="@+id/user_id_rl"

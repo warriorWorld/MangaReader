@@ -71,7 +71,7 @@ public class OneShotDetailsAdapter extends BaseAdapter {
         }
         ChapterBean item = chapterList.get(position);
         if (!TextUtils.isEmpty(item.getChapterThumbnailUrl())) {
-            ImageLoader.getInstance().displayImage(item.getChapterThumbnailUrl(), viewHolder.manga_view, Configure.normalImageOptions);
+            ImageLoader.getInstance().displayImage(item.getChapterThumbnailUrl(), viewHolder.manga_view, Configure.smallImageOptions);
         }
         return convertView;
     }

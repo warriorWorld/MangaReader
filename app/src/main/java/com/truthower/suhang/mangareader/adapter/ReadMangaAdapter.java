@@ -59,7 +59,7 @@ public class ReadMangaAdapter extends PagerAdapter {
         v0 = new PhotoView(context);
 //        bp = ImageUtil.getImageFromSDFile(pathList.get(position));
 //        v0.setImageBitmap(bp);
-        ImageLoader.getInstance().displayImage(pathList.get(position), v0, Configure.normalImageOptions);
+        ImageLoader.getInstance().displayImage(pathList.get(position), v0, Configure.smallImageOptions);
         container.addView(v0);
         return v0;
     }

@@ -314,23 +314,17 @@ public class MainActivity extends BaseFragmentActivity implements View.OnClickLi
     }
 
     private void toggleBottomBar(View v) {
-        mTabOnlinePageIv.setImageResource(R.drawable.home_unclick);
-        mTabLocalIv.setImageResource(R.drawable.invest_unclick);
-        mTabUserIv.setImageResource(R.drawable.user_unclick);
         mTabOnlinePageTv.setTextColor(getResources().getColor(R.color.main_text_color_gray));
         mTabLocalTv.setTextColor(getResources().getColor(R.color.main_text_color_gray));
         mTabUserTv.setTextColor(getResources().getColor(R.color.main_text_color_gray));
         switch (v.getId()) {
             case R.id.online_bottom_ll:
-                mTabOnlinePageIv.setImageResource(R.drawable.home_click);
                 mTabOnlinePageTv.setTextColor(getResources().getColor(R.color.manga_reader));
                 break;
             case R.id.local_bottom_ll:
-                mTabLocalIv.setImageResource(R.drawable.invest_click);
                 mTabLocalTv.setTextColor(getResources().getColor(R.color.manga_reader));
                 break;
             case R.id.user_bottom_ll:
-                mTabUserIv.setImageResource(R.drawable.user_click);
                 mTabUserTv.setTextColor(getResources().getColor(R.color.manga_reader));
                 break;
         }

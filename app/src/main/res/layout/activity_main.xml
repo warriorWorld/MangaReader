@@ -44,7 +44,7 @@
                     android:id="@+id/online_bottom_iv"
                     android:layout_width="@dimen/main_tab_icon"
                     android:layout_height="@dimen/main_tab_icon"
-                    android:src="@drawable/home_click" />
+                    android:src="@drawable/online_icon" />
 
                 <TextView
                     android:id="@+id/online_bottom_tv"
@@ -72,7 +72,7 @@
                     android:id="@+id/local_bottom_iv"
                     android:layout_width="@dimen/main_tab_icon"
                     android:layout_height="@dimen/main_tab_icon"
-                    android:src="@drawable/invest_unclick" />
+                    android:src="@drawable/local_icon" />
 
                 <TextView
                     android:id="@+id/local_bottom_tv"
@@ -99,7 +99,7 @@
                     android:id="@+id/user_bottom_iv"
                     android:layout_width="@dimen/main_tab_icon"
                     android:layout_height="@dimen/main_tab_icon"
-                    android:src="@drawable/user_unclick" />
+                    android:src="@drawable/user_icon" />
 
                 <TextView
                     android:id="@+id/user_bottom_tv"

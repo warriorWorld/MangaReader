@@ -204,10 +204,10 @@
                 android:id="@+id/auto_last_position_rl"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/user_item_h"
-                android:visibility="gone"
                 android:background="@color/white"
                 android:paddingLeft="@dimen/item_padding_horizontal"
-                android:paddingRight="@dimen/item_padding_horizontal">
+                android:paddingRight="@dimen/item_padding_horizontal"
+                android:visibility="gone">
 
 
                 <TextView
@@ -232,8 +232,8 @@
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1px"
-                android:visibility="gone"
-                android:background="@color/divide_line" />
+                android:background="@color/divide_line"
+                android:visibility="gone" />
 
             <RelativeLayout
                 android:id="@+id/close_translate_rl"
@@ -337,7 +337,7 @@
             android:layout_height="52dp"
             android:layout_alignParentBottom="true"
             android:layout_marginBottom="14dp"
-            android:src="@drawable/default_head" />
+            android:src="@drawable/spider_48" />
 
         <TextView
             android:id="@+id/user_name_tv"

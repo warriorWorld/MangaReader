@@ -82,7 +82,7 @@ public class OnlineMangaListAdapter extends BaseAdapter {
         }
 
         MangaBean item = list.get(position);
-        ImageLoader.getInstance().displayImage(item.getWebThumbnailUrl(), viewHolder.thumbnail_iv, Configure.normalImageOptions);
+        ImageLoader.getInstance().displayImage(item.getWebThumbnailUrl(), viewHolder.thumbnail_iv, Configure.smallImageOptions);
         viewHolder.name_tv.setText(item.getName());
         return convertView;
     }

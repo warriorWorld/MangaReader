@@ -35,6 +35,14 @@ public class Configure {
             .showImageOnLoading(R.drawable.empty_list)
             .showImageOnFail(R.drawable.empty_list)
             .build();
+    public static DisplayImageOptions smallImageOptions = new DisplayImageOptions.Builder()
+            .cacheInMemory(true)
+            .cacheOnDisk(true)
+            .considerExifParams(true)
+            .bitmapConfig(Bitmap.Config.ARGB_8888)
+            .showImageOnLoading(R.drawable.loading)
+            .showImageOnFail(R.drawable.load_failed)
+            .build();
     //数字随便写的  权限request code
     public static final int PERMISSION_CAMERA_REQUST_CODE = 8021;
     public static final int PERMISSION_LOCATION_REQUST_CODE = 8022;
