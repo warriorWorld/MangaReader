@@ -10,6 +10,7 @@
         android:layout_height="match_parent"
         android:layout_alignParentLeft="true"
         android:clickable="true"
+        android:padding="12dp"
         android:visibility="invisible">
 
         <ImageView
@@ -20,7 +21,6 @@
             android:adjustViewBounds="true"
             android:clickable="false"
             android:focusable="false"
-            android:padding="7dp"
             android:scaleType="fitCenter" />
 
         <TextView
@@ -28,8 +28,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
-            android:paddingLeft="5dp"
-            android:paddingRight="16dp"
             android:textColor="#000000"
             android:textSize="18dp" />
     </RelativeLayout>
@@ -70,8 +68,8 @@
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_alignParentRight="true"
-        android:layout_marginRight="8dp"
         android:clickable="true"
+        android:padding="12dp"
         android:visibility="visible">
 
         <ImageView
@@ -82,7 +80,6 @@
             android:adjustViewBounds="true"
             android:clickable="false"
             android:focusable="false"
-            android:padding="7dp"
             android:scaleType="fitCenter" />
 
         <TextView

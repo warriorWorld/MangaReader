@@ -1,10 +1,12 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/toggle_tag_ll"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_gravity="center"
-    android:background="@color/white"
+    android:background="@drawable/tag_toggle_btn_style"
     android:gravity="center"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:padding="4dp">
 
     <TextView
         android:id="@+id/tag_tv"
@@ -13,16 +15,8 @@
         android:layout_gravity="center"
         android:gravity="center"
         android:text="XXX"
-        android:textColor="@color/main_text_color_gray"
+        android:textColor="@color/manga_reader"
         android:textSize="@dimen/main_text_size" />
 
-    <View
-        android:id="@+id/tag_line"
-        android:layout_width="match_parent"
-        android:layout_height="2dp"
-        android:layout_gravity="center"
-        android:background="@color/manga_reader"
-        android:gravity="center"
-        android:visibility="invisible"></View>
 
 </LinearLayout>

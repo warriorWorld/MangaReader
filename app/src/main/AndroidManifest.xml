@@ -67,6 +67,7 @@
             android:name=".business.user.RegisterActivity"
             android:launchMode="singleTask"></activity>
         <activity android:name=".business.user.CollectedActivity"></activity>
+        <activity android:name=".business.tag.TagManagerActivity"></activity>
 
         <service android:name=".business.download.DownloadService"></service>
     </application>

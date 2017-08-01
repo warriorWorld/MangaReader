@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/divide">
+
+    <com.google.android.flexbox.FlexboxLayout
+        android:id="@+id/tag_flex_box"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/login_btn"
+        app:dividerDrawable="@drawable/divider"
+        app:flexWrap="wrap"
+        app:showDivider="beginning|middle|end">
+
+    </com.google.android.flexbox.FlexboxLayout>
+
+    <Button
+        android:id="@+id/finish_select_btn"
+        style="?android:attr/borderlessButtonStyle"
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="3dp"
+        android:layout_marginLeft="3dp"
+        android:layout_marginRight="3dp"
+        android:background="@drawable/btn_click_rewrite"
+        android:text="完成选择"
+        android:textColor="@drawable/btn_text_click_rewrite"
+        android:textSize="18sp" />
+</RelativeLayout>
