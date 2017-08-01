@@ -14,7 +14,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 public class Test {
-    private String[] spiderables = {"http://topwebcomics.com/", "https://nhentai.net/", "https://hitomi.la/"};
+    private String[] spiderables = {"http://topwebcomics.com/"};
     private static org.jsoup.nodes.Document doc;
 
     public static void main(String[] args) {
@@ -24,12 +24,21 @@ public class Test {
             @Override
             public void run() {
                 try {
-                    doc = Jsoup.connect("http://www.mangareader.net/one-piece")
+                    doc = Jsoup.connect("https://hitomi.la/index-all-3.html")
                             .timeout(10000).get();
-                    Element readmangasumElement = doc.getElementById("readmangasum");
-                    Element descriptionElement = readmangasumElement.select("p").first();
+                    Elements mangaListElement = doc.select("div.manga");
+                    MangaBean item;
+                    ArrayList<MangaBean> mangaList = new ArrayList<MangaBean>();
 
-                    System.out.println(descriptionElement.text());
+                    for (int i = 0; i < mangaListElement.size(); i++) {
+                        item = new MangaBean();
+                        item.setWebThumbnailUrl(mangaListElement.get(i).select("div.dj-img1").first().getElementsByTag("img").last().attr("src"));
+                        item.setName(mangaListElement.get(i).select("h1 a").text());
+                        item.setUrl(mangaListElement.get(i).select("h1 a").attr("href"));
+
+                        mangaList.add(item);
+                    }
+
 
                 } catch (IOException e) {
                     e.printStackTrace();
