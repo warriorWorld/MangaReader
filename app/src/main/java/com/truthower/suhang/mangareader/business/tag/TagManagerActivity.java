@@ -71,6 +71,7 @@ public class TagManagerActivity extends BaseActivity implements View.OnClickList
         ToggleTag tagBtn = new ToggleTag(this);
         tagsFlexBox.addView(tagBtn);
         tagBtn.setTagTvText(text);
+        tagBtn.setChecked(true);
     }
 
 

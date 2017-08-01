@@ -39,6 +39,7 @@ public class ToggleTag extends LinearLayout {
         setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
+                isChecked = !isChecked;
                 toggleSelect();
             }
         });
@@ -47,8 +48,7 @@ public class ToggleTag extends LinearLayout {
         }
     }
 
-    public void toggleSelect() {
-        isChecked = !isChecked;
+    private void toggleSelect() {
         if (isChecked) {
             tagTv.setTextColor(context.getResources().getColor(R.color.divide));
             toggleTagLl.setBackgroundResource(R.drawable.tag_toggle_btn_style_checked);
@@ -58,6 +58,10 @@ public class ToggleTag extends LinearLayout {
         }
     }
 
+    public void setChecked(boolean isChecked) {
+        this.isChecked = isChecked;
+        toggleSelect();
+    }
 
     public void setTagTvText(String tag) {
         this.tag = tag;
