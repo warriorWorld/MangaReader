@@ -4,6 +4,7 @@ import android.text.TextUtils;
 
 import com.truthower.suhang.mangareader.bean.ChapterBean;
 import com.truthower.suhang.mangareader.bean.MangaBean;
+import com.truthower.suhang.mangareader.utils.Logger;
 import com.truthower.suhang.mangareader.utils.StringUtil;
 
 import org.jsoup.Jsoup;
@@ -14,7 +15,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 public class Test {
-    private String[] spiderables = {"http://topwebcomics.com/"};
+    private String[] spiderables = {"http://topwebcomics.com/", "http://mangakakalot.com/"};
     private static org.jsoup.nodes.Document doc;
 
     public static void main(String[] args) {
@@ -24,21 +25,9 @@ public class Test {
             @Override
             public void run() {
                 try {
-                    doc = Jsoup.connect("https://hitomi.la/index-all-3.html")
+                    doc = Jsoup.connect("http://mangakakalot.com/")
                             .timeout(10000).get();
-                    Elements mangaListElement = doc.select("div.manga");
-                    MangaBean item;
-                    ArrayList<MangaBean> mangaList = new ArrayList<MangaBean>();
-
-                    for (int i = 0; i < mangaListElement.size(); i++) {
-                        item = new MangaBean();
-                        item.setWebThumbnailUrl(mangaListElement.get(i).select("div.dj-img1").first().getElementsByTag("img").last().attr("src"));
-                        item.setName(mangaListElement.get(i).select("h1 a").text());
-                        item.setUrl(mangaListElement.get(i).select("h1 a").attr("href"));
-
-                        mangaList.add(item);
-                    }
-
+                    System.out.print(doc);
 
                 } catch (IOException e) {
                     e.printStackTrace();
