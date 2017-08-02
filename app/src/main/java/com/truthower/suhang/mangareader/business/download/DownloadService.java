@@ -38,7 +38,7 @@ public class DownloadService extends Service {
     private boolean stopDownload = false;
     private int endChapter, currentChapter, startPage;
     private DownLoadEvent downLoadEvent;
-    private final int TRY_COUNT_LIMIT = 3;
+    private final int TRY_COUNT_LIMIT = 30;
     private int tryCount = 0;
     private String mangaFileName;//有的漫画名称太长或者带一堆特殊字符 我处理一下 这个影响到漫画的文件夹名字和图片名字
 
