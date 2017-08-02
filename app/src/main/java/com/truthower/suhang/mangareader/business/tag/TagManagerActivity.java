@@ -15,8 +15,6 @@ import com.google.android.flexbox.FlexboxLayout;
 import com.truthower.suhang.mangareader.R;
 import com.truthower.suhang.mangareader.base.BaseActivity;
 import com.truthower.suhang.mangareader.bean.LoginBean;
-import com.truthower.suhang.mangareader.bean.MangaBean;
-import com.truthower.suhang.mangareader.business.detail.WebMangaDetailsActivity;
 import com.truthower.suhang.mangareader.config.Configure;
 import com.truthower.suhang.mangareader.listener.OnEditResultListener;
 import com.truthower.suhang.mangareader.utils.LeanCloundUtil;
@@ -117,10 +115,10 @@ public class TagManagerActivity extends BaseActivity implements View.OnClickList
             return;
         }
         AVQuery<AVObject> query1 = new AVQuery<>("TagList");
-        query1.whereContains("tag", text);
+        query1.whereEqualTo("tag", text);
 
         AVQuery<AVObject> query2 = new AVQuery<>("TagList");
-        query2.whereContains("owner", LoginBean.getInstance().getUserName());
+        query2.whereEqualTo("owner", LoginBean.getInstance().getUserName());
         AVQuery<AVObject> query = AVQuery.and(Arrays.asList(query1, query2));
         query.findInBackground(new FindCallback<AVObject>() {
             @Override
@@ -183,10 +181,10 @@ public class TagManagerActivity extends BaseActivity implements View.OnClickList
             return;
         }
         AVQuery<AVObject> query1 = new AVQuery<>("Tags");
-        query1.whereContains("imgUrl", imgUrl);
+        query1.whereEqualTo("imgUrl", imgUrl);
 
         AVQuery<AVObject> query2 = new AVQuery<>("Tags");
-        query2.whereContains("owner", LoginBean.getInstance().getUserName());
+        query2.whereEqualTo("owner", LoginBean.getInstance().getUserName());
         AVQuery<AVObject> query = AVQuery.and(Arrays.asList(query1, query2));
         query.findInBackground(new FindCallback<AVObject>() {
             @Override

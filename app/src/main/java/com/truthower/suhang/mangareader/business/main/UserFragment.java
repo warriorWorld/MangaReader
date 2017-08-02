@@ -18,6 +18,7 @@ import com.truthower.suhang.mangareader.R;
 import com.truthower.suhang.mangareader.base.BaseFragment;
 import com.truthower.suhang.mangareader.bean.LoginBean;
 import com.truthower.suhang.mangareader.business.download.DownloadActivity;
+import com.truthower.suhang.mangareader.business.tag.TagFilterActivity;
 import com.truthower.suhang.mangareader.business.user.CollectedActivity;
 import com.truthower.suhang.mangareader.business.user.LoginActivity;
 import com.truthower.suhang.mangareader.config.Configure;
@@ -101,6 +102,16 @@ public class UserFragment extends BaseFragment implements View.OnClickListener {
         logoutTv = (TextView) v.findViewById(R.id.logout_tv);
         userHeadCiv = (CircleImage) v.findViewById(R.id.user_head_civ);
         userTopBarRl = (RelativeLayout) v.findViewById(R.id.user_top_bar_rl);
+        userHeadCiv.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                if (LoginBean.getInstance().isMaster()) {
+                    Intent intent = new Intent(getActivity(), TagFilterActivity.class);
+                    startActivity(intent);
+                }
+                return true;
+            }
+        });
         userNameTv = (TextView) v.findViewById(R.id.user_name_tv);
         autoToLastReadPositionCb = (CheckBox) v.findViewById(R.id.auto_last_position_cb);
         autoToLastReadPositionCb.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {

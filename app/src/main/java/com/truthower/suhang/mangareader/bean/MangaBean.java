@@ -60,7 +60,8 @@ public class MangaBean extends BaseBean {
     }
 
     public String getLocalThumbnailUrl() {
-        if (!TextUtils.isEmpty(localThumbnailUrl) && !localThumbnailUrl.contains("file://")) {
+        if (!TextUtils.isEmpty(localThumbnailUrl) && !localThumbnailUrl.contains("file://")
+                && !localThumbnailUrl.contains("http://") && !localThumbnailUrl.contains("https://")) {
             return "file://" + localThumbnailUrl;
         } else {
             return localThumbnailUrl;

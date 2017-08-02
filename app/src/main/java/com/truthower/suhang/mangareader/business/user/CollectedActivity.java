@@ -67,7 +67,7 @@ public class CollectedActivity extends BaseActivity implements PullToRefreshBase
             return;
         }
         AVQuery<AVObject> query = new AVQuery<>("Collected");
-        query.whereContains("owner", LoginBean.getInstance().getUserName());
+        query.whereEqualTo("owner", LoginBean.getInstance().getUserName());
         query.findInBackground(new FindCallback<AVObject>() {
             @Override
             public void done(List<AVObject> list, AVException e) {

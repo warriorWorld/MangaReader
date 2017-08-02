@@ -19,6 +19,7 @@ import com.android.volley.VolleyError;
 import com.truthower.suhang.mangareader.R;
 import com.truthower.suhang.mangareader.adapter.ReadMangaAdapter;
 import com.truthower.suhang.mangareader.base.BaseActivity;
+import com.truthower.suhang.mangareader.bean.LoginBean;
 import com.truthower.suhang.mangareader.bean.YoudaoResponse;
 import com.truthower.suhang.mangareader.business.tag.TagManagerActivity;
 import com.truthower.suhang.mangareader.config.Configure;
@@ -254,9 +255,11 @@ public class ReadMangaActivity extends BaseActivity implements OnClickListener {
 
             @Override
             public void onTitleLongClick() {
-                Intent intent = new Intent(ReadMangaActivity.this, TagManagerActivity.class);
-                intent.putExtra("imgUrl", pathList.get(historyPosition));
-                startActivity(intent);
+                if (LoginBean.getInstance().isMaster()) {
+                    Intent intent = new Intent(ReadMangaActivity.this, TagManagerActivity.class);
+                    intent.putExtra("imgUrl", pathList.get(historyPosition));
+                    startActivity(intent);
+                }
             }
         });
     }

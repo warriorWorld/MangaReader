@@ -376,10 +376,10 @@ public class WebMangaDetailsActivity extends BaseActivity implements AdapterView
             return;
         }
         AVQuery<AVObject> query1 = new AVQuery<>("Collected");
-        query1.whereContains("mangaUrl", mangaUrl);
+        query1.whereEqualTo("mangaUrl", mangaUrl);
 
         AVQuery<AVObject> query2 = new AVQuery<>("Collected");
-        query2.whereContains("owner", LoginBean.getInstance().getUserName());
+        query2.whereEqualTo("owner", LoginBean.getInstance().getUserName());
         AVQuery<AVObject> query = AVQuery.and(Arrays.asList(query1, query2));
         query.findInBackground(new FindCallback<AVObject>() {
             @Override
