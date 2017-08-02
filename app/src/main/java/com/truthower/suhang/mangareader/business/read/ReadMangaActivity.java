@@ -241,6 +241,24 @@ public class ReadMangaActivity extends BaseActivity implements OnClickListener {
                 ReadMangaActivity.this.finish();
             }
         });
+        topBar.setTopBarLongClickLister(new TopBar.OnTopBarLongClickListener() {
+            @Override
+            public void onLeftLongClick() {
+
+            }
+
+            @Override
+            public void onRightLongClick() {
+
+            }
+
+            @Override
+            public void onTitleLongClick() {
+                Intent intent = new Intent(ReadMangaActivity.this, TagManagerActivity.class);
+                intent.putExtra("imgUrl", pathList.get(historyPosition));
+                startActivity(intent);
+            }
+        });
     }
 
     private void showSearchDialog() {
@@ -508,8 +526,7 @@ public class ReadMangaActivity extends BaseActivity implements OnClickListener {
                 cutSeekBar();
                 break;
             case R.id.read_progress_tv:
-                Intent intent = new Intent(ReadMangaActivity.this, TagManagerActivity.class);
-                startActivity(intent);
+
                 break;
         }
     }

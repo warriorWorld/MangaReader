@@ -28,7 +28,7 @@ import java.util.regex.Pattern;
  */
 public class LMangaSpider extends SpiderBase {
     private String webUrl = "https://hitomi.la/";
-    private String webUrlNoLastLine = "https://nhentai.net";
+    private String webUrlNoLastLine = "https://hitomi.la";
     private ArrayList<String> pathList = new ArrayList<String>();
 
     @Override

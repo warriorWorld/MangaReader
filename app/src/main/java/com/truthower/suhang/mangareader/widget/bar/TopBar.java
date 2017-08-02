@@ -26,6 +26,7 @@ public class TopBar extends GradientBar {
     private View topBarLayout;
     private Drawable topBarBg;
     private OnTopBarClickListener l;
+    private OnTopBarLongClickListener ll;
 
     public TopBar(Context context) {
         super(context);
@@ -139,6 +140,30 @@ public class TopBar extends GradientBar {
                     l.onTitleClick();
             }
         });
+        tipTV.setOnLongClickListener(new OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                if (null != ll)
+                    ll.onTitleLongClick();
+                return true;
+            }
+        });
+        leftLayout.setOnLongClickListener(new OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                if (null != ll)
+                    ll.onLeftLongClick();
+                return true;
+            }
+        });
+        rightLayout.setOnLongClickListener(new OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                if (null != ll)
+                    ll.onRightLongClick();
+                return true;
+            }
+        });
     }
 
     public void setOnTopBarClickListener(OnTopBarClickListener l) {
@@ -149,13 +174,15 @@ public class TopBar extends GradientBar {
         // TODO
         topBarLayout.setBackgroundColor(color);
     }
-public void hideTitle(boolean hide){
-    if (hide) {
-        titleIv.setVisibility(INVISIBLE);
-    }else {
-        titleIv.setVisibility(VISIBLE);
+
+    public void hideTitle(boolean hide) {
+        if (hide) {
+            titleIv.setVisibility(INVISIBLE);
+        } else {
+            titleIv.setVisibility(VISIBLE);
+        }
     }
-}
+
     public void setLeftBackground(int bg) {
         leftLayout.setVisibility(View.VISIBLE);
         leftIV.setImageResource(bg);
@@ -221,11 +248,24 @@ public void hideTitle(boolean hide){
         return leftTV.getText().toString();
     }
 
+    public void setTopBarLongClickLister(OnTopBarLongClickListener ll) {
+        this.ll = ll;
+    }
+
     public interface OnTopBarClickListener {
         public void onLeftClick();
 
         public void onRightClick();
 
         public void onTitleClick();
+    }
+
+    public interface OnTopBarLongClickListener {
+        public void onLeftLongClick();
+
+        public void onRightLongClick();
+
+
+        public void onTitleLongClick();
     }
 }
