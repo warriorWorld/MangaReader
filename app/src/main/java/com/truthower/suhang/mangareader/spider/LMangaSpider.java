@@ -38,7 +38,7 @@ public class LMangaSpider extends SpiderBase {
             public void run() {
                 try {
                     if (TextUtils.isEmpty(type) || type.equals("all")) {
-                        doc = Jsoup.connect(webUrl + "index-all-" + page)
+                        doc = Jsoup.connect(webUrl + "index-all-" + page+ ".html")
                                 .timeout(10000).get();
                     } else {
                         doc = Jsoup.connect(webUrl + "tag/" + type + "-all-" + page + ".html")
