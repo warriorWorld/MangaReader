@@ -299,8 +299,10 @@ public class UserFragment extends BaseFragment implements View.OnClickListener {
                 intent = new Intent(getActivity(), CollectedActivity.class);
                 break;
             case R.id.statistics_rl:
+                baseToast.showToast("待开发");
                 break;
             case R.id.new_word_book_rl:
+                baseToast.showToast("待开发");
                 break;
             case R.id.download_rl:
                 intent = new Intent(getActivity(), DownloadActivity.class);
