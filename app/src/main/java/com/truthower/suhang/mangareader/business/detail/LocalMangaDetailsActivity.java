@@ -166,14 +166,14 @@ public class LocalMangaDetailsActivity extends BaseActivity implements AdapterVi
         baseTopBar.setTitle("详情");
         mangaGV = (GridView) pullToRefreshGridView.getRefreshableView();
         emptyView = findViewById(R.id.empty_view);
-        emptyIV = (ImageView) findViewById(R.id.image);
+        emptyIV = (ImageView) findViewById(R.id.empty_image);
         emptyIV.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 initFile();
             }
         });
-        emptyTV = (TextView) findViewById(R.id.text);
+        emptyTV = (TextView) findViewById(R.id.empty_text);
         emptyTV.setText("没有内容~");
     }
 

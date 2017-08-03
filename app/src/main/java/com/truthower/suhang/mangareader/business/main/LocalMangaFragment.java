@@ -144,14 +144,14 @@ public class LocalMangaFragment extends BaseFragment implements AdapterView.OnIt
         });
         mangaGV = (GridView) pullToRefreshGridView.getRefreshableView();
         emptyView = v.findViewById(R.id.empty_view);
-        emptyIV = (ImageView) v.findViewById(R.id.image);
+        emptyIV = (ImageView) v.findViewById(R.id.empty_image);
         emptyIV.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 initFile();
             }
         });
-        emptyTV = (TextView) v.findViewById(R.id.text);
+        emptyTV = (TextView) v.findViewById(R.id.empty_text);
         emptyTV.setText("还没有本地漫画哦~");
     }
 

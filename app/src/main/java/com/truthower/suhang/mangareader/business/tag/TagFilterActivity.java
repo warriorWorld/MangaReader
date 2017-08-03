@@ -146,8 +146,8 @@ public class TagFilterActivity extends BaseActivity implements AdapterView.OnIte
 
         mangaGV = (GridView) pullToRefreshGridView.getRefreshableView();
         emptyView = findViewById(R.id.empty_view);
-        emptyIV = (ImageView) findViewById(R.id.image);
-        emptyTV = (TextView) findViewById(R.id.text);
+        emptyIV = (ImageView) findViewById(R.id.empty_image);
+        emptyTV = (TextView) findViewById(R.id.empty_text);
         emptyTV.setText("没有内容~");
         baseTopBar.setTitle("标签筛选");
         baseTopBar.setRightText("筛选");

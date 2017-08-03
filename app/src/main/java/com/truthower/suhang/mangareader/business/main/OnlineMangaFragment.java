@@ -1,6 +1,8 @@
 package com.truthower.suhang.mangareader.business.main;
 
+import android.content.Context;
 import android.content.Intent;
+import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,9 +19,11 @@ import com.truthower.suhang.mangareader.bean.MangaBean;
 import com.truthower.suhang.mangareader.bean.MangaListBean;
 import com.truthower.suhang.mangareader.business.detail.WebMangaDetailsActivity;
 import com.truthower.suhang.mangareader.config.Configure;
+import com.truthower.suhang.mangareader.config.ShareKeys;
 import com.truthower.suhang.mangareader.listener.JsoupCallBack;
 import com.truthower.suhang.mangareader.listener.OnEditResultListener;
 import com.truthower.suhang.mangareader.spider.SpiderBase;
+import com.truthower.suhang.mangareader.utils.SharedPreferencesUtils;
 import com.truthower.suhang.mangareader.widget.bar.TopBar;
 import com.truthower.suhang.mangareader.widget.dialog.MangaEditDialog;
 import com.truthower.suhang.mangareader.widget.pulltorefresh.PullToRefreshBase;
@@ -34,6 +38,7 @@ public class OnlineMangaFragment extends BaseFragment implements PullToRefreshBa
     private SpiderBase spider;
     private ListView mangaListLv;
     private View emptyView;
+    private TextView emptyTv;
     private TextView currentPageTv;
     private OnlineMangaListAdapter onlineMangaListAdapter;
     //总的漫画列表和一次请求获得的漫画列表
@@ -58,7 +63,14 @@ public class OnlineMangaFragment extends BaseFragment implements PullToRefreshBa
         initPullListView();
         initSpider(Configure.currentWebSite);
 
-        doGetData();
+        if (getWifiState() != WifiManager.WIFI_STATE_ENABLED &&
+                SharedPreferencesUtils.getBooleanSharedPreferencesData(getActivity(), ShareKeys.ECONOMY_MODE, false)) {
+            //没WiFi并且是省流量模式
+            emptyTv.setText("当前未连接WiFi,如果你流量多就刷新.");
+            initListView();
+        } else {
+            doGetData();
+        }
         return v;
     }
 
@@ -67,6 +79,13 @@ public class OnlineMangaFragment extends BaseFragment implements PullToRefreshBa
         pullListView = (PullToRefreshListView) v.findViewById(R.id.home_ptf);
         mangaListLv = pullListView.getRefreshableView();
         emptyView = v.findViewById(R.id.empty_view);
+        emptyView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                doGetData();
+            }
+        });
+        emptyTv = (TextView) v.findViewById(R.id.empty_text);
         currentPageTv = (TextView) v.findViewById(R.id.current_page_tv);
 
         topBar = (TopBar) v.findViewById(R.id.gradient_bar);
@@ -84,7 +103,6 @@ public class OnlineMangaFragment extends BaseFragment implements PullToRefreshBa
 
             @Override
             public void onTitleClick() {
-
             }
         });
     }
@@ -123,6 +141,16 @@ public class OnlineMangaFragment extends BaseFragment implements PullToRefreshBa
         }
         if (Configure.isTest) {
             baseToast.showToast("online onResume");
+        }
+    }
+
+    private int getWifiState() {
+        WifiManager wifiManager = (WifiManager) getActivity().getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+        if (wifiManager != null) {
+            int wifiState = wifiManager.getWifiState();
+            return wifiState;
+        } else {
+            return -1;
         }
     }
 
@@ -257,7 +285,7 @@ public class OnlineMangaFragment extends BaseFragment implements PullToRefreshBa
             @Override
             public void onOkBtnClick(String selectedRes, String selectedCodeRes) {
                 if (spider.getMangaTypeCodes().length > 0) {
-                    toggleTag(selectedRes,selectedCodeRes);
+                    toggleTag(selectedRes, selectedCodeRes);
                 } else {
                     toggleTag(selectedRes);
                 }

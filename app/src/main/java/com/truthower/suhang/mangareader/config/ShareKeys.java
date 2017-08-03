@@ -6,6 +6,7 @@ package com.truthower.suhang.mangareader.config;
 
 public class ShareKeys {
     public static final String AUTO_TO_LAST_POSITION = "auto_to_last_position";
+    public static final String ECONOMY_MODE = "economy_mode";
     public static final String CLOSE_TRANSLATE = "close_translate";
     public static final String DOWNLOAD_EXPLAIN = "download_explain";
     public static final String CURRENT_DOWNLOAD_EPISODE = "current_download_episode";

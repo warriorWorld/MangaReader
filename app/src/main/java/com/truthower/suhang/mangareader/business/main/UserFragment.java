@@ -47,7 +47,7 @@ public class UserFragment extends BaseFragment implements View.OnClickListener {
     private TextView userNameTv;
     private TextView choosedDirectoryTv;
     private CircleImage userHeadCiv;
-    private CheckBox autoToLastReadPositionCb, closeTranslateCb;
+    private CheckBox autoToLastReadPositionCb, closeTranslateCb, economyModeCb;
     private boolean isHidden = true;
 
     private MangaDialog versionDialog;
@@ -121,6 +121,14 @@ public class UserFragment extends BaseFragment implements View.OnClickListener {
                         (getActivity(), ShareKeys.AUTO_TO_LAST_POSITION, isChecked);
             }
         });
+        economyModeCb = (CheckBox) v.findViewById(R.id.economy_mode_cb);
+        economyModeCb.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                SharedPreferencesUtils.setSharedPreferencesData
+                        (getActivity(), ShareKeys.ECONOMY_MODE, isChecked);
+            }
+        });
         closeTranslateCb = (CheckBox) v.findViewById(R.id.close_translate_cb);
         closeTranslateCb.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -136,7 +144,9 @@ public class UserFragment extends BaseFragment implements View.OnClickListener {
         closeTranslateCb.setChecked
                 (SharedPreferencesUtils.getBooleanSharedPreferencesData(getActivity(),
                         ShareKeys.CLOSE_TRANSLATE, false));
-
+        economyModeCb.setChecked
+                (SharedPreferencesUtils.getBooleanSharedPreferencesData(getActivity(),
+                        ShareKeys.ECONOMY_MODE, false));
         collectRl.setOnClickListener(this);
         statisticsRl.setOnClickListener(this);
         newWordBookRl.setOnClickListener(this);
