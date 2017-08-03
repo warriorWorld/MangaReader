@@ -23,6 +23,8 @@ public abstract class SpiderBase {
 
     public abstract String[] getMangaTypes();
 
+    public abstract String[] getMangaTypeCodes();
+
     public abstract <ResultObj> void getMangaChapterPics
             (final Context context, final String chapterUrl, final JsoupCallBack<ResultObj> jsoupCallBack);
 

@@ -1,6 +1,7 @@
 package com.truthower.suhang.mangareader.spider;
 
 import android.content.Context;
+import android.text.Html;
 import android.text.TextUtils;
 
 import com.android.volley.Response;
@@ -10,6 +11,7 @@ import com.truthower.suhang.mangareader.bean.MangaBean;
 import com.truthower.suhang.mangareader.bean.MangaListBean;
 import com.truthower.suhang.mangareader.listener.JsoupCallBack;
 import com.truthower.suhang.mangareader.utils.Logger;
+import com.truthower.suhang.mangareader.utils.StringUtil;
 import com.truthower.suhang.mangareader.volley.MStringRequest;
 import com.truthower.suhang.mangareader.volley.VolleyTool;
 
@@ -26,9 +28,9 @@ import java.util.regex.Pattern;
 /**
  * http://www.mangareader.net/
  */
-public class LMangaSpider extends SpiderBase {
-    private String webUrl = "https://hitomi.la/";
-    private String webUrlNoLastLine = "https://hitomi.la";
+public class KaKaLotSpider extends SpiderBase {
+    private String webUrl = "http://mangakakalot.com/";
+    private String webUrlNoLastLine = "http://mangakakalot.com";
     private ArrayList<String> pathList = new ArrayList<String>();
 
     @Override
@@ -38,10 +40,10 @@ public class LMangaSpider extends SpiderBase {
             public void run() {
                 try {
                     if (TextUtils.isEmpty(type) || type.equals("all")) {
-                        doc = Jsoup.connect(webUrl + "index-all-" + page+ ".html")
+                        doc = Jsoup.connect(webUrl + "manga_list?type=topview&category=all&alpha=all&page=" + page + "&state=all")
                                 .timeout(10000).get();
                     } else {
-                        doc = Jsoup.connect(webUrl + "tag/" + type + "-all-" + page + ".html")
+                        doc = Jsoup.connect(webUrl + "manga_list?type=topview&category=" + type + "&alpha=all&page=" + page + "&state=all")
                                 .timeout(10000).get();
                     }
                 } catch (IOException e) {
@@ -49,24 +51,15 @@ public class LMangaSpider extends SpiderBase {
                     jsoupCallBack.loadFailed(e.toString());
                 }
                 if (null != doc) {
-                    Elements mangaListElement = doc.select("div.manga");
-                    Elements djListElement = doc.select("div.dj");
+                    Elements mangaListElements = doc.select("div.list-truyen-item-wrap");
                     MangaBean item;
                     ArrayList<MangaBean> mangaList = new ArrayList<MangaBean>();
-                    for (int i = 0; i < mangaListElement.size(); i++) {
+                    for (int i = 0; i < mangaListElements.size(); i++) {
                         item = new MangaBean();
-                        item.setWebThumbnailUrl(mangaListElement.get(i).select("div.dj-img1").first().getElementsByTag("img").last().attr("src"));
-                        item.setName(mangaListElement.get(i).select("h1 a").text());
-                        item.setUrl(webUrlNoLastLine + mangaListElement.get(i).select("h1 a").attr("href"));
-
-                        mangaList.add(item);
-                    }
-                    for (int i = 0; i < djListElement.size(); i++) {
-                        item = new MangaBean();
-                        item.setWebThumbnailUrl(djListElement.get(i).select("div.dj-img1").first().getElementsByTag("img").last().attr("src"));
-                        item.setName(djListElement.get(i).select("h1 a").text());
-                        item.setUrl(webUrlNoLastLine + djListElement.get(i).select("h1 a").attr("href"));
-
+                        System.out.println();
+                        item.setName(mangaListElements.get(i).getElementsByTag("img").last().attr("alt"));
+                        item.setUrl(mangaListElements.get(i).select("a").first().attr("href"));
+                        item.setWebThumbnailUrl(mangaListElements.get(i).getElementsByTag("img").last().attr("src"));
                         mangaList.add(item);
                     }
                     MangaListBean mangaListBean = new MangaListBean();
@@ -92,59 +85,69 @@ public class LMangaSpider extends SpiderBase {
                     jsoupCallBack.loadFailed(e.toString());
                 }
                 if (null != doc) {
-                    Element test1 = doc.getElementById("info");
-                    Element imgElement = doc.getElementById("cover").getElementsByTag("img").last();
-                    Elements chaptersElement = doc.getElementsByClass("gallerythumb");
-                    MangaBean mangaBean = new MangaBean();
+                    Element masthead = doc.select("h2.aname").first();
+                    Element masthead3 = doc.select("td.propertytitle").get(4)
+                            .lastElementSibling();
+                    Elements mastheads1 = doc.select("span.genretags");
+//                    Element masthead4 = doc.select("div.chico_manga").last()
+//                            .lastElementSibling();
+                    Elements mastheads2 = doc.select("div.chico_manga");
 
-                    String tilte = test1.select("h1").text();
-                    String thumbnail = imgElement.attr("src");
-                    ChapterBean item = new ChapterBean();
-                    ArrayList<ChapterBean> chapters = new ArrayList<ChapterBean>();
-                    for (int i = 0; i < chaptersElement.size(); i++) {
-                        String chapterThumbnail = chaptersElement.get(i).getElementsByTag("img").last().attr("src");
-                        String url = chapterThumbnail.replaceAll("t.nhentai.net", "i.nhentai.net");
-                        url = url.replaceAll("t.jpg", ".jpg");
-                        item = new ChapterBean();
-                        item.setImgUrl(url);
-                        item.setChapterThumbnailUrl(chapterThumbnail);
-                        chapters.add(item);
-                    }
-                    Elements tagsElements = test1.getElementsByClass("tags");
-                    Elements tagElements = tagsElements.select("a");
-                    ArrayList<String> typesList = new ArrayList<String>();
+                    Element content = doc.getElementById("listing");
+                    Element dates = content.getElementsByTag("td").last();
 
-//                    ArrayList<String> artistsList = new ArrayList<String>();
-                    for (int i = 0; i < tagElements.size(); i++) {
+
+                    Element imgElement = doc.getElementById("mangaimg");
+                    Element imgElement1 = imgElement.getElementsByTag("img").first();
+
+                    Element readmangasumElement = doc.getElementById("readmangasum");
+                    Element descriptionElement = readmangasumElement.select("p").first();
+
+                    MangaBean item = new MangaBean();
+                    item.setDescription(Html.fromHtml(descriptionElement.text()).toString());
+                    item.setWebThumbnailUrl(imgElement1.attr("src"));
+                    item.setName(masthead.text());
+                    item.setAuthor(masthead3.text());
+                    String[] types = new String[mastheads1.size()];
+                    for (int i = 0; i < mastheads1.size(); i++) {
                         //漫画类型
-                        String tag = tagElements.get(i).attr("href");
-                        if (tag.contains("tag")) {
-                            String[] split = tag.split("tag");
-                            tag = split[split.length - 1];
-                            tag = tag.replaceAll("/", "");
-                            typesList.add(tag);
+                        types[i] = mastheads1.get(i).text();
+                    }
+                    item.setTypes(types);
+                    item.setLast_update(dates.text());
+
+                    String chapter;
+                    String path;
+                    ArrayList<ChapterBean> chapters = new ArrayList<ChapterBean>();
+                    ChapterBean chapterBean;
+                    for (int i = 0; i < mastheads2.size(); i++) {
+                        //章节
+                        if (mastheads2.size() <= 6) {
+                            //跟底下那段一模一样 只不过当总章节小于6时需要特殊处理下
+                            chapterBean = new ChapterBean();
+                            chapter = mastheads2.get(i).lastElementSibling().text();
+                            String[] s = chapter.split(" ");
+                            chapter = s[s.length - 1];
+                            chapterBean.setChapterPosition(chapter);
+                            path = mastheads2.get(i).lastElementSibling().attr("href");
+                            chapterBean.setChapterUrl(webUrlNoLastLine + path);
+                            chapters.add(chapterBean);
+                        } else {
+                            if (i > 5) {
+                                //前6个是最近更新的6个
+                                chapterBean = new ChapterBean();
+                                chapter = mastheads2.get(i).lastElementSibling().text();
+                                String[] s = chapter.split(" ");
+                                chapter = s[s.length - 1];
+                                chapterBean.setChapterPosition(chapter);
+                                path = mastheads2.get(i).lastElementSibling().attr("href");
+                                chapterBean.setChapterUrl(webUrlNoLastLine + path);
+                                chapters.add(chapterBean);
+                            }
                         }
-//                        else if (tag.contains("artist")) {
-//                            String[] split = tag.split("artist");
-//                            tag = split[split.length - 1];
-//                            tag = tag.replaceAll("/", "");
-//                            artistsList.add(tag);
-//                        }
                     }
-                    String[] types = new String[typesList.size()];
-//                    String[] artists = new String[artistsList.size()];
-                    for (int i = 0; i < typesList.size(); i++) {
-                        types[i] = typesList.get(i);
-                    }
-//                    for (int i = 0; i < artistsList.size(); i++) {
-//                        artists[i] = artistsList.get(i);
-//                        System.out.println(artistsList.get(i));
-//                    }
-                    mangaBean.setTypes(types);
-                    mangaBean.setChapters(chapters);
-                    mangaBean.setName(tilte);
-                    mangaBean.setWebThumbnailUrl(thumbnail);
-                    jsoupCallBack.loadSucceed((ResultObj) mangaBean);
+                    item.setChapters(chapters);
+                    jsoupCallBack.loadSucceed((ResultObj) item);
                 } else {
                     jsoupCallBack.loadFailed("doc load failed");
                 }
@@ -155,21 +158,25 @@ public class LMangaSpider extends SpiderBase {
 
     @Override
     public boolean isOneShot() {
-        return true;
+        return false;
     }
 
     @Override
     public String[] getMangaTypes() {
-        String[] mangaTypeCodes = {"all", "slave", "shota", "collar", "human-pet", "spanking", "sex-toy", "mind-control", "gender-bender",
-                "tomgirl", "femdom", "bondage", "bdsm", "exhibitionism", "shotacon", "nakadashi", "mind-break", "apron", "crossdressing",
-                "bodysuit", "humiliation", "torture", "dog-girl", "dog-boy", "dog", "tomboy", "shoujoai", "shounen", "shounenai",
-                "slice-of-life", "smut", "sports", "super-power", "supernatural", "tragedy", "vampire", "yaoi", "yuri"};
+        String[] mangaTypeCodes = {"all", "action", "adult", "adventure", "comedy", "cooking", "doujinshi", "drama", "ecchi", "fantasy", "gender-bender",
+                "harem", "historical", "horror", "josei", "manhua", "manhwa", "martial-arts", "mature", "mecha", "medical", "mystery", "one-shot",
+                "psychological", "romance", "school-life", "sci-fi", "seinen", "shoujo", "shoujoai", "shounen", "shounenai", "slice-of-life", "smut", "sports",
+                "supernatural", "tragedy", "webtoons", "yaoi", "yuri"};
         return mangaTypeCodes;
     }
 
     @Override
     public String[] getMangaTypeCodes() {
-        return new String[0];
+        String[] mangaTypeCodes = {"all", "2", "3", "4", "6", "7", "9", "10", "11", "12", "13",
+                "14", "15", "16", "17", "44", "43", "19", "20", "21", "22", "24", "25",
+                "26", "27", "28", "29", "30", "31", "32", "33", "34", "35", "36", "37",
+                "38", "39", "40", "41", "42"};
+        return mangaTypeCodes;
     }
 
     @Override

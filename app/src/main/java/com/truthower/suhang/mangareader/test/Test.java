@@ -25,9 +25,10 @@ public class Test {
             @Override
             public void run() {
                 try {
-                    doc = Jsoup.connect("http://mangakakalot.com/")
+                    doc = Jsoup.connect("http://mangakakalot.com/manga_list?type=topview&category=all&alpha=all&page=1&state=all")
                             .timeout(10000).get();
-                    System.out.print(doc);
+
+//                    System.out.println(doc);
 
                 } catch (IOException e) {
                     e.printStackTrace();

@@ -256,7 +256,11 @@ public class OnlineMangaFragment extends BaseFragment implements PullToRefreshBa
 
             @Override
             public void onOkBtnClick(String selectedRes, String selectedCodeRes) {
-                toggleTag(selectedRes);
+                if (spider.getMangaTypeCodes().length > 0) {
+                    toggleTag(selectedRes,selectedCodeRes);
+                } else {
+                    toggleTag(selectedRes);
+                }
             }
 
             @Override
@@ -268,14 +272,21 @@ public class OnlineMangaFragment extends BaseFragment implements PullToRefreshBa
             }
         });
         typesSelector.show();
-
-        typesSelector.initOptionsData(spider.getMangaTypes());
+        if (spider.getMangaTypeCodes().length > 0) {
+            typesSelector.initOptionsData(spider.getMangaTypes(), spider.getMangaTypeCodes());
+        } else {
+            typesSelector.initOptionsData(spider.getMangaTypes());
+        }
     }
 
     public void toggleTag(String selectedRes) {
+        toggleTag(selectedRes, selectedRes);
+    }
+
+    public void toggleTag(String selectedRes, String selectedCode) {
         initToFirstPage();
-        nowTypeName = selectedRes;
-        topBar.setTitle(Configure.currentWebSite + "(" + nowTypeName + ")");
+        nowTypeName = selectedCode;
+        topBar.setTitle(Configure.currentWebSite + "(" + selectedRes + ")");
         doGetData();
     }
 

@@ -16,8 +16,8 @@ public class Configure {
     public static boolean isTest = false;
     public static String versionName = "";
     public static int versionCode;
-    public static String[] websList = {"MangaReader"};
-    public static String[] masterWebsList = {"MangaReader", "NManga", "LManga"};
+    public static String[] websList = {"MangaReader", "KaKaLot"};
+    public static String[] masterWebsList = {"MangaReader", "NManga", "KaKaLot", "LManga"};
     public static String DST_FOLDER_NAME = "aSpider";
     public static String storagePath = Environment
             .getExternalStorageDirectory().getAbsolutePath() + "/" + DST_FOLDER_NAME;
