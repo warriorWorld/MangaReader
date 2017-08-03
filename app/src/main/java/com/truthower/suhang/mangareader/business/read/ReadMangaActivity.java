@@ -147,7 +147,7 @@ public class ReadMangaActivity extends BaseActivity implements OnClickListener {
     private void initProgressBar() {
         loadBar = new ProgressDialog(ReadMangaActivity.this);
         loadBar.setCancelable(false);
-        loadBar.setMessage("每20页大约需耗时4秒");
+        loadBar.setMessage("稍等...");
     }
 
     /**

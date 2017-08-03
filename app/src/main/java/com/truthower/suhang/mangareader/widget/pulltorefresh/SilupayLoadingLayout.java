@@ -52,6 +52,7 @@ public class SilupayLoadingLayout extends LoadingLayout {
     private Animation mRotateAnimation;
     private ImageView spinnerIv;
     private AnimationDrawable spinner;
+
     /**
      * 构造方法
      *
@@ -82,7 +83,11 @@ public class SilupayLoadingLayout extends LoadingLayout {
         mHeaderContainer = (RelativeLayout) findViewById(R.id.pull_to_refresh_header_content);
         mHintTextView = (TextView) findViewById(R.id.tip_tv);
         spinnerIv = (ImageView) findViewById(R.id.down_spinner_iv);
-        spinner = (AnimationDrawable) spinnerIv.getBackground();
+        try {
+            spinner = (AnimationDrawable) spinnerIv.getBackground();
+        } catch (ClassCastException e) {
+            //异常就异常唄
+        }
 
         float pivotValue = 0.5f; // SUPPRESS CHECKSTYLE
         float toDegree = 720.0f; // SUPPRESS CHECKSTYLE
@@ -129,13 +134,17 @@ public class SilupayLoadingLayout extends LoadingLayout {
     protected void onReset() {
         resetRotation();
         mHintTextView.setText(R.string.last_time_refresh);
-        spinner.stop();
+        if (null != spinner) {
+            spinner.stop();
+        }
     }
 
     @Override
     protected void onReleaseToRefresh() {
         mHintTextView.setText(R.string.release_to_refresh);
-        spinner.start();
+        if (null != spinner) {
+            spinner.start();
+        }
     }
 
     @Override
@@ -148,7 +157,9 @@ public class SilupayLoadingLayout extends LoadingLayout {
         resetRotation();
         // mArrowImageView.startAnimation(mRotateAnimation);
         mHintTextView.setText(R.string.last_time_refresh);
-        spinner.start();
+        if (null != spinner) {
+            spinner.start();
+        }
     }
 
     @Override
