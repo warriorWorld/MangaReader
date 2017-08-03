@@ -31,7 +31,6 @@ import java.util.regex.Pattern;
 public class KaKaLotSpider extends SpiderBase {
     private String webUrl = "http://mangakakalot.com/";
     private String webUrlNoLastLine = "http://mangakakalot.com";
-    private ArrayList<String> pathList = new ArrayList<String>();
 
     @Override
     public <ResultObj> void getMangaList(final String type, final String page, final JsoupCallBack<ResultObj> jsoupCallBack) {
@@ -153,97 +152,28 @@ public class KaKaLotSpider extends SpiderBase {
 
     @Override
     public <ResultObj> void getMangaChapterPics(final Context context, final String chapterUrl, final JsoupCallBack<ResultObj> jsoupCallBack) {
-        pathList = new ArrayList<String>();
-        getPageSize(chapterUrl, new JsoupCallBack<Integer>() {
-            @Override
-            public void loadSucceed(Integer result) {
-                initPicPathList(context, chapterUrl, 1, result, jsoupCallBack);
-            }
-
-            @Override
-            public void loadFailed(String error) {
-
-            }
-        });
-    }
-
-
-    private <ResultObj> void initPicPathList(final Context context, final String chapterUrl, final int page,
-                                             final int pageSize, final JsoupCallBack<ResultObj> jsoupCallBack) {
-        String url = chapterUrl + "/" + page;
-        HashMap<String, String> params = new HashMap<String, String>();
-        MStringRequest request = new MStringRequest(url, params,
-                new Response.Listener<String>() {
-
-                    @Override
-                    public void onResponse(String arg0) {
-                        // 得到包含某正则表达式的字符串
-                        Pattern p;
-                        p = Pattern.compile("http:[^\f\n\r\t]*?(jpg|png|gif|jpeg)");
-                        Matcher m;
-                        m = p.matcher(arg0);
-                        // String xxx;
-                        int cycle = 0;
-                        String urlResult = "", prefetch = "";
-                        while (m.find()) {
-                            // 获取到图片的URL 先获取到的第二个后获取到的第一个
-                            if (cycle == 1) {
-                                urlResult = m.group();
-                            } else if (cycle == 0) {
-                                prefetch = m.group();
-                            }
-                            cycle++;
-                        }
-                        if (page != pageSize) {
-                            pathList.add(urlResult);
-                            pathList.add(prefetch);
-                            Logger.d(urlResult + "\n" + prefetch);
-                        } else {
-                            //到最后一页时 只有一个图片
-                            pathList.add(prefetch);
-                            Logger.d(prefetch);
-                        }
-                        if (page == pageSize || page + 1 == pageSize) {
-                            //已找到所有的图片地址
-                            //TODO 得到结果
-                            jsoupCallBack.loadSucceed((ResultObj) pathList);
-                        } else {
-                            initPicPathList(context, chapterUrl, page + 2, pageSize, jsoupCallBack);
-                        }
-                    }
-                }, new Response.ErrorListener() {
-
-            @Override
-            public void onErrorResponse(VolleyError arg0) {
-                jsoupCallBack.loadFailed(arg0.toString());
-            }
-        });
-        VolleyTool.getInstance(context).getRequestQueue()
-                .add(request);
-    }
-
-    private <ResultObj> void getPageSize(final String url, final JsoupCallBack<ResultObj> jsoupCallBack) {
         new Thread() {
             @Override
             public void run() {
                 try {
-                    doc = Jsoup.connect(url + "/" + 1)
+                    doc = Jsoup.connect(chapterUrl)
                             .timeout(10000).get();
                 } catch (IOException e) {
                     e.printStackTrace();
                     jsoupCallBack.loadFailed(e.toString());
                 }
                 if (null != doc) {
-                    Element page = doc.getElementById("selectpage");
-                    Element lastPage = page.select("select option").last();
-
-                    jsoupCallBack.loadSucceed((ResultObj) Integer.valueOf(lastPage.text()));
+                    Elements mangaPicsElements = doc.select("div.vung-doc").first().getElementsByTag("img");
+                    ArrayList<String> pathList = new ArrayList<String>();
+                    for (int i = 0; i < mangaPicsElements.size(); i++) {
+                        pathList.add(mangaPicsElements.get(i).attr("src"));
+                    }
+                    jsoupCallBack.loadSucceed((ResultObj) pathList);
                 } else {
-                    jsoupCallBack.loadFailed("getPageSize doc load failed");
+                    jsoupCallBack.loadFailed("doc load failed");
                 }
             }
         }.start();
-
     }
 
     @Override

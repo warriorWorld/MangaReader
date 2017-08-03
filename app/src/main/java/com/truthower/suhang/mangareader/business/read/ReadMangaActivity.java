@@ -110,10 +110,15 @@ public class ReadMangaActivity extends BaseActivity implements OnClickListener {
         loadBar.show();
         spider.getMangaChapterPics(this, chapterUrl, new JsoupCallBack<ArrayList<String>>() {
             @Override
-            public void loadSucceed(ArrayList<String> result) {
-                loadBar.dismiss();
-                pathList = result;
-                refresh();
+            public void loadSucceed(final ArrayList<String> result) {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        loadBar.dismiss();
+                        pathList = result;
+                        refresh();
+                    }
+                });
             }
 
             @Override
