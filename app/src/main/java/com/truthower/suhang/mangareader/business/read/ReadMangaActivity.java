@@ -148,6 +148,7 @@ public class ReadMangaActivity extends BaseActivity implements OnClickListener {
         loadBar = new ProgressDialog(ReadMangaActivity.this);
         loadBar.setCancelable(false);
         loadBar.setMessage("稍等...");
+
     }
 
     /**
