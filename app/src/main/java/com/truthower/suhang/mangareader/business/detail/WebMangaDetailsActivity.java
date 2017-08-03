@@ -324,6 +324,9 @@ public class WebMangaDetailsActivity extends BaseActivity implements AdapterView
                 selectedRes = selectedRes.toLowerCase();
                 selectedRes = selectedRes.replaceAll(" ", "-");
                 tagClickEvent.setSelectTag(selectedRes);
+                if (!TextUtils.isEmpty(selectedCodeRes)) {
+                    tagClickEvent.setSelectCode(selectedCodeRes);
+                }
                 EventBus.getDefault().post(jumpEvent);
                 EventBus.getDefault().post(tagClickEvent);
                 ActivityPoor.finishAllActivityButThis(MainActivity.class);
@@ -338,7 +341,11 @@ public class WebMangaDetailsActivity extends BaseActivity implements AdapterView
             }
         });
         tagSelector.show();
-        tagSelector.initOptionsData(currentManga.getTypes());
+        if (null != currentManga.getTypeCodes() && currentManga.getTypeCodes().length > 0) {
+            tagSelector.initOptionsData(currentManga.getTypes(), currentManga.getTypeCodes());
+        } else {
+            tagSelector.initOptionsData(currentManga.getTypes());
+        }
     }
 
     private void downloadAll() {

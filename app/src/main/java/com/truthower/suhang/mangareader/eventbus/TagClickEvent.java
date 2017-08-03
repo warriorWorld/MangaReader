@@ -6,6 +6,7 @@ package com.truthower.suhang.mangareader.eventbus;
 
 public class TagClickEvent extends EventBusEvent {
     private String selectTag;
+    private String selectCode;
 
     public TagClickEvent(int eventType) {
         super(eventType);
@@ -17,5 +18,13 @@ public class TagClickEvent extends EventBusEvent {
 
     public void setSelectTag(String selectTag) {
         this.selectTag = selectTag;
+    }
+
+    public String getSelectCode() {
+        return selectCode;
+    }
+
+    public void setSelectCode(String selectCode) {
+        this.selectCode = selectCode;
     }
 }

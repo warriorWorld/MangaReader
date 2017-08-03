@@ -25,10 +25,18 @@ public class Test {
             @Override
             public void run() {
                 try {
-                    doc = Jsoup.connect("http://mangakakalot.com/manga_list?type=topview&category=all&alpha=all&page=1&state=all")
+                    doc = Jsoup.connect("http://mangakakalot.com/manga/quan_zhi_gao_shou")
                             .timeout(10000).get();
-
-//                    System.out.println(doc);
+                    Elements mangaDetailElements = doc.select("div.manga-info-top");
+                    Elements mangaPicDetailElements = doc.select("div.manga-info-pic");
+                    Elements mangaTextDetailElements = doc.select("ul.manga-info-text li");
+                    MangaBean item = new MangaBean();
+                    item.setWebThumbnailUrl(mangaPicDetailElements.first().getElementsByTag("img").last().attr("src"));
+                    item.setName(mangaPicDetailElements.first().getElementsByTag("img").last().attr("alt"));
+                    for (int i=0;i<mangaTextDetailElements.size();i++){
+                        System.out.println(mangaTextDetailElements.text());
+                    }
+                    System.out.println();
 
                 } catch (IOException e) {
                     e.printStackTrace();

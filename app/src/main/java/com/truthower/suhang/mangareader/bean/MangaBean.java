@@ -14,7 +14,7 @@ public class MangaBean extends BaseBean {
     private String webThumbnailUrl;
     private String author;
     private String last_update;
-    private String[] types;
+    private String[] types, typeCodes;
     private boolean isCollected;
     private ArrayList<ChapterBean> chapters;
     private String description;//漫画介绍
@@ -102,5 +102,13 @@ public class MangaBean extends BaseBean {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public String[] getTypeCodes() {
+        return typeCodes;
+    }
+
+    public void setTypeCodes(String[] typeCodes) {
+        this.typeCodes = typeCodes;
     }
 }

@@ -261,7 +261,11 @@ public class MainActivity extends BaseFragmentActivity implements View.OnClickLi
         if (null == event)
             return;
         if (event.getEventType() == EventBusEvent.TAG_CLICK_EVENT) {
-            onlinePageFg.toggleTag(event.getSelectTag());
+            if (TextUtils.isEmpty(event.getSelectCode())) {
+                onlinePageFg.toggleTag(event.getSelectTag());
+            } else {
+                onlinePageFg.toggleTag(event.getSelectTag(), event.getSelectCode());
+            }
         }
     }
 

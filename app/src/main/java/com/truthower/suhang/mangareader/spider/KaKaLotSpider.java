@@ -56,7 +56,6 @@ public class KaKaLotSpider extends SpiderBase {
                     ArrayList<MangaBean> mangaList = new ArrayList<MangaBean>();
                     for (int i = 0; i < mangaListElements.size(); i++) {
                         item = new MangaBean();
-                        System.out.println();
                         item.setName(mangaListElements.get(i).getElementsByTag("img").last().attr("alt"));
                         item.setUrl(mangaListElements.get(i).select("a").first().attr("href"));
                         item.setWebThumbnailUrl(mangaListElements.get(i).getElementsByTag("img").last().attr("src"));
