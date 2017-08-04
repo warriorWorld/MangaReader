@@ -66,7 +66,7 @@ public class OnlineMangaFragment extends BaseFragment implements PullToRefreshBa
         initPullListView();
         initSpider(Configure.currentWebSite);
 
-        if ((getWifiState() != WifiManager.WIFI_STATE_ENABLED || getWifiState() != WifiManager.WIFI_STATE_ENABLING) &&
+        if (getWifiState() != WifiManager.WIFI_STATE_ENABLED && getWifiState() != WifiManager.WIFI_STATE_ENABLING &&
                 SharedPreferencesUtils.getBooleanSharedPreferencesData(getActivity(), ShareKeys.ECONOMY_MODE, false)) {
             //没WiFi并且是省流量模式
             emptyTv.setText("当前未连接WiFi,如果你流量多就刷新.");
