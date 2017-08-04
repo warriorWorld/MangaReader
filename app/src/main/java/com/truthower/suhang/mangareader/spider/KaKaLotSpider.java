@@ -111,9 +111,12 @@ public class KaKaLotSpider extends SpiderBase {
                     Elements chapterElements = doc.select("div.row a");
                     ArrayList<ChapterBean> chapters = new ArrayList<ChapterBean>();
                     ChapterBean chapterBean;
-                    for (int i = 0; i < chapterElements.size(); i++) {
+                    int chapterPosition = 0;
+                    for (int i = chapterElements.size() - 1; i >= 0; i--) {
+                        //原网站是倒叙排列的
                         chapterBean = new ChapterBean();
-                        chapterBean.setChapterPosition((i + 1) + "");
+                        chapterPosition++;
+                        chapterBean.setChapterPosition(chapterPosition + "");
                         chapterBean.setChapterUrl(chapterElements.get(i).attr("href"));
                         chapters.add(chapterBean);
                     }

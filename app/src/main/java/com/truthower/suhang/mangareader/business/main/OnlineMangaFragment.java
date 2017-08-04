@@ -20,6 +20,7 @@ import com.truthower.suhang.mangareader.bean.MangaListBean;
 import com.truthower.suhang.mangareader.business.detail.WebMangaDetailsActivity;
 import com.truthower.suhang.mangareader.config.Configure;
 import com.truthower.suhang.mangareader.config.ShareKeys;
+import com.truthower.suhang.mangareader.eventbus.JumpEvent;
 import com.truthower.suhang.mangareader.listener.JsoupCallBack;
 import com.truthower.suhang.mangareader.listener.OnEditResultListener;
 import com.truthower.suhang.mangareader.spider.SpiderBase;
@@ -29,6 +30,8 @@ import com.truthower.suhang.mangareader.widget.dialog.MangaEditDialog;
 import com.truthower.suhang.mangareader.widget.pulltorefresh.PullToRefreshBase;
 import com.truthower.suhang.mangareader.widget.pulltorefresh.PullToRefreshListView;
 import com.truthower.suhang.mangareader.widget.wheelview.wheelselector.WheelSelectorDialog;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.util.ArrayList;
 
@@ -63,7 +66,7 @@ public class OnlineMangaFragment extends BaseFragment implements PullToRefreshBa
         initPullListView();
         initSpider(Configure.currentWebSite);
 
-        if (getWifiState() != WifiManager.WIFI_STATE_ENABLED &&
+        if ((getWifiState() != WifiManager.WIFI_STATE_ENABLED || getWifiState() != WifiManager.WIFI_STATE_ENABLING) &&
                 SharedPreferencesUtils.getBooleanSharedPreferencesData(getActivity(), ShareKeys.ECONOMY_MODE, false)) {
             //没WiFi并且是省流量模式
             emptyTv.setText("当前未连接WiFi,如果你流量多就刷新.");
@@ -103,6 +106,7 @@ public class OnlineMangaFragment extends BaseFragment implements PullToRefreshBa
 
             @Override
             public void onTitleClick() {
+                baseToast.showToast(getWifiState() + "");
             }
         });
     }
