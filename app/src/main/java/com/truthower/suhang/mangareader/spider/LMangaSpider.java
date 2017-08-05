@@ -38,7 +38,7 @@ public class LMangaSpider extends SpiderBase {
             public void run() {
                 try {
                     if (TextUtils.isEmpty(type) || type.equals("all")) {
-                        doc = Jsoup.connect(webUrl + "index-all-" + page+ ".html")
+                        doc = Jsoup.connect(webUrl + "index-all-" + page + ".html")
                                 .timeout(10000).get();
                     } else {
                         doc = Jsoup.connect(webUrl + "tag/" + type + "-all-" + page + ".html")
@@ -55,7 +55,7 @@ public class LMangaSpider extends SpiderBase {
                     ArrayList<MangaBean> mangaList = new ArrayList<MangaBean>();
                     for (int i = 0; i < mangaListElement.size(); i++) {
                         item = new MangaBean();
-                        item.setWebThumbnailUrl(mangaListElement.get(i).select("div.dj-img1").first().getElementsByTag("img").last().attr("src"));
+                        item.setWebThumbnailUrl("https:" + mangaListElement.get(i).select("div.dj-img1").first().getElementsByTag("img").last().attr("src"));
                         item.setName(mangaListElement.get(i).select("h1 a").text());
                         item.setUrl(webUrlNoLastLine + mangaListElement.get(i).select("h1 a").attr("href"));
 
@@ -63,7 +63,7 @@ public class LMangaSpider extends SpiderBase {
                     }
                     for (int i = 0; i < djListElement.size(); i++) {
                         item = new MangaBean();
-                        item.setWebThumbnailUrl(djListElement.get(i).select("div.dj-img1").first().getElementsByTag("img").last().attr("src"));
+                        item.setWebThumbnailUrl("https:" + djListElement.get(i).select("div.dj-img1").first().getElementsByTag("img").last().attr("src"));
                         item.setName(djListElement.get(i).select("h1 a").text());
                         item.setUrl(webUrlNoLastLine + djListElement.get(i).select("h1 a").attr("href"));
 
@@ -92,58 +92,58 @@ public class LMangaSpider extends SpiderBase {
                     jsoupCallBack.loadFailed(e.toString());
                 }
                 if (null != doc) {
-                    Element test1 = doc.getElementById("info");
-                    Element imgElement = doc.getElementById("cover").getElementsByTag("img").last();
-                    Elements chaptersElement = doc.getElementsByClass("gallerythumb");
+                    Element mangaThumbnailElement = doc.select("div.cover a").first().getElementsByTag("img").last();
+                    Elements mangaTagElements = doc.select("ul.tags a");
+
                     MangaBean mangaBean = new MangaBean();
 
-                    String tilte = test1.select("h1").text();
-                    String thumbnail = imgElement.attr("src");
-                    ChapterBean item = new ChapterBean();
-                    ArrayList<ChapterBean> chapters = new ArrayList<ChapterBean>();
-                    for (int i = 0; i < chaptersElement.size(); i++) {
-                        String chapterThumbnail = chaptersElement.get(i).getElementsByTag("img").last().attr("src");
-                        String url = chapterThumbnail.replaceAll("t.nhentai.net", "i.nhentai.net");
-                        url = url.replaceAll("t.jpg", ".jpg");
-                        item = new ChapterBean();
-                        item.setImgUrl(url);
-                        item.setChapterThumbnailUrl(chapterThumbnail);
-                        chapters.add(item);
-                    }
-                    Elements tagsElements = test1.getElementsByClass("tags");
-                    Elements tagElements = tagsElements.select("a");
-                    ArrayList<String> typesList = new ArrayList<String>();
+                    mangaBean.setName("Can't found");
+                    mangaBean.setWebThumbnailUrl("https:" + mangaThumbnailElement.attr("src"));
 
-//                    ArrayList<String> artistsList = new ArrayList<String>();
-                    for (int i = 0; i < tagElements.size(); i++) {
-                        //漫画类型
-                        String tag = tagElements.get(i).attr("href");
-                        if (tag.contains("tag")) {
-                            String[] split = tag.split("tag");
-                            tag = split[split.length - 1];
-                            tag = tag.replaceAll("/", "");
-                            typesList.add(tag);
-                        }
-//                        else if (tag.contains("artist")) {
-//                            String[] split = tag.split("artist");
-//                            tag = split[split.length - 1];
-//                            tag = tag.replaceAll("/", "");
-//                            artistsList.add(tag);
-//                        }
+                    //Tag
+                    String[] types = new String[mangaTagElements.size()];
+                    String[] typeCodes = new String[mangaTagElements.size()];
+                    for (int i = 0; i < mangaTagElements.size(); i++) {
+                        types[i] = mangaTagElements.get(i).text();
+                        String tagCode = mangaTagElements.get(i).attr("href");
+                        tagCode = tagCode.replaceAll("/tag/", "");
+                        tagCode = tagCode.replaceAll("-all-1.html", "");
+                        typeCodes[i] = tagCode;
                     }
-                    String[] types = new String[typesList.size()];
-//                    String[] artists = new String[artistsList.size()];
-                    for (int i = 0; i < typesList.size(); i++) {
-                        types[i] = typesList.get(i);
-                    }
-//                    for (int i = 0; i < artistsList.size(); i++) {
-//                        artists[i] = artistsList.get(i);
-//                        System.out.println(artistsList.get(i));
-//                    }
                     mangaBean.setTypes(types);
+                    mangaBean.setTypeCodes(typeCodes);
+                    //pics
+                    Elements mangaPicElements = doc.select("div.thumbnail-container a");
+                    Elements mangaInfoElement = doc.getElementsByClass("gallery-info");
+
+                    //.select("div.thumbnail-container a")
+                    ArrayList<ChapterBean> chapters = new ArrayList<ChapterBean>();
+                    ChapterBean chapterBean;
+                    String mangaId = mangaURL;
+                    mangaId = mangaId.replaceAll("https://hitomi\\.la/galleries/", "");
+                    mangaId = mangaId.replaceAll("\\.html", "");
+                    System.out.println(mangaId);
+                    for (int i = 0; i < mangaPicElements.size(); i++) {
+                        chapterBean = new ChapterBean();
+                        System.out.println(mangaPicElements.text());
+                        if (mangaInfoElement.text().contains("doujinshi")) {
+                            chapterBean.setChapterThumbnailUrl("https://atn.hitomi.la/smalltn/" + mangaId + "/" + (i + 1) + ".jpg.jpg");
+                            chapterBean.setImgUrl("https://aa.hitomi.la/galleries/" + mangaId + "/" + (i + 1) + ".jpg");
+                        } else {
+                            String position = "";
+                            if (mangaPicElements.size() < 10) {
+                                position = "00" + (i + 1);
+                            } else if (mangaPicElements.size() < 100) {
+                                position = "0" + (i + 1);
+                            } else if (mangaPicElements.size() < 1000) {
+                                position = "" + (i + 1);
+                            }
+                            chapterBean.setChapterThumbnailUrl("https://btn.hitomi.la/smalltn/" + mangaId + "/" + position + ".jpg.jpg");
+                            chapterBean.setImgUrl("https://ba.hitomi.la/galleries/" + mangaId + "/" + position + ".jpg");
+                        }
+                        chapters.add(chapterBean);
+                    }
                     mangaBean.setChapters(chapters);
-                    mangaBean.setName(tilte);
-                    mangaBean.setWebThumbnailUrl(thumbnail);
                     jsoupCallBack.loadSucceed((ResultObj) mangaBean);
                 } else {
                     jsoupCallBack.loadFailed("doc load failed");
@@ -174,98 +174,8 @@ public class LMangaSpider extends SpiderBase {
 
     @Override
     public <ResultObj> void getMangaChapterPics(final Context context, final String chapterUrl, final JsoupCallBack<ResultObj> jsoupCallBack) {
-        pathList = new ArrayList<String>();
-        getPageSize(chapterUrl, new JsoupCallBack<Integer>() {
-            @Override
-            public void loadSucceed(Integer result) {
-                initPicPathList(context, chapterUrl, 1, result, jsoupCallBack);
-            }
-
-            @Override
-            public void loadFailed(String error) {
-
-            }
-        });
     }
 
-
-    private <ResultObj> void initPicPathList(final Context context, final String chapterUrl, final int page,
-                                             final int pageSize, final JsoupCallBack<ResultObj> jsoupCallBack) {
-        String url = chapterUrl + "/" + page;
-        HashMap<String, String> params = new HashMap<String, String>();
-        MStringRequest request = new MStringRequest(url, params,
-                new Response.Listener<String>() {
-
-                    @Override
-                    public void onResponse(String arg0) {
-                        // 得到包含某正则表达式的字符串
-                        Pattern p;
-                        p = Pattern.compile("http:[^\f\n\r\t]*?(jpg|png|gif|jpeg)");
-                        Matcher m;
-                        m = p.matcher(arg0);
-                        // String xxx;
-                        int cycle = 0;
-                        String urlResult = "", prefetch = "";
-                        while (m.find()) {
-                            // 获取到图片的URL 先获取到的第二个后获取到的第一个
-                            if (cycle == 1) {
-                                urlResult = m.group();
-                            } else if (cycle == 0) {
-                                prefetch = m.group();
-                            }
-                            cycle++;
-                        }
-                        if (page != pageSize) {
-                            pathList.add(urlResult);
-                            pathList.add(prefetch);
-                            Logger.d(urlResult + "\n" + prefetch);
-                        } else {
-                            //到最后一页时 只有一个图片
-                            pathList.add(prefetch);
-                            Logger.d(prefetch);
-                        }
-                        if (page == pageSize || page + 1 == pageSize) {
-                            //已找到所有的图片地址
-                            //TODO 得到结果
-                            jsoupCallBack.loadSucceed((ResultObj) pathList);
-                        } else {
-                            initPicPathList(context, chapterUrl, page + 2, pageSize, jsoupCallBack);
-                        }
-                    }
-                }, new Response.ErrorListener() {
-
-            @Override
-            public void onErrorResponse(VolleyError arg0) {
-                jsoupCallBack.loadFailed(arg0.toString());
-            }
-        });
-        VolleyTool.getInstance(context).getRequestQueue()
-                .add(request);
-    }
-
-    private <ResultObj> void getPageSize(final String url, final JsoupCallBack<ResultObj> jsoupCallBack) {
-        new Thread() {
-            @Override
-            public void run() {
-                try {
-                    doc = Jsoup.connect(url + "/" + 1)
-                            .timeout(10000).get();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    jsoupCallBack.loadFailed(e.toString());
-                }
-                if (null != doc) {
-                    Element page = doc.getElementById("selectpage");
-                    Element lastPage = page.select("select option").last();
-
-                    jsoupCallBack.loadSucceed((ResultObj) Integer.valueOf(lastPage.text()));
-                } else {
-                    jsoupCallBack.loadFailed("getPageSize doc load failed");
-                }
-            }
-        }.start();
-
-    }
 
     @Override
     public int nextPageNeedAddCount() {

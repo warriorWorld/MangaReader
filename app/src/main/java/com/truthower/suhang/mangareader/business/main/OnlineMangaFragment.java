@@ -2,6 +2,8 @@ package com.truthower.suhang.mangareader.business.main;
 
 import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -66,7 +68,7 @@ public class OnlineMangaFragment extends BaseFragment implements PullToRefreshBa
         initPullListView();
         initSpider(Configure.currentWebSite);
 
-        if (getWifiState() != WifiManager.WIFI_STATE_ENABLED && getWifiState() != WifiManager.WIFI_STATE_ENABLING &&
+        if (!isWifi(getActivity()) &&
                 SharedPreferencesUtils.getBooleanSharedPreferencesData(getActivity(), ShareKeys.ECONOMY_MODE, false)) {
             //没WiFi并且是省流量模式
             emptyTv.setText("当前未连接WiFi,如果你流量多就刷新.");
@@ -106,7 +108,6 @@ public class OnlineMangaFragment extends BaseFragment implements PullToRefreshBa
 
             @Override
             public void onTitleClick() {
-                baseToast.showToast(getWifiState() + "");
             }
         });
     }
@@ -148,14 +149,21 @@ public class OnlineMangaFragment extends BaseFragment implements PullToRefreshBa
         }
     }
 
-    private int getWifiState() {
-        WifiManager wifiManager = (WifiManager) getActivity().getApplicationContext().getSystemService(Context.WIFI_SERVICE);
-        if (wifiManager != null) {
-            int wifiState = wifiManager.getWifiState();
-            return wifiState;
-        } else {
-            return -1;
+    /**
+     * make true current connect service is wifi
+     *
+     * @param mContext
+     * @return
+     */
+    private static boolean isWifi(Context mContext) {
+        ConnectivityManager connectivityManager = (ConnectivityManager) mContext
+                .getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetInfo = connectivityManager.getActiveNetworkInfo();
+        if (activeNetInfo != null
+                && activeNetInfo.getType() == ConnectivityManager.TYPE_WIFI) {
+            return true;
         }
+        return false;
     }
 
     private void doGetData() {

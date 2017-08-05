@@ -469,7 +469,7 @@ public class WebMangaDetailsActivity extends BaseActivity implements AdapterView
             public void done(List<AVObject> list, AVException e) {
                 if (LeanCloundUtil.handleLeanResult(WebMangaDetailsActivity.this, e)) {
                     if (null != list && list.size() > 0) {
-                        baseTopBar.setTitle(currentManga.getName() + "(阅)");
+                        baseTopBar.setTitle("(阅)" + currentManga.getName());
                     } else {
                         baseTopBar.setTitle(currentManga.getName());
                         addToRead();
