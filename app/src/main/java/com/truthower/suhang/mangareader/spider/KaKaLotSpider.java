@@ -9,6 +9,7 @@ import com.android.volley.VolleyError;
 import com.truthower.suhang.mangareader.bean.ChapterBean;
 import com.truthower.suhang.mangareader.bean.MangaBean;
 import com.truthower.suhang.mangareader.bean.MangaListBean;
+import com.truthower.suhang.mangareader.config.Configure;
 import com.truthower.suhang.mangareader.listener.JsoupCallBack;
 import com.truthower.suhang.mangareader.utils.Logger;
 import com.truthower.suhang.mangareader.utils.StringUtil;
@@ -127,7 +128,7 @@ public class KaKaLotSpider extends SpiderBase {
                         jsoupCallBack.loadFailed("doc load failed");
                     }
                 } catch (Exception e) {
-                    jsoupCallBack.loadFailed("catch 1 exception");
+                    jsoupCallBack.loadFailed(Configure.WRONG_WEBSITE_EXCEPTION);
                 }
             }
         }.start();

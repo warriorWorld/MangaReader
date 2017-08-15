@@ -16,11 +16,12 @@ public class Configure {
     public static boolean isTest = false;
     public static String versionName = "";
     public static int versionCode;
-    public static String[] websList = {"MangaReader","KaKaLot"};
+    public static String[] websList = {"MangaReader", "KaKaLot"};
     public static String[] masterWebsList = {"MangaReader", "NManga", "KaKaLot", "LManga"};
     public static String DST_FOLDER_NAME = "aSpider";
     public static String storagePath = Environment
             .getExternalStorageDirectory().getAbsolutePath() + "/" + DST_FOLDER_NAME;
+    public static String WRONG_WEBSITE_EXCEPTION = "wrong_website_exception";
     //仅用于显示当前的漫画名称
     public static String currentMangaName = "";
     public static String currentWebSite = websList[0];

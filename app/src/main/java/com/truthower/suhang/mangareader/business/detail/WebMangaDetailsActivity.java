@@ -94,7 +94,7 @@ public class WebMangaDetailsActivity extends BaseActivity implements AdapterView
         if (TextUtils.isEmpty(mangaUrl)) {
             this.finish();
         }
-        initSpider(Configure.currentWebSite);
+        initSpider();
 
         initUI();
         initPullGridView();
@@ -108,10 +108,10 @@ public class WebMangaDetailsActivity extends BaseActivity implements AdapterView
         doGetIsCollected();
     }
 
-    private void initSpider(String currentWebSite) {
+    private void initSpider() {
         try {
             spider = (SpiderBase) Class.forName
-                    ("com.truthower.suhang.mangareader.spider." + currentWebSite + "Spider").newInstance();
+                    ("com.truthower.suhang.mangareader.spider." + Configure.currentWebSite + "Spider").newInstance();
         } catch (ClassNotFoundException e) {
             baseToast.showToast(e + "");
             e.printStackTrace();
@@ -160,12 +160,13 @@ public class WebMangaDetailsActivity extends BaseActivity implements AdapterView
                     @Override
                     public void loadFailed(String error) {
                         loadBar.dismiss();
-                        if (error.equals("catch 1 exception")) {
+                        if (error.equals(Configure.WRONG_WEBSITE_EXCEPTION)) {
                             if (LoginBean.getInstance().isMaster()) {
-                                initSpider(Configure.masterWebsList[trySpiderPosition]);
+                                Configure.currentWebSite = Configure.masterWebsList[trySpiderPosition];
                             } else {
-                                initSpider(Configure.websList[trySpiderPosition]);
+                                Configure.currentWebSite = Configure.websList[trySpiderPosition];
                             }
+                            initSpider();
                             initWebManga(url);
                             trySpiderPosition++;
                         }
@@ -676,6 +677,9 @@ public class WebMangaDetailsActivity extends BaseActivity implements AdapterView
     }
 
     private void toggleDownload() {
+        if (null == currentManga) {
+            return;
+        }
         if (Configure.isDownloadServiceRunning && null != currentManga && currentManga.getName().equals
                 (SharedPreferencesUtils.getSharedPreferencesData(this, ShareKeys.DOWNLOAD_MANGA_NAME))) {
             downloadTagTv.setVisibility(View.VISIBLE);
