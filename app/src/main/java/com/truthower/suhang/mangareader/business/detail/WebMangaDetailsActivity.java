@@ -83,6 +83,8 @@ public class WebMangaDetailsActivity extends BaseActivity implements AdapterView
     private WheelSelectorDialog tagSelector;
     //one shot 直接获取到了所有图片的地址
     private ArrayList<String> oneShotPathList = new ArrayList<String>();
+    //因为我不知道当期收藏的漫画是哪个网站的 所以就一个个试
+    private int trySpiderPosition = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -92,7 +94,7 @@ public class WebMangaDetailsActivity extends BaseActivity implements AdapterView
         if (TextUtils.isEmpty(mangaUrl)) {
             this.finish();
         }
-        initSpider();
+        initSpider(Configure.currentWebSite);
 
         initUI();
         initPullGridView();
@@ -106,10 +108,10 @@ public class WebMangaDetailsActivity extends BaseActivity implements AdapterView
         doGetIsCollected();
     }
 
-    private void initSpider() {
+    private void initSpider(String currentWebSite) {
         try {
             spider = (SpiderBase) Class.forName
-                    ("com.truthower.suhang.mangareader.spider." + Configure.currentWebSite + "Spider").newInstance();
+                    ("com.truthower.suhang.mangareader.spider." + currentWebSite + "Spider").newInstance();
         } catch (ClassNotFoundException e) {
             baseToast.showToast(e + "");
             e.printStackTrace();
@@ -128,33 +130,47 @@ public class WebMangaDetailsActivity extends BaseActivity implements AdapterView
         loadBar.setMessage("加载中...");
     }
 
-    private void initWebManga(String url) {
-        loadBar.show();
-        spider.getMangaDetail(url, new JsoupCallBack<MangaBean>() {
+    private void initWebManga(final String url) {
+        runOnUiThread(new Runnable() {
             @Override
-            public void loadSucceed(final MangaBean result) {
-                runOnUiThread(new Runnable() {
+            public void run() {
+                loadBar.show();
+                spider.getMangaDetail(url, new JsoupCallBack<MangaBean>() {
                     @Override
-                    public void run() {
-                        loadBar.dismiss();
-                        currentManga = result;
-                        refreshUI();
-                        toggleDownload();
-                        showDescription();
-                        doGetIsRead();
-                        if (spider.isOneShot() && null != result.getChapters() && result.getChapters().size() > 0
-                                && !TextUtils.isEmpty(result.getChapters().get(0).getImgUrl())) {
-                            for (int i = 0; i < result.getChapters().size(); i++) {
-                                oneShotPathList.add(result.getChapters().get(i).getImgUrl());
+                    public void loadSucceed(final MangaBean result) {
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                loadBar.dismiss();
+                                currentManga = result;
+                                refreshUI();
+                                toggleDownload();
+                                showDescription();
+                                doGetIsRead();
+                                if (spider.isOneShot() && null != result.getChapters() && result.getChapters().size() > 0
+                                        && !TextUtils.isEmpty(result.getChapters().get(0).getImgUrl())) {
+                                    for (int i = 0; i < result.getChapters().size(); i++) {
+                                        oneShotPathList.add(result.getChapters().get(i).getImgUrl());
+                                    }
+                                }
                             }
+                        });
+                    }
+
+                    @Override
+                    public void loadFailed(String error) {
+                        loadBar.dismiss();
+                        if (error.equals("catch 1 exception")) {
+                            if (LoginBean.getInstance().isMaster()) {
+                                initSpider(Configure.masterWebsList[trySpiderPosition]);
+                            } else {
+                                initSpider(Configure.websList[trySpiderPosition]);
+                            }
+                            initWebManga(url);
+                            trySpiderPosition++;
                         }
                     }
                 });
-            }
-
-            @Override
-            public void loadFailed(String error) {
-                loadBar.dismiss();
             }
         });
     }

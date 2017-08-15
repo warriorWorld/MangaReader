@@ -91,62 +91,66 @@ public class LMangaSpider extends SpiderBase {
                     e.printStackTrace();
                     jsoupCallBack.loadFailed(e.toString());
                 }
-                if (null != doc) {
-                    Element mangaThumbnailElement = doc.select("div.cover a").first().getElementsByTag("img").last();
-                    Elements mangaTagElements = doc.select("ul.tags a");
+                try {
+                    if (null != doc) {
+                        Element mangaThumbnailElement = doc.select("div.cover a").first().getElementsByTag("img").last();
+                        Elements mangaTagElements = doc.select("ul.tags a");
 
-                    MangaBean mangaBean = new MangaBean();
+                        MangaBean mangaBean = new MangaBean();
 
-                    mangaBean.setName("Can't found");
-                    mangaBean.setWebThumbnailUrl("https:" + mangaThumbnailElement.attr("src"));
+                        mangaBean.setName("Can't found");
+                        mangaBean.setWebThumbnailUrl("https:" + mangaThumbnailElement.attr("src"));
 
-                    //Tag
-                    String[] types = new String[mangaTagElements.size()];
-                    String[] typeCodes = new String[mangaTagElements.size()];
-                    for (int i = 0; i < mangaTagElements.size(); i++) {
-                        types[i] = mangaTagElements.get(i).text();
-                        String tagCode = mangaTagElements.get(i).attr("href");
-                        tagCode = tagCode.replaceAll("/tag/", "");
-                        tagCode = tagCode.replaceAll("-all-1.html", "");
-                        typeCodes[i] = tagCode;
-                    }
-                    mangaBean.setTypes(types);
-                    mangaBean.setTypeCodes(typeCodes);
-                    //pics
-                    Elements mangaPicElements = doc.select("div.thumbnail-container a");
-                    Elements mangaInfoElement = doc.getElementsByClass("gallery-info");
-
-                    //.select("div.thumbnail-container a")
-                    ArrayList<ChapterBean> chapters = new ArrayList<ChapterBean>();
-                    ChapterBean chapterBean;
-                    String mangaId = mangaURL;
-                    mangaId = mangaId.replaceAll("https://hitomi\\.la/galleries/", "");
-                    mangaId = mangaId.replaceAll("\\.html", "");
-                    System.out.println(mangaId);
-                    for (int i = 0; i < mangaPicElements.size(); i++) {
-                        chapterBean = new ChapterBean();
-                        System.out.println(mangaPicElements.text());
-                        if (mangaInfoElement.text().contains("doujinshi")) {
-                            chapterBean.setChapterThumbnailUrl("https://atn.hitomi.la/smalltn/" + mangaId + "/" + (i + 1) + ".jpg.jpg");
-                            chapterBean.setImgUrl("https://aa.hitomi.la/galleries/" + mangaId + "/" + (i + 1) + ".jpg");
-                        } else {
-                            String position = "";
-                            if (mangaPicElements.size() < 10) {
-                                position = "00" + (i + 1);
-                            } else if (mangaPicElements.size() < 100) {
-                                position = "0" + (i + 1);
-                            } else if (mangaPicElements.size() < 1000) {
-                                position = "" + (i + 1);
-                            }
-                            chapterBean.setChapterThumbnailUrl("https://btn.hitomi.la/smalltn/" + mangaId + "/" + position + ".jpg.jpg");
-                            chapterBean.setImgUrl("https://ba.hitomi.la/galleries/" + mangaId + "/" + position + ".jpg");
+                        //Tag
+                        String[] types = new String[mangaTagElements.size()];
+                        String[] typeCodes = new String[mangaTagElements.size()];
+                        for (int i = 0; i < mangaTagElements.size(); i++) {
+                            types[i] = mangaTagElements.get(i).text();
+                            String tagCode = mangaTagElements.get(i).attr("href");
+                            tagCode = tagCode.replaceAll("/tag/", "");
+                            tagCode = tagCode.replaceAll("-all-1.html", "");
+                            typeCodes[i] = tagCode;
                         }
-                        chapters.add(chapterBean);
+                        mangaBean.setTypes(types);
+                        mangaBean.setTypeCodes(typeCodes);
+                        //pics
+                        Elements mangaPicElements = doc.select("div.thumbnail-container a");
+                        Elements mangaInfoElement = doc.getElementsByClass("gallery-info");
+
+                        //.select("div.thumbnail-container a")
+                        ArrayList<ChapterBean> chapters = new ArrayList<ChapterBean>();
+                        ChapterBean chapterBean;
+                        String mangaId = mangaURL;
+                        mangaId = mangaId.replaceAll("https://hitomi\\.la/galleries/", "");
+                        mangaId = mangaId.replaceAll("\\.html", "");
+                        System.out.println(mangaId);
+                        for (int i = 0; i < mangaPicElements.size(); i++) {
+                            chapterBean = new ChapterBean();
+                            System.out.println(mangaPicElements.text());
+                            if (mangaInfoElement.text().contains("doujinshi")) {
+                                chapterBean.setChapterThumbnailUrl("https://atn.hitomi.la/smalltn/" + mangaId + "/" + (i + 1) + ".jpg.jpg");
+                                chapterBean.setImgUrl("https://aa.hitomi.la/galleries/" + mangaId + "/" + (i + 1) + ".jpg");
+                            } else {
+                                String position = "";
+                                if (mangaPicElements.size() < 10) {
+                                    position = "00" + (i + 1);
+                                } else if (mangaPicElements.size() < 100) {
+                                    position = "0" + (i + 1);
+                                } else if (mangaPicElements.size() < 1000) {
+                                    position = "" + (i + 1);
+                                }
+                                chapterBean.setChapterThumbnailUrl("https://btn.hitomi.la/smalltn/" + mangaId + "/" + position + ".jpg.jpg");
+                                chapterBean.setImgUrl("https://ba.hitomi.la/galleries/" + mangaId + "/" + position + ".jpg");
+                            }
+                            chapters.add(chapterBean);
+                        }
+                        mangaBean.setChapters(chapters);
+                        jsoupCallBack.loadSucceed((ResultObj) mangaBean);
+                    } else {
+                        jsoupCallBack.loadFailed("doc load failed");
                     }
-                    mangaBean.setChapters(chapters);
-                    jsoupCallBack.loadSucceed((ResultObj) mangaBean);
-                } else {
-                    jsoupCallBack.loadFailed("doc load failed");
+                } catch (Exception e) {
+                    jsoupCallBack.loadFailed("catch 1 exception");
                 }
             }
         }.start();

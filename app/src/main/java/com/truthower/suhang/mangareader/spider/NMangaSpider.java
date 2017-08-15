@@ -94,62 +94,66 @@ public class NMangaSpider extends SpiderBase {
                     e.printStackTrace();
                     jsoupCallBack.loadFailed(e.toString());
                 }
-                if (null != doc) {
-                    Element test1 = doc.getElementById("info");
-                    Element imgElement = doc.getElementById("cover").getElementsByTag("img").last();
-                    Elements chaptersElement = doc.getElementsByClass("gallerythumb");
-                    MangaBean mangaBean = new MangaBean();
+                try {
+                    if (null != doc) {
+                        Element test1 = doc.getElementById("info");
+                        Element imgElement = doc.getElementById("cover").getElementsByTag("img").last();
+                        Elements chaptersElement = doc.getElementsByClass("gallerythumb");
+                        MangaBean mangaBean = new MangaBean();
 
-                    String tilte = test1.select("h1").text();
-                    String thumbnail = imgElement.attr("src");
-                    ChapterBean item = new ChapterBean();
-                    ArrayList<ChapterBean> chapters = new ArrayList<ChapterBean>();
-                    for (int i = 0; i < chaptersElement.size(); i++) {
-                        String chapterThumbnail = chaptersElement.get(i).getElementsByTag("img").last().attr("src");
-                        String url = chapterThumbnail.replaceAll("t.nhentai.net", "i.nhentai.net");
-                        url = url.replaceAll("t.jpg", ".jpg");
-                        item = new ChapterBean();
-                        item.setImgUrl(url);
-                        item.setChapterThumbnailUrl(chapterThumbnail);
-                        chapters.add(item);
-                    }
-                    Elements tagsElements = test1.getElementsByClass("tags");
-                    Elements tagElements = tagsElements.select("a");
-                    ArrayList<String> typesList = new ArrayList<String>();
+                        String tilte = test1.select("h1").text();
+                        String thumbnail = imgElement.attr("src");
+                        ChapterBean item = new ChapterBean();
+                        ArrayList<ChapterBean> chapters = new ArrayList<ChapterBean>();
+                        for (int i = 0; i < chaptersElement.size(); i++) {
+                            String chapterThumbnail = chaptersElement.get(i).getElementsByTag("img").last().attr("src");
+                            String url = chapterThumbnail.replaceAll("t.nhentai.net", "i.nhentai.net");
+                            url = url.replaceAll("t.jpg", ".jpg");
+                            item = new ChapterBean();
+                            item.setImgUrl(url);
+                            item.setChapterThumbnailUrl(chapterThumbnail);
+                            chapters.add(item);
+                        }
+                        Elements tagsElements = test1.getElementsByClass("tags");
+                        Elements tagElements = tagsElements.select("a");
+                        ArrayList<String> typesList = new ArrayList<String>();
 
 //                    ArrayList<String> artistsList = new ArrayList<String>();
-                    for (int i = 0; i < tagElements.size(); i++) {
-                        //漫画类型
-                        String tag = tagElements.get(i).attr("href");
-                        if (tag.contains("tag")) {
-                            String[] split = tag.split("tag");
-                            tag = split[split.length - 1];
-                            tag = tag.replaceAll("/", "");
-                            typesList.add(tag);
-                        }
+                        for (int i = 0; i < tagElements.size(); i++) {
+                            //漫画类型
+                            String tag = tagElements.get(i).attr("href");
+                            if (tag.contains("tag")) {
+                                String[] split = tag.split("tag");
+                                tag = split[split.length - 1];
+                                tag = tag.replaceAll("/", "");
+                                typesList.add(tag);
+                            }
 //                        else if (tag.contains("artist")) {
 //                            String[] split = tag.split("artist");
 //                            tag = split[split.length - 1];
 //                            tag = tag.replaceAll("/", "");
 //                            artistsList.add(tag);
 //                        }
-                    }
-                    String[] types = new String[typesList.size()];
+                        }
+                        String[] types = new String[typesList.size()];
 //                    String[] artists = new String[artistsList.size()];
-                    for (int i = 0; i < typesList.size(); i++) {
-                        types[i] = typesList.get(i);
-                    }
+                        for (int i = 0; i < typesList.size(); i++) {
+                            types[i] = typesList.get(i);
+                        }
 //                    for (int i = 0; i < artistsList.size(); i++) {
 //                        artists[i] = artistsList.get(i);
 //                        System.out.println(artistsList.get(i));
 //                    }
-                    mangaBean.setTypes(types);
-                    mangaBean.setChapters(chapters);
-                    mangaBean.setName(tilte);
-                    mangaBean.setWebThumbnailUrl(thumbnail);
-                    jsoupCallBack.loadSucceed((ResultObj) mangaBean);
-                } else {
-                    jsoupCallBack.loadFailed("doc load failed");
+                        mangaBean.setTypes(types);
+                        mangaBean.setChapters(chapters);
+                        mangaBean.setName(tilte);
+                        mangaBean.setWebThumbnailUrl(thumbnail);
+                        jsoupCallBack.loadSucceed((ResultObj) mangaBean);
+                    } else {
+                        jsoupCallBack.loadFailed("doc load failed");
+                    }
+                } catch (Exception e) {
+                    jsoupCallBack.loadFailed("catch 1 exception");
                 }
             }
         }.start();

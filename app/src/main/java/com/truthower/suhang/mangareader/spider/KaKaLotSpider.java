@@ -82,48 +82,52 @@ public class KaKaLotSpider extends SpiderBase {
                     e.printStackTrace();
                     jsoupCallBack.loadFailed(e.toString());
                 }
-                if (null != doc) {
-                    Elements mangaPicDetailElements = doc.select("div.manga-info-pic");
-                    Elements mangaTextDetailElements = doc.select("ul.manga-info-text li");
-                    Elements mangaTagDetailElements = doc.select("ul.manga-info-text li").get(6).select("a");
+                try {
+                    if (null != doc) {
+                        Elements mangaPicDetailElements = doc.select("div.manga-info-pic");
+                        Elements mangaTextDetailElements = doc.select("ul.manga-info-text li");
+                        Elements mangaTagDetailElements = doc.select("ul.manga-info-text li").get(6).select("a");
 
-                    MangaBean item = new MangaBean();
-                    item.setWebThumbnailUrl(mangaPicDetailElements.first().getElementsByTag("img").last().attr("src"));
-                    item.setName(mangaPicDetailElements.first().getElementsByTag("img").last().attr("alt"));
-                    item.setAuthor(mangaTextDetailElements.get(1).text());
-                    String lastUpadte = mangaTextDetailElements.get(3).text();
-                    lastUpadte = lastUpadte.replaceAll("Last updated : ", "");
-                    item.setLast_update(lastUpadte);
-                    //Tag
-                    String[] types = new String[mangaTagDetailElements.size()];
-                    String[] typeCodes = new String[mangaTagDetailElements.size()];
-                    for (int i = 0; i < mangaTagDetailElements.size(); i++) {
-                        String typeCode = mangaTagDetailElements.get(i).attr("href");
-                        //加个\\转义字符
-                        typeCode = typeCode.replaceAll("http://mangakakalot.com/manga_list\\?type=newest&category=", "");
-                        typeCode = typeCode.replaceAll("&alpha=all&page=1&state=all", "");
-                        typeCodes[i] = typeCode;
-                        types[i] = mangaTagDetailElements.get(i).text();
-                    }
-                    item.setTypes(types);
-                    item.setTypeCodes(typeCodes);
+                        MangaBean item = new MangaBean();
+                        item.setWebThumbnailUrl(mangaPicDetailElements.first().getElementsByTag("img").last().attr("src"));
+                        item.setName(mangaPicDetailElements.first().getElementsByTag("img").last().attr("alt"));
+                        item.setAuthor(mangaTextDetailElements.get(1).text());
+                        String lastUpadte = mangaTextDetailElements.get(3).text();
+                        lastUpadte = lastUpadte.replaceAll("Last updated : ", "");
+                        item.setLast_update(lastUpadte);
+                        //Tag
+                        String[] types = new String[mangaTagDetailElements.size()];
+                        String[] typeCodes = new String[mangaTagDetailElements.size()];
+                        for (int i = 0; i < mangaTagDetailElements.size(); i++) {
+                            String typeCode = mangaTagDetailElements.get(i).attr("href");
+                            //加个\\转义字符
+                            typeCode = typeCode.replaceAll("http://mangakakalot.com/manga_list\\?type=newest&category=", "");
+                            typeCode = typeCode.replaceAll("&alpha=all&page=1&state=all", "");
+                            typeCodes[i] = typeCode;
+                            types[i] = mangaTagDetailElements.get(i).text();
+                        }
+                        item.setTypes(types);
+                        item.setTypeCodes(typeCodes);
 
-                    Elements chapterElements = doc.select("div.row a");
-                    ArrayList<ChapterBean> chapters = new ArrayList<ChapterBean>();
-                    ChapterBean chapterBean;
-                    int chapterPosition = 0;
-                    for (int i = chapterElements.size() - 1; i >= 0; i--) {
-                        //原网站是倒叙排列的
-                        chapterBean = new ChapterBean();
-                        chapterPosition++;
-                        chapterBean.setChapterPosition(chapterPosition + "");
-                        chapterBean.setChapterUrl(chapterElements.get(i).attr("href"));
-                        chapters.add(chapterBean);
+                        Elements chapterElements = doc.select("div.row a");
+                        ArrayList<ChapterBean> chapters = new ArrayList<ChapterBean>();
+                        ChapterBean chapterBean;
+                        int chapterPosition = 0;
+                        for (int i = chapterElements.size() - 1; i >= 0; i--) {
+                            //原网站是倒叙排列的
+                            chapterBean = new ChapterBean();
+                            chapterPosition++;
+                            chapterBean.setChapterPosition(chapterPosition + "");
+                            chapterBean.setChapterUrl(chapterElements.get(i).attr("href"));
+                            chapters.add(chapterBean);
+                        }
+                        item.setChapters(chapters);
+                        jsoupCallBack.loadSucceed((ResultObj) item);
+                    } else {
+                        jsoupCallBack.loadFailed("doc load failed");
                     }
-                    item.setChapters(chapters);
-                    jsoupCallBack.loadSucceed((ResultObj) item);
-                } else {
-                    jsoupCallBack.loadFailed("doc load failed");
+                } catch (Exception e) {
+                    jsoupCallBack.loadFailed("catch 1 exception");
                 }
             }
         }.start();
