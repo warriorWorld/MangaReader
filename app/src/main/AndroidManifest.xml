@@ -58,7 +58,9 @@
         </activity>
         <activity android:name=".business.detail.WebMangaDetailsActivity"></activity>
         <activity android:name=".business.detail.LocalMangaDetailsActivity"></activity>
-        <activity android:name=".business.read.ReadMangaActivity"></activity>
+        <activity
+            android:name=".business.read.ReadMangaActivity"
+            android:launchMode="singleTask"></activity>
         <activity android:name=".business.download.DownloadActivity"></activity>
         <activity
             android:name=".business.user.LoginActivity"

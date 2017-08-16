@@ -98,6 +98,8 @@ public class ReadMangaActivity extends BaseActivity implements OnClickListener {
                 mangaPager.setCurrentItem(toPage);
             }
         }
+        String currentMangaName = intent.getStringExtra("currentMangaName");
+        topBar.setTitle(currentMangaName);
     }
 
 
@@ -212,7 +214,6 @@ public class ReadMangaActivity extends BaseActivity implements OnClickListener {
 
         hideBaseTopBar();
         topBar = (TopBar) findViewById(R.id.read_manga_top_bar);
-        topBar.setTitle(Configure.currentMangaName);
         topBar.setOnTopBarClickListener(new TopBar.OnTopBarClickListener() {
             @Override
             public void onRightClick() {

@@ -48,6 +48,7 @@ public class LocalMangaDetailsActivity extends BaseActivity implements AdapterVi
     private TopBar topBar;
     private String filePath;
     private ArrayList<String> pathList;
+    private String currentMangaName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,6 +64,9 @@ public class LocalMangaDetailsActivity extends BaseActivity implements AdapterVi
         initGridView();
 
         initFile();
+
+        currentMangaName = intent.getStringExtra("currentMangaName");
+        baseTopBar.setTitle(currentMangaName);
     }
 
     @AfterPermissionGranted(Configure.PERMISSION_FILE_REQUST_CODE)
@@ -163,7 +167,6 @@ public class LocalMangaDetailsActivity extends BaseActivity implements AdapterVi
         pullToRefreshGridView = (PullToRefreshGridView) findViewById(R.id.ptf_local_grid_view);
         topBar = (TopBar) findViewById(R.id.gradient_bar);
         topBar.setVisibility(View.GONE);
-        baseTopBar.setTitle("详情");
         mangaGV = (GridView) pullToRefreshGridView.getRefreshableView();
         emptyView = findViewById(R.id.empty_view);
         emptyIV = (ImageView) findViewById(R.id.empty_image);
@@ -200,6 +203,7 @@ public class LocalMangaDetailsActivity extends BaseActivity implements AdapterVi
             intent.putExtras(pathListBundle);
             intent.putExtra("img_position", position);
         }
+        intent.putExtra("currentMangaName", currentMangaName);
         if (null != intent) {
             startActivity(intent);
         }

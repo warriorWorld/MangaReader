@@ -85,6 +85,7 @@ public class WebMangaDetailsActivity extends BaseActivity implements AdapterView
     private ArrayList<String> oneShotPathList = new ArrayList<String>();
     //因为我不知道当期收藏的漫画是哪个网站的 所以就一个个试
     private int trySpiderPosition = 0;
+    private String currentMangaName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -310,16 +311,17 @@ public class WebMangaDetailsActivity extends BaseActivity implements AdapterView
         } else {
             Intent intent = new Intent(WebMangaDetailsActivity.this, ReadMangaActivity.class);
             if (spider.isOneShot() && null != oneShotPathList && oneShotPathList.size() > 0) {
-                Configure.currentMangaName = currentManga.getName();
+                currentMangaName = currentManga.getName();
                 Bundle pathListBundle = new Bundle();
                 pathListBundle.putSerializable("pathList", oneShotPathList);
                 intent.putExtras(pathListBundle);
                 intent.putExtra("img_position", position);
             } else {
-                Configure.currentMangaName = currentManga.getName() + "(" + currentManga.getChapters().
+                currentMangaName = currentManga.getName() + "(" + currentManga.getChapters().
                         get(position).getChapterPosition() + ")";
                 intent.putExtra("chapterUrl", currentManga.getChapters().get(position).getChapterUrl());
             }
+            intent.putExtra("currentMangaName", currentMangaName);
             if (null != intent) {
                 startActivity(intent);
             }
