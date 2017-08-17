@@ -40,6 +40,7 @@ public class UserFragment extends BaseFragment implements View.OnClickListener {
     private RelativeLayout newWordBookRl;
     private RelativeLayout downloadRl;
     private RelativeLayout versionRl;
+    private RelativeLayout authorRl;
     private RelativeLayout chooseDirectoryRl;
     private TextView versionNameTv;
     private TextView logoutTv;
@@ -102,6 +103,7 @@ public class UserFragment extends BaseFragment implements View.OnClickListener {
         logoutTv = (TextView) v.findViewById(R.id.logout_tv);
         userHeadCiv = (CircleImage) v.findViewById(R.id.user_head_civ);
         userTopBarRl = (RelativeLayout) v.findViewById(R.id.user_top_bar_rl);
+        authorRl = (RelativeLayout) v.findViewById(R.id.author_rl);
         userHeadCiv.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
@@ -155,6 +157,7 @@ public class UserFragment extends BaseFragment implements View.OnClickListener {
         logoutTv.setOnClickListener(this);
         userTopBarRl.setOnClickListener(this);
         chooseDirectoryRl.setOnClickListener(this);
+        authorRl.setOnClickListener(this);
     }
 
     private void refreshUI() {
@@ -287,6 +290,14 @@ public class UserFragment extends BaseFragment implements View.OnClickListener {
         downloadDialog.setCancelable(false);
     }
 
+    private void showAuthorDialog() {
+        MangaDialog authorDialog = new MangaDialog(getActivity());
+        authorDialog.show();
+        authorDialog.setTitle("联系作者");
+        authorDialog.setOkText("知道了");
+        authorDialog.setMessage("作者:  苏航\n邮箱:  772192594@qq.com");
+    }
+
     public void refreshDirctoryPath() {
         choosedDirectoryTv.setText(Configure.DST_FOLDER_NAME);
     }
@@ -330,6 +341,9 @@ public class UserFragment extends BaseFragment implements View.OnClickListener {
                 break;
             case R.id.choose_directory_rl:
                 showFileChooser();
+                break;
+            case R.id.author_rl:
+                showAuthorDialog();
                 break;
         }
         if (null != intent) {
