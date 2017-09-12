@@ -50,6 +50,10 @@ public class MatchStringUtil {
 //		return matcher.matches();
     }
 
+    public static boolean isURL(String str) {
+        return str.matches("(http|ftp|https):\\/\\/[\\w\\-_]+(\\.[\\w\\-_]+)+([\\w\\-\\.,@?^=%&:/~\\+#]*[\\w\\-\\@?^=%&/~\\+#])?");
+    }
+
     /**
      * 验证密码
      */

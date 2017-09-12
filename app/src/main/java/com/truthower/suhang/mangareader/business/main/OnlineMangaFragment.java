@@ -26,6 +26,7 @@ import com.truthower.suhang.mangareader.eventbus.JumpEvent;
 import com.truthower.suhang.mangareader.listener.JsoupCallBack;
 import com.truthower.suhang.mangareader.listener.OnEditResultListener;
 import com.truthower.suhang.mangareader.spider.SpiderBase;
+import com.truthower.suhang.mangareader.utils.MatchStringUtil;
 import com.truthower.suhang.mangareader.utils.SharedPreferencesUtils;
 import com.truthower.suhang.mangareader.widget.bar.TopBar;
 import com.truthower.suhang.mangareader.widget.dialog.MangaEditDialog;
@@ -369,8 +370,10 @@ public class OnlineMangaFragment extends BaseFragment implements PullToRefreshBa
             searchDialog.setOnEditResultListener(new OnEditResultListener() {
                 @Override
                 public void onResult(String text) {
-                    text = text.replaceAll(" ", "-");
-                    text = spider.getWebUrl() + text;
+                    if (!MatchStringUtil.isURL(text)) {
+                        text = text.replaceAll(" ", "-");
+                        text = spider.getWebUrl() + text;
+                    }
                     if (!spider.isOneShot()) {
                         Intent intent = new Intent(getActivity(), WebMangaDetailsActivity.class);
                         intent.putExtra("mangaUrl", text);
