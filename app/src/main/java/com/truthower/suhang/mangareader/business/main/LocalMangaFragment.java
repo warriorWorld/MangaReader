@@ -4,6 +4,8 @@ import android.Manifest;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
+import android.os.Message;
 import android.support.annotation.Nullable;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -28,6 +30,7 @@ import com.truthower.suhang.mangareader.widget.dialog.MangaDialog;
 import com.truthower.suhang.mangareader.widget.dialog.MangaEditDialog;
 import com.truthower.suhang.mangareader.widget.pulltorefresh.PullToRefreshBase;
 import com.truthower.suhang.mangareader.widget.pulltorefresh.PullToRefreshGridView;
+import com.truthower.suhang.mangareader.widget.wheelview.wheelselector.WheelSelectorDialog;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -50,6 +53,26 @@ public class LocalMangaFragment extends BaseFragment implements AdapterView.OnIt
     private LocalMangaListAdapter adapter;
     private TopBar topBar;
     private String storagePath;
+    private String[] fileNameOptions = {"independent", "story", "other(edit)"};
+
+    private enum FileTypeEnum {
+        Independent,
+        Story
+    }
+
+    private WheelSelectorDialog optionsSelector;
+    private final String INDEPENDENT_PATH = "Independent", STORY_PATH = "Story";
+    private Handler handler2 = new Handler() {
+        public void handleMessage(Message msg) {
+            switch (Integer.valueOf(msg.obj.toString())) {
+                case 0:
+                    MangaDialog dialog = new MangaDialog(getActivity());
+                    dialog.show();
+                    dialog.setTitle("文件移动完成!");
+                    break;
+            }
+        }
+    };
 
     @Nullable
     @Override
@@ -139,7 +162,7 @@ public class LocalMangaFragment extends BaseFragment implements AdapterView.OnIt
 
             @Override
             public void onTitleClick() {
-                showSortAndRenameFilesDialog();
+                showOptionsSelector();
             }
         });
         mangaGV = (GridView) pullToRefreshGridView.getRefreshableView();
@@ -182,6 +205,8 @@ public class LocalMangaFragment extends BaseFragment implements AdapterView.OnIt
     private void sortAndRenameFile(String manganame) {
         String oldPath = storagePath + "/" + "download";
         String newPath = storagePath + "/" + manganame;
+        String gifPath = storagePath + "/" + "GIFs";
+
         File f = new File(oldPath);
         File[] files = f.listFiles();
         ArrayList<File> fileArrayList = new ArrayList<File>();
@@ -198,9 +223,17 @@ public class LocalMangaFragment extends BaseFragment implements AdapterView.OnIt
             baseToast.showToast("该文件夹已存在,请重新命名!");
             return;
         }
+        File gifFolder = new File(gifPath);
+        if (!gifFolder.exists()) {
+            gifFolder.mkdirs();
+        }
         for (int i = 0; i < fileArrayList.size(); i++) {
             if (!fileArrayList.get(i).toString().contains("gif")) {
                 File to = new File(newPath, manganame + "(" + i + ")" + ".jpg");
+
+                fileArrayList.get(i).renameTo(to);
+            } else {
+                File to = new File(gifPath, "gif" + "(" + i + ")" + ".gif");
 
                 fileArrayList.get(i).renameTo(to);
             }
@@ -208,6 +241,124 @@ public class LocalMangaFragment extends BaseFragment implements AdapterView.OnIt
         baseToast.showToast("完成");
     }
 
+    private void showOptionsSelector() {
+        if (null == fileNameOptions || fileNameOptions.length == 0) {
+            baseToast.showToast("没有筛选条件");
+            return;
+        }
+        if (null == optionsSelector) {
+            optionsSelector = new WheelSelectorDialog(getActivity());
+            optionsSelector.setCancelable(true);
+        }
+        optionsSelector.setOnSingleSelectedListener(new WheelSelectorDialog.OnSingleSelectedListener() {
+
+            @Override
+            public void onOkBtnClick(String selectedRes, String selectedCodeRes) {
+            }
+
+            @Override
+            public void onOkBtnClick(String selectedRes, String selectedCodeRes, String selectedTypeRes) {
+            }
+
+            @Override
+            public void onOkBtnClick(int position) {
+                String fileName;
+                switch (position) {
+                    case 0:
+                        fileName = getFileName(FileTypeEnum.Independent);
+                        sortAndRenameFile(fileName);
+                        moveFolder(INDEPENDENT_PATH, fileName);
+                        break;
+                    case 1:
+                        fileName = getFileName(FileTypeEnum.Story);
+                        sortAndRenameFile(fileName);
+                        moveFolder(STORY_PATH, fileName);
+                        break;
+                    case 2:
+                        showSortAndRenameFilesDialog();
+                        break;
+                }
+            }
+        });
+        optionsSelector.show();
+
+        optionsSelector.initOptionsData(fileNameOptions);
+    }
+
+    private void moveFolder(final String folderName, final String fileName) {
+        new Thread() {
+            @Override
+            public void run() {
+                FileSpider.getInstance().moveFile(storagePath + "/" + fileName + "/",
+                        storagePath + "/" + folderName + "/" + fileName + "/");
+
+                Message msg = handler2.obtainMessage();
+                msg.obj = 0;
+                msg.sendToTarget();
+            }
+        }.start();
+    }
+
+    private String getFileName(FileTypeEnum fileType) {
+        try {
+            String filePath = "";
+            switch (fileType) {
+                case Independent:
+                    filePath = storagePath + "/" + INDEPENDENT_PATH;
+                    break;
+                case Story:
+                    filePath = storagePath + "/" + STORY_PATH;
+                    break;
+                default:
+                    break;
+            }
+            File f = new File(filePath);
+            if (!f.exists()) {
+                f.mkdirs();
+            }
+            File[] files = f.listFiles();
+            if (null == files || files.length == 0) {
+                switch (fileType) {
+                    case Independent:
+                        return INDEPENDENT_PATH + "0";
+                    case Story:
+                        return STORY_PATH + "0";
+                    default:
+                        return "";
+                }
+            } else {
+                int[] fileNums = new int[files.length];
+                String replaceString = "";
+                switch (fileType) {
+                    case Independent:
+                        replaceString = INDEPENDENT_PATH;
+                        break;
+                    case Story:
+                        replaceString = STORY_PATH;
+                        break;
+                }
+                for (int i = 0; i < files.length; i++) {
+                    String numString = files[i].getName();
+                    numString = numString.replaceAll(replaceString, "");
+                    fileNums[i] = Integer.valueOf(numString);
+                }
+                int fileNum = getMaxNum(fileNums) + 1;
+                return replaceString + fileNum;
+            }
+        } catch (NumberFormatException e) {
+            return "";
+        }
+    }
+
+    private int getMaxNum(int[] nums) {
+        int maxNum = 0;
+        for (int i = 0; i < nums.length; i++) {
+            if (nums[i] > maxNum) {
+                maxNum = nums[i];
+            }
+        }
+        return maxNum;
+    }
 
     private void showSortAndRenameFilesDialog() {
         MangaEditDialog mangaEditDialog = new MangaEditDialog(getActivity());
