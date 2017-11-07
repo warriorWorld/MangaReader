@@ -35,6 +35,7 @@ import com.truthower.suhang.mangareader.widget.wheelview.wheelselector.WheelSele
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 
 import pub.devrel.easypermissions.AfterPermissionGranted;
@@ -233,7 +234,10 @@ public class LocalMangaFragment extends BaseFragment implements AdapterView.OnIt
 
                 fileArrayList.get(i).renameTo(to);
             } else {
-                File to = new File(gifPath, "gif" + "(" + i + ")" + ".gif");
+                Long time = new Date().getTime();
+                String timeString = time + "";
+                timeString = timeString.substring(5);
+                File to = new File(gifPath, "gif" + timeString + ".gif");
 
                 fileArrayList.get(i).renameTo(to);
             }
