@@ -12,6 +12,7 @@ import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.nostra13.universalimageloader.core.assist.QueueProcessingType;
 import com.truthower.suhang.mangareader.bean.LoginBean;
 import com.truthower.suhang.mangareader.config.Configure;
+import com.truthower.suhang.mangareader.crash.CrashHandler;
 
 /**
  * Created by Administrator on 2017/7/19.
@@ -25,6 +26,12 @@ public class App extends Application {
         initParameter();
         initLeanCloud();
         initUserInfo();
+        initCrashHandler();
+    }
+
+    private void initCrashHandler() {
+        CrashHandler crashHandler = CrashHandler.getInstance();
+        crashHandler.init(getApplicationContext());
     }
 
     private void initUserInfo() {
