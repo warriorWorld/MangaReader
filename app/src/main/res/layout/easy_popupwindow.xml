@@ -45,8 +45,8 @@
     <ImageView
         android:id="@+id/triangle_iv"
         android:layout_width="16dp"
-        android:layout_height="9dp"
+        android:layout_height="16dp"
         android:layout_alignParentLeft="true"
-        android:src="@drawable/triangle"
+        android:src="@drawable/triangle_red"
         android:visibility="visible" />
 </RelativeLayout>

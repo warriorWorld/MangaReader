@@ -23,6 +23,7 @@ public class EasyPopupWindow extends PopupWindow {
     private Context context;
     private ImageView triangleIv;
     private TextView messageTv, iKnowTv;
+    private View layout;
 
     public EasyPopupWindow(Context context) {
         super(context);
@@ -31,7 +32,7 @@ public class EasyPopupWindow extends PopupWindow {
     }
 
     private void init() {
-        View layout = LayoutInflater.from(context).inflate(R.layout.easy_popupwindow, null);
+        layout = LayoutInflater.from(context).inflate(R.layout.easy_popupwindow, null);
         triangleIv = (ImageView) layout.findViewById(R.id.triangle_iv);
         messageTv = (TextView) layout.findViewById(R.id.popupwindow_message);
         iKnowTv = (TextView) layout.findViewById(R.id.i_know_tv);
@@ -64,7 +65,6 @@ public class EasyPopupWindow extends PopupWindow {
 
     public void adaptiveShowAsDropDown(View anchor, int xoff, int yoff) {
         showAsDropDown(anchor, xoff, yoff);
-        //13是我本身的margin 这里暂时写死吧
         triangleIv.setX(anchor.getX() + anchor.getWidth() / 2);
     }
 
