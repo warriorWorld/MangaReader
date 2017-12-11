@@ -42,6 +42,7 @@ public class UserFragment extends BaseFragment implements View.OnClickListener {
     private RelativeLayout versionRl;
     private RelativeLayout authorRl;
     private RelativeLayout chooseDirectoryRl;
+    private RelativeLayout waitingForUpdateRl;
     private TextView versionNameTv;
     private TextView logoutTv;
     private RelativeLayout userTopBarRl;
@@ -99,6 +100,7 @@ public class UserFragment extends BaseFragment implements View.OnClickListener {
         newWordBookRl = (RelativeLayout) v.findViewById(R.id.new_word_book_rl);
         downloadRl = (RelativeLayout) v.findViewById(R.id.download_rl);
         versionRl = (RelativeLayout) v.findViewById(R.id.version_rl);
+        waitingForUpdateRl= (RelativeLayout) v.findViewById(R.id.waiting_for_update_rl);
         versionNameTv = (TextView) v.findViewById(R.id.version_name_tv);
         logoutTv = (TextView) v.findViewById(R.id.logout_tv);
         userHeadCiv = (CircleImage) v.findViewById(R.id.user_head_civ);
@@ -158,6 +160,7 @@ public class UserFragment extends BaseFragment implements View.OnClickListener {
         userTopBarRl.setOnClickListener(this);
         chooseDirectoryRl.setOnClickListener(this);
         authorRl.setOnClickListener(this);
+        waitingForUpdateRl.setOnClickListener(this);
     }
 
     private void refreshUI() {
@@ -318,6 +321,10 @@ public class UserFragment extends BaseFragment implements View.OnClickListener {
         switch (v.getId()) {
             case R.id.collect_rl:
                 intent = new Intent(getActivity(), CollectedActivity.class);
+                break;
+            case R.id.waiting_for_update_rl:
+                intent = new Intent(getActivity(), CollectedActivity.class);
+                intent.putExtra("isWaitForUpdate",true);
                 break;
             case R.id.statistics_rl:
                 baseToast.showToast("待开发");

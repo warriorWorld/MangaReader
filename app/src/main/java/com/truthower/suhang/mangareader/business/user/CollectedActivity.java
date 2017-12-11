@@ -37,10 +37,13 @@ public class CollectedActivity extends BaseActivity implements PullToRefreshBase
     private OnlineMangaListAdapter onlineMangaListAdapter;
     private ArrayList<MangaBean> collectedMangaList = new ArrayList<>();
     private TopBar topBar;
+    private boolean isWaitForUpdate = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Intent intent = getIntent();
+        isWaitForUpdate = intent.getBooleanExtra("isWaitForUpdate", false);
         initUI();
         initPullListView();
         doGetData();
@@ -53,7 +56,11 @@ public class CollectedActivity extends BaseActivity implements PullToRefreshBase
         topBar = (TopBar) findViewById(R.id.gradient_bar);
         topBar.setVisibility(View.GONE);
 
-        baseTopBar.setTitle("我的收藏");
+        if (isWaitForUpdate) {
+            baseTopBar.setTitle("正在追更");
+        } else {
+            baseTopBar.setTitle("我的收藏");
+        }
     }
 
     @Override
@@ -80,7 +87,13 @@ public class CollectedActivity extends BaseActivity implements PullToRefreshBase
                             item.setName(list.get(i).getString("mangaName"));
                             item.setWebThumbnailUrl(list.get(i).getString("webThumbnailUrl"));
                             item.setUrl(list.get(i).getString("mangaUrl"));
-                            collectedMangaList.add(item);
+                            if (isWaitForUpdate) {
+                                if (list.get(i).getBoolean("top")) {
+                                    collectedMangaList.add(item);
+                                }
+                            } else {
+                                collectedMangaList.add(item);
+                            }
                         }
                     }
                     initListView();

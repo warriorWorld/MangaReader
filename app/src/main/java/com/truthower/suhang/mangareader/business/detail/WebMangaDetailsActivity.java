@@ -439,9 +439,9 @@ public class WebMangaDetailsActivity extends BaseActivity implements AdapterView
                             public void done(AVException e) {
                                 if (LeanCloundUtil.handleLeanResult(WebMangaDetailsActivity.this, e)) {
                                     if (isTop) {
-                                        baseToast.showToast("置顶完成!");
+                                        baseToast.showToast("设置正在追更成功!");
                                     } else {
-                                        baseToast.showToast("已取消置顶!");
+                                        baseToast.showToast("取消正在追更成功!");
                                     }
                                 }
                             }
@@ -618,12 +618,12 @@ public class WebMangaDetailsActivity extends BaseActivity implements AdapterView
         });
         mangaDialog.show();
         if (isTopied) {
-            mangaDialog.setTitle("是否取消该漫画在收藏页的置顶?");
+            mangaDialog.setTitle("取消正在追更?");
         } else {
-            mangaDialog.setTitle("是否将该漫画在收藏页置顶?");
+            mangaDialog.setTitle("加入正在追更?");
         }
-        mangaDialog.setOkText("是");
-        mangaDialog.setCancelText("否");
+        mangaDialog.setOkText("确定");
+        mangaDialog.setCancelText("取消");
     }
 
     @Subscribe
