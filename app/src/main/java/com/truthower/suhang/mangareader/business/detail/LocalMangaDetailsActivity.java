@@ -75,10 +75,14 @@ public class LocalMangaDetailsActivity extends BaseActivity implements AdapterVi
         if (EasyPermissions.hasPermissions(this, perms)) {
             // Already have permission, do the thing
             // ...
-            mangaList.clear();
-            mangaList = FileSpider.getInstance().getMangaList(filePath);
-            sortFiles();
-            initGridView();
+            try {
+                mangaList.clear();
+                mangaList = FileSpider.getInstance().getMangaList(filePath);
+                sortFiles();
+                initGridView();
+            }catch (Exception e){
+
+            }
         } else {
             // Do not have permissions, request them now
             EasyPermissions.requestPermissions(this, "我们需要写入/读取权限",

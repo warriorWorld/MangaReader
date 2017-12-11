@@ -116,9 +116,13 @@ public class LocalMangaFragment extends BaseFragment implements AdapterView.OnIt
         if (EasyPermissions.hasPermissions(getActivity(), perms)) {
             // Already have permission, do the thing
             // ...
-            mangaList.clear();
-            mangaList = FileSpider.getInstance().getMangaList(storagePath);
-            initGridView();
+            try {
+                mangaList.clear();
+                mangaList = FileSpider.getInstance().getMangaList(storagePath);
+                initGridView();
+            }catch (Exception e){
+
+            }
         } else {
             // Do not have permissions, request them now
             EasyPermissions.requestPermissions(this, "我们需要写入/读取权限",

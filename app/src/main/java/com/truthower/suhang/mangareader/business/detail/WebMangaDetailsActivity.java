@@ -132,49 +132,52 @@ public class WebMangaDetailsActivity extends BaseActivity implements AdapterView
     }
 
     private void initWebManga(final String url) {
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                loadBar.show();
-                spider.getMangaDetail(url, new JsoupCallBack<MangaBean>() {
-                    @Override
-                    public void loadSucceed(final MangaBean result) {
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                loadBar.dismiss();
-                                currentManga = result;
-                                refreshUI();
-                                toggleDownload();
-                                showDescription();
-                                doGetIsRead();
-                                if (spider.isOneShot() && null != result.getChapters() && result.getChapters().size() > 0
-                                        && !TextUtils.isEmpty(result.getChapters().get(0).getImgUrl())) {
-                                    for (int i = 0; i < result.getChapters().size(); i++) {
-                                        oneShotPathList.add(result.getChapters().get(i).getImgUrl());
+        try {
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    loadBar.show();
+                    spider.getMangaDetail(url, new JsoupCallBack<MangaBean>() {
+                        @Override
+                        public void loadSucceed(final MangaBean result) {
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    loadBar.dismiss();
+                                    currentManga = result;
+                                    refreshUI();
+                                    toggleDownload();
+                                    showDescription();
+                                    doGetIsRead();
+                                    if (spider.isOneShot() && null != result.getChapters() && result.getChapters().size() > 0
+                                            && !TextUtils.isEmpty(result.getChapters().get(0).getImgUrl())) {
+                                        for (int i = 0; i < result.getChapters().size(); i++) {
+                                            oneShotPathList.add(result.getChapters().get(i).getImgUrl());
+                                        }
                                     }
                                 }
-                            }
-                        });
-                    }
-
-                    @Override
-                    public void loadFailed(String error) {
-                        loadBar.dismiss();
-                        if (error.equals(Configure.WRONG_WEBSITE_EXCEPTION)) {
-                            if (LoginBean.getInstance().isMaster()) {
-                                Configure.currentWebSite = Configure.masterWebsList[trySpiderPosition];
-                            } else {
-                                Configure.currentWebSite = Configure.websList[trySpiderPosition];
-                            }
-                            initSpider();
-                            initWebManga(url);
-                            trySpiderPosition++;
+                            });
                         }
-                    }
-                });
-            }
-        });
+
+                        @Override
+                        public void loadFailed(String error) {
+                            loadBar.dismiss();
+                            if (error.equals(Configure.WRONG_WEBSITE_EXCEPTION)) {
+                                if (LoginBean.getInstance().isMaster()) {
+                                    Configure.currentWebSite = Configure.masterWebsList[trySpiderPosition];
+                                } else {
+                                    Configure.currentWebSite = Configure.websList[trySpiderPosition];
+                                }
+                                initSpider();
+                                initWebManga(url);
+                                trySpiderPosition++;
+                            }
+                        }
+                    });
+                }
+            });
+        } catch (Exception e) {
+        }
     }
 
     private void refreshUI() {

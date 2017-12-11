@@ -217,28 +217,32 @@ public class ReadMangaActivity extends BaseActivity implements OnClickListener {
         topBar.setOnTopBarClickListener(new TopBar.OnTopBarClickListener() {
             @Override
             public void onRightClick() {
-                baseToast.showToast("开始划词翻译");
+                try {
+                    baseToast.showToast("开始划词翻译");
 
-                if (shotView == null) {
-                    shotView = (ShotView) findViewById(R.id.shot_view);
-                    shotView.setL(new ShotView.FinishShotListener() {
-                        @Override
-                        public void finishShot(Bitmap bp) {
-                            showImgEditDialog(bp);
-                        }
+                    if (shotView == null) {
+                        shotView = (ShotView) findViewById(R.id.shot_view);
+                        shotView.setL(new ShotView.FinishShotListener() {
+                            @Override
+                            public void finishShot(Bitmap bp) {
+                                showImgEditDialog(bp);
+                            }
 
-                    });
-                } else {
-                    shotView.setIsRunning(true);
+                        });
+                    } else {
+                        shotView.setIsRunning(true);
+                    }
+
+                    Bitmap bgBitmap = shotView.getBitmap();
+                    if (bgBitmap != null) {
+                        bgBitmap.recycle();
+                    }
+                    bgBitmap = ScreenShot.takeScreenShot(ReadMangaActivity.this);
+                    shotView.setBitmap(bgBitmap);
+                    shotView.setVisibility(View.VISIBLE);
+                } catch (Exception e) {
+
                 }
-
-                Bitmap bgBitmap = shotView.getBitmap();
-                if (bgBitmap != null) {
-                    bgBitmap.recycle();
-                }
-                bgBitmap = ScreenShot.takeScreenShot(ReadMangaActivity.this);
-                shotView.setBitmap(bgBitmap);
-                shotView.setVisibility(View.VISIBLE);
             }
 
             @Override

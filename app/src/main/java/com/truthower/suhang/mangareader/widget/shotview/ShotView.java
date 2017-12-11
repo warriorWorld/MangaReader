@@ -330,12 +330,16 @@ public class ShotView extends SurfaceView implements SurfaceHolder.Callback,
 //    }
 
     private void finishShot() {
-        saveBitmap = Bitmap.createBitmap(ShotView.this.bitmap, rect.left,
-                rect.top, rect.width(), rect.height(), matrix, false);
-        if (null != l) {
-            l.finishShot(saveBitmap);
+        try {
+            saveBitmap = Bitmap.createBitmap(ShotView.this.bitmap, rect.left,
+                    rect.top, rect.width(), rect.height(), matrix, false);
+            if (null != l) {
+                l.finishShot(saveBitmap);
+            }
+            reSet();
+        }catch (Exception e){
+            //catch width<0的异常
         }
-        reSet();
     }
 
     private void reSet() {
