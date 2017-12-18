@@ -49,7 +49,6 @@ public class UserFragment extends BaseFragment implements View.OnClickListener {
     private TextView userNameTv;
     private CircleImage userHeadCiv;
     private CheckBox autoToLastReadPositionCb, closeTranslateCb, economyModeCb;
-    private boolean isHidden = true;
 
     private MangaDialog versionDialog;
     private DownloadDialog downloadDialog;
@@ -71,23 +70,12 @@ public class UserFragment extends BaseFragment implements View.OnClickListener {
     @Override
     public void onHiddenChanged(boolean hidden) {
         super.onHiddenChanged(hidden);
-        isHidden = hidden;
-        if (!isHidden) {
-            toggleLoginStateUI();
-        }
-        if (Configure.isTest) {
-            baseToast.showToast("user onHiddenChanged");
-        }
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        if (!isHidden) {
-            toggleLoginStateUI();
-        }
-        if (Configure.isTest) {
-            baseToast.showToast("user onResume");
+        try {
+            if (!hidden) {
+                toggleLoginStateUI();
+            }
+        } catch (Exception e) {
+            //这时候有可能fragment还没绑定上activity
         }
     }
 
@@ -97,7 +85,7 @@ public class UserFragment extends BaseFragment implements View.OnClickListener {
         newWordBookRl = (RelativeLayout) v.findViewById(R.id.new_word_book_rl);
         downloadRl = (RelativeLayout) v.findViewById(R.id.download_rl);
         versionRl = (RelativeLayout) v.findViewById(R.id.version_rl);
-        waitingForUpdateRl= (RelativeLayout) v.findViewById(R.id.waiting_for_update_rl);
+        waitingForUpdateRl = (RelativeLayout) v.findViewById(R.id.waiting_for_update_rl);
         versionNameTv = (TextView) v.findViewById(R.id.version_name_tv);
         logoutTv = (TextView) v.findViewById(R.id.logout_tv);
         userHeadCiv = (CircleImage) v.findViewById(R.id.user_head_civ);
@@ -307,7 +295,7 @@ public class UserFragment extends BaseFragment implements View.OnClickListener {
                 break;
             case R.id.waiting_for_update_rl:
                 intent = new Intent(getActivity(), CollectedActivity.class);
-                intent.putExtra("isWaitForUpdate",true);
+                intent.putExtra("isWaitForUpdate", true);
                 break;
             case R.id.statistics_rl:
                 baseToast.showToast("待开发");

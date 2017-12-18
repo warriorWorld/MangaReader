@@ -93,6 +93,9 @@ public class MainActivity extends BaseFragmentActivity implements View.OnClickLi
     @Override
     public void onResume() {
         super.onResume();
+        if (null!=curFragment) {
+            curFragment.onHiddenChanged(false);
+        }
     }
 
 
@@ -288,6 +291,7 @@ public class MainActivity extends BaseFragmentActivity implements View.OnClickLi
                 }
                 transaction.show(to).commitAllowingStateLoss(); // 隐藏当前的fragment，显示下一个
             }
+            to.onHiddenChanged(false);
         }
     }
 

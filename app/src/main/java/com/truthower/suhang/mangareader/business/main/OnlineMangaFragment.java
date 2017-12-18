@@ -56,7 +56,6 @@ public class OnlineMangaFragment extends BaseFragment implements PullToRefreshBa
     private String[] optionsList = {"切换站点", "搜索", "分类", "跳转"};
     private WheelSelectorDialog optionsSelector, typesSelector, webSelector;
     private MangaEditDialog searchDialog, toPageDialog;
-    private boolean isHidden = true;
     private int nowPage = 1, startPage = 1;
     private String nowTypeName = "all";
 
@@ -132,23 +131,8 @@ public class OnlineMangaFragment extends BaseFragment implements PullToRefreshBa
     @Override
     public void onHiddenChanged(boolean hidden) {
         super.onHiddenChanged(hidden);
-        isHidden = hidden;
-        if (!isHidden) {
-        }
-        if (Configure.isTest) {
-            baseToast.showToast("online onHiddenChanged");
-        }
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        if (!isHidden) {
-        }
-        if (Configure.isTest) {
-            baseToast.showToast("online onResume");
-        }
-    }
 
     /**
      * make true current connect service is wifi

@@ -97,18 +97,14 @@ public class LocalMangaFragment extends BaseFragment implements AdapterView.OnIt
     @Override
     public void onHiddenChanged(boolean hidden) {
         super.onHiddenChanged(hidden);
-        if (Configure.isTest) {
-            baseToast.showToast("local onHiddenChanged");
+        try {
+            if (!hidden) {
+            }
+        } catch (Exception e) {
+            //这时候有可能fragment还没绑定上activity
         }
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        if (Configure.isTest) {
-            baseToast.showToast("local onResume");
-        }
-    }
 
     @AfterPermissionGranted(Configure.PERMISSION_FILE_REQUST_CODE)
     public void initFile() {
