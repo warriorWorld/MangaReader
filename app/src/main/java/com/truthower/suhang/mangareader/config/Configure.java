@@ -13,12 +13,10 @@ import java.io.File;
  */
 
 public class Configure {
-    public static boolean isTest = false;
-    public static String versionName = "";
-    public static int versionCode;
-    public static String[] websList = {"MangaReader", "KaKaLot"};
-    public static String[] masterWebsList = {"MangaReader", "NManga", "KaKaLot", "LManga"};
-    public static String DST_FOLDER_NAME = "aSpider";
+    public final static boolean isTest = false;
+    public final static String[] websList = {"MangaReader", "KaKaLot"};
+    public final static String[] masterWebsList = {"MangaReader", "NManga", "KaKaLot", "LManga"};
+    public final static String DST_FOLDER_NAME = "aSpider";
     final public static String storagePath = Environment
             .getExternalStorageDirectory().getAbsolutePath() + "/" + DST_FOLDER_NAME;
     final public static String WRONG_WEBSITE_EXCEPTION = "wrong_website_exception";

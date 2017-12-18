@@ -80,7 +80,7 @@ public class LocalMangaDetailsActivity extends BaseActivity implements AdapterVi
                 mangaList = FileSpider.getInstance().getMangaList(filePath);
                 sortFiles();
                 initGridView();
-            }catch (Exception e){
+            } catch (Exception e) {
 
             }
         } else {
@@ -273,6 +273,13 @@ public class LocalMangaDetailsActivity extends BaseActivity implements AdapterVi
     @Override
     protected int getLayoutId() {
         return R.layout.activity_local;
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        // Forward results to EasyPermissions
+        EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this);
     }
 
     @Override

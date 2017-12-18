@@ -120,7 +120,7 @@ public class LocalMangaFragment extends BaseFragment implements AdapterView.OnIt
                 mangaList.clear();
                 mangaList = FileSpider.getInstance().getMangaList(storagePath);
                 initGridView();
-            }catch (Exception e){
+            } catch (Exception e) {
 
             }
         } else {
@@ -418,6 +418,13 @@ public class LocalMangaFragment extends BaseFragment implements AdapterView.OnIt
     public void onPullUpToRefresh(PullToRefreshBase<GridView> refreshView) {
         pullToRefreshGridView.onPullDownRefreshComplete();// 动画结束方法
         pullToRefreshGridView.onPullUpRefreshComplete();
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        // Forward results to EasyPermissions
+        EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this);
     }
 
     @Override

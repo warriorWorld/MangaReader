@@ -4,6 +4,8 @@ import android.app.Application;
 import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.os.Build;
+import android.os.StrictMode;
 
 import com.avos.avoscloud.AVOSCloud;
 import com.nostra13.universalimageloader.cache.disc.naming.Md5FileNameGenerator;
@@ -23,12 +25,17 @@ public class App extends Application {
     public void onCreate() {
         super.onCreate();
         initImageLoader(getApplicationContext());
-        initParameter();
         initLeanCloud();
         initUserInfo();
         initCrashHandler();
+        dealFileUriExposedException();
     }
-
+    private void dealFileUriExposedException() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
+            StrictMode.setVmPolicy(builder.build());
+        }
+    }
     private void initCrashHandler() {
         CrashHandler crashHandler = CrashHandler.getInstance();
         crashHandler.init(getApplicationContext());
@@ -59,18 +66,5 @@ public class App extends Application {
 
         // Initialize ImageLoader with configuration.
         ImageLoader.getInstance().init(config.build());
-    }
-
-    private void initParameter() {
-        // 获取版本名称
-        try {
-            PackageManager manager = this.getPackageManager();
-            PackageInfo info;
-            info = manager.getPackageInfo(getPackageName(), 0);
-            Configure.versionCode = info.versionCode;
-            Configure.versionName = info.versionName;
-        } catch (PackageManager.NameNotFoundException e) {
-            e.printStackTrace();
-        }
     }
 }

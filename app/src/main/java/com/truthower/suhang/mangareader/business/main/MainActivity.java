@@ -34,6 +34,7 @@ import com.truthower.suhang.mangareader.eventbus.JumpEvent;
 import com.truthower.suhang.mangareader.eventbus.TagClickEvent;
 import com.truthower.suhang.mangareader.listener.GetVersionListener;
 import com.truthower.suhang.mangareader.spider.FileSpider;
+import com.truthower.suhang.mangareader.utils.BaseParameterUtil;
 import com.truthower.suhang.mangareader.utils.LeanCloundUtil;
 import com.truthower.suhang.mangareader.utils.Logger;
 import com.truthower.suhang.mangareader.widget.dialog.DownloadDialog;
@@ -84,6 +85,7 @@ public class MainActivity extends BaseFragmentActivity implements View.OnClickLi
         hideBaseTopBar();
         initUI();
         initFragment();
+        BaseParameterUtil.getInstance(this);
         doGetVersionInfo();
     }
 
@@ -127,7 +129,8 @@ public class MainActivity extends BaseFragmentActivity implements View.OnClickLi
                         versionCode = list.get(0).getInt("versionCode");
                         msg = list.get(0).getString("description");
                         downloadFile = list.get(0).getAVFile("apk");
-                        if (Configure.versionCode >= versionCode) {
+                        if (BaseParameterUtil.getInstance(MainActivity.this).
+                                getAppVersionCode() >= versionCode) {
 //                            baseToast.showToast("已经是最新版啦~~");
                         } else {
                             showVersionDialog();
@@ -335,19 +338,6 @@ public class MainActivity extends BaseFragmentActivity implements View.OnClickLi
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (resultCode == Activity.RESULT_OK) {//是否选择，没选择就不会继续
-            Uri uri = data.getData();//得到uri，后面就是将uri转化成file的过程。
-            Logger.d("地址:" + uri.toString());
-            String path = data.getDataString();
-            //得解码下 不然中文乱码
-            path = Uri.decode(path);
-            Configure.DST_FOLDER_NAME = path;
-            userFg.refreshDirctoryPath();
-        }
-    }
-
-    @Override
     public void onClick(View v) {
         toggleBottomBar(v);
         switch (v.getId()) {
@@ -364,12 +354,23 @@ public class MainActivity extends BaseFragmentActivity implements View.OnClickLi
     }
 
     @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        // Forward results to EasyPermissions
+        EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this);
+    }
+
+    @Override
     public void onPermissionsGranted(int requestCode, List<String> perms) {
         baseToast.showToast("已获得授权,请继续!");
     }
 
     @Override
     public void onPermissionsDenied(int requestCode, List<String> perms) {
-        baseToast.showToast("没文件读取/写入授权,你让我怎么下载最新安装包?", true);
+        if (Configure.PERMISSION_FILE_REQUST_CODE == requestCode) {
+            MangaDialog peanutDialog = new MangaDialog(MainActivity.this);
+            peanutDialog.show();
+            peanutDialog.setTitle("没有文件读写权限,无法更新App!可以授权后重试.");
+        }
     }
 }

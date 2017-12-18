@@ -24,6 +24,7 @@ import com.truthower.suhang.mangareader.business.user.LoginActivity;
 import com.truthower.suhang.mangareader.config.Configure;
 import com.truthower.suhang.mangareader.config.ShareKeys;
 import com.truthower.suhang.mangareader.listener.GetVersionListener;
+import com.truthower.suhang.mangareader.utils.BaseParameterUtil;
 import com.truthower.suhang.mangareader.utils.SharedPreferencesUtils;
 import com.truthower.suhang.mangareader.widget.dialog.DownloadDialog;
 import com.truthower.suhang.mangareader.widget.dialog.MangaDialog;
@@ -41,13 +42,11 @@ public class UserFragment extends BaseFragment implements View.OnClickListener {
     private RelativeLayout downloadRl;
     private RelativeLayout versionRl;
     private RelativeLayout authorRl;
-    private RelativeLayout chooseDirectoryRl;
     private RelativeLayout waitingForUpdateRl;
     private TextView versionNameTv;
     private TextView logoutTv;
     private RelativeLayout userTopBarRl;
     private TextView userNameTv;
-    private TextView choosedDirectoryTv;
     private CircleImage userHeadCiv;
     private CheckBox autoToLastReadPositionCb, closeTranslateCb, economyModeCb;
     private boolean isHidden = true;
@@ -93,8 +92,6 @@ public class UserFragment extends BaseFragment implements View.OnClickListener {
     }
 
     private void initUI(View v) {
-        chooseDirectoryRl = (RelativeLayout) v.findViewById(R.id.choose_directory_rl);
-        choosedDirectoryTv = (TextView) v.findViewById(R.id.directory_name_tv);
         collectRl = (RelativeLayout) v.findViewById(R.id.collect_rl);
         statisticsRl = (RelativeLayout) v.findViewById(R.id.statistics_rl);
         newWordBookRl = (RelativeLayout) v.findViewById(R.id.new_word_book_rl);
@@ -158,13 +155,12 @@ public class UserFragment extends BaseFragment implements View.OnClickListener {
         versionRl.setOnClickListener(this);
         logoutTv.setOnClickListener(this);
         userTopBarRl.setOnClickListener(this);
-        chooseDirectoryRl.setOnClickListener(this);
         authorRl.setOnClickListener(this);
         waitingForUpdateRl.setOnClickListener(this);
     }
 
     private void refreshUI() {
-        versionNameTv.setText("V" + Configure.versionName);
+        versionNameTv.setText("V" + BaseParameterUtil.getInstance(getActivity()).getAppVersionName());
     }
 
     private void toggleLoginStateUI() {
@@ -301,19 +297,6 @@ public class UserFragment extends BaseFragment implements View.OnClickListener {
         authorDialog.setMessage("作者:  苏航\n邮箱:  772192594@qq.com");
     }
 
-    public void refreshDirctoryPath() {
-        choosedDirectoryTv.setText(Configure.DST_FOLDER_NAME);
-    }
-
-    /**
-     * 调用文件选择软件来选择文件
-     **/
-    private void showFileChooser() {
-        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-        intent.setType("file/*");//设置类型和后缀
-        intent.addCategory(Intent.CATEGORY_OPENABLE);
-        startActivityForResult(intent, 1);
-    }
 
     @Override
     public void onClick(View v) {
@@ -345,9 +328,6 @@ public class UserFragment extends BaseFragment implements View.OnClickListener {
                 break;
             case R.id.user_top_bar_rl:
                 intent = new Intent(getActivity(), LoginActivity.class);
-                break;
-            case R.id.choose_directory_rl:
-                showFileChooser();
                 break;
             case R.id.author_rl:
                 showAuthorDialog();

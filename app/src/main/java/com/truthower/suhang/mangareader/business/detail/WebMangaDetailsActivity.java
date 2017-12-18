@@ -788,6 +788,21 @@ public class WebMangaDetailsActivity extends BaseActivity implements AdapterView
     }
 
     @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        // Forward results to EasyPermissions
+        try {
+            EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this);
+        } catch (RuntimeException e) {
+            //RuntimeException: Cannot execute method doDownload because it is non-void method and/or has input parameters
+            //google这个东西没法调用带参数的方法
+            MangaDialog dialog = new MangaDialog(WebMangaDetailsActivity.this);
+            dialog.show();
+            dialog.setTitle("已获得授权,请重新点击下载.");
+        }
+    }
+
+    @Override
     public void onPermissionsGranted(int requestCode, List<String> perms) {
         baseToast.showToast("已获得授权,请继续!");
     }
