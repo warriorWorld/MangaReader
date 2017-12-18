@@ -20,6 +20,7 @@ import com.truthower.suhang.mangareader.business.read.ReadMangaActivity;
 import com.truthower.suhang.mangareader.config.Configure;
 import com.truthower.suhang.mangareader.sort.FileComparator;
 import com.truthower.suhang.mangareader.sort.FileComparatorAllNum;
+import com.truthower.suhang.mangareader.sort.FileComparatorDirectory;
 import com.truthower.suhang.mangareader.sort.FileComparatorWithBracket;
 import com.truthower.suhang.mangareader.spider.FileSpider;
 import com.truthower.suhang.mangareader.widget.bar.TopBar;
@@ -91,14 +92,13 @@ public class LocalMangaDetailsActivity extends BaseActivity implements AdapterVi
     }
 
     private void sortFiles() {
+        pathList = new ArrayList<>();
+        for (int i = 0; i < mangaList.size(); i++) {
+            pathList.add(mangaList.get(i).getLocalThumbnailUrl());
+        }
+
         if (!isNextDirectory(mangaList.get(0).getUrl())) {
-            //只有这页是阅读页的前一页才重新排序
-
-            pathList = new ArrayList<>();
-            for (int i = 0; i < mangaList.size(); i++) {
-                pathList.add(mangaList.get(i).getLocalThumbnailUrl());
-            }
-
+            //阅读页的前一页
             //获取第一张图片的路径
             String firstImgName = pathList.get(0);
             if (firstImgName.contains(".jpg") || firstImgName.contains(".png") || firstImgName.contains(".bmp")) {
@@ -138,10 +138,37 @@ public class LocalMangaDetailsActivity extends BaseActivity implements AdapterVi
 
                 }
             }
-
+            //将得到的排序结果给mangaList
             for (int i = 0; i < pathList.size(); i++) {
                 mangaList.get(i).setLocalThumbnailUrl(pathList.get(i));
                 mangaList.get(i).setName((i + 1) + "");
+            }
+        } else {
+            //有很多话的漫画的文件夹层
+            try {
+                String firstDirectoryName = pathList.get(0);
+                String[] arri = firstDirectoryName.split("/");
+
+                firstDirectoryName = arri[arri.length - 1];
+                String[] arri1 = firstDirectoryName.split("-");
+                firstDirectoryName = arri1[0];
+
+                //用于判断是否位数字的异教徒写法
+                int isInt = Integer.valueOf(firstDirectoryName);
+                //没抛出异常 所以是纯数字
+                FileComparatorDirectory comparator4 = new FileComparatorDirectory();
+                Collections.sort(pathList, comparator4);
+
+                //将得到的排序结果给mangaList
+                for (int i = 0; i < pathList.size(); i++) {
+                    mangaList.get(i).setLocalThumbnailUrl(pathList.get(i));
+                    String name = pathList.get(i);
+                    String[] names = name.split("/");
+                    name = names[names.length - 1];
+                    mangaList.get(i).setName(name);
+                }
+            } catch (Exception e) {
+                //假设有异常就不是有很多话的漫画的文件夹层
             }
         }
     }
