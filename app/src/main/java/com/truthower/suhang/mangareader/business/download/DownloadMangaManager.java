@@ -9,6 +9,7 @@ import com.truthower.suhang.mangareader.bean.DownloadChapterBean;
 import com.truthower.suhang.mangareader.bean.DownloadPageBean;
 import com.truthower.suhang.mangareader.config.Configure;
 import com.truthower.suhang.mangareader.config.ShareKeys;
+import com.truthower.suhang.mangareader.eventbus.DownLoadEvent;
 import com.truthower.suhang.mangareader.eventbus.EventBusEvent;
 import com.truthower.suhang.mangareader.listener.JsoupCallBack;
 import com.truthower.suhang.mangareader.spider.FileSpider;
@@ -118,8 +119,7 @@ public class DownloadMangaManager {
     }
 
     public void downloadPageDone(Context context, String url) {
-        EventBus.getDefault().post(new EventBusEvent("测试!",
-                EventBusEvent.DOWNLOAD_FINISH_EVENT));
+        EventBus.getDefault().post(new DownLoadEvent(EventBusEvent.DOWNLOAD_FINISH_EVENT));
         if (currentChapter.getPages().size() == 1 && currentChapter.getPages().get(0).getPage_url().equals(url)) {
             currentChapter = null;
             doDownload(context);
@@ -140,6 +140,7 @@ public class DownloadMangaManager {
     }
 
     public void reset(Context context) {
+        stopDownload(context);
         DownloadBean.getInstance().clean(context);
         currentChapter = null;
         ShareObjUtil.deleteFile(context, ShareKeys.CURRENT_CHAPTER_KEY);

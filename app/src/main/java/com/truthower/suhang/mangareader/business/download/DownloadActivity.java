@@ -54,17 +54,22 @@ public class DownloadActivity extends BaseActivity implements View.OnClickListen
      */
     @Subscribe
     public void onEventMainThread(final DownLoadEvent event) {
-        if (null == event)
-            return;
-        switch (event.getEventType()) {
-            case EventBusEvent.DOWNLOAD_EVENT:
-                break;
-            case EventBusEvent.DOWNLOAD_FINISH_EVENT:
-                baseToast.showToast(event.getMsg());
-                break;
-            case EventBusEvent.DOWNLOAD_FAIL_EVENT:
-                break;
-        }
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                if (null == event)
+                    return;
+                switch (event.getEventType()) {
+                    case EventBusEvent.DOWNLOAD_EVENT:
+                        break;
+                    case EventBusEvent.DOWNLOAD_FINISH_EVENT:
+                        baseToast.showToast("test");
+                        break;
+                    case EventBusEvent.DOWNLOAD_FAIL_EVENT:
+                        break;
+                }
+            }
+        });
     }
 
 
