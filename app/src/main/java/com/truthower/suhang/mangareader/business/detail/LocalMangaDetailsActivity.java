@@ -158,15 +158,6 @@ public class LocalMangaDetailsActivity extends BaseActivity implements AdapterVi
                 //没抛出异常 所以是纯数字
                 FileComparatorDirectory comparator4 = new FileComparatorDirectory();
                 Collections.sort(mangaList, comparator4);
-
-                //将得到的排序结果给mangaList
-//                for (int i = 0; i < pathList.size(); i++) {
-//                    mangaList.get(i).setLocalThumbnailUrl(pathList.get(i));
-//                    String name = pathList.get(i);
-//                    String[] names = name.split("/");
-//                    name = names[names.length - 2];
-//                    mangaList.get(i).setName(name);
-//                }
             } catch (Exception e) {
                 //假设有异常就不是有很多话的漫画的文件夹层
             }
