@@ -91,7 +91,9 @@ public class KaKaLotSpider extends SpiderBase {
 
                         MangaBean item = new MangaBean();
                         item.setWebThumbnailUrl(mangaPicDetailElements.first().getElementsByTag("img").last().attr("src"));
-                        item.setName(mangaPicDetailElements.first().getElementsByTag("img").last().attr("alt"));
+                        //这个有的漫画有名字有的没有
+//                        item.setName(mangaPicDetailElements.first().getElementsByTag("img").last().attr("alt"));
+                        item.setName(mangaTextDetailElements.get(0).select("h1").text());
                         item.setAuthor(mangaTextDetailElements.get(1).text());
                         String lastUpadte = mangaTextDetailElements.get(3).text();
                         lastUpadte = lastUpadte.replaceAll("Last updated : ", "");
