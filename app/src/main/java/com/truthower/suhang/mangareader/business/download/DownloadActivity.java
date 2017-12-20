@@ -6,15 +6,23 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.nostra13.universalimageloader.core.ImageLoader;
 import com.truthower.suhang.mangareader.R;
 import com.truthower.suhang.mangareader.base.BaseActivity;
+import com.truthower.suhang.mangareader.bean.DownloadBean;
 import com.truthower.suhang.mangareader.business.detail.WebMangaDetailsActivity;
+import com.truthower.suhang.mangareader.config.Configure;
 import com.truthower.suhang.mangareader.config.ShareKeys;
 import com.truthower.suhang.mangareader.eventbus.DownLoadEvent;
 import com.truthower.suhang.mangareader.eventbus.EventBusEvent;
+import com.truthower.suhang.mangareader.utils.ServiceUtil;
 import com.truthower.suhang.mangareader.utils.SharedPreferencesUtils;
+import com.truthower.suhang.mangareader.widget.pulltorefresh.PullToRefreshGridView;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -26,6 +34,12 @@ import org.greenrobot.eventbus.Subscribe;
  */
 
 public class DownloadActivity extends BaseActivity implements View.OnClickListener {
+    private ImageView thumbnailIv;
+    private TextView mangaNameTv;
+    private TextView mangaChapterNameTv;
+    private ProgressBar downloadProgressBar;
+    private PullToRefreshGridView ptfGridView;
+    private RelativeLayout emptyView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,10 +55,53 @@ public class DownloadActivity extends BaseActivity implements View.OnClickListen
     @Override
     protected void onResume() {
         super.onResume();
+        refreshUI();
     }
 
     private void initUI() {
+        thumbnailIv = (ImageView) findViewById(R.id.thumbnail_iv);
+        mangaNameTv = (TextView) findViewById(R.id.manga_name_tv);
+        mangaChapterNameTv = (TextView) findViewById(R.id.manga_chapter_name_tv);
+        downloadProgressBar = (ProgressBar) findViewById(R.id.download_progress_bar);
+        ptfGridView = (PullToRefreshGridView) findViewById(R.id.ptf_grid_view);
+        emptyView = (RelativeLayout) findViewById(R.id.empty_view);
+
         baseTopBar.setTitle("下载");
+    }
+
+    private void refreshUI() {
+        try {
+            ImageLoader.getInstance().displayImage
+                    (DownloadBean.getInstance().getCurrentManga().getWebThumbnailUrl(),
+                            thumbnailIv, Configure.normalImageOptions);
+            mangaNameTv.setText("漫画名称:  " + DownloadBean.getInstance().getCurrentManga().getName());
+            mangaChapterNameTv.setText("章    节:  第" +
+                    DownloadMangaManager.getInstance().
+                            getCurrentChapter(this).getChapter_title() + "话");
+            toggleDownloading(ServiceUtil.isServiceWork(this,
+                    "com.truthower.suhang.mangareader.business.download.DownloadIntentService"));
+        } catch (Exception e) {
+            emptyView.setVisibility(View.VISIBLE);
+        }
+    }
+
+    private void updateUI() {
+        try {
+            mangaChapterNameTv.setText("章    节:  第" +
+                    DownloadMangaManager.getInstance().
+                            getCurrentChapter(this).getChapter_title() + "话");
+            toggleDownloading(true);
+        } catch (Exception e) {
+            emptyView.setVisibility(View.VISIBLE);
+        }
+    }
+
+    private void toggleDownloading(boolean ing) {
+        if (ing) {
+            baseTopBar.setRightText("停止下载");
+        } else {
+            baseTopBar.setRightText("开始下载");
+        }
     }
 
     /**

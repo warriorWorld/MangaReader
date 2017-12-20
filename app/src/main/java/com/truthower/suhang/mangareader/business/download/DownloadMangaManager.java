@@ -60,7 +60,9 @@ public class DownloadMangaManager {
             //当前章节空了的时候 点前章节赋值为新的章节 移除空章节
             currentChapter = DownloadBean.getInstance().getDownload_chapters().get(0);
             saveCurrentChapter(context);
-            DownloadBean.getInstance().getDownload_chapters().remove(0);
+            ArrayList<DownloadChapterBean> temp = DownloadBean.getInstance().getDownload_chapters();
+            temp.remove(0);
+            DownloadBean.getInstance().setDownload_chapters(context, temp);
         }
 
         final String mangaName = DownloadBean.getInstance().initMangaFileName();

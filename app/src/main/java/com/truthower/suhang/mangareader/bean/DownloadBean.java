@@ -64,6 +64,9 @@ public class DownloadBean extends BaseBean {
         ShareObjUtil.deleteFile(context, ShareKeys.DOWNLOAD_KEY);
     }
 
+    public MangaBean getCurrentManga() {
+        return currentManga;
+    }
 
     public void setMangaBean(Context context, MangaBean mangaBean) {
         this.currentManga = mangaBean;
