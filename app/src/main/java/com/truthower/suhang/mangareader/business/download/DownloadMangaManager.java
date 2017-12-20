@@ -52,10 +52,12 @@ public class DownloadMangaManager {
         stopDownload(context);
         if (null == DownloadBean.getInstance().getDownload_chapters() ||
                 DownloadBean.getInstance().getDownload_chapters().size() <= 0) {
+            //没有章节了
             //下载完成
             return;
         }
         if (null == currentChapter || null == currentChapter.getPages() || currentChapter.getPages().size() <= 0) {
+            //当前章节空了的时候 点前章节赋值为新的章节 移除空章节
             currentChapter = DownloadBean.getInstance().getDownload_chapters().get(0);
             saveCurrentChapter(context);
             DownloadBean.getInstance().getDownload_chapters().remove(0);
