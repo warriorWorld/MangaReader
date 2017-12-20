@@ -120,7 +120,6 @@ public class DownloadActivity extends BaseActivity implements View.OnClickListen
                     case EventBusEvent.DOWNLOAD_EVENT:
                         break;
                     case EventBusEvent.DOWNLOAD_FINISH_EVENT:
-                        baseToast.showToast("test");
                         break;
                     case EventBusEvent.DOWNLOAD_FAIL_EVENT:
                         break;

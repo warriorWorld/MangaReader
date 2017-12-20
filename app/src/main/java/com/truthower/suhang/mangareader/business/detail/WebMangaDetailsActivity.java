@@ -29,6 +29,7 @@ import com.truthower.suhang.mangareader.bean.DownloadBean;
 import com.truthower.suhang.mangareader.bean.DownloadChapterBean;
 import com.truthower.suhang.mangareader.bean.LoginBean;
 import com.truthower.suhang.mangareader.bean.MangaBean;
+import com.truthower.suhang.mangareader.business.download.DownloadActivity;
 import com.truthower.suhang.mangareader.business.download.DownloadMangaManager;
 import com.truthower.suhang.mangareader.business.download.DownloadService;
 import com.truthower.suhang.mangareader.business.main.MainActivity;
@@ -152,7 +153,7 @@ public class WebMangaDetailsActivity extends BaseActivity implements AdapterView
                                     loadBar.dismiss();
                                     currentManga = result;
                                     refreshUI();
-                                    toggleDownload();
+//                                    toggleDownload();
                                     showDescription();
                                     doGetIsRead();
                                     if (spider.isOneShot() && null != result.getChapters() && result.getChapters().size() > 0
@@ -435,6 +436,9 @@ public class WebMangaDetailsActivity extends BaseActivity implements AdapterView
             DownloadBean.getInstance().setOne_shot(this, spider.isOneShot());
             DownloadBean.getInstance().setWebSite(this, Configure.currentWebSite);
             DownloadMangaManager.getInstance().doDownload(getApplicationContext());
+
+            Intent intent = new Intent(this, DownloadActivity.class);
+            startActivity(intent);
         } else {
             // Do not have permissions, request them now
             EasyPermissions.requestPermissions(this, "我们需要写入/读取权限",
@@ -655,31 +659,31 @@ public class WebMangaDetailsActivity extends BaseActivity implements AdapterView
         mangaDialog.setCancelText("取消");
     }
 
-    @Subscribe
-    public void onEventMainThread(final DownLoadEvent event) {
-        if (null == event)
-            return;
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                switch (event.getEventType()) {
-                    case EventBusEvent.DOWNLOAD_EVENT:
-
-                        break;
-                    case EventBusEvent.DOWNLOAD_FINISH_EVENT:
-                        stopDownload();
-                        showDownloadDialog();
-                        break;
-                    case EventBusEvent.DOWNLOAD_FAIL_EVENT:
-                        baseToast.showToast(event.getDownloadExplain());
-                        break;
-                }
-                //刷新UI放在这里才准确
-                refreshDownloadDialogMsg(event);
-                toggleDownload();
-            }
-        });
-    }
+//    @Subscribe
+//    public void onEventMainThread(final DownLoadEvent event) {
+//        if (null == event)
+//            return;
+//        runOnUiThread(new Runnable() {
+//            @Override
+//            public void run() {
+//                switch (event.getEventType()) {
+//                    case EventBusEvent.DOWNLOAD_EVENT:
+//
+//                        break;
+//                    case EventBusEvent.DOWNLOAD_FINISH_EVENT:
+//                        stopDownload();
+//                        showDownloadDialog();
+//                        break;
+//                    case EventBusEvent.DOWNLOAD_FAIL_EVENT:
+//                        baseToast.showToast(event.getDownloadExplain());
+//                        break;
+//                }
+//                //刷新UI放在这里才准确
+//                refreshDownloadDialogMsg(event);
+//                toggleDownload();
+//            }
+//        });
+//    }
 
     private void showDescription() {
         if (TextUtils.isEmpty(currentManga.getDescription())) {
@@ -702,7 +706,7 @@ public class WebMangaDetailsActivity extends BaseActivity implements AdapterView
                 }
                 break;
             case R.id.download_iv:
-                showDownloadDialog();
+//                showDownloadDialog();
                 break;
             case R.id.manga_type:
                 showTagsSelector();
@@ -714,14 +718,14 @@ public class WebMangaDetailsActivity extends BaseActivity implements AdapterView
     }
 
 
-    private void stopDownload() {
-        Intent stopIntent = new Intent(WebMangaDetailsActivity.this, DownloadService.class);
-        stopService(stopIntent);
-        toggleDownload();
-        baseToast.showToast("已停止");
-    }
+//    private void stopDownload() {
+//        Intent stopIntent = new Intent(WebMangaDetailsActivity.this, DownloadService.class);
+//        stopService(stopIntent);
+//        toggleDownload();
+//        baseToast.showToast("已停止");
+//    }
 
-    private void showDownloadDialog() {
+//    private void showDownloadDialog() {
 //        if (null == downloadDialog) {
 //            downloadDialog = new MangaDialog(this);
 //            downloadDialog.setOnPeanutDialogClickListener(new MangaDialog.OnPeanutDialogClickListener() {
@@ -764,19 +768,19 @@ public class WebMangaDetailsActivity extends BaseActivity implements AdapterView
 //        } else {
 //            downloadDialog.setOkText("继续下载");
 //        }
-    }
+//    }
 
-    private void refreshDownloadDialogMsg(DownLoadEvent event) {
-        if (null != downloadDialog) {
-            downloadDialog.setMessage(event.getDownloadExplain());
-            downloadDialog.setTitle(event.getDownloadMangaName());
-            if (Configure.isDownloadServiceRunning) {
-                downloadDialog.setOkText("停止下载");
-            } else {
-                downloadDialog.setOkText("继续下载");
-            }
-        }
-    }
+//    private void refreshDownloadDialogMsg(DownLoadEvent event) {
+//        if (null != downloadDialog) {
+//            downloadDialog.setMessage(event.getDownloadExplain());
+//            downloadDialog.setTitle(event.getDownloadMangaName());
+//            if (Configure.isDownloadServiceRunning) {
+//                downloadDialog.setOkText("停止下载");
+//            } else {
+//                downloadDialog.setOkText("继续下载");
+//            }
+//        }
+//    }
 
     private void toggleCollect() {
         if (isCollected) {
@@ -786,24 +790,24 @@ public class WebMangaDetailsActivity extends BaseActivity implements AdapterView
         }
     }
 
-    private void toggleDownload() {
-        if (null == currentManga) {
-            return;
-        }
-        if (Configure.isDownloadServiceRunning && null != currentManga && currentManga.getName().equals
-                (SharedPreferencesUtils.getSharedPreferencesData(this, ShareKeys.DOWNLOAD_MANGA_NAME))) {
-            downloadTagTv.setVisibility(View.VISIBLE);
-        } else {
-            downloadTagTv.setVisibility(View.GONE);
-        }
-        if (currentManga.getName().equals
-                (SharedPreferencesUtils.getSharedPreferencesData(this, ShareKeys.DOWNLOAD_MANGA_NAME))) {
-            //只有当前下载的漫画才看得到这个
-            downloadIv.setVisibility(View.VISIBLE);
-        } else {
-            downloadIv.setVisibility(View.GONE);
-        }
-    }
+//    private void toggleDownload() {
+//        if (null == currentManga) {
+//            return;
+//        }
+//        if (Configure.isDownloadServiceRunning && null != currentManga && currentManga.getName().equals
+//                (SharedPreferencesUtils.getSharedPreferencesData(this, ShareKeys.DOWNLOAD_MANGA_NAME))) {
+//            downloadTagTv.setVisibility(View.VISIBLE);
+//        } else {
+//            downloadTagTv.setVisibility(View.GONE);
+//        }
+//        if (currentManga.getName().equals
+//                (SharedPreferencesUtils.getSharedPreferencesData(this, ShareKeys.DOWNLOAD_MANGA_NAME))) {
+//            //只有当前下载的漫画才看得到这个
+//            downloadIv.setVisibility(View.VISIBLE);
+//        } else {
+//            downloadIv.setVisibility(View.GONE);
+//        }
+//    }
 
     @Override
     public void onPullDownToRefresh(PullToRefreshBase<GridView> refreshView) {
