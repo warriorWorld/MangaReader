@@ -147,7 +147,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="1px"
                 android:background="@color/divide_line"
-                android:visibility="gone" />
+                android:visibility="visible" />
 
             <RelativeLayout
                 android:id="@+id/download_rl"
@@ -369,6 +369,7 @@
                 android:layout_marginTop="10dp"
                 android:background="@color/white"
                 android:gravity="center"
+                android:layout_marginBottom="40dp"
                 android:text="退出登录"
                 android:textColor="@color/manga_reader"
                 android:textSize="@dimen/main_text_size" />

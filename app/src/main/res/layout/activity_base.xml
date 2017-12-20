@@ -18,7 +18,6 @@
         android:layout_below="@+id/color_holder"
         android:background="@color/manga_reader"
         app:left_background="@drawable/back"
-        app:title_text="标题"
         app:title_textColor="@color/white" />
 
     <FrameLayout

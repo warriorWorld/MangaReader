@@ -1,8 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/details_view"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:padding="10dp">
+    android:layout_height="match_parent">
 
+
+    <RelativeLayout
+        android:id="@+id/manga_info_rl"
+        android:layout_width="match_parent"
+        android:layout_height="180dp"
+        android:padding="10dp">
+
+        <ImageView
+            android:id="@+id/thumbnail_iv"
+            android:layout_width="122dp"
+            android:layout_height="match_parent"
+            android:layout_alignParentLeft="true" />
+
+        <TextView
+            android:id="@+id/manga_name_tv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="5dp"
+            android:layout_toRightOf="@+id/thumbnail_iv"
+            android:text="漫画名称:"
+            android:textColor="@color/main_text_color"
+            android:textSize="@dimen/details_text_size" />
+
+        <TextView
+            android:id="@+id/manga_chapter_name_tv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/manga_name_tv"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="5dp"
+            android:layout_toRightOf="@+id/thumbnail_iv"
+            android:text="章         节:"
+            android:textColor="@color/main_text_color"
+            android:textSize="@dimen/details_text_size" />
+
+        <TextView
+            android:id="@+id/manga_page_tv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/manga_chapter_name_tv"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="5dp"
+            android:layout_toLeftOf="@+id/collect_view"
+            android:layout_toRightOf="@+id/thumbnail_iv"
+            android:text="第N页下载完成"
+            android:textColor="@color/main_text_color"
+            android:textSize="@dimen/details_text_size" />
+
+        <ProgressBar
+            android:id="@+id/download_progress_bar"
+            style="@style/StyleProgressBarMini"
+            android:layout_width="match_parent"
+            android:layout_height="6dp"
+            android:layout_below="@+id/manga_page_tv"
+            android:layout_marginBottom="30dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="20dp"
+            android:layout_marginTop="18dp"
+            android:layout_toRightOf="@id/thumbnail_iv"
+            android:background="@drawable/shape_progressbar_bg"
+            android:max="100"
+            android:progress="0"
+            android:scrollbarStyle="insideOverlay" />
+    </RelativeLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:layout_below="@+id/manga_info_rl"
+        android:background="@color/manga_reader"></View>
+
+    <com.truthower.suhang.mangareader.widget.pulltorefresh.PullToRefreshGridView
+        android:id="@+id/ptf_grid_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/manga_info_rl"
+        android:layout_marginBottom="8dp"
+        android:layout_marginTop="8dp"
+        android:columnWidth="50dp"
+        android:horizontalSpacing="3dp"
+        android:numColumns="5"
+        android:padding="10dp"
+        android:verticalSpacing="12dp"></com.truthower.suhang.mangareader.widget.pulltorefresh.PullToRefreshGridView>
 </RelativeLayout>
