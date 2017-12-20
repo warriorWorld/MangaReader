@@ -24,8 +24,12 @@ import com.truthower.suhang.mangareader.R;
 import com.truthower.suhang.mangareader.adapter.OneShotDetailsAdapter;
 import com.truthower.suhang.mangareader.adapter.OnlineMangaDetailAdapter;
 import com.truthower.suhang.mangareader.base.BaseActivity;
+import com.truthower.suhang.mangareader.bean.ChapterBean;
+import com.truthower.suhang.mangareader.bean.DownloadBean;
+import com.truthower.suhang.mangareader.bean.DownloadChapterBean;
 import com.truthower.suhang.mangareader.bean.LoginBean;
 import com.truthower.suhang.mangareader.bean.MangaBean;
+import com.truthower.suhang.mangareader.business.download.DownloadMangaManager;
 import com.truthower.suhang.mangareader.business.download.DownloadService;
 import com.truthower.suhang.mangareader.business.main.MainActivity;
 import com.truthower.suhang.mangareader.business.read.ReadMangaActivity;
@@ -320,7 +324,7 @@ public class WebMangaDetailsActivity extends BaseActivity implements AdapterView
                 downloadStartPoint = position;
                 firstChoose = false;
             } else {
-                doDownload(downloadStartPoint, position, 1);
+                doDownload(downloadStartPoint, position);
             }
         } else {
             Intent intent = new Intent(WebMangaDetailsActivity.this, ReadMangaActivity.class);
@@ -382,30 +386,55 @@ public class WebMangaDetailsActivity extends BaseActivity implements AdapterView
     }
 
     private void downloadAll() {
-        doDownload(0, currentManga.getChapters().size() - 1, 1);
+        doDownload(0, currentManga.getChapters().size() - 1);
     }
 
+    //    @AfterPermissionGranted(Configure.PERMISSION_FILE_REQUST_CODE)
+//    private void doDownload(int start, int end, int startPage) {
+//        String[] perms = {Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE};
+//        if (EasyPermissions.hasPermissions(this, perms)) {
+//            // Already have permission, do the thing
+//            // ...
+//            //先停掉服务
+//            Intent stopServiceIntent = new Intent(WebMangaDetailsActivity.this, DownloadService.class);
+//            stopService(stopServiceIntent);
+//            //再打开
+//            Intent intent = new Intent(WebMangaDetailsActivity.this, DownloadService.class);
+//            Bundle mangaBundle = new Bundle();
+//            mangaBundle.putSerializable("download_MangaBean", currentManga);
+//            intent.putExtras(mangaBundle);
+//            intent.putExtra("download_folderSize", 3);
+//            intent.putExtra("download_startPage", startPage);
+//            intent.putExtra("download_currentChapter", start);
+//            intent.putExtra("download_endChapter", end);
+//            startService(intent);
+//            baseToast.showToast("开始下载!");
+//            showDownloadDialog();
+//        } else {
+//            // Do not have permissions, request them now
+//            EasyPermissions.requestPermissions(this, "我们需要写入/读取权限",
+//                    Configure.PERMISSION_FILE_REQUST_CODE, perms);
+//        }
+//    }
     @AfterPermissionGranted(Configure.PERMISSION_FILE_REQUST_CODE)
-    private void doDownload(int start, int end, int startPage) {
+    private void doDownload(int start, int end) {
         String[] perms = {Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE};
         if (EasyPermissions.hasPermissions(this, perms)) {
             // Already have permission, do the thing
             // ...
-            //先停掉服务
-            Intent stopServiceIntent = new Intent(WebMangaDetailsActivity.this, DownloadService.class);
-            stopService(stopServiceIntent);
-            //再打开
-            Intent intent = new Intent(WebMangaDetailsActivity.this, DownloadService.class);
-            Bundle mangaBundle = new Bundle();
-            mangaBundle.putSerializable("download_MangaBean", currentManga);
-            intent.putExtras(mangaBundle);
-            intent.putExtra("download_folderSize", 3);
-            intent.putExtra("download_startPage", startPage);
-            intent.putExtra("download_currentChapter", start);
-            intent.putExtra("download_endChapter", end);
-            startService(intent);
-            baseToast.showToast("开始下载!");
-            showDownloadDialog();
+            DownloadMangaManager.getInstance().reset(this);
+            MangaBean temp = currentManga;
+            ArrayList<ChapterBean> chapters = new ArrayList<>();
+            for (int i = start; i <= end; i++) {
+                ChapterBean item = new ChapterBean();
+                item = currentManga.getChapters().get(i);
+                chapters.add(item);
+            }
+            temp.setChapters(chapters);
+            DownloadBean.getInstance().setMangaBean(this, temp);
+            DownloadBean.getInstance().setOne_shot(this, spider.isOneShot());
+            DownloadBean.getInstance().setWebSite(this, Configure.currentWebSite);
+            DownloadMangaManager.getInstance().doDownload(getApplicationContext());
         } else {
             // Do not have permissions, request them now
             EasyPermissions.requestPermissions(this, "我们需要写入/读取权限",
@@ -693,48 +722,48 @@ public class WebMangaDetailsActivity extends BaseActivity implements AdapterView
     }
 
     private void showDownloadDialog() {
-        if (null == downloadDialog) {
-            downloadDialog = new MangaDialog(this);
-            downloadDialog.setOnPeanutDialogClickListener(new MangaDialog.OnPeanutDialogClickListener() {
-                @Override
-                public void onOkClick() {
-                    if (Configure.isDownloadServiceRunning) {
-                        stopDownload();
-                    } else {
-                        doDownload(SharedPreferencesUtils.getIntSharedPreferencesData
-                                        (WebMangaDetailsActivity.this, ShareKeys.CURRENT_DOWNLOAD_EPISODE),
-                                SharedPreferencesUtils.getIntSharedPreferencesData
-                                        (WebMangaDetailsActivity.this, ShareKeys.DOWNLOAD_END_EPISODE),
-                                SharedPreferencesUtils.getIntSharedPreferencesData
-                                        (WebMangaDetailsActivity.this, ShareKeys.CURRENT_DOWNLOAD_PAGE));
-                    }
-                }
-
-                @Override
-                public void onCancelClick() {
-
-                }
-            });
-        }
-        downloadDialog.show();
-        String downloadMsg = SharedPreferencesUtils.getSharedPreferencesData(this, ShareKeys.DOWNLOAD_EXPLAIN);
-        if (TextUtils.isEmpty(downloadMsg)) {
-            downloadMsg = "开始下载";
-        }
-        String downloadingMangaName = SharedPreferencesUtils.getSharedPreferencesData(this, ShareKeys.DOWNLOAD_MANGA_NAME);
-        if (TextUtils.isEmpty(downloadingMangaName)) {
-            downloadingMangaName = currentManga.getName();
-        } else {
-            downloadingMangaName = "下载" + downloadingMangaName;
-        }
-        downloadDialog.setTitle(downloadingMangaName);
-        downloadDialog.setMessage(downloadMsg);
-        downloadDialog.setCancelText("知道了");
-        if (Configure.isDownloadServiceRunning) {
-            downloadDialog.setOkText("停止下载");
-        } else {
-            downloadDialog.setOkText("继续下载");
-        }
+//        if (null == downloadDialog) {
+//            downloadDialog = new MangaDialog(this);
+//            downloadDialog.setOnPeanutDialogClickListener(new MangaDialog.OnPeanutDialogClickListener() {
+//                @Override
+//                public void onOkClick() {
+//                    if (Configure.isDownloadServiceRunning) {
+//                        stopDownload();
+//                    } else {
+//                        doDownload(SharedPreferencesUtils.getIntSharedPreferencesData
+//                                        (WebMangaDetailsActivity.this, ShareKeys.CURRENT_DOWNLOAD_EPISODE),
+//                                SharedPreferencesUtils.getIntSharedPreferencesData
+//                                        (WebMangaDetailsActivity.this, ShareKeys.DOWNLOAD_END_EPISODE),
+//                                SharedPreferencesUtils.getIntSharedPreferencesData
+//                                        (WebMangaDetailsActivity.this, ShareKeys.CURRENT_DOWNLOAD_PAGE));
+//                    }
+//                }
+//
+//                @Override
+//                public void onCancelClick() {
+//
+//                }
+//            });
+//        }
+//        downloadDialog.show();
+//        String downloadMsg = SharedPreferencesUtils.getSharedPreferencesData(this, ShareKeys.DOWNLOAD_EXPLAIN);
+//        if (TextUtils.isEmpty(downloadMsg)) {
+//            downloadMsg = "开始下载";
+//        }
+//        String downloadingMangaName = SharedPreferencesUtils.getSharedPreferencesData(this, ShareKeys.DOWNLOAD_MANGA_NAME);
+//        if (TextUtils.isEmpty(downloadingMangaName)) {
+//            downloadingMangaName = currentManga.getName();
+//        } else {
+//            downloadingMangaName = "下载" + downloadingMangaName;
+//        }
+//        downloadDialog.setTitle(downloadingMangaName);
+//        downloadDialog.setMessage(downloadMsg);
+//        downloadDialog.setCancelText("知道了");
+//        if (Configure.isDownloadServiceRunning) {
+//            downloadDialog.setOkText("停止下载");
+//        } else {
+//            downloadDialog.setOkText("继续下载");
+//        }
     }
 
     private void refreshDownloadDialogMsg(DownLoadEvent event) {

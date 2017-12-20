@@ -156,7 +156,7 @@
                 android:background="@color/white"
                 android:paddingLeft="@dimen/item_padding_horizontal"
                 android:paddingRight="@dimen/item_padding_horizontal"
-                android:visibility="gone">
+                android:visibility="visible">
 
 
                 <TextView

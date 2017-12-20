@@ -13,6 +13,7 @@ import com.nostra13.universalimageloader.cache.disc.naming.Md5FileNameGenerator;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.nostra13.universalimageloader.core.assist.QueueProcessingType;
+import com.truthower.suhang.mangareader.bean.DownloadBean;
 import com.truthower.suhang.mangareader.bean.LoginBean;
 import com.truthower.suhang.mangareader.business.download.DownloadMangaManager;
 import com.truthower.suhang.mangareader.config.Configure;
@@ -36,6 +37,8 @@ public class App extends Application {
 
     private void initDownloadManger() {
         DownloadMangaManager.getInstance().getCurrentChapter(getApplicationContext());
+        DownloadBean.getInstance().setDownloadInfo(getApplicationContext(),DownloadBean.
+                getInstance().getDownloadInfo(getApplicationContext()));
     }
 
     private void dealFileUriExposedException() {
