@@ -73,6 +73,7 @@
         <activity android:name=".business.tag.TagFilterActivity"></activity>
 
         <service android:name=".business.download.DownloadService"></service>
+        <service android:name=".business.download.DownloadIntentService"></service>
     </application>
 
 </manifest>

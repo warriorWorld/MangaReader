@@ -1,6 +1,7 @@
 package com.truthower.suhang.mangareader.app;
 
 import android.app.Application;
+import android.app.DownloadManager;
 import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
@@ -13,6 +14,7 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.nostra13.universalimageloader.core.assist.QueueProcessingType;
 import com.truthower.suhang.mangareader.bean.LoginBean;
+import com.truthower.suhang.mangareader.business.download.DownloadMangaManager;
 import com.truthower.suhang.mangareader.config.Configure;
 import com.truthower.suhang.mangareader.crash.CrashHandler;
 
@@ -29,7 +31,13 @@ public class App extends Application {
         initUserInfo();
         initCrashHandler();
         dealFileUriExposedException();
+        initDownloadManger();
     }
+
+    private void initDownloadManger() {
+        DownloadMangaManager.getInstance().getCurrentChapter(getApplicationContext());
+    }
+
     private void dealFileUriExposedException() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();

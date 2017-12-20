@@ -17,4 +17,6 @@ public class ShareKeys {
     public static final String LOGIN_INFO_KEY = "login_info_key";
     public static final String DEVICE_KEY = "device_key";
     public static final String DEVICE_TOKEN_KEY = "device_token_key";
+    public static final String DOWNLOAD_KEY = "download_key";
+    public static final String CURRENT_CHAPTER_KEY = "current_chapter_key";
 }
