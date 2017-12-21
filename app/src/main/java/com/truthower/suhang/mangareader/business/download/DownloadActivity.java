@@ -26,6 +26,7 @@ import com.truthower.suhang.mangareader.eventbus.DownLoadEvent;
 import com.truthower.suhang.mangareader.eventbus.EventBusEvent;
 import com.truthower.suhang.mangareader.utils.ServiceUtil;
 import com.truthower.suhang.mangareader.utils.SharedPreferencesUtils;
+import com.truthower.suhang.mangareader.widget.bar.TopBar;
 import com.truthower.suhang.mangareader.widget.dialog.MangaDialog;
 import com.truthower.suhang.mangareader.widget.pulltorefresh.PullToRefreshBase;
 import com.truthower.suhang.mangareader.widget.pulltorefresh.PullToRefreshGridView;
@@ -51,6 +52,13 @@ public class DownloadActivity extends BaseActivity implements View.OnClickListen
     private GridView mangaGV;
     private OnlineMangaDetailAdapter adapter;
     private OneShotDetailsAdapter oneShotAdapter;
+
+    private enum DownloadState {
+        ON_GOING,
+        STOPED
+    }
+
+    private DownloadState downloadState = DownloadState.STOPED;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,6 +94,22 @@ public class DownloadActivity extends BaseActivity implements View.OnClickListen
         downloadBtn = (Button) findViewById(R.id.download_btn);
         downloadBtn.setOnClickListener(this);
         baseTopBar.setRightText("清空全部");
+        baseTopBar.setOnTopBarClickListener(new TopBar.OnTopBarClickListener() {
+            @Override
+            public void onLeftClick() {
+                DownloadActivity.this.finish();
+            }
+
+            @Override
+            public void onRightClick() {
+                DownloadMangaManager.getInstance().reset(DownloadActivity.this);
+            }
+
+            @Override
+            public void onTitleClick() {
+
+            }
+        });
 
         baseTopBar.setTitle("下载");
     }
@@ -98,7 +122,7 @@ public class DownloadActivity extends BaseActivity implements View.OnClickListen
             mangaNameTv.setText("漫画名称:  " + DownloadBean.getInstance().getCurrentManga().getName());
             if (null != DownloadMangaManager.getInstance().
                     getCurrentChapter()) {
-                mangaChapterNameTv.setText("章    节:  第" +
+                mangaChapterNameTv.setText("章        节:  第" +
                         DownloadMangaManager.getInstance().
                                 getCurrentChapter().getChapter_title() + "话");
             }
@@ -108,22 +132,33 @@ public class DownloadActivity extends BaseActivity implements View.OnClickListen
                     getCurrentChapter()) {
                 downloadProgressBar.setMax(DownloadMangaManager.getInstance().getCurrentChapter().getChapter_size());
             }
-            updateUI();
+            if (null != DownloadMangaManager.getInstance().
+                    getCurrentChapter() && null != DownloadMangaManager.getInstance().
+                    getCurrentChapter().getPages()) {
+                downloadProgressBar.setMax(DownloadMangaManager.getInstance().
+                        getCurrentChapter().getChapter_size());
+                downloadProgressBar.setProgress(DownloadMangaManager.getInstance().
+                        getCurrentChapter().getChapter_size() - DownloadMangaManager.
+                        getInstance().getCurrentChapter().getPages().size());
+            }
             toggleEmpty(false);
         } catch (Exception e) {
             toggleEmpty(true);
         }
     }
 
+    //这个方法必须是下载的时候调用
     private void updateUI() {
         try {
             toggleEmpty(false);
             if (null != DownloadMangaManager.getInstance().
                     getCurrentChapter() && null != DownloadMangaManager.getInstance().
                     getCurrentChapter().getPages()) {
-                mangaChapterNameTv.setText("章    节:  第" +
+                mangaChapterNameTv.setText("章        节:  第" +
                         DownloadMangaManager.getInstance().
                                 getCurrentChapter().getChapter_title() + "话");
+                downloadProgressBar.setMax(DownloadMangaManager.getInstance().
+                        getCurrentChapter().getChapter_size());
                 downloadProgressBar.setProgress(DownloadMangaManager.getInstance().
                         getCurrentChapter().getChapter_size() - DownloadMangaManager.
                         getInstance().getCurrentChapter().getPages().size());
@@ -197,8 +232,10 @@ public class DownloadActivity extends BaseActivity implements View.OnClickListen
     private void toggleDownloading(boolean ing) {
         if (ing) {
             downloadBtn.setText("停止下载");
+            downloadState = DownloadState.ON_GOING;
         } else {
             downloadBtn.setText("开始下载");
+            downloadState = DownloadState.STOPED;
         }
     }
 
@@ -239,6 +276,7 @@ public class DownloadActivity extends BaseActivity implements View.OnClickListen
                             } else {
                                 initGridView();
                             }
+                            updateUI();
                             break;
                     }
                 }
@@ -253,6 +291,14 @@ public class DownloadActivity extends BaseActivity implements View.OnClickListen
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.download_btn:
+                switch (downloadState) {
+                    case STOPED:
+                        DownloadMangaManager.getInstance().doDownload(getApplicationContext());
+                        break;
+                    case ON_GOING:
+                        DownloadMangaManager.getInstance().stopDownload(getApplicationContext());
+                        break;
+                }
                 break;
         }
     }
