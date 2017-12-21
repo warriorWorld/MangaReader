@@ -7,6 +7,7 @@ import android.content.Intent;
 import com.truthower.suhang.mangareader.bean.DownloadBean;
 import com.truthower.suhang.mangareader.bean.DownloadChapterBean;
 import com.truthower.suhang.mangareader.bean.DownloadPageBean;
+import com.truthower.suhang.mangareader.bean.MangaBean;
 import com.truthower.suhang.mangareader.config.Configure;
 import com.truthower.suhang.mangareader.config.ShareKeys;
 import com.truthower.suhang.mangareader.eventbus.DownLoadEvent;
@@ -64,6 +65,11 @@ public class DownloadMangaManager {
             ArrayList<DownloadChapterBean> temp = DownloadBean.getInstance().getDownload_chapters();
             temp.remove(0);
             DownloadBean.getInstance().setDownload_chapters(context, temp);
+
+            MangaBean tempMangaBean=DownloadBean.getInstance().getCurrentManga();
+            //mangabean也得remove
+            tempMangaBean.getChapters().remove(0);
+            DownloadBean.getInstance().setMangaBean(context,tempMangaBean);
             EventBus.getDefault().post(new DownLoadEvent(EventBusEvent.DOWNLOAD_CHAPTER_START_EVENT));
         }
 
