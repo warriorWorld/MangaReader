@@ -102,6 +102,7 @@ public class DownloadActivity extends BaseActivity implements View.OnClickListen
             toggleDownloading(ServiceUtil.isServiceWork(this,
                     "com.truthower.suhang.mangareader.business.download.DownloadIntentService"));
             downloadProgressBar.setMax(DownloadMangaManager.getInstance().getCurrentChapter(this).getChapter_size());
+            updateUI();
             toggleEmpty(false);
         } catch (Exception e) {
             toggleEmpty(true);
@@ -198,35 +199,40 @@ public class DownloadActivity extends BaseActivity implements View.OnClickListen
      */
     @Subscribe
     public void onEventMainThread(final DownLoadEvent event) {
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                if (null == event)
-                    return;
-                switch (event.getEventType()) {
-                    case EventBusEvent.DOWNLOAD_PAGE_FINISH_EVENT:
-                        updateUI();
-                        break;
-                    case EventBusEvent.DOWNLOAD_FINISH_EVENT:
-                        toggleEmpty(true);
-                        MangaDialog dialog = new MangaDialog(DownloadActivity.this);
-                        dialog.show();
-                        dialog.setTitle("全部下载完成!");
-                        break;
-                    case EventBusEvent.DOWNLOAD_CHAPTER_FINISH_EVENT:
-                        break;
-                    case EventBusEvent.DOWNLOAD_CHAPTER_START_EVENT:
-                        downloadProgressBar.setMax(DownloadMangaManager.getInstance().
-                                getCurrentChapter(DownloadActivity.this).getChapter_size());
-                        if (DownloadBean.getInstance().isOne_shot()) {
-                            initOneShotGridView();
-                        } else {
-                            initGridView();
-                        }
-                        break;
+        try {
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    if (null == event)
+                        return;
+                    switch (event.getEventType()) {
+                        case EventBusEvent.DOWNLOAD_PAGE_FINISH_EVENT:
+                            updateUI();
+                            break;
+                        case EventBusEvent.DOWNLOAD_FINISH_EVENT:
+                            toggleEmpty(true);
+                            DownloadMangaManager.getInstance().reset(DownloadActivity.this);
+                            MangaDialog dialog = new MangaDialog(DownloadActivity.this);
+                            dialog.show();
+                            dialog.setTitle("全部下载完成!");
+                            break;
+                        case EventBusEvent.DOWNLOAD_CHAPTER_FINISH_EVENT:
+                            break;
+                        case EventBusEvent.DOWNLOAD_CHAPTER_START_EVENT:
+                            downloadProgressBar.setMax(DownloadMangaManager.getInstance().
+                                    getCurrentChapter(DownloadActivity.this).getChapter_size());
+                            if (DownloadBean.getInstance().isOne_shot()) {
+                                initOneShotGridView();
+                            } else {
+                                initGridView();
+                            }
+                            break;
+                    }
                 }
-            }
-        });
+            });
+        } catch (Exception e) {
+
+        }
     }
 
 

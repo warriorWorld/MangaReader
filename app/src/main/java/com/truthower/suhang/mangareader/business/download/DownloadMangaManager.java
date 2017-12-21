@@ -16,6 +16,7 @@ import com.truthower.suhang.mangareader.listener.JsoupCallBack;
 import com.truthower.suhang.mangareader.spider.FileSpider;
 import com.truthower.suhang.mangareader.spider.SpiderBase;
 import com.truthower.suhang.mangareader.utils.ShareObjUtil;
+import com.truthower.suhang.mangareader.widget.dialog.MangaDialog;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -50,70 +51,76 @@ public class DownloadMangaManager {
     }
 
     public void doDownload(final Context context) {
-        stopDownload(context);
-        if (null == DownloadBean.getInstance().getDownload_chapters() ||
-                DownloadBean.getInstance().getDownload_chapters().size() <= 0) {
-            //没有章节了
-            //下载完成
-            EventBus.getDefault().post(new DownLoadEvent(EventBusEvent.DOWNLOAD_FINISH_EVENT));
-            return;
-        }
-        if (null == currentChapter || null == currentChapter.getPages() || currentChapter.getPages().size() <= 0) {
-            //当前章节空了的时候 点前章节赋值为新的章节 移除空章节
-            currentChapter = DownloadBean.getInstance().getDownload_chapters().get(0);
-            saveCurrentChapter(context);
-            ArrayList<DownloadChapterBean> temp = DownloadBean.getInstance().getDownload_chapters();
-            temp.remove(0);
-            DownloadBean.getInstance().setDownload_chapters(context, temp);
-
-            MangaBean tempMangaBean=DownloadBean.getInstance().getCurrentManga();
-            //mangabean也得remove
-            tempMangaBean.getChapters().remove(0);
-            DownloadBean.getInstance().setMangaBean(context,tempMangaBean);
-            EventBus.getDefault().post(new DownLoadEvent(EventBusEvent.DOWNLOAD_CHAPTER_START_EVENT));
-        }
-
-        final String mangaName = DownloadBean.getInstance().initMangaFileName();
-        if (DownloadBean.getInstance().isOne_shot()) {
-            ArrayList<DownloadChapterBean> list = DownloadBean.getInstance().getDownload_chapters();
-            Intent intent = new Intent(context, DownloadIntentService.class);
-            for (int i = 0; i < list.size(); i++) {//循环启动任务
-                intent.putExtra(DownloadIntentService.DOWNLOAD_URL, list.get(i).getImg_url());
-                intent.putExtra(DownloadIntentService.MANGA_FOLDER_NAME, mangaName);
-                intent.putExtra(DownloadIntentService.CHILD_FOLDER_NAME, "one shot");
-                intent.putExtra(DownloadIntentService.PAGE_NAME, list.get(i).getChapter_title());
-                context.startService(intent);
+        try {
+            stopDownload(context);
+            if (null == DownloadBean.getInstance().getDownload_chapters() ||
+                    DownloadBean.getInstance().getDownload_chapters().size() <= 0) {
+                //没有章节了
+                //下载完成
+                EventBus.getDefault().post(new DownLoadEvent(EventBusEvent.DOWNLOAD_FINISH_EVENT));
+                return;
             }
-        } else {
-            if (null == spider) {
-                initSpider();
+            if (null == currentChapter || null == currentChapter.getPages() || currentChapter.getPages().size() <= 0) {
+                //当前章节空了的时候 点前章节赋值为新的章节 移除空章节
+                currentChapter = DownloadBean.getInstance().getDownload_chapters().get(0);
+                saveCurrentChapter(context);
+                ArrayList<DownloadChapterBean> temp = DownloadBean.getInstance().getDownload_chapters();
+                temp.remove(0);
+                DownloadBean.getInstance().setDownload_chapters(context, temp);
+
+                MangaBean tempMangaBean = DownloadBean.getInstance().getCurrentManga();
+                //mangabean也得remove
+                tempMangaBean.getChapters().remove(0);
+                DownloadBean.getInstance().setMangaBean(context, tempMangaBean);
+                EventBus.getDefault().post(new DownLoadEvent(EventBusEvent.DOWNLOAD_CHAPTER_START_EVENT));
             }
-            spider.getMangaChapterPics(context, currentChapter.getChapter_url(), new JsoupCallBack<ArrayList<String>>() {
-                @Override
-                public void loadSucceed(ArrayList<String> result) {
-                    Intent intent = new Intent(context, DownloadIntentService.class);
-                    ArrayList<DownloadPageBean> pages = new ArrayList<>();
-                    for (int i = 0; i < result.size(); i++) {//循环启动任务
-                        DownloadPageBean item = new DownloadPageBean();
-                        item.setPage_file_name(mangaName + "_" +
-                                currentChapter.getChapter_title()
-                                + "_" + i + ".png");
-                        item.setPage_url(result.get(i));
-                        pages.add(item);
-                        intent.putExtra(DownloadIntentService.DOWNLOAD_URL, item.getPage_url());
-                        intent.putExtra(DownloadIntentService.MANGA_FOLDER_NAME, mangaName);
-                        intent.putExtra(DownloadIntentService.CHILD_FOLDER_NAME,
-                                currentChapter.getChapter_child_folder_name());
-                        intent.putExtra(DownloadIntentService.PAGE_NAME, item.getPage_file_name());
-                        context.startService(intent);
+
+            final String mangaName = DownloadBean.getInstance().initMangaFileName();
+            if (DownloadBean.getInstance().isOne_shot()) {
+                ArrayList<DownloadChapterBean> list = DownloadBean.getInstance().getDownload_chapters();
+                Intent intent = new Intent(context, DownloadIntentService.class);
+                for (int i = 0; i < list.size(); i++) {//循环启动任务
+                    intent.putExtra(DownloadIntentService.DOWNLOAD_URL, list.get(i).getImg_url());
+                    intent.putExtra(DownloadIntentService.MANGA_FOLDER_NAME, mangaName);
+                    intent.putExtra(DownloadIntentService.CHILD_FOLDER_NAME, "one shot");
+                    intent.putExtra(DownloadIntentService.PAGE_NAME, list.get(i).getChapter_title());
+                    context.startService(intent);
+                }
+            } else {
+                if (null == spider) {
+                    initSpider();
+                }
+                spider.getMangaChapterPics(context, currentChapter.getChapter_url(), new JsoupCallBack<ArrayList<String>>() {
+                    @Override
+                    public void loadSucceed(ArrayList<String> result) {
+                        Intent intent = new Intent(context, DownloadIntentService.class);
+                        ArrayList<DownloadPageBean> pages = new ArrayList<>();
+                        for (int i = 0; i < result.size(); i++) {//循环启动任务
+                            DownloadPageBean item = new DownloadPageBean();
+                            item.setPage_file_name(mangaName + "_" +
+                                    currentChapter.getChapter_title()
+                                    + "_" + i + ".png");
+                            item.setPage_url(result.get(i));
+                            pages.add(item);
+                            intent.putExtra(DownloadIntentService.DOWNLOAD_URL, item.getPage_url());
+                            intent.putExtra(DownloadIntentService.MANGA_FOLDER_NAME, mangaName);
+                            intent.putExtra(DownloadIntentService.CHILD_FOLDER_NAME,
+                                    currentChapter.getChapter_child_folder_name());
+                            intent.putExtra(DownloadIntentService.PAGE_NAME, item.getPage_file_name());
+                            context.startService(intent);
+                        }
+                        currentChapter.setPages(pages);
                     }
-                    currentChapter.setPages(pages);
-                }
 
-                @Override
-                public void loadFailed(String error) {
-                }
-            });
+                    @Override
+                    public void loadFailed(String error) {
+                    }
+                });
+            }
+        } catch (Exception e) {
+            MangaDialog dialog = new MangaDialog(context);
+            dialog.show();
+            dialog.setTitle(e + "");
         }
     }
 
@@ -132,7 +139,7 @@ public class DownloadMangaManager {
 
     public void downloadPageDone(Context context, String url) {
         EventBus.getDefault().post(new DownLoadEvent(EventBusEvent.DOWNLOAD_PAGE_FINISH_EVENT));
-        if (DownloadBean.getInstance().isOne_shot()){
+        if (DownloadBean.getInstance().isOne_shot()) {
             EventBus.getDefault().post(new DownLoadEvent(EventBusEvent.DOWNLOAD_CHAPTER_START_EVENT));
         }
         if (currentChapter.getPages().size() == 1 && currentChapter.getPages().get(0).getPage_url().equals(url)) {
