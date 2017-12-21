@@ -406,6 +406,7 @@ public class WebMangaDetailsActivity extends BaseActivity implements AdapterView
 
             Intent intent = new Intent(this, DownloadActivity.class);
             startActivity(intent);
+            WebMangaDetailsActivity.this.finish();
         } else {
             // Do not have permissions, request them now
             EasyPermissions.requestPermissions(this, "我们需要写入/读取权限",

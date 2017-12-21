@@ -96,12 +96,18 @@ public class DownloadActivity extends BaseActivity implements View.OnClickListen
                     (DownloadBean.getInstance().getCurrentManga().getWebThumbnailUrl(),
                             thumbnailIv, Configure.normalImageOptions);
             mangaNameTv.setText("漫画名称:  " + DownloadBean.getInstance().getCurrentManga().getName());
-            mangaChapterNameTv.setText("章    节:  第" +
-                    DownloadMangaManager.getInstance().
-                            getCurrentChapter(this).getChapter_title() + "话");
+            if (null != DownloadMangaManager.getInstance().
+                    getCurrentChapter()) {
+                mangaChapterNameTv.setText("章    节:  第" +
+                        DownloadMangaManager.getInstance().
+                                getCurrentChapter().getChapter_title() + "话");
+            }
             toggleDownloading(ServiceUtil.isServiceWork(this,
                     "com.truthower.suhang.mangareader.business.download.DownloadIntentService"));
-            downloadProgressBar.setMax(DownloadMangaManager.getInstance().getCurrentChapter(this).getChapter_size());
+            if (null != DownloadMangaManager.getInstance().
+                    getCurrentChapter()) {
+                downloadProgressBar.setMax(DownloadMangaManager.getInstance().getCurrentChapter().getChapter_size());
+            }
             updateUI();
             toggleEmpty(false);
         } catch (Exception e) {
@@ -112,12 +118,16 @@ public class DownloadActivity extends BaseActivity implements View.OnClickListen
     private void updateUI() {
         try {
             toggleEmpty(false);
-            mangaChapterNameTv.setText("章    节:  第" +
-                    DownloadMangaManager.getInstance().
-                            getCurrentChapter(this).getChapter_title() + "话");
-            downloadProgressBar.setProgress(DownloadMangaManager.getInstance().
-                    getCurrentChapter(this).getChapter_size() - DownloadMangaManager.
-                    getInstance().getCurrentChapter(this).getPages().size());
+            if (null != DownloadMangaManager.getInstance().
+                    getCurrentChapter() && null != DownloadMangaManager.getInstance().
+                    getCurrentChapter().getPages()) {
+                mangaChapterNameTv.setText("章    节:  第" +
+                        DownloadMangaManager.getInstance().
+                                getCurrentChapter().getChapter_title() + "话");
+                downloadProgressBar.setProgress(DownloadMangaManager.getInstance().
+                        getCurrentChapter().getChapter_size() - DownloadMangaManager.
+                        getInstance().getCurrentChapter().getPages().size());
+            }
             toggleDownloading(true);
         } catch (Exception e) {
             toggleEmpty(true);
@@ -219,8 +229,11 @@ public class DownloadActivity extends BaseActivity implements View.OnClickListen
                         case EventBusEvent.DOWNLOAD_CHAPTER_FINISH_EVENT:
                             break;
                         case EventBusEvent.DOWNLOAD_CHAPTER_START_EVENT:
-                            downloadProgressBar.setMax(DownloadMangaManager.getInstance().
-                                    getCurrentChapter(DownloadActivity.this).getChapter_size());
+                            if (null != DownloadMangaManager.getInstance().
+                                    getCurrentChapter()) {
+                                downloadProgressBar.setMax(DownloadMangaManager.getInstance().
+                                        getCurrentChapter().getChapter_size());
+                            }
                             if (DownloadBean.getInstance().isOne_shot()) {
                                 initOneShotGridView();
                             } else {

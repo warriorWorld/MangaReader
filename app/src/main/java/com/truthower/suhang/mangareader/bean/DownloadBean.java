@@ -124,7 +124,6 @@ public class DownloadBean extends BaseBean {
                     item.setChapter_url(currentManga.getChapters().get(i).getChapterUrl());
                     item.setChapter_child_folder_name(FileSpider.getInstance().getChildFolderName(
                             Integer.valueOf(currentManga.getChapters().get(i).getChapterPosition()), 3));
-                    item.setChapter_size(currentManga.getChapters().size());
                     item.setChapter_title(currentManga.getChapters().get(i).getChapterPosition());
                     list.add(item);
                 }

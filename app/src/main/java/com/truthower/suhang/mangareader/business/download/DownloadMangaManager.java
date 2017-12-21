@@ -94,6 +94,7 @@ public class DownloadMangaManager {
                     @Override
                     public void loadSucceed(ArrayList<String> result) {
                         Intent intent = new Intent(context, DownloadIntentService.class);
+                        currentChapter.setChapter_size(result.size());
                         ArrayList<DownloadPageBean> pages = new ArrayList<>();
                         for (int i = 0; i < result.size(); i++) {//循环启动任务
                             DownloadPageBean item = new DownloadPageBean();
@@ -118,9 +119,7 @@ public class DownloadMangaManager {
                 });
             }
         } catch (Exception e) {
-            MangaDialog dialog = new MangaDialog(context);
-            dialog.show();
-            dialog.setTitle(e + "");
+
         }
     }
 
@@ -169,11 +168,16 @@ public class DownloadMangaManager {
     }
 
     //这个最好只有在application类里调用一次(即刚进入应用时调用一次),其他情况直接用单例就好,调用这个效率太低了
+    //因为我一直在不断的给currentChapter赋值和置空并以他是否为空做进一步判断 而这个方法又会给currentChapter赋值 所以这个东西只允许App调用一次
     public DownloadChapterBean getCurrentChapter(Context context) {
         if (null != currentChapter) {
             return currentChapter;
         }
         currentChapter = (DownloadChapterBean) ShareObjUtil.getObject(context, ShareKeys.CURRENT_CHAPTER_KEY);
+        return currentChapter;
+    }
+
+    public DownloadChapterBean getCurrentChapter() {
         return currentChapter;
     }
 
