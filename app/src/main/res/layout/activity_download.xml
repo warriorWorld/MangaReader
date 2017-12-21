@@ -70,6 +70,7 @@
         android:id="@+id/ptf_grid_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_above="@+id/download_btn"
         android:layout_below="@+id/manga_info_rl"
         android:layout_marginBottom="8dp"
         android:layout_marginTop="8dp"
@@ -78,6 +79,16 @@
         android:numColumns="5"
         android:padding="10dp"
         android:verticalSpacing="12dp"></com.truthower.suhang.mangareader.widget.pulltorefresh.PullToRefreshGridView>
+
+    <Button
+        android:id="@+id/download_btn"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_alignParentBottom="true"
+        android:background="@drawable/btn_click_rewrite"
+        android:text="开始下载"
+        android:textColor="@color/clickable_text_color"
+        android:textSize="17sp" />
 
     <include
         android:id="@+id/empty_view"

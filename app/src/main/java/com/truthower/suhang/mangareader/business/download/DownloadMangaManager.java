@@ -126,6 +126,9 @@ public class DownloadMangaManager {
 
     public void downloadPageDone(Context context, String url) {
         EventBus.getDefault().post(new DownLoadEvent(EventBusEvent.DOWNLOAD_PAGE_FINISH_EVENT));
+        if (DownloadBean.getInstance().isOne_shot()){
+            EventBus.getDefault().post(new DownLoadEvent(EventBusEvent.DOWNLOAD_CHAPTER_START_EVENT));
+        }
         if (currentChapter.getPages().size() == 1 && currentChapter.getPages().get(0).getPage_url().equals(url)) {
             currentChapter = null;
             doDownload(context);
