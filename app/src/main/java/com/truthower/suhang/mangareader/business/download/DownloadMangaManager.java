@@ -54,6 +54,7 @@ public class DownloadMangaManager {
                 DownloadBean.getInstance().getDownload_chapters().size() <= 0) {
             //没有章节了
             //下载完成
+            EventBus.getDefault().post(new DownLoadEvent(EventBusEvent.DOWNLOAD_FINISH_EVENT));
             return;
         }
         if (null == currentChapter || null == currentChapter.getPages() || currentChapter.getPages().size() <= 0) {
@@ -63,6 +64,7 @@ public class DownloadMangaManager {
             ArrayList<DownloadChapterBean> temp = DownloadBean.getInstance().getDownload_chapters();
             temp.remove(0);
             DownloadBean.getInstance().setDownload_chapters(context, temp);
+            EventBus.getDefault().post(new DownLoadEvent(EventBusEvent.DOWNLOAD_CHAPTER_START_EVENT));
         }
 
         final String mangaName = DownloadBean.getInstance().initMangaFileName();
@@ -123,7 +125,7 @@ public class DownloadMangaManager {
     }
 
     public void downloadPageDone(Context context, String url) {
-        EventBus.getDefault().post(new DownLoadEvent(EventBusEvent.DOWNLOAD_FINISH_EVENT));
+        EventBus.getDefault().post(new DownLoadEvent(EventBusEvent.DOWNLOAD_PAGE_FINISH_EVENT));
         if (currentChapter.getPages().size() == 1 && currentChapter.getPages().get(0).getPage_url().equals(url)) {
             currentChapter = null;
             doDownload(context);

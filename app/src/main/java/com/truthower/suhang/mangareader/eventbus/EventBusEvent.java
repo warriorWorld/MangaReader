@@ -7,9 +7,10 @@ package com.truthower.suhang.mangareader.eventbus;/**
  * 邮箱：772192594@qq.com
  */
 public class EventBusEvent {
-    public static final int DOWNLOAD_EVENT = 16;
+    public static final int DOWNLOAD_PAGE_FINISH_EVENT = 16;
     public static final int DOWNLOAD_FINISH_EVENT = 17;
-    public static final int DOWNLOAD_FAIL_EVENT = 18;
+    public static final int DOWNLOAD_CHAPTER_FINISH_EVENT = 18;
+    public static final int DOWNLOAD_CHAPTER_START_EVENT = 21;
     public static final int TAG_CLICK_EVENT = 19;
     public static final int JUMP_EVENT = 20;
     private String msg;

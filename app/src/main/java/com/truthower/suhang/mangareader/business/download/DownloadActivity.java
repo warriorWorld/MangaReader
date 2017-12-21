@@ -22,6 +22,7 @@ import com.truthower.suhang.mangareader.eventbus.DownLoadEvent;
 import com.truthower.suhang.mangareader.eventbus.EventBusEvent;
 import com.truthower.suhang.mangareader.utils.ServiceUtil;
 import com.truthower.suhang.mangareader.utils.SharedPreferencesUtils;
+import com.truthower.suhang.mangareader.widget.dialog.MangaDialog;
 import com.truthower.suhang.mangareader.widget.pulltorefresh.PullToRefreshGridView;
 
 import org.greenrobot.eventbus.EventBus;
@@ -80,6 +81,7 @@ public class DownloadActivity extends BaseActivity implements View.OnClickListen
                             getCurrentChapter(this).getChapter_title() + "话");
             toggleDownloading(ServiceUtil.isServiceWork(this,
                     "com.truthower.suhang.mangareader.business.download.DownloadIntentService"));
+            emptyView.setVisibility(View.GONE);
         } catch (Exception e) {
             emptyView.setVisibility(View.VISIBLE);
         }
@@ -87,9 +89,13 @@ public class DownloadActivity extends BaseActivity implements View.OnClickListen
 
     private void updateUI() {
         try {
+            emptyView.setVisibility(View.GONE);
             mangaChapterNameTv.setText("章    节:  第" +
                     DownloadMangaManager.getInstance().
                             getCurrentChapter(this).getChapter_title() + "话");
+            downloadProgressBar.setProgress(DownloadMangaManager.getInstance().
+                    getCurrentChapter(this).getChapter_size() - DownloadMangaManager.
+                    getInstance().getCurrentChapter(this).getPages().size());
             toggleDownloading(true);
         } catch (Exception e) {
             emptyView.setVisibility(View.VISIBLE);
@@ -117,11 +123,20 @@ public class DownloadActivity extends BaseActivity implements View.OnClickListen
                 if (null == event)
                     return;
                 switch (event.getEventType()) {
-                    case EventBusEvent.DOWNLOAD_EVENT:
+                    case EventBusEvent.DOWNLOAD_PAGE_FINISH_EVENT:
+                        updateUI();
                         break;
                     case EventBusEvent.DOWNLOAD_FINISH_EVENT:
+                        emptyView.setVisibility(View.VISIBLE);
+                        MangaDialog dialog = new MangaDialog(DownloadActivity.this);
+                        dialog.show();
+                        dialog.setTitle("全部下载完成!");
                         break;
-                    case EventBusEvent.DOWNLOAD_FAIL_EVENT:
+                    case EventBusEvent.DOWNLOAD_CHAPTER_FINISH_EVENT:
+                        break;
+                    case EventBusEvent.DOWNLOAD_CHAPTER_START_EVENT:
+                        downloadProgressBar.setMax(DownloadMangaManager.getInstance().
+                                getCurrentChapter(DownloadActivity.this).getChapter_size());
                         break;
                 }
             }
