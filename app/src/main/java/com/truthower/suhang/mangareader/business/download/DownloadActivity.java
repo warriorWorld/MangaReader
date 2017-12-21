@@ -297,6 +297,8 @@ public class DownloadActivity extends BaseActivity implements View.OnClickListen
                         break;
                     case ON_GOING:
                         DownloadMangaManager.getInstance().stopDownload(getApplicationContext());
+                        toggleDownloading(ServiceUtil.isServiceWork(this,
+                                "com.truthower.suhang.mangareader.business.download.DownloadIntentService"));
                         break;
                 }
                 break;
