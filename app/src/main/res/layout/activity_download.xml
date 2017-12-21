@@ -87,7 +87,7 @@
         android:layout_alignParentBottom="true"
         android:background="@drawable/btn_click_rewrite"
         android:text="开始下载"
-        android:textColor="@color/clickable_text_color"
+        android:textColor="@drawable/btn_text_click_rewrite"
         android:textSize="17sp" />
 
     <include

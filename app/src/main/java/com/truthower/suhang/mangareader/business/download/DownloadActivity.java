@@ -101,6 +101,7 @@ public class DownloadActivity extends BaseActivity implements View.OnClickListen
                             getCurrentChapter(this).getChapter_title() + "话");
             toggleDownloading(ServiceUtil.isServiceWork(this,
                     "com.truthower.suhang.mangareader.business.download.DownloadIntentService"));
+            downloadProgressBar.setMax(DownloadMangaManager.getInstance().getCurrentChapter(this).getChapter_size());
             emptyView.setVisibility(View.GONE);
         } catch (Exception e) {
             emptyView.setVisibility(View.VISIBLE);
