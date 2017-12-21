@@ -102,15 +102,15 @@ public class DownloadActivity extends BaseActivity implements View.OnClickListen
             toggleDownloading(ServiceUtil.isServiceWork(this,
                     "com.truthower.suhang.mangareader.business.download.DownloadIntentService"));
             downloadProgressBar.setMax(DownloadMangaManager.getInstance().getCurrentChapter(this).getChapter_size());
-            emptyView.setVisibility(View.GONE);
+            toggleEmpty(false);
         } catch (Exception e) {
-            emptyView.setVisibility(View.VISIBLE);
+            toggleEmpty(true);
         }
     }
 
     private void updateUI() {
         try {
-            emptyView.setVisibility(View.GONE);
+            toggleEmpty(false);
             mangaChapterNameTv.setText("章    节:  第" +
                     DownloadMangaManager.getInstance().
                             getCurrentChapter(this).getChapter_title() + "话");
@@ -119,42 +119,50 @@ public class DownloadActivity extends BaseActivity implements View.OnClickListen
                     getInstance().getCurrentChapter(this).getPages().size());
             toggleDownloading(true);
         } catch (Exception e) {
-            emptyView.setVisibility(View.VISIBLE);
+            toggleEmpty(true);
         }
     }
 
     private void initGridView() {
-        if (null == adapter) {
-            adapter = new OnlineMangaDetailAdapter(this,
-                    DownloadBean.getInstance().getCurrentManga().getChapters());
-            mangaGV.setAdapter(adapter);
-            mangaGV.setColumnWidth(50);
-            mangaGV.setNumColumns(5);
-            mangaGV.setVerticalSpacing(10);
-            mangaGV.setHorizontalSpacing(3);
-        } else {
-            adapter.setChapters(DownloadBean.getInstance().getCurrentManga().getChapters());
-            adapter.notifyDataSetChanged();
+        try {
+            if (null == adapter) {
+                adapter = new OnlineMangaDetailAdapter(this,
+                        DownloadBean.getInstance().getCurrentManga().getChapters());
+                mangaGV.setAdapter(adapter);
+                mangaGV.setColumnWidth(50);
+                mangaGV.setNumColumns(5);
+                mangaGV.setVerticalSpacing(10);
+                mangaGV.setHorizontalSpacing(3);
+            } else {
+                adapter.setChapters(DownloadBean.getInstance().getCurrentManga().getChapters());
+                adapter.notifyDataSetChanged();
+            }
+            ptfGridView.onPullDownRefreshComplete();// 动画结束方法
+            ptfGridView.onPullUpRefreshComplete();
+        } catch (Exception e) {
+            toggleEmpty(true);
         }
-        ptfGridView.onPullDownRefreshComplete();// 动画结束方法
-        ptfGridView.onPullUpRefreshComplete();
     }
 
     private void initOneShotGridView() {
-        if (null == oneShotAdapter) {
-            oneShotAdapter = new OneShotDetailsAdapter(this,
-                    DownloadBean.getInstance().getCurrentManga().getChapters());
-            mangaGV.setAdapter(oneShotAdapter);
-            mangaGV.setNumColumns(2);
-            mangaGV.setVerticalSpacing(12);
-            mangaGV.setGravity(Gravity.CENTER);
-            mangaGV.setHorizontalSpacing(15);
-        } else {
-            oneShotAdapter.setChapterList(DownloadBean.getInstance().getCurrentManga().getChapters());
-            oneShotAdapter.notifyDataSetChanged();
+        try {
+            if (null == oneShotAdapter) {
+                oneShotAdapter = new OneShotDetailsAdapter(this,
+                        DownloadBean.getInstance().getCurrentManga().getChapters());
+                mangaGV.setAdapter(oneShotAdapter);
+                mangaGV.setNumColumns(2);
+                mangaGV.setVerticalSpacing(12);
+                mangaGV.setGravity(Gravity.CENTER);
+                mangaGV.setHorizontalSpacing(15);
+            } else {
+                oneShotAdapter.setChapterList(DownloadBean.getInstance().getCurrentManga().getChapters());
+                oneShotAdapter.notifyDataSetChanged();
+            }
+            ptfGridView.onPullDownRefreshComplete();// 动画结束方法
+            ptfGridView.onPullUpRefreshComplete();
+        } catch (Exception e) {
+            toggleEmpty(true);
         }
-        ptfGridView.onPullDownRefreshComplete();// 动画结束方法
-        ptfGridView.onPullUpRefreshComplete();
     }
 
     private void initPullGridView() {
@@ -163,6 +171,16 @@ public class DownloadActivity extends BaseActivity implements View.OnClickListen
         // 滚到底部自动加载
         ptfGridView.setScrollLoadEnabled(false);
         ptfGridView.setOnRefreshListener(this);
+    }
+
+    private void toggleEmpty(boolean empty) {
+        if (empty) {
+            emptyView.setVisibility(View.VISIBLE);
+            downloadBtn.setVisibility(View.GONE);
+        } else {
+            emptyView.setVisibility(View.GONE);
+            downloadBtn.setVisibility(View.VISIBLE);
+        }
     }
 
     private void toggleDownloading(boolean ing) {
@@ -190,7 +208,7 @@ public class DownloadActivity extends BaseActivity implements View.OnClickListen
                         updateUI();
                         break;
                     case EventBusEvent.DOWNLOAD_FINISH_EVENT:
-                        emptyView.setVisibility(View.VISIBLE);
+                        toggleEmpty(true);
                         MangaDialog dialog = new MangaDialog(DownloadActivity.this);
                         dialog.show();
                         dialog.setTitle("全部下载完成!");

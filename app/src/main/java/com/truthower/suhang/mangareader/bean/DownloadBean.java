@@ -46,7 +46,7 @@ public class DownloadBean extends BaseBean {
     }
 
     //这个最好只有在application类里调用一次(即刚进入应用时调用一次),其他情况直接用单例就好,调用这个效率太低了
-    public  DownloadBean getDownloadInfo(Context context) {
+    public DownloadBean getDownloadInfo(Context context) {
         DownloadBean res = (DownloadBean) ShareObjUtil.getObject(context, ShareKeys.DOWNLOAD_KEY);
         if (null != res) {
             return res;
@@ -70,7 +70,6 @@ public class DownloadBean extends BaseBean {
 
     public void setMangaBean(Context context, MangaBean mangaBean) {
         this.currentManga = mangaBean;
-        this.download_chapters = getChapters();
         saveDownloadInfo(context, instance);
     }
 
@@ -96,12 +95,16 @@ public class DownloadBean extends BaseBean {
         return download_chapters;
     }
 
+    public void initDownloadChapters() {
+        this.download_chapters = getDownloadChapters();
+    }
+
     public void setDownload_chapters(Context context, ArrayList<DownloadChapterBean> down_chapters) {
         this.download_chapters = down_chapters;
         saveDownloadInfo(context, instance);
     }
 
-    private ArrayList<DownloadChapterBean> getChapters() {
+    private ArrayList<DownloadChapterBean> getDownloadChapters() {
         try {
             ArrayList<DownloadChapterBean> list = new ArrayList<>();
             if (one_shot && null != currentManga.getChapters() && currentManga.getChapters().size() > 0
