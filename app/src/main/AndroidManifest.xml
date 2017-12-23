@@ -48,7 +48,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".business.main.MainActivity"
+            android:name=".business.lunch.LunchActivity"
             android:launchMode="singleTask">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -58,6 +58,9 @@
         </activity>
         <activity android:name=".business.detail.WebMangaDetailsActivity"></activity>
         <activity android:name=".business.detail.LocalMangaDetailsActivity"></activity>
+        <activity
+            android:name=".business.main.MainActivity"
+            android:launchMode="singleTask"></activity>
         <activity
             android:name=".business.read.ReadMangaActivity"
             android:launchMode="singleTask"></activity>

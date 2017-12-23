@@ -85,15 +85,13 @@ public class MainActivity extends BaseFragmentActivity implements View.OnClickLi
         hideBaseTopBar();
         initUI();
         initFragment();
-        BaseParameterUtil.getInstance(this);
-        doGetVersionInfo();
     }
 
 
     @Override
     public void onResume() {
         super.onResume();
-        if (null!=curFragment) {
+        if (null != curFragment) {
             curFragment.onHiddenChanged(false);
         }
     }

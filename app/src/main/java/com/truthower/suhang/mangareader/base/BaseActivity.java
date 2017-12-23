@@ -75,6 +75,7 @@ public abstract class BaseActivity extends Activity {
 
     protected void hideBaseTopBar() {
         baseTopBar.setVisibility(View.GONE);
+        colorHolder.setVisibility(View.GONE);
     }
 
     protected void hideBack() {

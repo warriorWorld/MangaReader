@@ -40,7 +40,7 @@ public class ActivityPoor {
     /**
      * 便利所有Activigty并finish
      */
-    public static void finishActivity() {
+    public static void finishAllActivity() {
         for (Activity activity : activityList) {
             activity.finish();
         }
