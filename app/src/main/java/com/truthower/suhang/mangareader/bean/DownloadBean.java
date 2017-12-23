@@ -110,7 +110,7 @@ public class DownloadBean extends BaseBean {
             if (one_shot && null != currentManga.getChapters() && currentManga.getChapters().size() > 0
                     && !TextUtils.isEmpty(currentManga.getChapters().get(0).getImgUrl())) {
                 String mangaName = initMangaFileName();
-                for (int i = 0; i <= currentManga.getChapters().size(); i++) {
+                for (int i = 0; i < currentManga.getChapters().size(); i++) {
                     DownloadChapterBean item = new DownloadChapterBean();
                     item.setImg_url(currentManga.getChapters().get(i).getImgUrl());
                     item.setChapter_size(currentManga.getChapters().size());

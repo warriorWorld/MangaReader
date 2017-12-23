@@ -151,17 +151,24 @@ public class DownloadActivity extends BaseActivity implements View.OnClickListen
     //这个方法必须是下载的时候调用
     private void updateUI() {
         try {
-            if (null != DownloadMangaManager.getInstance().
-                    getCurrentChapter() && null != DownloadMangaManager.getInstance().
-                    getCurrentChapter().getPages()) {
-                mangaChapterNameTv.setText("章        节:  第" +
-                        DownloadMangaManager.getInstance().
-                                getCurrentChapter().getChapter_title() + "话");
-                downloadProgressBar.setMax(DownloadMangaManager.getInstance().
-                        getCurrentChapter().getChapter_size());
-                downloadProgressBar.setProgress(DownloadMangaManager.getInstance().
-                        getCurrentChapter().getChapter_size() - DownloadMangaManager.
-                        getInstance().getCurrentChapter().getPages().size());
+            if (DownloadBean.getInstance().isOne_shot()) {
+                mangaChapterNameTv.setText("章        节:  ONE SHOT");
+                downloadProgressBar.setMax(DownloadMangaManager.getInstance().getOneShotListTotalSize());
+                downloadProgressBar.setProgress(DownloadMangaManager.getInstance().getOneShotListTotalSize()
+                        - DownloadMangaManager.getInstance().getOneShotLeftSize());
+            } else {
+                if (null != DownloadMangaManager.getInstance().
+                        getCurrentChapter() && null != DownloadMangaManager.getInstance().
+                        getCurrentChapter().getPages()) {
+                    mangaChapterNameTv.setText("章        节:  第" +
+                            DownloadMangaManager.getInstance().
+                                    getCurrentChapter().getChapter_title() + "话");
+                    downloadProgressBar.setMax(DownloadMangaManager.getInstance().
+                            getCurrentChapter().getChapter_size());
+                    downloadProgressBar.setProgress(DownloadMangaManager.getInstance().
+                            getCurrentChapter().getChapter_size() - DownloadMangaManager.
+                            getInstance().getCurrentChapter().getPages().size());
+                }
             }
             toggleDownloading(true);
             toggleEmpty(false);
@@ -267,13 +274,9 @@ public class DownloadActivity extends BaseActivity implements View.OnClickListen
                         case EventBusEvent.DOWNLOAD_CHAPTER_FINISH_EVENT:
                             break;
                         case EventBusEvent.DOWNLOAD_CHAPTER_START_EVENT:
-                            if (null != DownloadMangaManager.getInstance().
-                                    getCurrentChapter()) {
-                                downloadProgressBar.setMax(DownloadMangaManager.getInstance().
-                                        getCurrentChapter().getChapter_size());
-                            }
                             if (DownloadBean.getInstance().isOne_shot()) {
-                                initOneShotGridView();
+                                //不刷新列表
+//                                initOneShotGridView();
                             } else {
                                 initGridView();
                             }

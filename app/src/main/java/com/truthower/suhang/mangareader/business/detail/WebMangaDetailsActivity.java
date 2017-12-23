@@ -400,8 +400,8 @@ public class WebMangaDetailsActivity extends BaseActivity implements AdapterView
             }
             temp.setChapters(chapters);
             DownloadBean.getInstance().setMangaBean(this, temp);
-            DownloadBean.getInstance().initDownloadChapters();
             DownloadBean.getInstance().setOne_shot(this, spider.isOneShot());
+            DownloadBean.getInstance().initDownloadChapters();
             DownloadBean.getInstance().setWebSite(this, Configure.currentWebSite);
             DownloadMangaManager.getInstance().doDownload(getApplicationContext());
 

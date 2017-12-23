@@ -31,9 +31,10 @@ public class DownloadIntentService extends IntentService {
     public static final String CHILD_FOLDER_NAME = "child_folder_name";
     public static final String PAGE_NAME = "page_name";
 
-    public DownloadIntentService(){
+    public DownloadIntentService() {
         super("DownloadIntentService");
     }
+
     /**
      * Creates an IntentService.  Invoked by your subclass's constructor.
      *
@@ -45,14 +46,18 @@ public class DownloadIntentService extends IntentService {
 
     @Override
     protected void onHandleIntent(@Nullable Intent intent) {
-        String img_url = intent.getStringExtra(DOWNLOAD_URL);
-        String mangaFolderName = intent.getStringExtra(MANGA_FOLDER_NAME);
-        String childFolderName = intent.getStringExtra(CHILD_FOLDER_NAME);
-        String page_name = intent.getStringExtra(PAGE_NAME);
-        Bitmap bp = downloadUrlBitmap(img_url);
-        //把图片保存到本地
-        FileSpider.getInstance().saveBitmap(bp, page_name, childFolderName, mangaFolderName);
-        DownloadMangaManager.getInstance().downloadPageDone(this, img_url);
+        try {
+            String img_url = intent.getStringExtra(DOWNLOAD_URL);
+            String mangaFolderName = intent.getStringExtra(MANGA_FOLDER_NAME);
+            String childFolderName = intent.getStringExtra(CHILD_FOLDER_NAME);
+            String page_name = intent.getStringExtra(PAGE_NAME);
+            Bitmap bp = downloadUrlBitmap(img_url);
+            //把图片保存到本地
+            FileSpider.getInstance().saveBitmap(bp, page_name, childFolderName, mangaFolderName);
+            DownloadMangaManager.getInstance().downloadPageDone(this, img_url);
+        } catch (Exception e) {
+
+        }
     }
 
     private Bitmap downloadUrlBitmap(String urlString) {

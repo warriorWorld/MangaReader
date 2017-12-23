@@ -49,7 +49,7 @@
         android:theme="@style/AppTheme">
         <activity
             android:name=".business.lunch.LunchActivity"
-            android:launchMode="singleTask">
+            android:launchMode="standard">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
