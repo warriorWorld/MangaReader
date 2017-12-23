@@ -103,6 +103,7 @@ public class DownloadActivity extends BaseActivity implements View.OnClickListen
             @Override
             public void onRightClick() {
                 DownloadMangaManager.getInstance().reset(DownloadActivity.this);
+                refreshUI();
             }
 
             @Override
@@ -150,7 +151,6 @@ public class DownloadActivity extends BaseActivity implements View.OnClickListen
     //这个方法必须是下载的时候调用
     private void updateUI() {
         try {
-            toggleEmpty(false);
             if (null != DownloadMangaManager.getInstance().
                     getCurrentChapter() && null != DownloadMangaManager.getInstance().
                     getCurrentChapter().getPages()) {
@@ -164,6 +164,7 @@ public class DownloadActivity extends BaseActivity implements View.OnClickListen
                         getInstance().getCurrentChapter().getPages().size());
             }
             toggleDownloading(true);
+            toggleEmpty(false);
         } catch (Exception e) {
             toggleEmpty(true);
         }

@@ -389,6 +389,7 @@ public class WebMangaDetailsActivity extends BaseActivity implements AdapterView
         if (EasyPermissions.hasPermissions(this, perms)) {
             // Already have permission, do the thing
             // ...
+            baseToast.showToast("开始下载!");
             DownloadMangaManager.getInstance().reset(this);
             MangaBean temp = currentManga;
             ArrayList<ChapterBean> chapters = new ArrayList<>();
@@ -588,7 +589,6 @@ public class WebMangaDetailsActivity extends BaseActivity implements AdapterView
             public void onOkBtnClick(int position) {
                 switch (position) {
                     case 0:
-                        baseToast.showToast("开始下载!");
                         downloadAll();
                         break;
                     case 1:

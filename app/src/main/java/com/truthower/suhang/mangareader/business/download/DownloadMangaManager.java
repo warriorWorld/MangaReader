@@ -133,21 +133,25 @@ public class DownloadMangaManager {
     }
 
     public void downloadPageDone(Context context, String url) {
-        EventBus.getDefault().post(new DownLoadEvent(EventBusEvent.DOWNLOAD_PAGE_FINISH_EVENT));
-        if (DownloadBean.getInstance().isOne_shot()) {
-            EventBus.getDefault().post(new DownLoadEvent(EventBusEvent.DOWNLOAD_CHAPTER_START_EVENT));
-        }
-        if (currentChapter.getPages().size() == 1 && currentChapter.getPages().get(0).getPage_url().equals(url)) {
-            currentChapter = null;
-            doDownload(context);
-            return;
-        }
-        for (int i = 0; i < currentChapter.getPages().size(); i++) {
-            if (url.equals(currentChapter.getPages().get(i).getPage_url())) {
-                currentChapter.getPages().remove(i);
-                saveCurrentChapter(context);
+        try {
+            EventBus.getDefault().post(new DownLoadEvent(EventBusEvent.DOWNLOAD_PAGE_FINISH_EVENT));
+            if (DownloadBean.getInstance().isOne_shot()) {
+                EventBus.getDefault().post(new DownLoadEvent(EventBusEvent.DOWNLOAD_CHAPTER_START_EVENT));
+            }
+            if (currentChapter.getPages().size() == 1 && currentChapter.getPages().get(0).getPage_url().equals(url)) {
+                currentChapter = null;
+                doDownload(context);
                 return;
             }
+            for (int i = 0; i < currentChapter.getPages().size(); i++) {
+                if (url.equals(currentChapter.getPages().get(i).getPage_url())) {
+                    currentChapter.getPages().remove(i);
+                    saveCurrentChapter(context);
+                    return;
+                }
+            }
+        } catch (Exception e) {
+
         }
     }
 
