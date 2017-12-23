@@ -29,6 +29,7 @@ import com.truthower.suhang.mangareader.spider.SpiderBase;
 import com.truthower.suhang.mangareader.utils.MatchStringUtil;
 import com.truthower.suhang.mangareader.utils.SharedPreferencesUtils;
 import com.truthower.suhang.mangareader.widget.bar.TopBar;
+import com.truthower.suhang.mangareader.widget.dialog.MangaDialog;
 import com.truthower.suhang.mangareader.widget.dialog.MangaEditDialog;
 import com.truthower.suhang.mangareader.widget.pulltorefresh.PullToRefreshBase;
 import com.truthower.suhang.mangareader.widget.pulltorefresh.PullToRefreshListView;
@@ -255,6 +256,13 @@ public class OnlineMangaFragment extends BaseFragment implements PullToRefreshBa
                     case 1:
                         //搜索
                         showSearchDialog("搜索漫画");
+                        if (!SharedPreferencesUtils.getBooleanSharedPreferencesData(getActivity(), ShareKeys.CLOSE_TUTORIAL, false)) {
+                            MangaDialog dialog = new MangaDialog(getActivity());
+                            dialog.show();
+                            dialog.setTitle("教程");
+                            dialog.setMessage("这个搜索只支持精确搜索,必须输入漫画全名(单词间空格分隔)" +
+                                    "才能搜索\nPS:kakalot这个站点的搜索只能输入网址搜索");
+                        }
                         break;
                     case 2:
                         //分类

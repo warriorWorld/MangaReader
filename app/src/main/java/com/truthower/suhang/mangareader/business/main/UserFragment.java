@@ -48,7 +48,7 @@ public class UserFragment extends BaseFragment implements View.OnClickListener {
     private RelativeLayout userTopBarRl;
     private TextView userNameTv;
     private CircleImage userHeadCiv;
-    private CheckBox autoToLastReadPositionCb, closeTranslateCb, economyModeCb;
+    private CheckBox autoToLastReadPositionCb, closeTranslateCb, economyModeCb, closeTutorialCb;
 
     private MangaDialog versionDialog;
     private DownloadDialog downloadDialog;
@@ -126,6 +126,14 @@ public class UserFragment extends BaseFragment implements View.OnClickListener {
                         (getActivity(), ShareKeys.CLOSE_TRANSLATE, isChecked);
             }
         });
+        closeTutorialCb = (CheckBox) v.findViewById(R.id.close_tutorial_cb);
+        closeTutorialCb.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                SharedPreferencesUtils.setSharedPreferencesData
+                        (getActivity(), ShareKeys.CLOSE_TUTORIAL, isChecked);
+            }
+        });
 
         autoToLastReadPositionCb.setChecked
                 (SharedPreferencesUtils.getBooleanSharedPreferencesData(getActivity(),
@@ -133,6 +141,9 @@ public class UserFragment extends BaseFragment implements View.OnClickListener {
         closeTranslateCb.setChecked
                 (SharedPreferencesUtils.getBooleanSharedPreferencesData(getActivity(),
                         ShareKeys.CLOSE_TRANSLATE, false));
+        closeTutorialCb.setChecked
+                (SharedPreferencesUtils.getBooleanSharedPreferencesData(getActivity(),
+                        ShareKeys.CLOSE_TUTORIAL, false));
         economyModeCb.setChecked
                 (SharedPreferencesUtils.getBooleanSharedPreferencesData(getActivity(),
                         ShareKeys.ECONOMY_MODE, false));
