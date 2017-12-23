@@ -89,33 +89,47 @@ public class DownloadMangaManager {
             if (null == spider) {
                 initSpider();
             }
-            spider.getMangaChapterPics(context, currentChapter.getChapter_url(), new JsoupCallBack<ArrayList<String>>() {
-                @Override
-                public void loadSucceed(ArrayList<String> result) {
-                    Intent intent = new Intent(context, DownloadIntentService.class);
-                    currentChapter.setChapter_size(result.size());
-                    ArrayList<DownloadPageBean> pages = new ArrayList<>();
-                    for (int i = 0; i < result.size(); i++) {//循环启动任务
-                        DownloadPageBean item = new DownloadPageBean();
-                        item.setPage_file_name(mangaName + "_" +
-                                currentChapter.getChapter_title()
-                                + "_" + i + ".png");
-                        item.setPage_url(result.get(i));
-                        pages.add(item);
-                        intent.putExtra(DownloadIntentService.DOWNLOAD_URL, item.getPage_url());
-                        intent.putExtra(DownloadIntentService.MANGA_FOLDER_NAME, mangaName);
-                        intent.putExtra(DownloadIntentService.CHILD_FOLDER_NAME,
-                                currentChapter.getChapter_child_folder_name());
-                        intent.putExtra(DownloadIntentService.PAGE_NAME, item.getPage_file_name());
-                        context.startService(intent);
+            if (null != currentChapter.getPages() && currentChapter.getPages().size() > 0) {
+                //说明上次那一话还没下载完  继续上次下载
+                Intent intent = new Intent(context, DownloadIntentService.class);
+                for (int i = 0; i <  currentChapter.getPages().size(); i++) {//循环启动任务
+                    DownloadPageBean item = currentChapter.getPages().get(i);
+                    intent.putExtra(DownloadIntentService.DOWNLOAD_URL, item.getPage_url());
+                    intent.putExtra(DownloadIntentService.MANGA_FOLDER_NAME, mangaName);
+                    intent.putExtra(DownloadIntentService.CHILD_FOLDER_NAME,
+                            currentChapter.getChapter_child_folder_name());
+                    intent.putExtra(DownloadIntentService.PAGE_NAME, item.getPage_file_name());
+                    context.startService(intent);
+                }
+            } else {
+                spider.getMangaChapterPics(context, currentChapter.getChapter_url(), new JsoupCallBack<ArrayList<String>>() {
+                    @Override
+                    public void loadSucceed(ArrayList<String> result) {
+                        Intent intent = new Intent(context, DownloadIntentService.class);
+                        currentChapter.setChapter_size(result.size());
+                        ArrayList<DownloadPageBean> pages = new ArrayList<>();
+                        for (int i = 0; i < result.size(); i++) {//循环启动任务
+                            DownloadPageBean item = new DownloadPageBean();
+                            item.setPage_file_name(mangaName + "_" +
+                                    currentChapter.getChapter_title()
+                                    + "_" + i + ".png");
+                            item.setPage_url(result.get(i));
+                            pages.add(item);
+                            intent.putExtra(DownloadIntentService.DOWNLOAD_URL, item.getPage_url());
+                            intent.putExtra(DownloadIntentService.MANGA_FOLDER_NAME, mangaName);
+                            intent.putExtra(DownloadIntentService.CHILD_FOLDER_NAME,
+                                    currentChapter.getChapter_child_folder_name());
+                            intent.putExtra(DownloadIntentService.PAGE_NAME, item.getPage_file_name());
+                            context.startService(intent);
+                        }
+                        currentChapter.setPages(pages);
                     }
-                    currentChapter.setPages(pages);
-                }
 
-                @Override
-                public void loadFailed(String error) {
-                }
-            });
+                    @Override
+                    public void loadFailed(String error) {
+                    }
+                });
+            }
         }
     }
 
