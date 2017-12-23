@@ -33,6 +33,7 @@ import com.truthower.suhang.mangareader.business.download.DownloadMangaManager;
 import com.truthower.suhang.mangareader.business.main.MainActivity;
 import com.truthower.suhang.mangareader.business.read.ReadMangaActivity;
 import com.truthower.suhang.mangareader.config.Configure;
+import com.truthower.suhang.mangareader.config.ShareKeys;
 import com.truthower.suhang.mangareader.eventbus.EventBusEvent;
 import com.truthower.suhang.mangareader.eventbus.JumpEvent;
 import com.truthower.suhang.mangareader.eventbus.TagClickEvent;
@@ -40,6 +41,7 @@ import com.truthower.suhang.mangareader.listener.JsoupCallBack;
 import com.truthower.suhang.mangareader.spider.SpiderBase;
 import com.truthower.suhang.mangareader.utils.ActivityPoor;
 import com.truthower.suhang.mangareader.utils.LeanCloundUtil;
+import com.truthower.suhang.mangareader.utils.SharedPreferencesUtils;
 import com.truthower.suhang.mangareader.utils.ThreeDESUtil;
 import com.truthower.suhang.mangareader.widget.bar.TopBar;
 import com.truthower.suhang.mangareader.widget.dialog.MangaDialog;
@@ -101,6 +103,14 @@ public class WebMangaDetailsActivity extends BaseActivity implements AdapterView
         initPullGridView();
         initProgressBar();
         initWebManga(mangaUrl);
+        if (!SharedPreferencesUtils.getBooleanSharedPreferencesData(this, ShareKeys.CLOSE_TUTORIAL, false)) {
+            MangaDialog dialog = new MangaDialog(this);
+            dialog.show();
+            dialog.setTitle("教程");
+            dialog.setMessage("1,点击五角星可收藏" +
+                    "\n2,点击左上角漫画封面可显示漫画介绍" +
+                    "\n3,已收藏的漫画可通过长按左上角漫画封面将该漫画加入正在追更");
+        }
     }
 
     @Override

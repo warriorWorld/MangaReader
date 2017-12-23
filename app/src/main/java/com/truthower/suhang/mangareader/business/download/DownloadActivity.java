@@ -65,6 +65,14 @@ public class DownloadActivity extends BaseActivity implements View.OnClickListen
         super.onCreate(savedInstanceState);
         initUI();
         initPullGridView();
+        if (!SharedPreferencesUtils.getBooleanSharedPreferencesData(this, ShareKeys.CLOSE_TUTORIAL, false)) {
+            MangaDialog dialog = new MangaDialog(this);
+            dialog.show();
+            dialog.setTitle("教程");
+            dialog.setMessage("1,刚开始下载时和点击停止下载时下载中的状态切换会有一定延时,有点耐心." +
+                    "\n2,这个下载是以一张一张图片为单位的,所以不用等整个漫画下载完成就可以看,回本地" +
+                    "漫画下拉刷新下就可以看到已经下载下来的漫画了");
+        }
     }
 
     @Override

@@ -100,6 +100,17 @@ public class ReadMangaActivity extends BaseActivity implements OnClickListener {
         }
         String currentMangaName = intent.getStringExtra("currentMangaName");
         topBar.setTitle(currentMangaName);
+
+        if (!SharedPreferencesUtils.getBooleanSharedPreferencesData(this, ShareKeys.CLOSE_TUTORIAL, false)) {
+            MangaDialog dialog = new MangaDialog(this);
+            dialog.show();
+            dialog.setTitle("教程");
+            dialog.setMessage("1,点击漫画标题可调出翻译" +
+                    "\n2,点击右上角方块图标可调出划词翻译(可用手指划出指定区域翻译,可以避免输入法遮挡)" +
+                    "\n3,双击漫画图片可放大"+
+                    "\n3,点击屏幕中间稍微靠下位置可调出进度条,可以跳转到指定位置"+
+                    "\n3,长按屏幕中间稍微靠下位置可保存或删除当前图片");
+        }
     }
 
 

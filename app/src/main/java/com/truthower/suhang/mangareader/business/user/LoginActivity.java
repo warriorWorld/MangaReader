@@ -17,6 +17,9 @@ import com.truthower.suhang.mangareader.R;
 import com.truthower.suhang.mangareader.base.BaseActivity;
 import com.truthower.suhang.mangareader.bean.LoginBean;
 import com.truthower.suhang.mangareader.business.main.MainActivity;
+import com.truthower.suhang.mangareader.config.ShareKeys;
+import com.truthower.suhang.mangareader.utils.SharedPreferencesUtils;
+import com.truthower.suhang.mangareader.widget.dialog.MangaDialog;
 
 
 public class LoginActivity extends BaseActivity implements View.OnClickListener {
@@ -36,6 +39,14 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
         String toast = intent.getStringExtra("toast");
         if (!TextUtils.isEmpty(toast)) {
             baseToast.showToast(toast);
+        }
+        if (!SharedPreferencesUtils.getBooleanSharedPreferencesData(this, ShareKeys.CLOSE_TUTORIAL, false)) {
+            MangaDialog dialog = new MangaDialog(this);
+            dialog.show();
+            dialog.setTitle("教程");
+            dialog.setMessage("1,登录后就可以把漫画加入收藏和正在追更了,很方便的." +
+                    "\n2,没有账号可以点击下边的注册按钮" +
+                    "\n2,我希望你最好注册下,谢谢.");
         }
     }
 
