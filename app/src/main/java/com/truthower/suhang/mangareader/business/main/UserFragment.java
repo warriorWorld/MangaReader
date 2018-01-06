@@ -29,6 +29,7 @@ import com.truthower.suhang.mangareader.utils.BaseParameterUtil;
 import com.truthower.suhang.mangareader.utils.SharedPreferencesUtils;
 import com.truthower.suhang.mangareader.widget.dialog.DownloadDialog;
 import com.truthower.suhang.mangareader.widget.dialog.MangaDialog;
+import com.truthower.suhang.mangareader.widget.dialog.QrDialog;
 import com.truthower.suhang.mangareader.widget.imageview.CircleImage;
 
 import net.tsz.afinal.FinalHttp;
@@ -42,6 +43,7 @@ public class UserFragment extends BaseFragment implements View.OnClickListener {
     private RelativeLayout newWordBookRl;
     private RelativeLayout downloadRl;
     private RelativeLayout aboutRl;
+    private RelativeLayout shareRl;
     private RelativeLayout waitingForUpdateRl;
     private RelativeLayout userTopBarRl;
     private TextView userNameTv;
@@ -89,7 +91,8 @@ public class UserFragment extends BaseFragment implements View.OnClickListener {
                 return true;
             }
         });
-        aboutRl= (RelativeLayout) v.findViewById(R.id.about_rl);
+        aboutRl = (RelativeLayout) v.findViewById(R.id.about_rl);
+        shareRl = (RelativeLayout) v.findViewById(R.id.share_rl);
         userNameTv = (TextView) v.findViewById(R.id.user_name_tv);
         autoToLastReadPositionCb = (CheckBox) v.findViewById(R.id.auto_last_position_cb);
         autoToLastReadPositionCb.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -142,6 +145,7 @@ public class UserFragment extends BaseFragment implements View.OnClickListener {
         downloadRl.setOnClickListener(this);
         userTopBarRl.setOnClickListener(this);
         aboutRl.setOnClickListener(this);
+        shareRl.setOnClickListener(this);
         waitingForUpdateRl.setOnClickListener(this);
     }
 
@@ -161,6 +165,11 @@ public class UserFragment extends BaseFragment implements View.OnClickListener {
             userNameTv.setText(LoginBean.getInstance().getUserName());
             userTopBarRl.setEnabled(false);
         }
+    }
+
+    private void showQrDialog() {
+        QrDialog qrDialog = new QrDialog(getActivity());
+        qrDialog.show();
     }
 
     @Override
@@ -188,6 +197,9 @@ public class UserFragment extends BaseFragment implements View.OnClickListener {
                 break;
             case R.id.about_rl:
                 intent = new Intent(getActivity(), AboutActivity.class);
+                break;
+            case R.id.share_rl:
+                showQrDialog();
                 break;
         }
         if (null != intent) {
