@@ -61,7 +61,7 @@ import pub.devrel.easypermissions.EasyPermissions;
 
 public class WebMangaDetailsActivity extends BaseActivity implements AdapterView.OnItemClickListener, View.OnClickListener,
         PullToRefreshBase.OnRefreshListener<GridView>,
-        EasyPermissions.PermissionCallbacks {
+        EasyPermissions.PermissionCallbacks, View.OnLongClickListener {
     private SpiderBase spider;
     private PullToRefreshGridView pullToRefreshGridView;
     private GridView mangaGV;
@@ -87,7 +87,7 @@ public class WebMangaDetailsActivity extends BaseActivity implements AdapterView
     //因为我不知道当期收藏的漫画是哪个网站的 所以就一个个试
     private int trySpiderPosition = 0;
     private String currentMangaName;
-    private boolean isTopied;
+    private boolean isTopied, isFinished;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -300,15 +300,8 @@ public class WebMangaDetailsActivity extends BaseActivity implements AdapterView
         downloadIv.setOnClickListener(this);
         mangaTypeTv.setOnClickListener(this);
         thumbnailIV.setOnClickListener(this);
-        thumbnailIV.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View v) {
-                if (isCollected) {
-                    showTopThisDialog();
-                }
-                return true;
-            }
-        });
+        thumbnailIV.setOnLongClickListener(this);
+        collectV.setOnLongClickListener(this);
         baseTopBar.setRightText("下载");
         baseTopBar.setOnTopBarClickListener(new TopBar.OnTopBarClickListener() {
 
@@ -493,6 +486,47 @@ public class WebMangaDetailsActivity extends BaseActivity implements AdapterView
         });
     }
 
+    /**
+     * 给已收藏的漫画标记为已看完
+     */
+    private void doFinishedThisManga(final boolean isFinished) {
+        if (TextUtils.isEmpty(LoginBean.getInstance().getUserName())) {
+            return;
+        }
+        AVQuery<AVObject> query1 = new AVQuery<>("Collected");
+        query1.whereEqualTo("mangaUrl", mangaUrl);
+
+        AVQuery<AVObject> query2 = new AVQuery<>("Collected");
+        query2.whereEqualTo("owner", LoginBean.getInstance().getUserName());
+        AVQuery<AVObject> query = AVQuery.and(Arrays.asList(query1, query2));
+        query.findInBackground(new FindCallback<AVObject>() {
+            @Override
+            public void done(List<AVObject> list, AVException e) {
+                if (LeanCloundUtil.handleLeanResult(WebMangaDetailsActivity.this, e)) {
+                    if (null != list && list.size() > 0) {
+                        //已存在的保存
+                        AVObject object = AVObject.createWithoutData("Collected", list.get(0).getObjectId());
+                        object.put("finished", isFinished);
+                        object.saveInBackground(new SaveCallback() {
+                            @Override
+                            public void done(AVException e) {
+                                if (LeanCloundUtil.handleLeanResult(WebMangaDetailsActivity.this, e)) {
+                                    if (isFinished) {
+                                        baseToast.showToast("设置已经看完成功!");
+                                    } else {
+                                        baseToast.showToast("取消已经看完成功!");
+                                    }
+                                }
+                            }
+                        });
+                    } else {
+                        //一定不会是新建的
+                    }
+                }
+            }
+        });
+    }
+
     private void doGetIsCollected() {
         if (TextUtils.isEmpty(LoginBean.getInstance().getUserName())) {
             return;
@@ -511,10 +545,12 @@ public class WebMangaDetailsActivity extends BaseActivity implements AdapterView
                         collectedId = list.get(0).getObjectId();
                         isCollected = true;
                         isTopied = list.get(0).getBoolean("top");
+                        isFinished = list.get(0).getBoolean("finished");
                     } else {
                         collectedId = "";
                         isCollected = false;
                         isTopied = false;
+                        isFinished = false;
                     }
                     toggleCollect();
                 }
@@ -664,6 +700,29 @@ public class WebMangaDetailsActivity extends BaseActivity implements AdapterView
         mangaDialog.setCancelText("取消");
     }
 
+    private void showFinishedThisDialog() {
+        MangaDialog mangaDialog = new MangaDialog(this);
+        mangaDialog.setOnPeanutDialogClickListener(new MangaDialog.OnPeanutDialogClickListener() {
+            @Override
+            public void onOkClick() {
+                doFinishedThisManga(!isFinished);
+            }
+
+            @Override
+            public void onCancelClick() {
+
+            }
+        });
+        mangaDialog.show();
+        if (isFinished) {
+            mangaDialog.setTitle("取消我已看完?");
+        } else {
+            mangaDialog.setTitle("加入我已看完?");
+        }
+        mangaDialog.setOkText("确定");
+        mangaDialog.setCancelText("取消");
+    }
+
     private void showDescription() {
         if (TextUtils.isEmpty(currentManga.getDescription())) {
             return;
@@ -738,5 +797,22 @@ public class WebMangaDetailsActivity extends BaseActivity implements AdapterView
     @Override
     public void onPermissionsDenied(int requestCode, List<String> perms) {
         baseToast.showToast("没文件读取/写入授权,你让我怎么下载漫画?", true);
+    }
+
+    @Override
+    public boolean onLongClick(View v) {
+        switch (v.getId()) {
+            case R.id.thumbnail:
+                if (isCollected) {
+                    showTopThisDialog();
+                }
+                break;
+            case R.id.collect_view:
+                if (isCollected) {
+                    showFinishedThisDialog();
+                }
+                break;
+        }
+        return true;
     }
 }

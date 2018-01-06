@@ -9,7 +9,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_gravity="center_horizontal"
-        android:layout_marginTop="25dp"
+        android:layout_marginTop="15dp"
         android:gravity="center"
         android:paddingLeft="20dp"
         android:paddingRight="20dp"
@@ -17,6 +17,12 @@
         android:textColor="@color/main_text_color"
         android:textSize="17sp"
         android:visibility="visible" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:layout_marginTop="10dp"
+        android:background="@color/divide_line"></View>
 
     <ImageView
         android:layout_width="180dp"

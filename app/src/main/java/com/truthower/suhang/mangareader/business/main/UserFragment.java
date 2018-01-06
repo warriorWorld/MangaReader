@@ -46,6 +46,7 @@ public class UserFragment extends BaseFragment implements View.OnClickListener {
     private RelativeLayout shareRl;
     private RelativeLayout waitingForUpdateRl;
     private RelativeLayout userTopBarRl;
+    private RelativeLayout finishedMangaRl;
     private TextView userNameTv;
     private CircleImage userHeadCiv;
     private CheckBox autoToLastReadPositionCb, closeTranslateCb, economyModeCb, closeTutorialCb;
@@ -93,6 +94,7 @@ public class UserFragment extends BaseFragment implements View.OnClickListener {
         });
         aboutRl = (RelativeLayout) v.findViewById(R.id.about_rl);
         shareRl = (RelativeLayout) v.findViewById(R.id.share_rl);
+        finishedMangaRl = (RelativeLayout) v.findViewById(R.id.finished_manga_rl);
         userNameTv = (TextView) v.findViewById(R.id.user_name_tv);
         autoToLastReadPositionCb = (CheckBox) v.findViewById(R.id.auto_last_position_cb);
         autoToLastReadPositionCb.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -145,6 +147,7 @@ public class UserFragment extends BaseFragment implements View.OnClickListener {
         downloadRl.setOnClickListener(this);
         userTopBarRl.setOnClickListener(this);
         aboutRl.setOnClickListener(this);
+        finishedMangaRl.setOnClickListener(this);
         shareRl.setOnClickListener(this);
         waitingForUpdateRl.setOnClickListener(this);
     }
@@ -178,10 +181,15 @@ public class UserFragment extends BaseFragment implements View.OnClickListener {
         switch (v.getId()) {
             case R.id.collect_rl:
                 intent = new Intent(getActivity(), CollectedActivity.class);
+                intent.putExtra("collectType", Configure.COLLECT_TYPE_COLLECT);
                 break;
             case R.id.waiting_for_update_rl:
                 intent = new Intent(getActivity(), CollectedActivity.class);
-                intent.putExtra("isWaitForUpdate", true);
+                intent.putExtra("collectType", Configure.COLLECT_TYPE_WAIT_FOR_UPDATE);
+                break;
+            case R.id.finished_manga_rl:
+                intent = new Intent(getActivity(), CollectedActivity.class);
+                intent.putExtra("collectType", Configure.COLLECT_TYPE_FINISHED);
                 break;
             case R.id.statistics_rl:
                 baseToast.showToast("待开发");

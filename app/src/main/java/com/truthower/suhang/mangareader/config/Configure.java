@@ -50,4 +50,8 @@ public class Configure {
     final public static int PERMISSION_LOCATION_REQUST_CODE = 8022;
     final public static int PERMISSION_FILE_REQUST_CODE = 8023;
     final public static int PERMISSION_READ_PHONE_STATE_REQUST_CODE = 8024;
+    //收藏类型
+    final public static int COLLECT_TYPE_COLLECT = 0;
+    final public static int COLLECT_TYPE_WAIT_FOR_UPDATE = 1;
+    final public static int COLLECT_TYPE_FINISHED = 2;
 }

@@ -8,8 +8,11 @@ import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.view.Display;
+import android.view.Gravity;
 import android.view.View;
 import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.TextView;
 
@@ -38,6 +41,19 @@ public class QrDialog extends Dialog implements View.OnClickListener {
         setContentView(R.layout.dialog_qrcode);
         init();
         Window window = this.getWindow();
+        WindowManager.LayoutParams lp = window.getAttributes();
+        WindowManager wm = ((Activity) context).getWindowManager();
+        Display d = wm.getDefaultDisplay();
+        // lp.height = (int) (d.getHeight() * 0.4);
+        lp.width = (int) (d.getWidth() * 0.75);
+        // window.setGravity(Gravity.LEFT | Gravity.TOP);
+        window.setGravity(Gravity.CENTER);
+//        window.getDecorView().setPadding(0, 0, 0, 0);
+        // lp.x = 100;
+        // lp.y = 100;
+        // lp.height = 30;
+        // lp.width = 20;
+        window.setAttributes(lp);
         window.setBackgroundDrawableResource(android.R.color.transparent);
     }
 

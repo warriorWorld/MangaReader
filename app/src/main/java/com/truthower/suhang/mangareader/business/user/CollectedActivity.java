@@ -17,6 +17,7 @@ import com.truthower.suhang.mangareader.base.BaseActivity;
 import com.truthower.suhang.mangareader.bean.LoginBean;
 import com.truthower.suhang.mangareader.bean.MangaBean;
 import com.truthower.suhang.mangareader.business.detail.WebMangaDetailsActivity;
+import com.truthower.suhang.mangareader.config.Configure;
 import com.truthower.suhang.mangareader.utils.LeanCloundUtil;
 import com.truthower.suhang.mangareader.widget.bar.TopBar;
 import com.truthower.suhang.mangareader.widget.pulltorefresh.PullToRefreshBase;
@@ -37,13 +38,13 @@ public class CollectedActivity extends BaseActivity implements PullToRefreshBase
     private OnlineMangaListAdapter onlineMangaListAdapter;
     private ArrayList<MangaBean> collectedMangaList = new ArrayList<>();
     private TopBar topBar;
-    private boolean isWaitForUpdate = false;
+    private int collectType;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Intent intent = getIntent();
-        isWaitForUpdate = intent.getBooleanExtra("isWaitForUpdate", false);
+        collectType = intent.getIntExtra("collectType", Configure.COLLECT_TYPE_COLLECT);
         initUI();
         initPullListView();
         doGetData();
@@ -56,10 +57,16 @@ public class CollectedActivity extends BaseActivity implements PullToRefreshBase
         topBar = (TopBar) findViewById(R.id.gradient_bar);
         topBar.setVisibility(View.GONE);
 
-        if (isWaitForUpdate) {
-            baseTopBar.setTitle("正在追更");
-        } else {
-            baseTopBar.setTitle("我的收藏");
+        switch (collectType) {
+            case Configure.COLLECT_TYPE_COLLECT:
+                baseTopBar.setTitle("我的收藏");
+                break;
+            case Configure.COLLECT_TYPE_WAIT_FOR_UPDATE:
+                baseTopBar.setTitle("正在追更");
+                break;
+            case Configure.COLLECT_TYPE_FINISHED:
+                baseTopBar.setTitle("我看完的");
+                break;
         }
     }
 
@@ -87,12 +94,23 @@ public class CollectedActivity extends BaseActivity implements PullToRefreshBase
                             item.setName(list.get(i).getString("mangaName"));
                             item.setWebThumbnailUrl(list.get(i).getString("webThumbnailUrl"));
                             item.setUrl(list.get(i).getString("mangaUrl"));
-                            if (isWaitForUpdate) {
-                                if (list.get(i).getBoolean("top")) {
-                                    collectedMangaList.add(item);
-                                }
-                            } else {
-                                collectedMangaList.add(item);
+
+                            switch (collectType) {
+                                case Configure.COLLECT_TYPE_COLLECT:
+                                    if (!list.get(i).getBoolean("finished")) {
+                                        collectedMangaList.add(item);
+                                    }
+                                    break;
+                                case Configure.COLLECT_TYPE_WAIT_FOR_UPDATE:
+                                    if (list.get(i).getBoolean("top")) {
+                                        collectedMangaList.add(item);
+                                    }
+                                    break;
+                                case Configure.COLLECT_TYPE_FINISHED:
+                                    if (list.get(i).getBoolean("finished")) {
+                                        collectedMangaList.add(item);
+                                    }
+                                    break;
                             }
                         }
                     }
