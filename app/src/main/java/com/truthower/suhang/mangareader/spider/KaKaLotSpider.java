@@ -87,30 +87,34 @@ public class KaKaLotSpider extends SpiderBase {
                     if (null != doc) {
                         Elements mangaPicDetailElements = doc.select("div.manga-info-pic");
                         Elements mangaTextDetailElements = doc.select("ul.manga-info-text li");
-                        Elements mangaTagDetailElements = doc.select("ul.manga-info-text li").get(6).select("a");
-
+                        Elements mangaTagDetailElements = null;
+                        if (null != mangaTextDetailElements && mangaTextDetailElements.size() > 6) {
+                            mangaTagDetailElements = mangaTextDetailElements.get(6).select("a");
+                        }
                         MangaBean item = new MangaBean();
                         item.setWebThumbnailUrl(mangaPicDetailElements.first().getElementsByTag("img").last().attr("src"));
-                        //这个有的漫画有名字有的没有
-//                        item.setName(mangaPicDetailElements.first().getElementsByTag("img").last().attr("alt"));
-                        item.setName(mangaTextDetailElements.get(0).select("h1").text());
-                        item.setAuthor(mangaTextDetailElements.get(1).text());
-                        String lastUpadte = mangaTextDetailElements.get(3).text();
-                        lastUpadte = lastUpadte.replaceAll("Last updated : ", "");
-                        item.setLast_update(lastUpadte);
-                        //Tag
-                        String[] types = new String[mangaTagDetailElements.size()];
-                        String[] typeCodes = new String[mangaTagDetailElements.size()];
-                        for (int i = 0; i < mangaTagDetailElements.size(); i++) {
-                            String typeCode = mangaTagDetailElements.get(i).attr("href");
-                            //加个\\转义字符
-                            typeCode = typeCode.replaceAll("http://mangakakalot.com/manga_list\\?type=newest&category=", "");
-                            typeCode = typeCode.replaceAll("&alpha=all&page=1&state=all", "");
-                            typeCodes[i] = typeCode;
-                            types[i] = mangaTagDetailElements.get(i).text();
+                        
+                        if (null != mangaTagDetailElements) {
+                            item.setName(mangaTextDetailElements.get(0).select("h1").text());
+                            item.setAuthor(mangaTextDetailElements.get(1).text());
+                            String lastUpadte = mangaTextDetailElements.get(3).text();
+                            lastUpadte = lastUpadte.replaceAll("Last updated : ", "");
+                            item.setLast_update(lastUpadte);
+
+                            //Tag
+                            String[] types = new String[mangaTagDetailElements.size()];
+                            String[] typeCodes = new String[mangaTagDetailElements.size()];
+                            for (int i = 0; i < mangaTagDetailElements.size(); i++) {
+                                String typeCode = mangaTagDetailElements.get(i).attr("href");
+                                //加个\\转义字符
+                                typeCode = typeCode.replaceAll("http://mangakakalot.com/manga_list\\?type=newest&category=", "");
+                                typeCode = typeCode.replaceAll("&alpha=all&page=1&state=all", "");
+                                typeCodes[i] = typeCode;
+                                types[i] = mangaTagDetailElements.get(i).text();
+                            }
+                            item.setTypes(types);
+                            item.setTypeCodes(typeCodes);
                         }
-                        item.setTypes(types);
-                        item.setTypeCodes(typeCodes);
 
                         Elements chapterElements = doc.select("div.row a");
                         ArrayList<ChapterBean> chapters = new ArrayList<ChapterBean>();
