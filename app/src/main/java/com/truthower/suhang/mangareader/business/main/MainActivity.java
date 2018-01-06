@@ -70,11 +70,6 @@ public class MainActivity extends BaseFragmentActivity implements View.OnClickLi
     private BaseFragment curFragment;
 
     private MangaDialog logoutDialog;
-    private String versionName, msg;
-    private int versionCode;
-    private MangaDialog versionDialog;
-    private DownloadDialog downloadDialog;
-    private AVFile downloadFile;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -119,115 +114,10 @@ public class MainActivity extends BaseFragmentActivity implements View.OnClickLi
         return R.layout.activity_main;
     }
 
-    private void doGetVersionInfo() {
-        AVQuery<AVObject> query = new AVQuery<>("VersionInfo");
-        query.findInBackground(new FindCallback<AVObject>() {
-            @Override
-            public void done(List<AVObject> list, AVException e) {
-                if (LeanCloundUtil.handleLeanResult(MainActivity.this, e)) {
-                    if (null != list && list.size() > 0) {
-                        versionName = list.get(0).getString("versionName");
-                        versionCode = list.get(0).getInt("versionCode");
-                        msg = list.get(0).getString("description");
-                        downloadFile = list.get(0).getAVFile("apk");
-                        if (BaseParameterUtil.getInstance(MainActivity.this).
-                                getAppVersionCode() >= versionCode) {
-//                            baseToast.showToast("已经是最新版啦~~");
-                        } else {
-                            showVersionDialog();
-                        }
-                    }
-                }
-            }
-        });
-    }
-
-    private void showVersionDialog() {
-        if (null == versionDialog) {
-            versionDialog = new MangaDialog(MainActivity.this);
-            versionDialog.setOnPeanutDialogClickListener(new MangaDialog.OnPeanutDialogClickListener() {
-                @Override
-                public void onOkClick() {
-                    doDownload();
-                }
-
-                @Override
-                public void onCancelClick() {
-                }
-            });
-        }
-        versionDialog.show();
-
-        versionDialog.setTitle("有新版本啦" + "v_" + versionName);
-        versionDialog.setMessage(msg);
-        versionDialog.setOkText("升级");
-        versionDialog.setCancelable(false);
-
-        versionDialog.setCancelText("忽略");
-    }
-
-    @AfterPermissionGranted(Configure.PERMISSION_FILE_REQUST_CODE)
-    private void doDownload() {
-        String[] perms = {Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE};
-        if (EasyPermissions.hasPermissions(this, perms)) {
-            // Already have permission, do the thing
-            // ...
-            showDownLoadDialog();
-            final String filePath = Environment.getExternalStorageDirectory().getAbsolutePath() + "/manga/apk";
-            final File file = new File(filePath);
-            if (!file.exists()) {
-                file.mkdirs();
-            }
-            downloadFile.getDataInBackground(new GetDataCallback() {
-                @Override
-                public void done(byte[] bytes, AVException e) {
-                    // bytes 就是文件的数据流
-                    if (null != downloadDialog && downloadDialog.isShowing()) {
-                        downloadDialog.dismiss();
-                    }
-                    if (LeanCloundUtil.handleLeanResult(MainActivity.this, e)) {
-                        File apkFile = FileSpider.getInstance().byte2File(bytes, filePath, "manga_reader.apk");
-
-                        Intent intent = new Intent();
-                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                        intent.setAction("android.intent.action.VIEW");
-                        intent.addCategory("android.intent.category.DEFAULT");
-                        intent.setDataAndType(Uri.fromFile(apkFile), "application/vnd.android.package-archive");
-                        startActivity(intent);
-                    }
-                }
-            }, new ProgressCallback() {
-                @Override
-                public void done(Integer integer) {
-                    // 下载进度数据，integer 介于 0 和 100。
-                    downloadDialog.setProgress(integer);
-                }
-            });
-
-        } else {
-            // Do not have permissions, request them now
-            EasyPermissions.requestPermissions(this, "我们需要写入/读取权限",
-                    Configure.PERMISSION_FILE_REQUST_CODE, perms);
-        }
-    }
-
-    private void showDownLoadDialog() {
-        if (null == downloadDialog) {
-            downloadDialog = new DownloadDialog(this);
-        }
-        downloadDialog.show();
-        downloadDialog.setCancelable(false);
-    }
 
     private void initFragment() {
         localFg = new LocalMangaFragment();
         userFg = new UserFragment();
-        userFg.setGetVersionListener(new GetVersionListener() {
-            @Override
-            public void onGetVersionClick() {
-                doGetVersionInfo();
-            }
-        });
         onlinePageFg = new OnlineMangaFragment();
 
         switchContent(null, onlinePageFg);

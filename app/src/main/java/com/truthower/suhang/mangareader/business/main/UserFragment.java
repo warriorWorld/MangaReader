@@ -18,6 +18,7 @@ import com.truthower.suhang.mangareader.R;
 import com.truthower.suhang.mangareader.base.BaseFragment;
 import com.truthower.suhang.mangareader.bean.LoginBean;
 import com.truthower.suhang.mangareader.business.download.DownloadActivity;
+import com.truthower.suhang.mangareader.business.other.AboutActivity;
 import com.truthower.suhang.mangareader.business.tag.TagFilterActivity;
 import com.truthower.suhang.mangareader.business.user.CollectedActivity;
 import com.truthower.suhang.mangareader.business.user.LoginActivity;
@@ -40,21 +41,12 @@ public class UserFragment extends BaseFragment implements View.OnClickListener {
     private RelativeLayout statisticsRl;
     private RelativeLayout newWordBookRl;
     private RelativeLayout downloadRl;
-    private RelativeLayout versionRl;
-    private RelativeLayout authorRl;
+    private RelativeLayout aboutRl;
     private RelativeLayout waitingForUpdateRl;
-    private TextView versionNameTv;
-    private TextView logoutTv;
     private RelativeLayout userTopBarRl;
     private TextView userNameTv;
     private CircleImage userHeadCiv;
     private CheckBox autoToLastReadPositionCb, closeTranslateCb, economyModeCb, closeTutorialCb;
-
-    private MangaDialog versionDialog;
-    private DownloadDialog downloadDialog;
-
-    private String versionName, msg, url;
-    private GetVersionListener getVersionListener;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -84,13 +76,9 @@ public class UserFragment extends BaseFragment implements View.OnClickListener {
         statisticsRl = (RelativeLayout) v.findViewById(R.id.statistics_rl);
         newWordBookRl = (RelativeLayout) v.findViewById(R.id.new_word_book_rl);
         downloadRl = (RelativeLayout) v.findViewById(R.id.download_rl);
-        versionRl = (RelativeLayout) v.findViewById(R.id.version_rl);
         waitingForUpdateRl = (RelativeLayout) v.findViewById(R.id.waiting_for_update_rl);
-        versionNameTv = (TextView) v.findViewById(R.id.version_name_tv);
-        logoutTv = (TextView) v.findViewById(R.id.logout_tv);
         userHeadCiv = (CircleImage) v.findViewById(R.id.user_head_civ);
         userTopBarRl = (RelativeLayout) v.findViewById(R.id.user_top_bar_rl);
-        authorRl = (RelativeLayout) v.findViewById(R.id.author_rl);
         userHeadCiv.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
@@ -101,6 +89,7 @@ public class UserFragment extends BaseFragment implements View.OnClickListener {
                 return true;
             }
         });
+        aboutRl= (RelativeLayout) v.findViewById(R.id.about_rl);
         userNameTv = (TextView) v.findViewById(R.id.user_name_tv);
         autoToLastReadPositionCb = (CheckBox) v.findViewById(R.id.auto_last_position_cb);
         autoToLastReadPositionCb.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -151,22 +140,18 @@ public class UserFragment extends BaseFragment implements View.OnClickListener {
         statisticsRl.setOnClickListener(this);
         newWordBookRl.setOnClickListener(this);
         downloadRl.setOnClickListener(this);
-        versionRl.setOnClickListener(this);
-        logoutTv.setOnClickListener(this);
         userTopBarRl.setOnClickListener(this);
-        authorRl.setOnClickListener(this);
+        aboutRl.setOnClickListener(this);
         waitingForUpdateRl.setOnClickListener(this);
     }
 
     private void refreshUI() {
-        versionNameTv.setText("V" + BaseParameterUtil.getInstance(getActivity()).getAppVersionName());
     }
 
     private void toggleLoginStateUI() {
         if (TextUtils.isEmpty(LoginBean.getInstance().getUserName())) {
             userNameTv.setText("点击登录");
             userTopBarRl.setEnabled(true);
-            logoutTv.setVisibility(View.GONE);
         } else {
             if (LoginBean.getInstance().isMaster()) {
                 userNameTv.setTextColor(getResources().getColor(R.color.master));
@@ -175,127 +160,8 @@ public class UserFragment extends BaseFragment implements View.OnClickListener {
             }
             userNameTv.setText(LoginBean.getInstance().getUserName());
             userTopBarRl.setEnabled(false);
-            logoutTv.setVisibility(View.VISIBLE);
         }
     }
-
-
-    private void doLogout() {
-        AVUser.getCurrentUser().logOut();
-        LoginBean.getInstance().clean(getActivity());
-        toggleLoginStateUI();
-    }
-
-
-    private void showVersionDialog(final boolean alreadyNewest) {
-        if (null == versionDialog) {
-            versionDialog = new MangaDialog(getActivity());
-            versionDialog.setOnPeanutDialogClickListener(new MangaDialog.OnPeanutDialogClickListener() {
-                @Override
-                public void onOkClick() {
-                    if (!TextUtils.isEmpty(url) && !alreadyNewest) {
-                        versionDialog.dismiss();
-                        doDownload();
-                    }
-                }
-
-                @Override
-                public void onCancelClick() {
-                }
-            });
-        }
-        versionDialog.show();
-        if (alreadyNewest) {
-            versionDialog.setTitle("已经是最新版" + "v_" + versionName);
-        } else {
-            versionDialog.setTitle("有新版本啦" + "v_" + versionName);
-        }
-
-        versionDialog.setMessage(msg);
-        if (alreadyNewest) {
-            versionDialog.setOkText("确定");
-        } else {
-            versionDialog.setOkText("升级");
-        }
-        if (!alreadyNewest) {
-            versionDialog.setCancelText("取消");
-        }
-        versionDialog.setCancelable(true);
-    }
-
-    private void doDownload() {
-        showDownLoadDialog();
-        // 下载apk，自动安装
-        FinalHttp client = new FinalHttp();
-        // url:下载的地址
-        // target:保存的地址，包含文件的名称
-        // callback 下载时的回调对象
-        String filePath = Environment.getExternalStorageDirectory().getAbsolutePath() + "/manga/apk";
-        File file = new File(filePath);
-        if (!file.exists()) {
-            file.mkdirs();
-        }
-        if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
-            client.download(url, filePath + "/manga_reader.apk",
-                    new AjaxCallBack<File>() {
-
-                        // 下载失败时回调这个方法
-                        @Override
-                        public void onFailure(Throwable t, String strMsg) {
-                            super.onFailure(t, strMsg);
-                            if (null != downloadDialog && downloadDialog.isShowing()) {
-                                downloadDialog.dismiss();
-                            }
-                            baseToast.showToast("请检查你的网络");
-                        }
-
-                        // 下载时回调这个方法
-                        // count ：下载文件需要的总时间，单位是毫秒
-                        // current :当前进度,单位是毫秒
-                        @Override
-                        public void onLoading(long count, long current) {
-                            super.onLoading(count, current);
-                            String progress = current * 100 / count + "";
-                            Integer integer = Integer.parseInt(progress);
-                            downloadDialog.setProgress(integer);
-                        }
-
-                        // 下载成功时回调这个方法
-                        @Override
-                        public void onSuccess(File t) {
-                            super.onSuccess(t);
-                            // 开始使其显示。
-                            if (null != downloadDialog && downloadDialog.isShowing()) {
-                                downloadDialog.dismiss();
-                            }
-                            baseToast.showToast("下载成功,文件保存在" + t.getPath());
-                            Intent intent = new Intent();
-                            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                            intent.setAction("android.intent.action.VIEW");
-                            intent.addCategory("android.intent.category.DEFAULT");
-                            intent.setDataAndType(Uri.fromFile(t), "application/vnd.android.package-archive");
-                            startActivity(intent);
-                        }
-                    });
-        }
-    }
-
-    private void showDownLoadDialog() {
-        if (null == downloadDialog) {
-            downloadDialog = new DownloadDialog(getActivity());
-        }
-        downloadDialog.show();
-        downloadDialog.setCancelable(false);
-    }
-
-    private void showAuthorDialog() {
-        MangaDialog authorDialog = new MangaDialog(getActivity());
-        authorDialog.show();
-        authorDialog.setTitle("联系作者");
-        authorDialog.setOkText("知道了");
-        authorDialog.setMessage("作者:  苏航\n邮箱:  772192594@qq.com");
-    }
-
 
     @Override
     public void onClick(View v) {
@@ -317,27 +183,15 @@ public class UserFragment extends BaseFragment implements View.OnClickListener {
             case R.id.download_rl:
                 intent = new Intent(getActivity(), DownloadActivity.class);
                 break;
-            case R.id.version_rl:
-                if (null != getVersionListener) {
-                    getVersionListener.onGetVersionClick();
-                }
-                break;
-            case R.id.logout_tv:
-                doLogout();
-                break;
             case R.id.user_top_bar_rl:
                 intent = new Intent(getActivity(), LoginActivity.class);
                 break;
-            case R.id.author_rl:
-                showAuthorDialog();
+            case R.id.about_rl:
+                intent = new Intent(getActivity(), AboutActivity.class);
                 break;
         }
         if (null != intent) {
             startActivity(intent);
         }
-    }
-
-    public void setGetVersionListener(GetVersionListener getVersionListener) {
-        this.getVersionListener = getVersionListener;
     }
 }
