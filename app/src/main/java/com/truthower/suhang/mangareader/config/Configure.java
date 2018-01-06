@@ -40,8 +40,8 @@ public class Configure {
             .cacheOnDisk(true)
             .considerExifParams(true)
             .bitmapConfig(Bitmap.Config.ARGB_8888)
-            .showImageOnLoading(R.drawable.loading)
-            .showImageOnFail(R.drawable.load_failed)
+            .showImageOnLoading(R.drawable.spider_hat_color512)
+            .showImageOnFail(R.drawable.spider_hat_gray512)
             .build();
     // 3DES加密key
     final public static String key = "iq2szojof6x1ckgejwe52urw";
