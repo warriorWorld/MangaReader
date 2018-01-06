@@ -19,6 +19,7 @@ import android.widget.TextView;
 import com.truthower.suhang.mangareader.R;
 import com.truthower.suhang.mangareader.adapter.LocalMangaListAdapter;
 import com.truthower.suhang.mangareader.base.BaseFragment;
+import com.truthower.suhang.mangareader.bean.LoginBean;
 import com.truthower.suhang.mangareader.bean.MangaBean;
 import com.truthower.suhang.mangareader.business.detail.LocalMangaDetailsActivity;
 import com.truthower.suhang.mangareader.config.Configure;
@@ -172,7 +173,9 @@ public class LocalMangaFragment extends BaseFragment implements AdapterView.OnIt
 
             @Override
             public void onTitleClick() {
-                showOptionsSelector();
+                if (LoginBean.getInstance().isMaster()) {
+                    showOptionsSelector();
+                }
             }
         });
         mangaGV = (GridView) pullToRefreshGridView.getRefreshableView();

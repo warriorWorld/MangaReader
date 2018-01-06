@@ -425,7 +425,7 @@
             android:layout_height="52dp"
             android:layout_alignParentBottom="true"
             android:layout_marginBottom="14dp"
-            android:src="@drawable/spider_48" />
+            android:src="@drawable/spider_hat_gray" />
 
         <TextView
             android:id="@+id/user_name_tv"
