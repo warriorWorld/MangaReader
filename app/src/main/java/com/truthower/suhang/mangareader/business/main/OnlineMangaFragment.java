@@ -214,7 +214,8 @@ public class OnlineMangaFragment extends BaseFragment implements PullToRefreshBa
         }
         pullListView.onPullDownRefreshComplete();// 动画结束方法
         pullListView.onPullUpRefreshComplete();
-        currentPageTv.setText(nowPage + "");
+        int displayPage = (nowPage - 1) / spider.nextPageNeedAddCount() + 1;
+        currentPageTv.setText(displayPage + "");
     }
 
     public int getScrollY(int firstVisibleItem) {
