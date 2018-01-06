@@ -60,7 +60,8 @@ public class DownloadMangaManager {
         if (DownloadBean.getInstance().isOne_shot()) {
             doOneShotDownload(context);
         } else {
-            if (null == currentChapter || null == currentChapter.getPages() || currentChapter.getPages().size() <= 0) {
+            //|| currentChapter.getPages().size() <= 0删掉了这个条件 因为这个条件会导致 下载中恰好在一话刚开始时停止时，下次会忽略这话下载的问题
+            if (null == currentChapter || null == currentChapter.getPages() ) {
                 //当前章节空了的时候 点前章节赋值为新的章节 移除空章节
                 currentChapter = DownloadBean.getInstance().getDownload_chapters().get(0);
                 saveCurrentChapter(context);
