@@ -183,21 +183,6 @@ public class WebMangaDetailsActivity extends BaseActivity implements AdapterView
                                     initWebManga(url);
                                     trySpiderPosition++;
                                 } catch (IndexOutOfBoundsException e) {
-                                    MangaDialog dialog = new MangaDialog(WebMangaDetailsActivity.this);
-                                    dialog.setOnPeanutDialogClickListener(new MangaDialog.OnPeanutDialogClickListener() {
-                                        @Override
-                                        public void onOkClick() {
-                                            WebMangaDetailsActivity.this.finish();
-                                        }
-
-                                        @Override
-                                        public void onCancelClick() {
-
-                                        }
-                                    });
-                                    dialog.show();
-                                    dialog.setTitle("漫画读取失败!");
-                                    dialog.setOkText("确定");
                                 }
                             }
                         }
