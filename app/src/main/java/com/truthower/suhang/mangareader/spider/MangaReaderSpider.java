@@ -211,6 +211,13 @@ public class MangaReaderSpider extends SpiderBase {
         return new String[0];
     }
 
+    /**
+     * 阅读页是一页一页翻得 只能这么爬...
+     * @param context
+     * @param chapterUrl
+     * @param jsoupCallBack
+     * @param <ResultObj>
+     */
     @Override
     public <ResultObj> void getMangaChapterPics(final Context context, final String chapterUrl, final JsoupCallBack<ResultObj> jsoupCallBack) {
         pathList = new ArrayList<String>();
