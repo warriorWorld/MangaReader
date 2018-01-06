@@ -244,6 +244,9 @@ public class WebMangaDetailsActivity extends BaseActivity implements AdapterView
             initOneShotGridView();
         } else {
             initGridView();
+            adapter.setLastReadPosition(SharedPreferencesUtils.getIntSharedPreferencesData
+                    (WebMangaDetailsActivity.this,
+                            ShareKeys.ONLINE_MANGA_READ_CHAPTER_POSITION + currentManga.getName()));
         }
     }
 
@@ -351,6 +354,7 @@ public class WebMangaDetailsActivity extends BaseActivity implements AdapterView
         } else {
             Intent intent = new Intent(WebMangaDetailsActivity.this, ReadMangaActivity.class);
             if (spider.isOneShot() && null != oneShotPathList && oneShotPathList.size() > 0) {
+                //one shot
                 currentMangaName = currentManga.getName();
                 Bundle pathListBundle = new Bundle();
                 pathListBundle.putSerializable("pathList", oneShotPathList);
@@ -359,6 +363,11 @@ public class WebMangaDetailsActivity extends BaseActivity implements AdapterView
             } else {
                 currentMangaName = currentManga.getName() + "(" + currentManga.getChapters().
                         get(position).getChapterPosition() + ")";
+                SharedPreferencesUtils.setSharedPreferencesData(WebMangaDetailsActivity.this,
+                        ShareKeys.ONLINE_MANGA_READ_CHAPTER_POSITION + currentManga.getName(), position);
+                adapter.setLastReadPosition(SharedPreferencesUtils.getIntSharedPreferencesData
+                        (WebMangaDetailsActivity.this,
+                                ShareKeys.ONLINE_MANGA_READ_CHAPTER_POSITION + currentManga.getName()));
                 intent.putExtra("chapterUrl", currentManga.getChapters().get(position).getChapterUrl());
             }
             intent.putExtra("currentMangaName", currentMangaName);

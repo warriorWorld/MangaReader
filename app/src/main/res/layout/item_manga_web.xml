@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="60dp"
@@ -18,4 +18,11 @@
         android:textColor="@drawable/btn_text_click_rewrite"
         android:textSize="15sp" />
 
-</LinearLayout>
+    <ImageView
+        android:id="@+id/bookmark_iv"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_alignParentRight="true"
+        android:visibility="gone"
+        android:src="@drawable/bookmark" />
+</RelativeLayout>
