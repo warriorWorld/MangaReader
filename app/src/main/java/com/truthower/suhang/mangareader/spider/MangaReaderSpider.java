@@ -74,7 +74,7 @@ public class MangaReaderSpider extends SpiderBase {
                     Elements test = doc.select("div.mangaresultitem h3 a");
                     Elements test1 = doc.select("div.imgsearchresults");
                     int count = test.size();
-                    String title;
+                    String title,name;
                     String path;
                     MangaBean item;
                     ArrayList<MangaBean> mangaList = new ArrayList<MangaBean>();
@@ -89,7 +89,8 @@ public class MangaReaderSpider extends SpiderBase {
                                     path.length() - 2);
                             item.setWebThumbnailUrl(path);
                             item.setUrl(webUrl + title);
-                            item.setName(title);
+                            name=test.get(i).text();
+                            item.setName(name);
                             mangaList.add(item);
                         }
                     }
