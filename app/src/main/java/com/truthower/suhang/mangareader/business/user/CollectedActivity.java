@@ -1,6 +1,7 @@
 package com.truthower.suhang.mangareader.business.user;
 
 import android.content.Intent;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
@@ -22,7 +23,10 @@ import com.truthower.suhang.mangareader.bean.MangaBean;
 import com.truthower.suhang.mangareader.business.detail.WebMangaDetailsActivity;
 import com.truthower.suhang.mangareader.config.Configure;
 import com.truthower.suhang.mangareader.listener.OnRecycleItemClickListener;
+import com.truthower.suhang.mangareader.utils.DisplayUtil;
 import com.truthower.suhang.mangareader.utils.LeanCloundUtil;
+import com.truthower.suhang.mangareader.widget.recyclerview.RecyclerGridDecoration;
+import com.truthower.suhang.mangareader.widget.recyclerview.RecyclerItemDecoration;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -141,6 +145,20 @@ public class CollectedActivity extends BaseActivity implements OnRefreshListener
                     }
                 });
                 mangaRcv.setAdapter(adapter);
+                ColorDrawable dividerDrawable = new ColorDrawable(0x00000000) {
+                    @Override
+                    public int getIntrinsicHeight() {
+                        return DisplayUtil.dip2px(CollectedActivity.this, 8);
+                    }
+
+                    @Override
+                    public int getIntrinsicWidth() {
+                        return DisplayUtil.dip2px(CollectedActivity.this, 8);
+                    }
+                };
+                RecyclerGridDecoration itemDecoration = new RecyclerGridDecoration(this,
+                        dividerDrawable, true);
+                mangaRcv.addItemDecoration(itemDecoration);
             } else {
                 adapter.setList(collectedMangaList);
                 adapter.notifyDataSetChanged();

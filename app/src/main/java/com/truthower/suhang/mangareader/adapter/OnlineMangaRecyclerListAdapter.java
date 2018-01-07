@@ -56,6 +56,14 @@ public class OnlineMangaRecyclerListAdapter extends RecyclerView.Adapter<OnlineM
         MangaBean item = list.get(position);
         ImageLoader.getInstance().displayImage(item.getWebThumbnailUrl(), viewHolder.mangaThumbnailIv, Configure.smallImageOptions);
         viewHolder.mangaTitleTv.setText(item.getName());
+        viewHolder.item_collect_manga_rl.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (null != onRecycleItemClickListener) {
+                    onRecycleItemClickListener.onItemClick(position);
+                }
+            }
+        });
     }
 
 
@@ -72,9 +80,11 @@ public class OnlineMangaRecyclerListAdapter extends RecyclerView.Adapter<OnlineM
     public static class ViewHolder extends RecyclerView.ViewHolder {
         public ImageView mangaThumbnailIv;
         public TextView mangaTitleTv;
+        public RelativeLayout item_collect_manga_rl;
 
         public ViewHolder(View view) {
             super(view);
+            item_collect_manga_rl = (RelativeLayout) view.findViewById(R.id.item_collect_manga_rl);
             mangaThumbnailIv = (ImageView) view.findViewById(R.id.manga_thumbnail_iv);
             mangaTitleTv = (TextView) view.findViewById(R.id.manga_title_tv);
         }
