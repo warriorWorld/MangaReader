@@ -17,6 +17,7 @@ import com.truthower.suhang.mangareader.bean.LoginBean;
 import com.truthower.suhang.mangareader.business.download.DownloadActivity;
 import com.truthower.suhang.mangareader.business.other.AboutActivity;
 import com.truthower.suhang.mangareader.business.tag.TagFilterActivity;
+import com.truthower.suhang.mangareader.business.user.CollectedActivity;
 import com.truthower.suhang.mangareader.business.user.LoginActivity;
 import com.truthower.suhang.mangareader.config.Configure;
 import com.truthower.suhang.mangareader.config.ShareKeys;
@@ -167,15 +168,15 @@ public class UserFragment extends BaseFragment implements View.OnClickListener {
         Intent intent = null;
         switch (v.getId()) {
             case R.id.collect_rl:
-//                intent = new Intent(getActivity(), CollectedActivity.class);
+                intent = new Intent(getActivity(), CollectedActivity.class);
                 intent.putExtra("collectType", Configure.COLLECT_TYPE_COLLECT);
                 break;
             case R.id.waiting_for_update_rl:
-//                intent = new Intent(getActivity(), CollectedActivity.class);
+                intent = new Intent(getActivity(), CollectedActivity.class);
                 intent.putExtra("collectType", Configure.COLLECT_TYPE_WAIT_FOR_UPDATE);
                 break;
             case R.id.finished_manga_rl:
-//                intent = new Intent(getActivity(), CollectedActivity.class);
+                intent = new Intent(getActivity(), CollectedActivity.class);
                 intent.putExtra("collectType", Configure.COLLECT_TYPE_FINISHED);
                 break;
             case R.id.statistics_rl:
