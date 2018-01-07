@@ -4,12 +4,29 @@
     android:layout_height="fill_parent"
     android:background="@color/divide">
 
-
-    <com.truthower.suhang.mangareader.widget.pulltorefresh.PullToRefreshListView
-        android:id="@+id/home_ptf"
+    <com.aspsine.swipetoloadlayout.SwipeToLoadLayout
+        android:id="@+id/swipeToLoadLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/gradient_bar"></com.truthower.suhang.mangareader.widget.pulltorefresh.PullToRefreshListView>
+        android:layout_below="@+id/gradient_bar"
+        android:background="@color/divide">
+
+        <com.truthower.suhang.mangareader.widget.swipetoloadlayout.RefreshHeaderLayout
+            android:id="@+id/swipe_refresh_header"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"></com.truthower.suhang.mangareader.widget.swipetoloadlayout.RefreshHeaderLayout>
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/swipe_target"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"></android.support.v7.widget.RecyclerView>
+
+        <com.truthower.suhang.mangareader.widget.swipetoloadlayout.LoadMoreFooterView
+            android:id="@id/swipe_load_more_footer"
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            android:gravity="center" />
+    </com.aspsine.swipetoloadlayout.SwipeToLoadLayout>
 
     <com.truthower.suhang.mangareader.widget.bar.TopBar
         android:id="@+id/gradient_bar"
@@ -42,9 +59,9 @@
     <include
         android:id="@+id/empty_view"
         layout="@layout/emptyview_list"
-        android:layout_below="@+id/gradient_bar"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_below="@+id/gradient_bar"
         android:layout_centerInParent="true"
         android:visibility="gone" />
 </RelativeLayout>

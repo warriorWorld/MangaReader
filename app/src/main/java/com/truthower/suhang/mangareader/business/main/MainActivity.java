@@ -1,52 +1,26 @@
 package com.truthower.suhang.mangareader.business.main;
 
-import android.Manifest;
-import android.app.Activity;
-import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.support.v4.app.FragmentTransaction;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.avos.avoscloud.AVException;
-import com.avos.avoscloud.AVFile;
-import com.avos.avoscloud.AVObject;
-import com.avos.avoscloud.AVQuery;
-import com.avos.avoscloud.FindCallback;
-import com.avos.avoscloud.GetDataCallback;
-import com.avos.avoscloud.ProgressCallback;
-import com.avos.avoscloud.SaveCallback;
 import com.truthower.suhang.mangareader.R;
 import com.truthower.suhang.mangareader.base.BaseFragment;
 import com.truthower.suhang.mangareader.base.BaseFragmentActivity;
-import com.truthower.suhang.mangareader.bean.LoginBean;
-import com.truthower.suhang.mangareader.bean.MangaBean;
-import com.truthower.suhang.mangareader.business.user.CollectedActivity;
 import com.truthower.suhang.mangareader.config.Configure;
 import com.truthower.suhang.mangareader.eventbus.EventBusEvent;
 import com.truthower.suhang.mangareader.eventbus.JumpEvent;
 import com.truthower.suhang.mangareader.eventbus.TagClickEvent;
-import com.truthower.suhang.mangareader.listener.GetVersionListener;
-import com.truthower.suhang.mangareader.spider.FileSpider;
-import com.truthower.suhang.mangareader.utils.BaseParameterUtil;
-import com.truthower.suhang.mangareader.utils.LeanCloundUtil;
-import com.truthower.suhang.mangareader.utils.Logger;
-import com.truthower.suhang.mangareader.widget.dialog.DownloadDialog;
 import com.truthower.suhang.mangareader.widget.dialog.MangaDialog;
 
 import org.greenrobot.eventbus.Subscribe;
 
-import java.io.File;
-import java.util.ArrayList;
 import java.util.List;
 
-import pub.devrel.easypermissions.AfterPermissionGranted;
 import pub.devrel.easypermissions.EasyPermissions;
 
 

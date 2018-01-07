@@ -1,9 +1,7 @@
 package com.truthower.suhang.mangareader.business.main;
 
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,29 +11,18 @@ import android.widget.CompoundButton;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.avos.avoscloud.AVUser;
 import com.truthower.suhang.mangareader.R;
 import com.truthower.suhang.mangareader.base.BaseFragment;
 import com.truthower.suhang.mangareader.bean.LoginBean;
 import com.truthower.suhang.mangareader.business.download.DownloadActivity;
 import com.truthower.suhang.mangareader.business.other.AboutActivity;
 import com.truthower.suhang.mangareader.business.tag.TagFilterActivity;
-import com.truthower.suhang.mangareader.business.user.CollectedActivity;
 import com.truthower.suhang.mangareader.business.user.LoginActivity;
 import com.truthower.suhang.mangareader.config.Configure;
 import com.truthower.suhang.mangareader.config.ShareKeys;
-import com.truthower.suhang.mangareader.listener.GetVersionListener;
-import com.truthower.suhang.mangareader.utils.BaseParameterUtil;
 import com.truthower.suhang.mangareader.utils.SharedPreferencesUtils;
-import com.truthower.suhang.mangareader.widget.dialog.DownloadDialog;
-import com.truthower.suhang.mangareader.widget.dialog.MangaDialog;
 import com.truthower.suhang.mangareader.widget.dialog.QrDialog;
 import com.truthower.suhang.mangareader.widget.imageview.CircleImage;
-
-import net.tsz.afinal.FinalHttp;
-import net.tsz.afinal.http.AjaxCallBack;
-
-import java.io.File;
 
 public class UserFragment extends BaseFragment implements View.OnClickListener {
     private RelativeLayout collectRl;
@@ -180,15 +167,15 @@ public class UserFragment extends BaseFragment implements View.OnClickListener {
         Intent intent = null;
         switch (v.getId()) {
             case R.id.collect_rl:
-                intent = new Intent(getActivity(), CollectedActivity.class);
+//                intent = new Intent(getActivity(), CollectedActivity.class);
                 intent.putExtra("collectType", Configure.COLLECT_TYPE_COLLECT);
                 break;
             case R.id.waiting_for_update_rl:
-                intent = new Intent(getActivity(), CollectedActivity.class);
+//                intent = new Intent(getActivity(), CollectedActivity.class);
                 intent.putExtra("collectType", Configure.COLLECT_TYPE_WAIT_FOR_UPDATE);
                 break;
             case R.id.finished_manga_rl:
-                intent = new Intent(getActivity(), CollectedActivity.class);
+//                intent = new Intent(getActivity(), CollectedActivity.class);
                 intent.putExtra("collectType", Configure.COLLECT_TYPE_FINISHED);
                 break;
             case R.id.statistics_rl:

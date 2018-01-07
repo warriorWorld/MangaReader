@@ -6,6 +6,9 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,8 +16,12 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.aspsine.swipetoloadlayout.OnLoadMoreListener;
+import com.aspsine.swipetoloadlayout.OnRefreshListener;
+import com.aspsine.swipetoloadlayout.SwipeToLoadLayout;
 import com.truthower.suhang.mangareader.R;
 import com.truthower.suhang.mangareader.adapter.OnlineMangaListAdapter;
+import com.truthower.suhang.mangareader.adapter.OnlineMangaRecyclerListAdapter;
 import com.truthower.suhang.mangareader.base.BaseFragment;
 import com.truthower.suhang.mangareader.bean.LoginBean;
 import com.truthower.suhang.mangareader.bean.MangaBean;
@@ -25,6 +32,7 @@ import com.truthower.suhang.mangareader.config.ShareKeys;
 import com.truthower.suhang.mangareader.eventbus.JumpEvent;
 import com.truthower.suhang.mangareader.listener.JsoupCallBack;
 import com.truthower.suhang.mangareader.listener.OnEditResultListener;
+import com.truthower.suhang.mangareader.listener.OnRecycleItemClickListener;
 import com.truthower.suhang.mangareader.spider.SpiderBase;
 import com.truthower.suhang.mangareader.utils.MatchStringUtil;
 import com.truthower.suhang.mangareader.utils.SharedPreferencesUtils;
@@ -40,17 +48,17 @@ import org.greenrobot.eventbus.EventBus;
 import java.util.ArrayList;
 
 
-public class OnlineMangaFragment extends BaseFragment implements PullToRefreshBase.OnRefreshListener<ListView> {
-    private PullToRefreshListView pullListView;
+public class OnlineMangaFragment extends BaseFragment implements OnRefreshListener, OnLoadMoreListener {
     private SpiderBase spider;
-    private ListView mangaListLv;
     private View emptyView;
     private TextView emptyTv;
     private TextView currentPageTv;
-    private OnlineMangaListAdapter onlineMangaListAdapter;
     //总的漫画列表和一次请求获得的漫画列表
     private ArrayList<MangaBean> totalMangaList = new ArrayList<>(),
             currentMangaList = new ArrayList<>();
+    private OnlineMangaRecyclerListAdapter adapter;
+    private RecyclerView mangaRcv;
+    private SwipeToLoadLayout swipeToLoadLayout;
 
     private TopBar topBar;
     private int gradientMagicNum = 500;
@@ -66,7 +74,6 @@ public class OnlineMangaFragment extends BaseFragment implements PullToRefreshBa
         super.onCreateView(inflater, container, savedInstanceState);
         View v = inflater.inflate(R.layout.fragment_online_manga_list, container, false);
         initUI(v);
-        initPullListView();
         initSpider(Configure.currentWebSite);
 
         if (!isWifi(getActivity()) &&
@@ -82,8 +89,15 @@ public class OnlineMangaFragment extends BaseFragment implements PullToRefreshBa
 
 
     private void initUI(View v) {
-        pullListView = (PullToRefreshListView) v.findViewById(R.id.home_ptf);
-        mangaListLv = pullListView.getRefreshableView();
+        swipeToLoadLayout = (SwipeToLoadLayout) v.findViewById(R.id.swipeToLoadLayout);
+        swipeToLoadLayout.setOnRefreshListener(this);
+        swipeToLoadLayout.setOnLoadMoreListener(this);
+        mangaRcv = (RecyclerView) v.findViewById(R.id.swipe_target);
+        mangaRcv.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
+        mangaRcv.setFocusableInTouchMode(false);
+        mangaRcv.setFocusable(false);
+        mangaRcv.setHasFixedSize(true);
+
         emptyView = v.findViewById(R.id.empty_view);
         emptyView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -173,58 +187,41 @@ public class OnlineMangaFragment extends BaseFragment implements PullToRefreshBa
     }
 
     private void initListView() {
-        if (nowPage > startPage) {
-            //如果不是首页 那就加上之后的
-            totalMangaList.addAll(currentMangaList);
-        } else {
-            totalMangaList = currentMangaList;
-        }
+        try {
+            if (nowPage > startPage) {
+                //如果不是首页 那就加上之后的
+                totalMangaList.addAll(currentMangaList);
+            } else {
+                totalMangaList = currentMangaList;
+            }
 
+            if (null == totalMangaList || totalMangaList.size() <= 0) {
+                emptyView.setVisibility(View.VISIBLE);
+            } else {
+                emptyView.setVisibility(View.GONE);
+            }
+            if (null == adapter) {
+                adapter = new OnlineMangaRecyclerListAdapter(getActivity(), totalMangaList);
+                adapter.setOnRecycleItemClickListener(new OnRecycleItemClickListener() {
+                    @Override
+                    public void onItemClick(int position) {
+                        Intent intent = new Intent(getActivity(), WebMangaDetailsActivity.class);
+                        intent.putExtra("mangaUrl", totalMangaList.get(position).getUrl());
+                        startActivity(intent);
+                    }
+                });
+                mangaRcv.setAdapter(adapter);
+            } else {
+                adapter.setList(totalMangaList);
+                adapter.notifyDataSetChanged();
+            }
 
-        if (null == onlineMangaListAdapter) {
-            onlineMangaListAdapter = new OnlineMangaListAdapter(
-                    getActivity(), totalMangaList);
-            mangaListLv.setAdapter(onlineMangaListAdapter);
-            mangaListLv.setFocusable(true);
-            mangaListLv.setEmptyView(emptyView);
-            mangaListLv.setFocusableInTouchMode(true);
-            mangaListLv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                @Override
-                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                    Intent intent = new Intent(getActivity(), WebMangaDetailsActivity.class);
-                    intent.putExtra("mangaUrl", totalMangaList.get(position).getUrl());
-                    startActivity(intent);
-                }
-            });
-            //变色太难看了
-//            mangaListLv.setOnScrollListener(new AbsListView.OnScrollListener() {
-//                @Override
-//                public void onScrollStateChanged(AbsListView view, int scrollState) {
-//
-//                }
-//
-//                @Override
-//                public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
-//                    topBar.computeAndsetBackgroundAlpha(getScrollY(firstVisibleItem), gradientMagicNum);
-//                }
-//            });
-        } else {
-            onlineMangaListAdapter.setList(totalMangaList);
-            onlineMangaListAdapter.notifyDataSetChanged();
+            int displayPage = (nowPage - 1) / spider.nextPageNeedAddCount() + 1;
+            currentPageTv.setText(displayPage + "");
+        } catch (Exception e) {
         }
-        pullListView.onPullDownRefreshComplete();// 动画结束方法
-        pullListView.onPullUpRefreshComplete();
-        int displayPage = (nowPage - 1) / spider.nextPageNeedAddCount() + 1;
-        currentPageTv.setText(displayPage + "");
-    }
-
-    public int getScrollY(int firstVisibleItem) {
-        View c = mangaListLv.getChildAt(0);
-        if (c == null) {
-            return 0;
-        }
-        int top = c.getTop();
-        return -top + firstVisibleItem * gradientMagicNum;
+        swipeToLoadLayout.setRefreshing(false);
+        swipeToLoadLayout.setLoadingMore(false);
     }
 
 
@@ -421,35 +418,20 @@ public class OnlineMangaFragment extends BaseFragment implements PullToRefreshBa
         toPageDialog.clearEdit();
     }
 
-    private void initPullListView() {
-        // 上拉加载更多
-        pullListView.setPullLoadEnabled(true);
-        // 滚到底部自动加载
-        pullListView.setScrollLoadEnabled(false);
-        pullListView.setOnRefreshListener(this);
-
-        mangaListLv.setCacheColorHint(0xFFCCCCCC);// 点击后颜色
-        // // mListView.setScrollBarStyle(ScrollView.);
-//        mangaListLv.setDivider(getResources().getDrawable(R.color.colorAccent));// 线的颜色
-        mangaListLv.setDividerHeight(0);// 线的高度
-
-//        pullListView.doPullRefreshing(true, 500);
-    }
-
     private void initToFirstPage() {
         nowPage = 1;
         startPage = 1;
     }
 
     @Override
-    public void onPullDownToRefresh(PullToRefreshBase<ListView> refreshView) {
-        initToFirstPage();
+    public void onLoadMore() {
+        nowPage += spider.nextPageNeedAddCount();
         doGetData();
     }
 
     @Override
-    public void onPullUpToRefresh(PullToRefreshBase<ListView> refreshView) {
-        nowPage += spider.nextPageNeedAddCount();
+    public void onRefresh() {
+        initToFirstPage();
         doGetData();
     }
 }

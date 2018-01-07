@@ -8,20 +8,12 @@ import android.widget.EditText;
 
 import com.avos.avoscloud.AVException;
 import com.avos.avoscloud.AVObject;
-import com.avos.avoscloud.AVQuery;
-import com.avos.avoscloud.FindCallback;
 import com.avos.avoscloud.SaveCallback;
 import com.truthower.suhang.mangareader.R;
 import com.truthower.suhang.mangareader.base.BaseActivity;
 import com.truthower.suhang.mangareader.bean.LoginBean;
-import com.truthower.suhang.mangareader.bean.MangaBean;
-import com.truthower.suhang.mangareader.business.detail.WebMangaDetailsActivity;
-import com.truthower.suhang.mangareader.business.user.CollectedActivity;
 import com.truthower.suhang.mangareader.utils.LeanCloundUtil;
 import com.truthower.suhang.mangareader.widget.dialog.MangaDialog;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * 个人信息页
