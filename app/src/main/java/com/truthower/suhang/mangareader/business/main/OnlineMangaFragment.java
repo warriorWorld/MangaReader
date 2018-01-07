@@ -5,9 +5,11 @@ import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -55,7 +57,7 @@ public class OnlineMangaFragment extends BaseFragment implements PullToRefreshBa
     private MangaEditDialog searchDialog, toPageDialog;
     private int nowPage = 1, startPage = 1;
     private String nowTypeName = "all";
-
+    private boolean onLoadingMore = false;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -192,18 +194,29 @@ public class OnlineMangaFragment extends BaseFragment implements PullToRefreshBa
                     startActivity(intent);
                 }
             });
-            //变色太难看了
-//            mangaListLv.setOnScrollListener(new AbsListView.OnScrollListener() {
-//                @Override
-//                public void onScrollStateChanged(AbsListView view, int scrollState) {
-//
-//                }
-//
-//                @Override
-//                public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+            mangaListLv.setOnScrollListener(new AbsListView.OnScrollListener() {
+                @Override
+                public void onScrollStateChanged(AbsListView view, int scrollState) {
+
+                }
+
+                @Override
+                public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
 //                    topBar.computeAndsetBackgroundAlpha(getScrollY(firstVisibleItem), gradientMagicNum);
-//                }
-//            });
+                    if (firstVisibleItem == 0) {
+                        View firstVisibleItemView = mangaListLv.getChildAt(0);
+                        if (firstVisibleItemView != null && firstVisibleItemView.getTop() == 0) {
+                            Log.d("ListView", "##### 滚动到顶部 #####");
+                        }
+                    } else if ((firstVisibleItem + visibleItemCount) == totalItemCount) {
+                        View lastVisibleItemView = mangaListLv.getChildAt(mangaListLv.getChildCount() - 1);
+                        if (lastVisibleItemView != null && lastVisibleItemView.getBottom() == mangaListLv.getHeight()) {
+                            Log.d("ListView", "##### 滚动到底部 ######");
+                            loadMore();
+                        }
+                    }
+                }
+            });
         } else {
             onlineMangaListAdapter.setList(totalMangaList);
             onlineMangaListAdapter.notifyDataSetChanged();
@@ -212,6 +225,8 @@ public class OnlineMangaFragment extends BaseFragment implements PullToRefreshBa
         pullListView.onPullUpRefreshComplete();
         int displayPage = (nowPage - 1) / spider.nextPageNeedAddCount() + 1;
         currentPageTv.setText(displayPage + "");
+
+        onLoadingMore = false;
     }
 
     public int getScrollY(int firstVisibleItem) {
@@ -437,6 +452,14 @@ public class OnlineMangaFragment extends BaseFragment implements PullToRefreshBa
         startPage = 1;
     }
 
+    private void loadMore() {
+        if (!onLoadingMore) {
+            onLoadingMore = true;
+            nowPage += spider.nextPageNeedAddCount();
+            doGetData();
+        }
+    }
+
     @Override
     public void onPullDownToRefresh(PullToRefreshBase<ListView> refreshView) {
         initToFirstPage();
@@ -445,7 +468,6 @@ public class OnlineMangaFragment extends BaseFragment implements PullToRefreshBa
 
     @Override
     public void onPullUpToRefresh(PullToRefreshBase<ListView> refreshView) {
-        nowPage += spider.nextPageNeedAddCount();
-        doGetData();
+        loadMore();
     }
 }

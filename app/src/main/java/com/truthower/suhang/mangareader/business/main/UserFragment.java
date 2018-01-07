@@ -22,6 +22,7 @@ import com.truthower.suhang.mangareader.business.user.LoginActivity;
 import com.truthower.suhang.mangareader.config.Configure;
 import com.truthower.suhang.mangareader.config.ShareKeys;
 import com.truthower.suhang.mangareader.utils.SharedPreferencesUtils;
+import com.truthower.suhang.mangareader.widget.dialog.MangaDialog;
 import com.truthower.suhang.mangareader.widget.dialog.QrDialog;
 import com.truthower.suhang.mangareader.widget.imageview.CircleImage;
 
@@ -46,6 +47,14 @@ public class UserFragment extends BaseFragment implements View.OnClickListener {
         initUI(v);
         refreshUI();
         toggleLoginStateUI();
+        if (!SharedPreferencesUtils.getBooleanSharedPreferencesData(getActivity(), ShareKeys.CLOSE_TUTORIAL, false)) {
+            MangaDialog dialog = new MangaDialog(getActivity());
+            dialog.show();
+            dialog.setTitle("教程");
+            dialog.setMessage("1,点击分享App,可以打开该App的下载二维码,让你想分享的人扫描即可下载,也可将该二维码保存(会保存在aSpider文件夹中)然后发给你想分享的人." +
+                    "\n2,想要更新App可以进入关于页检查更新下载最新App" +
+                    "\n3,退出登录可以进入关于页退出");
+        }
         return v;
     }
 
