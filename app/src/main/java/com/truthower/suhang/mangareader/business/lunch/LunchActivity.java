@@ -144,7 +144,7 @@ public class LunchActivity extends BaseActivity implements View.OnClickListener,
             // Already have permission, do the thing
             // ...
             showDownLoadDialog();
-            final String filePath = Environment.getExternalStorageDirectory().getAbsolutePath() + "/manga/apk";
+            final String filePath = Configure.DOWNLOAD_PATH + "/apk";
             final File file = new File(filePath);
             if (!file.exists()) {
                 file.mkdirs();

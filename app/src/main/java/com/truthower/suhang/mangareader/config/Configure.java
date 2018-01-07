@@ -19,6 +19,8 @@ public class Configure {
     public final static String DST_FOLDER_NAME = "aSpider";
     final public static String storagePath = Environment
             .getExternalStorageDirectory().getAbsolutePath() + "/" + DST_FOLDER_NAME;
+    final public static String DOWNLOAD_PATH = Environment
+            .getExternalStorageDirectory().getAbsolutePath() + "/" + "manga";
     final public static String WRONG_WEBSITE_EXCEPTION = "wrong_website_exception";
     //仅用于显示当前的漫画名称
 //    public static String currentMangaName = "";

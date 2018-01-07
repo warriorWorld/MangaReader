@@ -25,11 +25,11 @@
         android:background="@color/divide_line"></View>
 
     <ImageView
+        android:id="@+id/image_dialog_iv"
         android:layout_width="180dp"
         android:layout_height="180dp"
         android:layout_gravity="center_horizontal"
-        android:layout_marginTop="12dp"
-        android:src="@drawable/qr_172" />
+        android:layout_marginTop="12dp" />
 
     <View
         android:layout_width="match_parent"
@@ -42,7 +42,7 @@
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:gravity="center"
-        android:text="复制二维码"
+        android:text="下载二维码"
         android:textColor="@color/manga_reader"
         android:textSize="17sp" />
 </LinearLayout>

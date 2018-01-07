@@ -21,6 +21,7 @@ import com.truthower.suhang.mangareader.business.user.CollectedActivity;
 import com.truthower.suhang.mangareader.business.user.LoginActivity;
 import com.truthower.suhang.mangareader.config.Configure;
 import com.truthower.suhang.mangareader.config.ShareKeys;
+import com.truthower.suhang.mangareader.listener.OnShareAppClickListener;
 import com.truthower.suhang.mangareader.utils.SharedPreferencesUtils;
 import com.truthower.suhang.mangareader.widget.dialog.MangaDialog;
 import com.truthower.suhang.mangareader.widget.dialog.QrDialog;
@@ -39,6 +40,7 @@ public class UserFragment extends BaseFragment implements View.OnClickListener {
     private TextView userNameTv;
     private CircleImage userHeadCiv;
     private CheckBox autoToLastReadPositionCb, closeTranslateCb, economyModeCb, closeTutorialCb;
+    private OnShareAppClickListener onShareAppClickListener;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -51,7 +53,7 @@ public class UserFragment extends BaseFragment implements View.OnClickListener {
             MangaDialog dialog = new MangaDialog(getActivity());
             dialog.show();
             dialog.setTitle("教程");
-            dialog.setMessage("1,点击分享App,可以打开该App的下载二维码,让你想分享的人扫描即可下载,也可将该二维码保存(会保存在aSpider文件夹中)然后发给你想分享的人." +
+            dialog.setMessage("1,点击分享App,可以打开该App的下载二维码,让你想分享的人扫描即可下载,也可将该二维码保存(会保存在manga文件夹中)然后发给你想分享的人." +
                     "\n2,想要更新App可以进入关于页检查更新下载最新App" +
                     "\n3,退出登录可以进入关于页退出");
         }
@@ -167,11 +169,6 @@ public class UserFragment extends BaseFragment implements View.OnClickListener {
         }
     }
 
-    private void showQrDialog() {
-        QrDialog qrDialog = new QrDialog(getActivity());
-        qrDialog.show();
-    }
-
     @Override
     public void onClick(View v) {
         Intent intent = null;
@@ -204,11 +201,17 @@ public class UserFragment extends BaseFragment implements View.OnClickListener {
                 intent = new Intent(getActivity(), AboutActivity.class);
                 break;
             case R.id.share_rl:
-                showQrDialog();
+                if (null!=onShareAppClickListener){
+                    onShareAppClickListener.onClick();
+                }
                 break;
         }
         if (null != intent) {
             startActivity(intent);
         }
+    }
+
+    public void setOnShareAppClickListener(OnShareAppClickListener onShareAppClickListener) {
+        this.onShareAppClickListener = onShareAppClickListener;
     }
 }
