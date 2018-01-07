@@ -106,9 +106,11 @@ public class AboutActivity extends BaseActivity implements View.OnClickListener,
                         msg = list.get(0).getString("description");
                         downloadFile = list.get(0).getAVFile("apk");
                         if (versionCode == BaseParameterUtil.getInstance(AboutActivity.this).getAppVersionCode()) {
-                            versionTv.setText(versionName + "(最新版本)");
+                            versionTv.setText(BaseParameterUtil.getInstance(AboutActivity.this).getAppVersionName()
+                                    + "(最新版本)");
                         } else {
-                            versionTv.setText(versionName + "(有新版本啦~)");
+                            versionTv.setText(BaseParameterUtil.getInstance(AboutActivity.this).getAppVersionName()
+                                    + "(有新版本啦~)");
                             showVersionDialog();
                         }
                     }
