@@ -25,8 +25,8 @@ import com.truthower.suhang.mangareader.config.Configure;
 import com.truthower.suhang.mangareader.listener.OnRecycleItemClickListener;
 import com.truthower.suhang.mangareader.utils.DisplayUtil;
 import com.truthower.suhang.mangareader.utils.LeanCloundUtil;
+import com.truthower.suhang.mangareader.widget.bar.TopBar;
 import com.truthower.suhang.mangareader.widget.recyclerview.RecyclerGridDecoration;
-import com.truthower.suhang.mangareader.widget.recyclerview.RecyclerItemDecoration;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -61,6 +61,8 @@ public class CollectedActivity extends BaseActivity implements OnRefreshListener
         mangaRcv.setFocusableInTouchMode(false);
         mangaRcv.setFocusable(false);
         mangaRcv.setHasFixedSize(true);
+        TopBar topBar = (TopBar) findViewById(R.id.gradient_bar);
+        topBar.setVisibility(View.GONE);
 
         emptyView = findViewById(R.id.empty_view);
 

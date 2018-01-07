@@ -2,6 +2,7 @@ package com.truthower.suhang.mangareader.adapter;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +16,7 @@ import com.truthower.suhang.mangareader.R;
 import com.truthower.suhang.mangareader.bean.MangaBean;
 import com.truthower.suhang.mangareader.config.Configure;
 import com.truthower.suhang.mangareader.listener.OnRecycleItemClickListener;
+import com.truthower.suhang.mangareader.listener.OnRecycleItemLongClickListener;
 
 import java.util.ArrayList;
 
@@ -25,6 +27,7 @@ import java.util.ArrayList;
 public class OnlineMangaRecyclerListAdapter extends RecyclerView.Adapter<OnlineMangaRecyclerListAdapter.ViewHolder> {
     private Context context;
     private OnRecycleItemClickListener onRecycleItemClickListener;
+    private OnRecycleItemLongClickListener onRecycleItemLongClickListener;
 
     public void setOnRecycleItemClickListener(OnRecycleItemClickListener onRecycleItemClickListener) {
         this.onRecycleItemClickListener = onRecycleItemClickListener;
@@ -54,7 +57,12 @@ public class OnlineMangaRecyclerListAdapter extends RecyclerView.Adapter<OnlineM
     @Override
     public void onBindViewHolder(ViewHolder viewHolder, final int position) {
         MangaBean item = list.get(position);
-        ImageLoader.getInstance().displayImage(item.getWebThumbnailUrl(), viewHolder.mangaThumbnailIv, Configure.smallImageOptions);
+        if (!TextUtils.isEmpty(item.getWebThumbnailUrl())){
+            ImageLoader.getInstance().displayImage(item.getWebThumbnailUrl(), viewHolder.mangaThumbnailIv, Configure.smallImageOptions);
+        }else {
+            ImageLoader.getInstance().displayImage(item.getLocalThumbnailUrl(), viewHolder.mangaThumbnailIv, Configure.smallImageOptions);
+        }
+
         viewHolder.mangaTitleTv.setText(item.getName());
         viewHolder.item_collect_manga_rl.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -62,6 +70,15 @@ public class OnlineMangaRecyclerListAdapter extends RecyclerView.Adapter<OnlineM
                 if (null != onRecycleItemClickListener) {
                     onRecycleItemClickListener.onItemClick(position);
                 }
+            }
+        });
+        viewHolder.item_collect_manga_rl.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                if (null!=onRecycleItemLongClickListener){
+                    onRecycleItemLongClickListener.onItemLongClick(position);
+                }
+                return true;
             }
         });
     }
@@ -74,6 +91,10 @@ public class OnlineMangaRecyclerListAdapter extends RecyclerView.Adapter<OnlineM
             return 0;
         }
         return list.size();
+    }
+
+    public void setOnRecycleItemLongClickListener(OnRecycleItemLongClickListener onRecycleItemLongClickListener) {
+        this.onRecycleItemLongClickListener = onRecycleItemLongClickListener;
     }
 
     //自定义的ViewHolder，持有每个Item的的所有界面元素

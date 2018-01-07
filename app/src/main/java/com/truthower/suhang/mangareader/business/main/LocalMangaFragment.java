@@ -2,11 +2,14 @@ package com.truthower.suhang.mangareader.business.main;
 
 import android.Manifest;
 import android.content.Intent;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,23 +19,33 @@ import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.aspsine.swipetoloadlayout.OnLoadMoreListener;
+import com.aspsine.swipetoloadlayout.OnRefreshListener;
+import com.aspsine.swipetoloadlayout.SwipeToLoadLayout;
 import com.truthower.suhang.mangareader.R;
 import com.truthower.suhang.mangareader.adapter.LocalMangaListAdapter;
+import com.truthower.suhang.mangareader.adapter.OnlineMangaRecyclerListAdapter;
 import com.truthower.suhang.mangareader.base.BaseFragment;
 import com.truthower.suhang.mangareader.bean.LoginBean;
 import com.truthower.suhang.mangareader.bean.MangaBean;
 import com.truthower.suhang.mangareader.business.detail.LocalMangaDetailsActivity;
+import com.truthower.suhang.mangareader.business.detail.WebMangaDetailsActivity;
+import com.truthower.suhang.mangareader.business.user.CollectedActivity;
 import com.truthower.suhang.mangareader.config.Configure;
 import com.truthower.suhang.mangareader.config.ShareKeys;
 import com.truthower.suhang.mangareader.listener.OnEditResultListener;
+import com.truthower.suhang.mangareader.listener.OnRecycleItemClickListener;
+import com.truthower.suhang.mangareader.listener.OnRecycleItemLongClickListener;
 import com.truthower.suhang.mangareader.sort.FileComparatorByTime;
 import com.truthower.suhang.mangareader.spider.FileSpider;
+import com.truthower.suhang.mangareader.utils.DisplayUtil;
 import com.truthower.suhang.mangareader.utils.SharedPreferencesUtils;
 import com.truthower.suhang.mangareader.widget.bar.TopBar;
 import com.truthower.suhang.mangareader.widget.dialog.MangaDialog;
 import com.truthower.suhang.mangareader.widget.dialog.MangaEditDialog;
 import com.truthower.suhang.mangareader.widget.pulltorefresh.PullToRefreshBase;
 import com.truthower.suhang.mangareader.widget.pulltorefresh.PullToRefreshGridView;
+import com.truthower.suhang.mangareader.widget.recyclerview.RecyclerGridDecoration;
 import com.truthower.suhang.mangareader.widget.wheelview.wheelselector.WheelSelectorDialog;
 
 import java.io.File;
@@ -44,20 +57,18 @@ import java.util.List;
 import pub.devrel.easypermissions.AfterPermissionGranted;
 import pub.devrel.easypermissions.EasyPermissions;
 
-public class LocalMangaFragment extends BaseFragment implements AdapterView.OnItemClickListener, AdapterView.OnItemLongClickListener,
-        PullToRefreshBase.OnRefreshListener<GridView>,
-        EasyPermissions.PermissionCallbacks {
-    private View mainView;
-    private PullToRefreshGridView pullToRefreshGridView;
+public class LocalMangaFragment extends BaseFragment implements
+        EasyPermissions.PermissionCallbacks, OnRefreshListener, OnLoadMoreListener {
     private View emptyView;
-    private ImageView emptyIV;
-    private TextView emptyTV;
-    private GridView mangaGV;
+    private View mainView;
     private ArrayList<MangaBean> mangaList = new ArrayList<MangaBean>();
-    private LocalMangaListAdapter adapter;
     private TopBar topBar;
     private String storagePath;
     private String[] fileNameOptions = {"independent", "story", "other(edit)"};
+
+    private OnlineMangaRecyclerListAdapter adapter;
+    private RecyclerView mangaRcv;
+    private SwipeToLoadLayout swipeToLoadLayout;
 
     private enum FileTypeEnum {
         Independent,
@@ -81,9 +92,8 @@ public class LocalMangaFragment extends BaseFragment implements AdapterView.OnIt
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        mainView = inflater.inflate(R.layout.activity_local, null);
+        mainView = inflater.inflate(R.layout.collect_manga_list, null);
         initUI(mainView);
-        initPullGridView();
         initGridView();
 
         initFilePath();
@@ -137,28 +147,67 @@ public class LocalMangaFragment extends BaseFragment implements AdapterView.OnIt
     }
 
     private void initGridView() {
-        if (null == adapter) {
-            adapter = new LocalMangaListAdapter(getActivity(), mangaList);
-            mangaGV.setAdapter(adapter);
-            mangaGV.setOnItemClickListener(this);
-            mangaGV.setOnItemLongClickListener(this);
-            mangaGV.setEmptyView(emptyView);
-//            mangaGV.setColumnWidth(100);
-            mangaGV.setNumColumns(2);
-            mangaGV.setVerticalSpacing(12);
-            mangaGV.setGravity(Gravity.CENTER);
-            mangaGV.setHorizontalSpacing(15);
-        } else {
-            adapter.setMangaList(mangaList);
-            adapter.notifyDataSetChanged();
+        try {
+            if (null == mangaList || mangaList.size() <= 0) {
+                emptyView.setVisibility(View.VISIBLE);
+            } else {
+                emptyView.setVisibility(View.GONE);
+            }
+            if (null == adapter) {
+                adapter = new OnlineMangaRecyclerListAdapter(getActivity(), mangaList);
+                adapter.setOnRecycleItemClickListener(new OnRecycleItemClickListener() {
+                    @Override
+                    public void onItemClick(int position) {
+                        String currentMangaName = mangaList.get(position).getName();
+                        Intent intent = new Intent(getActivity(), LocalMangaDetailsActivity.class);
+                        intent.putExtra("filePath", mangaList.get(position).getUrl());
+                        intent.putExtra("currentMangaName", currentMangaName);
+                        startActivity(intent);
+                    }
+                });
+                adapter.setOnRecycleItemLongClickListener(new OnRecycleItemLongClickListener() {
+                    @Override
+                    public void onItemLongClick(int position) {
+                        showDeleteDialog(position);
+                    }
+                });
+                mangaRcv.setAdapter(adapter);
+                ColorDrawable dividerDrawable = new ColorDrawable(0x00000000) {
+                    @Override
+                    public int getIntrinsicHeight() {
+                        return DisplayUtil.dip2px(getActivity(), 8);
+                    }
+
+                    @Override
+                    public int getIntrinsicWidth() {
+                        return DisplayUtil.dip2px(getActivity(), 8);
+                    }
+                };
+                RecyclerGridDecoration itemDecoration = new RecyclerGridDecoration(getActivity(),
+                        dividerDrawable, true);
+                mangaRcv.addItemDecoration(itemDecoration);
+            } else {
+                adapter.setList(mangaList);
+                adapter.notifyDataSetChanged();
+            }
+        } catch (Exception e) {
         }
-        pullToRefreshGridView.onPullDownRefreshComplete();// 动画结束方法
-        pullToRefreshGridView.onPullUpRefreshComplete();
+        swipeToLoadLayout.setRefreshing(false);
+        swipeToLoadLayout.setLoadingMore(false);
     }
 
 
     private void initUI(View v) {
-        pullToRefreshGridView = (PullToRefreshGridView) v.findViewById(R.id.ptf_local_grid_view);
+        swipeToLoadLayout = (SwipeToLoadLayout) v.findViewById(R.id.swipeToLoadLayout);
+        swipeToLoadLayout.setOnRefreshListener(this);
+        swipeToLoadLayout.setOnLoadMoreListener(this);
+        mangaRcv = (RecyclerView) v.findViewById(R.id.swipe_target);
+        mangaRcv.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
+        mangaRcv.setFocusableInTouchMode(false);
+        mangaRcv.setFocusable(false);
+        mangaRcv.setHasFixedSize(true);
+        emptyView = v.findViewById(R.id.empty_view);
+
         topBar = (TopBar) v.findViewById(R.id.gradient_bar);
         topBar.setOnTopBarClickListener(new TopBar.OnTopBarClickListener() {
             @Override
@@ -178,42 +227,8 @@ public class LocalMangaFragment extends BaseFragment implements AdapterView.OnIt
                 }
             }
         });
-        mangaGV = (GridView) pullToRefreshGridView.getRefreshableView();
-        emptyView = v.findViewById(R.id.empty_view);
-        emptyIV = (ImageView) v.findViewById(R.id.empty_image);
-        emptyIV.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                initFile();
-            }
-        });
-        emptyTV = (TextView) v.findViewById(R.id.empty_text);
-        emptyTV.setText("还没有本地漫画哦~");
     }
 
-    private void initPullGridView() {
-        // 上拉加载更多
-        pullToRefreshGridView.setPullLoadEnabled(true);
-        // 滚到底部自动加载
-        pullToRefreshGridView.setScrollLoadEnabled(false);
-        pullToRefreshGridView.setOnRefreshListener(this);
-    }
-
-    @Override
-    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-//        baseToast.showToast(mangaList.get(position).getUrl());
-        String currentMangaName = mangaList.get(position).getName();
-        Intent intent = new Intent(getActivity(), LocalMangaDetailsActivity.class);
-        intent.putExtra("filePath", mangaList.get(position).getUrl());
-        intent.putExtra("currentMangaName", currentMangaName);
-        startActivity(intent);
-    }
-
-    @Override
-    public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
-        showDeleteDialog(i);
-        return true;
-    }
 
     private void sortAndRenameFile(String manganame) {
         String oldPath = storagePath + "/" + "download";
@@ -417,15 +432,16 @@ public class LocalMangaFragment extends BaseFragment implements AdapterView.OnIt
         deleteDialog.setCancelable(true);
     }
 
+
     @Override
-    public void onPullDownToRefresh(PullToRefreshBase<GridView> refreshView) {
-        initFile();
+    public void onLoadMore() {
+        swipeToLoadLayout.setRefreshing(false);
+        swipeToLoadLayout.setLoadingMore(false);
     }
 
     @Override
-    public void onPullUpToRefresh(PullToRefreshBase<GridView> refreshView) {
-        pullToRefreshGridView.onPullDownRefreshComplete();// 动画结束方法
-        pullToRefreshGridView.onPullUpRefreshComplete();
+    public void onRefresh() {
+        initFile();
     }
 
     @Override
