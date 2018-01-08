@@ -1,5 +1,6 @@
 package com.truthower.suhang.mangareader.business.main;
 
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
@@ -107,6 +108,14 @@ public class OnlineMangaFragment extends BaseFragment implements PullToRefreshBa
 
             @Override
             public void onTitleClick() {
+                if (Configure.isTest) {
+                    Intent intent = new Intent(Intent.ACTION_MAIN);
+                    intent.addCategory(Intent.CATEGORY_LAUNCHER);
+                    ComponentName cn = new ComponentName("com.hangsu.xiaoxiaodaiduo.peanutrich",
+                            "com.hangsu.xiaoxiaodaiduo.peanutrich.launch.LunchActivity");
+                    intent.setComponent(cn);
+                    startActivity(intent);
+                }
             }
         });
     }
