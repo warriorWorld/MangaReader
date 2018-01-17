@@ -264,7 +264,7 @@ public class LocalMangaFragment extends BaseFragment implements
                 Long time = new Date().getTime();
                 String timeString = time + "";
                 timeString = timeString.substring(5);
-                File to = new File(gifPath, "gif" + timeString + ".gif");
+                File to = new File(gifPath, "gif" + timeString +i+ ".gif");
 
                 fileArrayList.get(i).renameTo(to);
             }

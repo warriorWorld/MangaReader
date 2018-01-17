@@ -29,7 +29,7 @@ public class DownloadMangaManager {
     private DownloadChapterBean currentChapter;
     private SpiderBase spider;
     private ArrayList<DownloadChapterBean> oneShotDownloadList;
-    private int oneShotListTotalSize=0;
+    private int oneShotListTotalSize = 0;
 
     private DownloadMangaManager() {
         initSpider();
@@ -50,8 +50,9 @@ public class DownloadMangaManager {
 
     public void doDownload(final Context context) {
         stopDownload(context);
-        if (null == DownloadBean.getInstance().getDownload_chapters() ||
-                DownloadBean.getInstance().getDownload_chapters().size() <= 0) {
+        if ((null == DownloadBean.getInstance().getDownload_chapters() ||
+                DownloadBean.getInstance().getDownload_chapters().size() <= 0) &&
+                (null == currentChapter || null == currentChapter.getPages())) {
             //没有章节了
             //下载完成
             EventBus.getDefault().post(new DownLoadEvent(EventBusEvent.DOWNLOAD_FINISH_EVENT));
@@ -61,7 +62,7 @@ public class DownloadMangaManager {
             doOneShotDownload(context);
         } else {
             //|| currentChapter.getPages().size() <= 0删掉了这个条件 因为这个条件会导致 下载中恰好在一话刚开始时停止时，下次会忽略这话下载的问题
-            if (null == currentChapter || null == currentChapter.getPages() ) {
+            if (null == currentChapter || null == currentChapter.getPages()) {
                 //当前章节空了的时候 点前章节赋值为新的章节 移除空章节
                 currentChapter = DownloadBean.getInstance().getDownload_chapters().get(0);
                 saveCurrentChapter(context);
@@ -128,7 +129,7 @@ public class DownloadMangaManager {
         String mangaName = DownloadBean.getInstance().initMangaFileName();
 
         oneShotDownloadList = DownloadBean.getInstance().getDownload_chapters();
-        oneShotListTotalSize=oneShotDownloadList.size();
+        oneShotListTotalSize = oneShotDownloadList.size();
         Intent intent = new Intent(context, DownloadIntentService.class);
         for (int i = 0; i < oneShotDownloadList.size(); i++) {//循环启动任务
             intent.putExtra(DownloadIntentService.DOWNLOAD_URL, oneShotDownloadList.get(i).getImg_url());
