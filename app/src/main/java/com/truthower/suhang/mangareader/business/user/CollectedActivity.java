@@ -91,6 +91,7 @@ public class CollectedActivity extends BaseActivity implements OnRefreshListener
         }
         AVQuery<AVObject> query = new AVQuery<>("Collected");
         query.whereEqualTo("owner", LoginBean.getInstance().getUserName());
+        query.limit(999);
         query.findInBackground(new FindCallback<AVObject>() {
             @Override
             public void done(List<AVObject> list, AVException e) {
