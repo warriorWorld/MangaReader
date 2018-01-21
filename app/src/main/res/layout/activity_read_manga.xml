@@ -24,8 +24,8 @@
             android:layout_height="40dp"
             android:layout_below="@id/color_holder"
             android:background="@color/manga_reader"
-            app:left_background="@drawable/back"
-            app:right_background="@drawable/focus"
+            app:left_background="@drawable/search_word_screenshot"
+            app:right_background="@drawable/search_word"
             app:title_textColor="#ffffff">
 
         </com.truthower.suhang.mangareader.widget.bar.TopBar>

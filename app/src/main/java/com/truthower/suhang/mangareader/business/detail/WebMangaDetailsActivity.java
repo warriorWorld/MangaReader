@@ -43,6 +43,7 @@ import com.truthower.suhang.mangareader.utils.ActivityPoor;
 import com.truthower.suhang.mangareader.utils.LeanCloundUtil;
 import com.truthower.suhang.mangareader.utils.SharedPreferencesUtils;
 import com.truthower.suhang.mangareader.utils.ThreeDESUtil;
+import com.truthower.suhang.mangareader.utils.UltimateTextSizeUtil;
 import com.truthower.suhang.mangareader.widget.bar.TopBar;
 import com.truthower.suhang.mangareader.widget.dialog.MangaDialog;
 import com.truthower.suhang.mangareader.widget.popupwindow.EasyPopupWindow;
@@ -208,7 +209,9 @@ public class WebMangaDetailsActivity extends BaseActivity implements AdapterView
         }
         if (!TextUtils.isEmpty(currentManga.getAuthor())) {
             mangaAuthorTv.setVisibility(View.VISIBLE);
-            mangaAuthorTv.setText("作者:" + currentManga.getAuthor());
+            mangaAuthorTv.setText(UltimateTextSizeUtil.getEmphasizedSpannableString
+                    ("作者:" + currentManga.getAuthor(), currentManga.getAuthor(), 0,
+                            getResources().getColor(R.color.manga_reader), 0));
         } else {
             mangaAuthorTv.setVisibility(View.GONE);
         }
@@ -217,7 +220,9 @@ public class WebMangaDetailsActivity extends BaseActivity implements AdapterView
             //漫画类型
             mangaTags = mangaTags + " " + currentManga.getTypes()[i];
         }
-        mangaTypeTv.setText("类型:" + mangaTags);
+        mangaTypeTv.setText(UltimateTextSizeUtil.getEmphasizedSpannableString
+                ("类型:" + mangaTags, mangaTags, 0,
+                        getResources().getColor(R.color.manga_reader), 0));
         if (!TextUtils.isEmpty(currentManga.getLast_update())) {
             lastUpdateTv.setVisibility(View.VISIBLE);
             lastUpdateTv.setText("最后更新:" + currentManga.getLast_update());
