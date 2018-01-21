@@ -55,6 +55,7 @@ public class DownloadMangaManager {
                 (null == currentChapter || null == currentChapter.getPages())) {
             //没有章节了
             //下载完成
+            reset(context);
             EventBus.getDefault().post(new DownLoadEvent(EventBusEvent.DOWNLOAD_FINISH_EVENT));
             return;
         }

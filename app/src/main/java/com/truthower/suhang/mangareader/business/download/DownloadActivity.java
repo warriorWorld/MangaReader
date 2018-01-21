@@ -298,6 +298,26 @@ public class DownloadActivity extends BaseActivity implements View.OnClickListen
         }
     }
 
+    private void showStopDownloadConfirmDialog() {
+        MangaDialog dialog = new MangaDialog(this);
+        dialog.setOnPeanutDialogClickListener(new MangaDialog.OnPeanutDialogClickListener() {
+            @Override
+            public void onOkClick() {
+                DownloadMangaManager.getInstance().stopDownload(getApplicationContext());
+                toggleDownloading(ServiceUtil.isServiceWork(DownloadActivity.this,
+                        "com.truthower.suhang.mangareader.business.download.DownloadIntentService"));
+            }
+
+            @Override
+            public void onCancelClick() {
+
+            }
+        });
+        dialog.show();
+        dialog.setTitle("是否暂停下载?");
+        dialog.setOkText("是");
+        dialog.setCancelText("否");
+    }
 
     @Override
     public void onClick(View v) {
@@ -308,9 +328,7 @@ public class DownloadActivity extends BaseActivity implements View.OnClickListen
                         DownloadMangaManager.getInstance().doDownload(getApplicationContext());
                         break;
                     case ON_GOING:
-                        DownloadMangaManager.getInstance().stopDownload(getApplicationContext());
-                        toggleDownloading(ServiceUtil.isServiceWork(this,
-                                "com.truthower.suhang.mangareader.business.download.DownloadIntentService"));
+                        showStopDownloadConfirmDialog();
                         break;
                 }
                 break;

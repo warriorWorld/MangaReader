@@ -136,7 +136,7 @@ public class UserFragment extends BaseFragment implements View.OnClickListener {
                         ShareKeys.CLOSE_TRANSLATE, false));
         closeTutorialCb.setChecked
                 (SharedPreferencesUtils.getBooleanSharedPreferencesData(getActivity(),
-                        ShareKeys.CLOSE_TUTORIAL, false));
+                        ShareKeys.CLOSE_TUTORIAL, true));
         economyModeCb.setChecked
                 (SharedPreferencesUtils.getBooleanSharedPreferencesData(getActivity(),
                         ShareKeys.ECONOMY_MODE, false));
@@ -201,7 +201,7 @@ public class UserFragment extends BaseFragment implements View.OnClickListener {
                 intent = new Intent(getActivity(), AboutActivity.class);
                 break;
             case R.id.share_rl:
-                if (null!=onShareAppClickListener){
+                if (null != onShareAppClickListener) {
                     onShareAppClickListener.onClick();
                 }
                 break;
