@@ -18,7 +18,7 @@
         android:layout_below="@+id/color_holder"
         android:background="@color/manga_reader"
         app:left_text=""
-        app:right_text="选项"
+        app:right_background="@drawable/more"
         app:title_text="漫画"></com.truthower.suhang.mangareader.widget.bar.TopBar>
 
     <View
@@ -42,9 +42,9 @@
     <include
         android:id="@+id/empty_view"
         layout="@layout/emptyview_list"
-        android:layout_below="@+id/gradient_bar"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_below="@+id/gradient_bar"
         android:layout_centerInParent="true"
         android:visibility="gone" />
 </RelativeLayout>

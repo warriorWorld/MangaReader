@@ -38,6 +38,7 @@ import com.truthower.suhang.mangareader.eventbus.EventBusEvent;
 import com.truthower.suhang.mangareader.eventbus.JumpEvent;
 import com.truthower.suhang.mangareader.eventbus.TagClickEvent;
 import com.truthower.suhang.mangareader.listener.JsoupCallBack;
+import com.truthower.suhang.mangareader.listener.OnSevenFourteenListDialogListener;
 import com.truthower.suhang.mangareader.spider.SpiderBase;
 import com.truthower.suhang.mangareader.utils.ActivityPoor;
 import com.truthower.suhang.mangareader.utils.LeanCloundUtil;
@@ -45,6 +46,7 @@ import com.truthower.suhang.mangareader.utils.SharedPreferencesUtils;
 import com.truthower.suhang.mangareader.utils.ThreeDESUtil;
 import com.truthower.suhang.mangareader.utils.UltimateTextSizeUtil;
 import com.truthower.suhang.mangareader.widget.bar.TopBar;
+import com.truthower.suhang.mangareader.widget.dialog.ListDialog;
 import com.truthower.suhang.mangareader.widget.dialog.MangaDialog;
 import com.truthower.suhang.mangareader.widget.popupwindow.EasyPopupWindow;
 import com.truthower.suhang.mangareader.widget.pulltorefresh.PullToRefreshBase;
@@ -75,7 +77,7 @@ public class WebMangaDetailsActivity extends BaseActivity implements AdapterView
     private OneShotDetailsAdapter oneShotAdapter;
     private ImageView thumbnailIV, downloadIv;
     private TextView mangaNameTv, mangaAuthorTv, mangaTypeTv, lastUpdateTv, downloadTagTv;
-    private String[] optionsList = {"下载全部", "选择起始点下载"};
+    private String[] optionsList = {"下载全部", "选择起始点下载", "加入正在追更", "加入我已看完"};
     private ProgressDialog loadBar;
     private WheelSelectorDialog optionsSelector;
     private String mangaUrl;
@@ -293,12 +295,12 @@ public class WebMangaDetailsActivity extends BaseActivity implements AdapterView
         thumbnailIV.setOnClickListener(this);
         thumbnailIV.setOnLongClickListener(this);
         collectV.setOnLongClickListener(this);
-        baseTopBar.setRightText("下载");
+        baseTopBar.setRightBackground(R.drawable.more);
         baseTopBar.setOnTopBarClickListener(new TopBar.OnTopBarClickListener() {
 
             @Override
             public void onRightClick() {
-                showOptionsSelector();
+                showOptionsSelectorDialog();
             }
 
             @Override
@@ -666,6 +668,51 @@ public class WebMangaDetailsActivity extends BaseActivity implements AdapterView
         optionsSelector.show();
 
         optionsSelector.initOptionsData(optionsList);
+    }
+
+    private void showOptionsSelectorDialog() {
+        ListDialog listDialog = new ListDialog(this);
+        listDialog.setOnSevenFourteenListDialogListener(new OnSevenFourteenListDialogListener() {
+            @Override
+            public void onItemClick(String selectedRes, String selectedCodeRes) {
+
+            }
+
+            @Override
+            public void onItemClick(String selectedRes) {
+
+            }
+
+            @Override
+            public void onItemClick(int position) {
+                switch (position) {
+                    case 0:
+                        downloadAll();
+                        break;
+                    case 1:
+                        chooseing = true;
+                        firstChoose = true;
+                        baseToast.showToast("请先点击起始话然后点击结束话!");
+                        break;
+                    case 2:
+                        if (isCollected) {
+                            showTopThisDialog();
+                        } else {
+                            baseToast.showToast("请先收藏漫画");
+                        }
+                        break;
+                    case 3:
+                        if (isCollected) {
+                            showFinishedThisDialog();
+                        } else {
+                            baseToast.showToast("请先收藏漫画");
+                        }
+                        break;
+                }
+            }
+        });
+        listDialog.show();
+        listDialog.setOptionsList(optionsList);
     }
 
     private void showTopThisDialog() {

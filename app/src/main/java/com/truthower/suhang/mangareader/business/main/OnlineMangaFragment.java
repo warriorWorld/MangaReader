@@ -26,10 +26,12 @@ import com.truthower.suhang.mangareader.config.Configure;
 import com.truthower.suhang.mangareader.config.ShareKeys;
 import com.truthower.suhang.mangareader.listener.JsoupCallBack;
 import com.truthower.suhang.mangareader.listener.OnEditResultListener;
+import com.truthower.suhang.mangareader.listener.OnSevenFourteenListDialogListener;
 import com.truthower.suhang.mangareader.spider.SpiderBase;
 import com.truthower.suhang.mangareader.utils.MatchStringUtil;
 import com.truthower.suhang.mangareader.utils.SharedPreferencesUtils;
 import com.truthower.suhang.mangareader.widget.bar.TopBar;
+import com.truthower.suhang.mangareader.widget.dialog.ListDialog;
 import com.truthower.suhang.mangareader.widget.dialog.MangaDialog;
 import com.truthower.suhang.mangareader.widget.dialog.MangaEditDialog;
 import com.truthower.suhang.mangareader.widget.pulltorefresh.PullToRefreshBase;
@@ -103,7 +105,7 @@ public class OnlineMangaFragment extends BaseFragment implements PullToRefreshBa
 
             @Override
             public void onRightClick() {
-                showOptionsSelector();
+                showOptionsSelectorDialog();
             }
 
             @Override
@@ -301,6 +303,53 @@ public class OnlineMangaFragment extends BaseFragment implements PullToRefreshBa
         optionsSelector.initOptionsData(optionsList);
     }
 
+    private void showOptionsSelectorDialog() {
+        ListDialog listDialog = new ListDialog(getActivity());
+        listDialog.setOnSevenFourteenListDialogListener(new OnSevenFourteenListDialogListener() {
+            @Override
+            public void onItemClick(String selectedRes, String selectedCodeRes) {
+
+            }
+
+            @Override
+            public void onItemClick(String selectedRes) {
+
+            }
+
+            @Override
+            public void onItemClick(int position) {
+                switch (position) {
+                    case 0:
+                        //切换站点
+                        showWebsSelector();
+                        break;
+                    case 1:
+                        //搜索
+                        showSearchDialog("搜索漫画");
+                        if (!SharedPreferencesUtils.getBooleanSharedPreferencesData(getActivity(), ShareKeys.CLOSE_TUTORIAL, false)) {
+                            MangaDialog dialog = new MangaDialog(getActivity());
+                            dialog.show();
+                            dialog.setTitle("教程");
+                            dialog.setMessage("这个搜索只支持精确搜索,必须输入漫画全名(单词间空格分隔)" +
+                                    "才能搜索\nPS:kakalot这个站点的搜索只能输入网址搜索");
+                        }
+                        break;
+                    case 2:
+                        //分类
+                        showTypesSelector();
+//                        showTypesSelectorDialog();
+                        break;
+                    case 3:
+                        //跳转
+                        showToPageDialog("跳转");
+                        break;
+                }
+            }
+        });
+        listDialog.show();
+        listDialog.setOptionsList(optionsList);
+    }
+
     private void showTypesSelector() {
         if (null == typesSelector) {
             typesSelector = new WheelSelectorDialog(getActivity());
@@ -330,6 +379,32 @@ public class OnlineMangaFragment extends BaseFragment implements PullToRefreshBa
             typesSelector.initOptionsData(spider.getMangaTypes(), spider.getMangaTypeCodes());
         } else {
             typesSelector.initOptionsData(spider.getMangaTypes());
+        }
+    }
+
+    private void showTypesSelectorDialog() {
+        ListDialog listDialog = new ListDialog(getActivity());
+        listDialog.setOnSevenFourteenListDialogListener(new OnSevenFourteenListDialogListener() {
+            @Override
+            public void onItemClick(String selectedRes, String selectedCodeRes) {
+
+            }
+
+            @Override
+            public void onItemClick(String selectedRes) {
+
+            }
+
+            @Override
+            public void onItemClick(int position) {
+            }
+        });
+        listDialog.show();
+        if (spider.getMangaTypeCodes().length > 0) {
+            listDialog.setOptionsList(spider.getMangaTypes());
+            listDialog.setCodeList(spider.getMangaTypeCodes());
+        } else {
+            listDialog.setOptionsList(spider.getMangaTypes());
         }
     }
 
