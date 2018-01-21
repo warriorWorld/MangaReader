@@ -287,7 +287,7 @@ public class OnlineMangaFragment extends BaseFragment implements PullToRefreshBa
 //                            dialog.setMessage("这个搜索只支持精确搜索,必须输入漫画全名(单词间空格分隔)" +
 //                                    "才能搜索\nPS:kakalot这个站点的搜索只能输入网址搜索");
 //                        }
-                        Intent intent=new Intent(getActivity(), SearchActivity.class);
+                        Intent intent = new Intent(getActivity(), SearchActivity.class);
                         startActivity(intent);
                         break;
                     case 2:
@@ -336,7 +336,8 @@ public class OnlineMangaFragment extends BaseFragment implements PullToRefreshBa
 //                            dialog.setMessage("这个搜索只支持精确搜索,必须输入漫画全名(单词间空格分隔)" +
 //                                    "才能搜索\nPS:kakalot这个站点的搜索只能输入网址搜索");
 //                        }
-                        Intent intent=new Intent(getActivity(), SearchActivity.class);
+                        Intent intent = new Intent(getActivity(), SearchActivity.class);
+                        intent.putExtra("selectedWebSite", Configure.currentWebSite);
                         startActivity(intent);
                         break;
                     case 2:

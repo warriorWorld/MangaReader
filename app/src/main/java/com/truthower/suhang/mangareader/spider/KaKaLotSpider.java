@@ -98,6 +98,7 @@ public class KaKaLotSpider extends SpiderBase {
                             item.setName(mangaTextDetailElements.get(0).select("h1").text());
                             String authors = mangaTextDetailElements.get(1).text();
                             authors = authors.replaceAll("Author\\(s\\) : ", "");
+                            authors = authors.substring(0, authors.length() - 1);//这个网站的作者最后一位总是有个逗号
                             item.setAuthor(authors);
                             String lastUpadte = mangaTextDetailElements.get(3).text();
                             lastUpadte = lastUpadte.replaceAll("Last updated : ", "");

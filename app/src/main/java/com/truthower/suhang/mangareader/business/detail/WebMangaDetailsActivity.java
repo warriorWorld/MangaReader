@@ -32,6 +32,7 @@ import com.truthower.suhang.mangareader.business.download.DownloadActivity;
 import com.truthower.suhang.mangareader.business.download.DownloadMangaManager;
 import com.truthower.suhang.mangareader.business.main.MainActivity;
 import com.truthower.suhang.mangareader.business.read.ReadMangaActivity;
+import com.truthower.suhang.mangareader.business.search.SearchActivity;
 import com.truthower.suhang.mangareader.config.Configure;
 import com.truthower.suhang.mangareader.config.ShareKeys;
 import com.truthower.suhang.mangareader.eventbus.EventBusEvent;
@@ -84,13 +85,14 @@ public class WebMangaDetailsActivity extends BaseActivity implements AdapterView
     private MangaDialog downloadDialog;
     private boolean isCollected = false;
     private String collectedId = "";
-    private WheelSelectorDialog tagSelector;
+    private WheelSelectorDialog tagSelector, authorSelector;
     //one shot 直接获取到了所有图片的地址
     private ArrayList<String> oneShotPathList = new ArrayList<String>();
     //因为我不知道当期收藏的漫画是哪个网站的 所以就一个个试
     private int trySpiderPosition = 0;
     private String currentMangaName;
     private boolean isTopied, isFinished;
+    private String[] authorOptions;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -215,6 +217,7 @@ public class WebMangaDetailsActivity extends BaseActivity implements AdapterView
             mangaAuthorTv.setText(UltimateTextSizeUtil.getEmphasizedSpannableString
                     ("作者:" + currentManga.getAuthor(), currentManga.getAuthor(), 0,
                             getResources().getColor(R.color.manga_reader), 0));
+            authorOptions = currentManga.getAuthor().split(",");
         } else {
             mangaAuthorTv.setVisibility(View.GONE);
         }
@@ -296,6 +299,7 @@ public class WebMangaDetailsActivity extends BaseActivity implements AdapterView
         thumbnailIV.setOnClickListener(this);
         thumbnailIV.setOnLongClickListener(this);
         collectV.setOnLongClickListener(this);
+        mangaAuthorTv.setOnClickListener(this);
         baseTopBar.setRightBackground(R.drawable.more);
         baseTopBar.setOnTopBarClickListener(new TopBar.OnTopBarClickListener() {
 
@@ -401,6 +405,36 @@ public class WebMangaDetailsActivity extends BaseActivity implements AdapterView
         } else {
             tagSelector.initOptionsData(currentManga.getTypes());
         }
+    }
+
+    //TODO
+    private void showAuthorSelector() {
+        if (null == authorSelector) {
+            authorSelector = new WheelSelectorDialog(this);
+            authorSelector.setCancelable(true);
+        }
+        authorSelector.setOnSingleSelectedListener(new WheelSelectorDialog.OnSingleSelectedListener() {
+
+            @Override
+            public void onOkBtnClick(String selectedRes, String selectedCodeRes) {
+                Intent intent = new Intent(WebMangaDetailsActivity.this, SearchActivity.class);
+                intent.putExtra("selectedWebSite", Configure.currentWebSite);
+                intent.putExtra("searchType", "author");
+                intent.putExtra("keyWord", selectedRes);
+                intent.putExtra("immediateSearch", true);
+                startActivity(intent);
+            }
+
+            @Override
+            public void onOkBtnClick(String selectedRes, String selectedCodeRes, String selectedTypeRes) {
+            }
+
+            @Override
+            public void onOkBtnClick(int position) {
+            }
+        });
+        authorSelector.show();
+        authorSelector.initOptionsData(authorOptions);
     }
 
     private void downloadAll() {
@@ -790,6 +824,9 @@ public class WebMangaDetailsActivity extends BaseActivity implements AdapterView
                 break;
             case R.id.thumbnail:
                 showDescription();
+                break;
+            case R.id.manga_author:
+                showAuthorSelector();
                 break;
         }
     }

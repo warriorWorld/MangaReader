@@ -2,7 +2,6 @@ package com.truthower.suhang.mangareader.business.search;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -22,16 +21,13 @@ import com.truthower.suhang.mangareader.bean.LoginBean;
 import com.truthower.suhang.mangareader.bean.MangaBean;
 import com.truthower.suhang.mangareader.bean.MangaListBean;
 import com.truthower.suhang.mangareader.business.detail.WebMangaDetailsActivity;
-import com.truthower.suhang.mangareader.business.user.CollectedActivity;
 import com.truthower.suhang.mangareader.config.Configure;
 import com.truthower.suhang.mangareader.listener.JsoupCallBack;
 import com.truthower.suhang.mangareader.listener.OnRecycleItemClickListener;
 import com.truthower.suhang.mangareader.listener.OnSevenFourteenListDialogListener;
 import com.truthower.suhang.mangareader.spider.SpiderBase;
-import com.truthower.suhang.mangareader.utils.DisplayUtil;
 import com.truthower.suhang.mangareader.widget.dialog.ListDialog;
 import com.truthower.suhang.mangareader.widget.recyclerview.LinearLayoutMangerWithoutBug;
-import com.truthower.suhang.mangareader.widget.recyclerview.RecyclerGridDecoration;
 
 import java.util.ArrayList;
 
@@ -50,6 +46,7 @@ public class SearchActivity extends BaseActivity implements View.OnClickListener
     private String selectedWebSite = "MangaReader", keyWord;
     private String[] searchTypeOptions = {"按漫画名称搜索", "按漫画作者搜索"};
     private SpiderBase.SearchType selectedSearchType = SpiderBase.SearchType.BY_MANGA_NAME;
+    private boolean immediateSearch = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,10 +63,14 @@ public class SearchActivity extends BaseActivity implements View.OnClickListener
             selectedWebSite = t;
         }
         keyWord = intent.getStringExtra("keyWord");
+        immediateSearch = intent.getBooleanExtra("immediateSearch", false);
 
         initUI();
         initSpider(selectedWebSite);
         refreshUI();
+        if (immediateSearch) {
+            doSearch();
+        }
     }
 
 
@@ -154,6 +155,7 @@ public class SearchActivity extends BaseActivity implements View.OnClickListener
                     public void run() {
                         searchResultList = result.getMangaList();
                         initSearchResultRv();
+                        closeKeyBroad();
                     }
                 });
             }
