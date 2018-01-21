@@ -235,7 +235,6 @@ public class MangaReaderSpider extends SpiderBase {
         });
     }
 
-    //TODO
     @Override
     public <ResultObj> void getSearchResultList(final SearchType type, final String keyWord, final JsoupCallBack<ResultObj> jsoupCallBack) {
         new Thread() {

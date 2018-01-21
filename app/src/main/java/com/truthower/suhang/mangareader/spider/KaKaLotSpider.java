@@ -193,8 +193,45 @@ public class KaKaLotSpider extends SpiderBase {
     }
 
     @Override
-    public <ResultObj> void getSearchResultList(SearchType type, String keyWord, JsoupCallBack<ResultObj> jsoupCallBack) {
-
+    public <ResultObj> void getSearchResultList(final SearchType type, final String keyWord, final JsoupCallBack<ResultObj> jsoupCallBack) {
+        new Thread() {
+            @Override
+            public void run() {
+                try {
+                    String keyW = keyWord.replaceAll(" ", "_");
+                    switch (type) {
+                        case BY_MANGA_AUTHOR:
+                            doc = Jsoup.connect(webUrl + "search_author/" + keyW)
+                                    .timeout(10000).get();
+                            break;
+                        case BY_MANGA_NAME:
+                            doc = Jsoup.connect(webUrl + "search/" + keyW)
+                                    .timeout(10000).get();
+                            break;
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    jsoupCallBack.loadFailed(e.toString());
+                }
+                if (null != doc) {
+                    Elements mangaListElements = doc.select("span.item-name");
+                    Elements mangaListHrefs = doc.select("span.item-name a");
+                    MangaBean item;
+                    ArrayList<MangaBean> mangaList = new ArrayList<MangaBean>();
+                    for (int i = 0; i < mangaListElements.size(); i++) {
+                        item = new MangaBean();
+                        item.setName(mangaListElements.get(i).text());
+                        item.setUrl(mangaListHrefs.get(i).attr("href"));
+                        mangaList.add(item);
+                    }
+                    MangaListBean mangaListBean = new MangaListBean();
+                    mangaListBean.setMangaList(mangaList);
+                    jsoupCallBack.loadSucceed((ResultObj) mangaListBean);
+                } else {
+                    jsoupCallBack.loadFailed("doc load failed");
+                }
+            }
+        }.start();
     }
 
     @Override
