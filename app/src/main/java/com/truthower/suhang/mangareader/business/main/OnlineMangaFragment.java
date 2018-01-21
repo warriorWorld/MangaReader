@@ -22,6 +22,7 @@ import com.truthower.suhang.mangareader.bean.LoginBean;
 import com.truthower.suhang.mangareader.bean.MangaBean;
 import com.truthower.suhang.mangareader.bean.MangaListBean;
 import com.truthower.suhang.mangareader.business.detail.WebMangaDetailsActivity;
+import com.truthower.suhang.mangareader.business.search.SearchActivity;
 import com.truthower.suhang.mangareader.config.Configure;
 import com.truthower.suhang.mangareader.config.ShareKeys;
 import com.truthower.suhang.mangareader.listener.JsoupCallBack;
@@ -278,7 +279,7 @@ public class OnlineMangaFragment extends BaseFragment implements PullToRefreshBa
                         break;
                     case 1:
                         //搜索
-                        showSearchDialog("搜索漫画");
+//                        showSearchDialog("搜索漫画");
 //                        if (!SharedPreferencesUtils.getBooleanSharedPreferencesData(getActivity(), ShareKeys.CLOSE_TUTORIAL, false)) {
 //                            MangaDialog dialog = new MangaDialog(getActivity());
 //                            dialog.show();
@@ -286,6 +287,8 @@ public class OnlineMangaFragment extends BaseFragment implements PullToRefreshBa
 //                            dialog.setMessage("这个搜索只支持精确搜索,必须输入漫画全名(单词间空格分隔)" +
 //                                    "才能搜索\nPS:kakalot这个站点的搜索只能输入网址搜索");
 //                        }
+                        Intent intent=new Intent(getActivity(), SearchActivity.class);
+                        startActivity(intent);
                         break;
                     case 2:
                         //分类
@@ -325,14 +328,16 @@ public class OnlineMangaFragment extends BaseFragment implements PullToRefreshBa
                         break;
                     case 1:
                         //搜索
-                        showSearchDialog("搜索漫画");
-                        if (!SharedPreferencesUtils.getBooleanSharedPreferencesData(getActivity(), ShareKeys.CLOSE_TUTORIAL, false)) {
-                            MangaDialog dialog = new MangaDialog(getActivity());
-                            dialog.show();
-                            dialog.setTitle("教程");
-                            dialog.setMessage("这个搜索只支持精确搜索,必须输入漫画全名(单词间空格分隔)" +
-                                    "才能搜索\nPS:kakalot这个站点的搜索只能输入网址搜索");
-                        }
+//                        showSearchDialog("搜索漫画");
+//                        if (!SharedPreferencesUtils.getBooleanSharedPreferencesData(getActivity(), ShareKeys.CLOSE_TUTORIAL, false)) {
+//                            MangaDialog dialog = new MangaDialog(getActivity());
+//                            dialog.show();
+//                            dialog.setTitle("教程");
+//                            dialog.setMessage("这个搜索只支持精确搜索,必须输入漫画全名(单词间空格分隔)" +
+//                                    "才能搜索\nPS:kakalot这个站点的搜索只能输入网址搜索");
+//                        }
+                        Intent intent=new Intent(getActivity(), SearchActivity.class);
+                        startActivity(intent);
                         break;
                     case 2:
                         //分类
