@@ -41,6 +41,10 @@ public class SearchActivity extends BaseActivity implements View.OnClickListener
         searchIv = (ImageView) findViewById(R.id.search_iv);
         searchResultRcv = (RecyclerView) findViewById(R.id.search_result_rcv);
 
+        websiteRl.setOnClickListener(this);
+        searchTypeRl.setOnClickListener(this);
+        searchIv.setOnClickListener(this);
+
         baseTopBar.setTitle("搜索漫画");
     }
 
