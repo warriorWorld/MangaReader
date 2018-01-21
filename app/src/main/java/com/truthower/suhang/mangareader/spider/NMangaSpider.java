@@ -185,6 +185,11 @@ public class NMangaSpider extends SpiderBase {
     }
 
     @Override
+    public <ResultObj> void getSearchResultList(SearchType type, String keyWord, JsoupCallBack<ResultObj> jsoupCallBack) {
+
+    }
+
+    @Override
     public int nextPageNeedAddCount() {
         return 1;
     }

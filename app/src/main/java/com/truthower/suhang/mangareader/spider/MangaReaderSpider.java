@@ -74,7 +74,7 @@ public class MangaReaderSpider extends SpiderBase {
                     Elements test = doc.select("div.mangaresultitem h3 a");
                     Elements test1 = doc.select("div.imgsearchresults");
                     int count = test.size();
-                    String title,name;
+                    String title, name;
                     String path;
                     MangaBean item;
                     ArrayList<MangaBean> mangaList = new ArrayList<MangaBean>();
@@ -89,7 +89,7 @@ public class MangaReaderSpider extends SpiderBase {
                                     path.length() - 2);
                             item.setWebThumbnailUrl(path);
                             item.setUrl(webUrl + title);
-                            name=test.get(i).text();
+                            name = test.get(i).text();
                             item.setName(name);
                             mangaList.add(item);
                         }
@@ -213,6 +213,7 @@ public class MangaReaderSpider extends SpiderBase {
 
     /**
      * 阅读页是一页一页翻得 只能这么爬...
+     *
      * @param context
      * @param chapterUrl
      * @param jsoupCallBack
@@ -232,6 +233,59 @@ public class MangaReaderSpider extends SpiderBase {
 
             }
         });
+    }
+
+    //TODO
+    @Override
+    public <ResultObj> void getSearchResultList(final SearchType type, final String keyWord, final JsoupCallBack<ResultObj> jsoupCallBack) {
+        new Thread() {
+            @Override
+            public void run() {
+                try {
+                    String keyW = keyWord.replaceAll(" ", "+");
+                    doc = Jsoup.connect(webUrl + "search/?w=" +
+                            keyW +
+                            "&rd=0&status=0&order=0&genre=0000000000000000000000000000000000000&p=0")
+                            .timeout(10000).get();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    jsoupCallBack.loadFailed(e.toString());
+                }
+                if (null != doc) {
+                    Elements test = null;
+                    switch (type) {
+                        case BY_MANGA_NAME:
+                            test = doc.select("div.manga_name h3 a");
+                            break;
+                        case BY_MANGA_AUTHOR:
+                            test = doc.select("div.authorinfo h3 a");
+                            break;
+                    }
+
+                    int count = test.size();
+                    String title, name;
+                    MangaBean item;
+                    ArrayList<MangaBean> mangaList = new ArrayList<MangaBean>();
+                    mangaList.clear();
+                    for (int i = 0; i < count; i++) {
+                        title = test.get(i).attr("href");
+                        if (!TextUtils.isEmpty(title) && !title.equals("null")) {
+                            item = new MangaBean();
+                            title = StringUtil.cutString(title, 1, title.length());
+                            item.setUrl(webUrl + title);
+                            name = test.get(i).text();
+                            item.setName(name);
+                            mangaList.add(item);
+                        }
+                    }
+                    MangaListBean mangaListBean = new MangaListBean();
+                    mangaListBean.setMangaList(mangaList);
+                    jsoupCallBack.loadSucceed((ResultObj) mangaListBean);
+                } else {
+                    jsoupCallBack.loadFailed("doc load failed");
+                }
+            }
+        }.start();
     }
 
 

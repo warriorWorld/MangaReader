@@ -181,6 +181,11 @@ public class LMangaSpider extends SpiderBase {
     public <ResultObj> void getMangaChapterPics(final Context context, final String chapterUrl, final JsoupCallBack<ResultObj> jsoupCallBack) {
     }
 
+    @Override
+    public <ResultObj> void getSearchResultList(SearchType type, String keyWord, JsoupCallBack<ResultObj> jsoupCallBack) {
+
+    }
+
 
     @Override
     public int nextPageNeedAddCount() {
