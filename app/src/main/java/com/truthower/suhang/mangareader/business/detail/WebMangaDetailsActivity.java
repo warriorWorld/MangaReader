@@ -112,8 +112,9 @@ public class WebMangaDetailsActivity extends BaseActivity implements AdapterView
             dialog.setTitle("教程");
             dialog.setMessage("1,点击五角星可收藏" +
                     "\n2,点击左上角漫画封面可显示漫画介绍" +
-                    "\n3,已收藏的漫画可通过长按左上角漫画封面将该漫画加入正在追更" +
-                    "\n3,已收藏的漫画可通过长按右上角收藏按钮将该漫画加入已经看完");
+                    "\n3,点击右上角图标可以下载漫画" +
+                    "\n4,点击漫画作者可以按漫画作者搜索漫画" +
+                    "\n5,点击漫画类型可以按漫画类型搜索漫画");
         }
     }
 
