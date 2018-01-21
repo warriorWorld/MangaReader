@@ -15,7 +15,7 @@ import java.util.ArrayList;
 public abstract class SpiderBase {
     protected org.jsoup.nodes.Document doc;
 
-    protected enum SearchType {
+    public enum SearchType {
         BY_MANGA_NAME,
         BY_MANGA_AUTHOR
     }

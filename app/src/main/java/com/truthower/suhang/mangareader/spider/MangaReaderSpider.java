@@ -247,7 +247,7 @@ public class MangaReaderSpider extends SpiderBase {
                             keyW +
                             "&rd=0&status=0&order=0&genre=0000000000000000000000000000000000000&p=0")
                             .timeout(10000).get();
-                } catch (IOException e) {
+                } catch (Exception e) {
                     e.printStackTrace();
                     jsoupCallBack.loadFailed(e.toString());
                 }
@@ -258,7 +258,7 @@ public class MangaReaderSpider extends SpiderBase {
                             test = doc.select("div.manga_name h3 a");
                             break;
                         case BY_MANGA_AUTHOR:
-                            test = doc.select("div.authorinfo h3 a");
+                            test = doc.select("div.authorinfo a");
                             break;
                     }
 
