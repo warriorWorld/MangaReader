@@ -41,7 +41,6 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
         registerBtn.setOnClickListener(this);
 
         hideBaseTopBar();
-        setColorHolderColor(R.color.divide);
     }
 
     @Override

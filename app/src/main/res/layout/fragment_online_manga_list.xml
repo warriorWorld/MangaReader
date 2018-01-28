@@ -21,12 +21,6 @@
         app:right_background="@drawable/more"
         app:title_text="漫画"></com.truthower.suhang.mangareader.widget.bar.TopBar>
 
-    <View
-        android:id="@+id/color_holder"
-        android:layout_width="match_parent"
-        android:layout_height="10dp"
-        android:layout_alignParentTop="true"
-        android:background="@color/manga_reader"></View>
 
     <TextView
         android:id="@+id/current_page_tv"

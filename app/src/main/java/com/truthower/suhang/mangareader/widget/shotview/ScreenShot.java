@@ -21,8 +21,7 @@ public class ScreenShot {
         //获取状态栏高度
         Rect frame = new Rect();
         activity.getWindow().getDecorView().getWindowVisibleDisplayFrame(frame);
-        //-30是因为我那块是透明的
-        int statusBarHeight = frame.top - 30;
+        int statusBarHeight = frame.top;
         System.out.println(statusBarHeight);
 
         //获取屏幕长和高

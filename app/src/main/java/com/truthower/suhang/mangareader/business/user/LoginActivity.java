@@ -88,7 +88,6 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
         registerNowTv.setOnClickListener(this);
 
         hideBaseTopBar();
-        setColorHolderColor(R.color.divide);
     }
 
     @Override

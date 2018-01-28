@@ -4,6 +4,7 @@ package com.truthower.suhang.mangareader.base;/**
 
 import android.app.Activity;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -29,14 +30,18 @@ import org.greenrobot.eventbus.Subscribe;
 public abstract class BaseActivity extends Activity {
     protected TopBar baseTopBar;
     protected EasyToast baseToast;
-    private View colorHolder;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         //状态栏透明
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS,
-                WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+//        getWindow().setFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS,
+//                WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            //需要设置这个 flag 才能调用 setStatusBarColor 来设置状态栏颜色
+            this.getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);//此FLAG可使状态栏透明，且当前视图在绘制时，从屏幕顶端开始即top = 0开始绘制，这也是实现沉浸效果的基础
+            this.getWindow().setStatusBarColor(getResources().getColor(R.color.manga_reader));
+        }
         initUI();
         baseToast = new EasyToast(this);
         // 在oncreate里订阅
@@ -48,7 +53,6 @@ public abstract class BaseActivity extends Activity {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_base);
         baseTopBar = (TopBar) findViewById(R.id.base_topbar);
-        colorHolder = findViewById(R.id.color_holder);
         ViewGroup containerView = (ViewGroup) findViewById(R.id.base_container);
         LayoutInflater.from(this).inflate(getLayoutId(), containerView);
 
@@ -75,7 +79,6 @@ public abstract class BaseActivity extends Activity {
 
     protected void hideBaseTopBar() {
         baseTopBar.setVisibility(View.GONE);
-        colorHolder.setVisibility(View.GONE);
     }
 
     protected void hideBack() {
@@ -92,10 +95,6 @@ public abstract class BaseActivity extends Activity {
 
     protected void topBarOnTitleClick() {
 
-    }
-
-    protected void setColorHolderColor(int color) {
-        colorHolder.setBackgroundResource(color);
     }
 
     /**

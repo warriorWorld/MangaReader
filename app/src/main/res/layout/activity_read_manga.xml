@@ -11,13 +11,6 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <View
-            android:id="@+id/color_holder"
-            android:layout_width="match_parent"
-            android:layout_height="10dp"
-            android:layout_alignParentTop="true"
-            android:background="@color/manga_reader"></View>
-
         <com.truthower.suhang.mangareader.widget.bar.TopBar
             android:id="@+id/read_manga_top_bar"
             android:layout_width="match_parent"
