@@ -7,6 +7,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.text.TextUtils;
 import android.view.View;
+import android.widget.TextView;
 
 import com.aspsine.swipetoloadlayout.OnLoadMoreListener;
 import com.aspsine.swipetoloadlayout.OnRefreshListener;
@@ -42,6 +43,7 @@ public class CollectedActivity extends BaseActivity implements OnRefreshListener
     private OnlineMangaRecyclerListAdapter adapter;
     private RecyclerView mangaRcv;
     private SwipeToLoadLayout swipeToLoadLayout;
+    private TextView totalCollectTv;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,6 +55,7 @@ public class CollectedActivity extends BaseActivity implements OnRefreshListener
     }
 
     private void initUI() {
+        totalCollectTv = (TextView) findViewById(R.id.total_collect_tv);
         swipeToLoadLayout = (SwipeToLoadLayout) findViewById(R.id.swipeToLoadLayout);
         swipeToLoadLayout.setOnRefreshListener(this);
         swipeToLoadLayout.setOnLoadMoreListener(this);
@@ -166,6 +169,7 @@ public class CollectedActivity extends BaseActivity implements OnRefreshListener
                 adapter.setList(collectedMangaList);
                 adapter.notifyDataSetChanged();
             }
+            totalCollectTv.setText(collectedMangaList.size() + "");
         } catch (Exception e) {
         }
         swipeToLoadLayout.setRefreshing(false);
