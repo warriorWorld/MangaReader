@@ -503,6 +503,7 @@ public class WebMangaDetailsActivity extends BaseActivity implements AdapterView
                                     } else {
                                         baseToast.showToast("取消正在追更成功!");
                                     }
+                                    isTopied = isTop;
                                 }
                             }
                         });
@@ -544,6 +545,7 @@ public class WebMangaDetailsActivity extends BaseActivity implements AdapterView
                                     } else {
                                         baseToast.showToast("取消已经看完成功!");
                                     }
+                                    WebMangaDetailsActivity.this.isFinished = isFinished;
                                 }
                             }
                         });
@@ -747,6 +749,16 @@ public class WebMangaDetailsActivity extends BaseActivity implements AdapterView
             }
         });
         listDialog.show();
+        if (isTopied) {
+            optionsList[2] = "取消正在追更";
+        } else {
+            optionsList[2] = "加入正在追更";
+        }
+        if (isFinished) {
+            optionsList[3] = "取消我已看完";
+        } else {
+            optionsList[3] = "加入我已看完";
+        }
         listDialog.setOptionsList(optionsList);
     }
 
