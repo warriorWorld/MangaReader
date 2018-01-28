@@ -9,7 +9,6 @@
         android:id="@+id/base_topbar"
         android:layout_width="match_parent"
         android:layout_height="47dp"
-        android:layout_below="@+id/color_holder"
         android:background="@color/manga_reader"
         app:left_background="@drawable/back"
         app:title_textColor="@color/white" />

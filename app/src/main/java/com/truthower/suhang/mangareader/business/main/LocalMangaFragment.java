@@ -30,17 +30,20 @@ import com.truthower.suhang.mangareader.bean.LoginBean;
 import com.truthower.suhang.mangareader.bean.MangaBean;
 import com.truthower.suhang.mangareader.business.detail.LocalMangaDetailsActivity;
 import com.truthower.suhang.mangareader.business.detail.WebMangaDetailsActivity;
+import com.truthower.suhang.mangareader.business.search.SearchActivity;
 import com.truthower.suhang.mangareader.business.user.CollectedActivity;
 import com.truthower.suhang.mangareader.config.Configure;
 import com.truthower.suhang.mangareader.config.ShareKeys;
 import com.truthower.suhang.mangareader.listener.OnEditResultListener;
 import com.truthower.suhang.mangareader.listener.OnRecycleItemClickListener;
 import com.truthower.suhang.mangareader.listener.OnRecycleItemLongClickListener;
+import com.truthower.suhang.mangareader.listener.OnSevenFourteenListDialogListener;
 import com.truthower.suhang.mangareader.sort.FileComparatorByTime;
 import com.truthower.suhang.mangareader.spider.FileSpider;
 import com.truthower.suhang.mangareader.utils.DisplayUtil;
 import com.truthower.suhang.mangareader.utils.SharedPreferencesUtils;
 import com.truthower.suhang.mangareader.widget.bar.TopBar;
+import com.truthower.suhang.mangareader.widget.dialog.ListDialog;
 import com.truthower.suhang.mangareader.widget.dialog.MangaDialog;
 import com.truthower.suhang.mangareader.widget.dialog.MangaEditDialog;
 import com.truthower.suhang.mangareader.widget.pulltorefresh.PullToRefreshBase;
@@ -223,7 +226,8 @@ public class LocalMangaFragment extends BaseFragment implements
             @Override
             public void onTitleClick() {
                 if (LoginBean.getInstance().isMaster()) {
-                    showOptionsSelector();
+//                    showOptionsSelector();
+                    showOptionsSelectorDialog();
                 }
             }
         });
@@ -264,7 +268,7 @@ public class LocalMangaFragment extends BaseFragment implements
                 Long time = new Date().getTime();
                 String timeString = time + "";
                 timeString = timeString.substring(5);
-                File to = new File(gifPath, "gif" + timeString +i+ ".gif");
+                File to = new File(gifPath, "gif" + timeString + i + ".gif");
 
                 fileArrayList.get(i).renameTo(to);
             }
@@ -314,6 +318,43 @@ public class LocalMangaFragment extends BaseFragment implements
         optionsSelector.show();
 
         optionsSelector.initOptionsData(fileNameOptions);
+    }
+
+    private void showOptionsSelectorDialog() {
+        ListDialog listDialog = new ListDialog(getActivity());
+        listDialog.setOnSevenFourteenListDialogListener(new OnSevenFourteenListDialogListener() {
+            @Override
+            public void onItemClick(String selectedRes, String selectedCodeRes) {
+
+            }
+
+            @Override
+            public void onItemClick(String selectedRes) {
+
+            }
+
+            @Override
+            public void onItemClick(int position) {
+                String fileName;
+                switch (position) {
+                    case 0:
+                        fileName = getFileName(FileTypeEnum.Independent);
+                        sortAndRenameFile(fileName);
+                        moveFolder(INDEPENDENT_PATH, fileName);
+                        break;
+                    case 1:
+                        fileName = getFileName(FileTypeEnum.Story);
+                        sortAndRenameFile(fileName);
+                        moveFolder(STORY_PATH, fileName);
+                        break;
+                    case 2:
+                        showSortAndRenameFilesDialog();
+                        break;
+                }
+            }
+        });
+        listDialog.show();
+        listDialog.setOptionsList(fileNameOptions);
     }
 
     private void moveFolder(final String folderName, final String fileName) {
