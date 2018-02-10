@@ -38,6 +38,9 @@ import com.truthower.suhang.mangareader.widget.dialog.QrDialog;
 import org.greenrobot.eventbus.Subscribe;
 
 import java.io.File;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 import pub.devrel.easypermissions.AfterPermissionGranted;
@@ -78,6 +81,28 @@ public class MainActivity extends BaseFragmentActivity implements View.OnClickLi
         initUI();
         initFragment();
         doGetVersionInfo();
+        doGetAnnouncement();
+    }
+
+    private void doGetAnnouncement() {
+        AVQuery<AVObject> query = new AVQuery<>("Announcement");
+        query.findInBackground(new FindCallback<AVObject>() {
+            @Override
+            public void done(List<AVObject> list, AVException e) {
+                if (LeanCloundUtil.handleLeanResult(MainActivity.this, e)) {
+                    if (null != list && list.size() > 0) {
+                        String title = list.get(0).getString("title");
+                        String message = list.get(0).getString("message");
+                        DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+                        String date = df.format(new Date());
+                        if (!date.equals(SharedPreferencesUtils.getSharedPreferencesData(
+                                MainActivity.this, ShareKeys.ANNOUNCEMENT_READ_KEY))) {
+                            showAnnouncementDialog(title, message);
+                        }
+                    }
+                }
+            }
+        });
     }
 
 
@@ -277,6 +302,32 @@ public class MainActivity extends BaseFragmentActivity implements View.OnClickLi
         logoutDialog.setOkText("退出");
         logoutDialog.setCancelText("再逛逛");
         logoutDialog.setCancelable(true);
+    }
+
+    private void showAnnouncementDialog(String title, String msg) {
+        MangaDialog dialog = new MangaDialog(this);
+        dialog.setOnPeanutDialogClickListener(new MangaDialog.OnPeanutDialogClickListener() {
+            @Override
+            public void onOkClick() {
+                DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+                String date = df.format(new Date());
+                SharedPreferencesUtils.setSharedPreferencesData
+                        (MainActivity.this, ShareKeys.ANNOUNCEMENT_READ_KEY, date);
+            }
+
+            @Override
+            public void onCancelClick() {
+
+            }
+        });
+        if (MainActivity.this.isFinishing()) {
+            return;
+        }
+        dialog.show();
+        dialog.setCancelable(false);
+        dialog.setTitle(title);
+        dialog.setMessage(msg);
+        dialog.setOkText("知道了");
     }
 
     private void toggleBottomBar(View v) {
