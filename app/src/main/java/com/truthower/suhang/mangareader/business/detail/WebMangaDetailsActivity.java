@@ -33,6 +33,7 @@ import com.truthower.suhang.mangareader.business.download.DownloadMangaManager;
 import com.truthower.suhang.mangareader.business.main.MainActivity;
 import com.truthower.suhang.mangareader.business.read.ReadMangaActivity;
 import com.truthower.suhang.mangareader.business.search.SearchActivity;
+import com.truthower.suhang.mangareader.business.user.CollectedActivity;
 import com.truthower.suhang.mangareader.config.Configure;
 import com.truthower.suhang.mangareader.config.ShareKeys;
 import com.truthower.suhang.mangareader.eventbus.EventBusEvent;
@@ -49,6 +50,7 @@ import com.truthower.suhang.mangareader.utils.UltimateTextSizeUtil;
 import com.truthower.suhang.mangareader.widget.bar.TopBar;
 import com.truthower.suhang.mangareader.widget.dialog.ListDialog;
 import com.truthower.suhang.mangareader.widget.dialog.MangaDialog;
+import com.truthower.suhang.mangareader.widget.dialog.SingleLoadBarUtil;
 import com.truthower.suhang.mangareader.widget.popupwindow.EasyPopupWindow;
 import com.truthower.suhang.mangareader.widget.pulltorefresh.PullToRefreshBase;
 import com.truthower.suhang.mangareader.widget.pulltorefresh.PullToRefreshGridView;
@@ -480,6 +482,7 @@ public class WebMangaDetailsActivity extends BaseActivity implements AdapterView
         if (TextUtils.isEmpty(LoginBean.getInstance().getUserName())) {
             return;
         }
+        SingleLoadBarUtil.getInstance().showLoadBar(WebMangaDetailsActivity.this);
         AVQuery<AVObject> query1 = new AVQuery<>("Collected");
         query1.whereEqualTo("mangaUrl", mangaUrl);
 
@@ -489,6 +492,7 @@ public class WebMangaDetailsActivity extends BaseActivity implements AdapterView
         query.findInBackground(new FindCallback<AVObject>() {
             @Override
             public void done(List<AVObject> list, AVException e) {
+                SingleLoadBarUtil.getInstance().dismissLoadBar();
                 if (LeanCloundUtil.handleLeanResult(WebMangaDetailsActivity.this, e)) {
                     if (null != list && list.size() > 0) {
                         //已存在的保存
@@ -522,6 +526,7 @@ public class WebMangaDetailsActivity extends BaseActivity implements AdapterView
         if (TextUtils.isEmpty(LoginBean.getInstance().getUserName())) {
             return;
         }
+        SingleLoadBarUtil.getInstance().showLoadBar(WebMangaDetailsActivity.this);
         AVQuery<AVObject> query1 = new AVQuery<>("Collected");
         query1.whereEqualTo("mangaUrl", mangaUrl);
 
@@ -531,6 +536,7 @@ public class WebMangaDetailsActivity extends BaseActivity implements AdapterView
         query.findInBackground(new FindCallback<AVObject>() {
             @Override
             public void done(List<AVObject> list, AVException e) {
+                SingleLoadBarUtil.getInstance().dismissLoadBar();
                 if (LeanCloundUtil.handleLeanResult(WebMangaDetailsActivity.this, e)) {
                     if (null != list && list.size() > 0) {
                         //已存在的保存
@@ -561,6 +567,7 @@ public class WebMangaDetailsActivity extends BaseActivity implements AdapterView
         if (TextUtils.isEmpty(LoginBean.getInstance().getUserName())) {
             return;
         }
+        SingleLoadBarUtil.getInstance().showLoadBar(WebMangaDetailsActivity.this);
         AVQuery<AVObject> query1 = new AVQuery<>("Collected");
         query1.whereEqualTo("mangaUrl", mangaUrl);
 
@@ -570,6 +577,7 @@ public class WebMangaDetailsActivity extends BaseActivity implements AdapterView
         query.findInBackground(new FindCallback<AVObject>() {
             @Override
             public void done(List<AVObject> list, AVException e) {
+                SingleLoadBarUtil.getInstance().dismissLoadBar();
                 if (LeanCloundUtil.handleLeanResult(WebMangaDetailsActivity.this, e)) {
                     if (null != list && list.size() > 0) {
                         collectedId = list.get(0).getObjectId();
@@ -593,6 +601,7 @@ public class WebMangaDetailsActivity extends BaseActivity implements AdapterView
         if (TextUtils.isEmpty(userName)) {
             return;
         }
+        SingleLoadBarUtil.getInstance().showLoadBar(WebMangaDetailsActivity.this);
         String webThumbnailUrl = currentManga.getWebThumbnailUrl();
         String mangaName = currentManga.getName();
 
@@ -604,6 +613,7 @@ public class WebMangaDetailsActivity extends BaseActivity implements AdapterView
         object.saveInBackground(new SaveCallback() {
             @Override
             public void done(AVException e) {
+                SingleLoadBarUtil.getInstance().dismissLoadBar();
                 if (LeanCloundUtil.handleLeanResult(WebMangaDetailsActivity.this, e)) {
                     baseToast.showToast("收藏成功");
                     doGetIsCollected();
@@ -616,12 +626,14 @@ public class WebMangaDetailsActivity extends BaseActivity implements AdapterView
         if (TextUtils.isEmpty(collectedId)) {
             return;
         }
+        SingleLoadBarUtil.getInstance().showLoadBar(WebMangaDetailsActivity.this);
         // 执行 CQL 语句实现删除一个 Todo 对象
         AVQuery.doCloudQueryInBackground(
                 "delete from Collected where objectId='" + collectedId + "'"
                 , new CloudQueryCallback<AVCloudQueryResult>() {
                     @Override
                     public void done(AVCloudQueryResult avCloudQueryResult, AVException e) {
+                        SingleLoadBarUtil.getInstance().dismissLoadBar();
                         if (LeanCloundUtil.handleLeanResult(WebMangaDetailsActivity.this, e)) {
                             baseToast.showToast("取消收藏");
                             isCollected = false;

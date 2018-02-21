@@ -210,6 +210,27 @@ public class AboutActivity extends BaseActivity implements View.OnClickListener,
     private void doLogout() {
         AVUser.getCurrentUser().logOut();
         LoginBean.getInstance().clean(this);
+        refreshUI();
+        baseToast.showToast("退出成功!");
+    }
+
+    private void showLogoutDialog() {
+        MangaDialog dialog = new MangaDialog(this);
+        dialog.setOnPeanutDialogClickListener(new MangaDialog.OnPeanutDialogClickListener() {
+            @Override
+            public void onOkClick() {
+                doLogout();
+            }
+
+            @Override
+            public void onCancelClick() {
+
+            }
+        });
+        dialog.show();
+        dialog.setTitle("是否退出登录?");
+        dialog.setOkText("是");
+        dialog.setCancelText("否");
     }
 
     private void showAuthorDialog() {
@@ -240,8 +261,7 @@ public class AboutActivity extends BaseActivity implements View.OnClickListener,
                 startActivity(intent);
                 break;
             case R.id.logout_tv:
-                doLogout();
-                refreshUI();
+                showLogoutDialog();
                 break;
         }
     }

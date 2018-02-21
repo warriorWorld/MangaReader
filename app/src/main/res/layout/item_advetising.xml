@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/item_ad_rl"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/divide">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:layout_marginBottom="10dp"
+        android:background="@color/white">
+
+        <ImageView
+            android:id="@+id/ad_iv"
+            android:layout_width="100dp"
+            android:layout_height="match_parent"
+            android:padding="10dp"
+            android:src="@drawable/app_icon" />
+
+        <TextView
+            android:id="@+id/ad_title_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:layout_marginTop="10dp"
+            android:layout_toRightOf="@+id/ad_iv"
+            android:singleLine="true"
+            android:text="https://www.buzzingandroid.com/tools/android-layout-finder/"
+            android:textColor="@color/main_text_color"
+            android:textSize="18sp" />
+
+        <TextView
+            android:id="@+id/ad_message_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/ad_title_tv"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginTop="3dp"
+            android:layout_toLeftOf="@id/ad_subtitle_tv"
+            android:layout_toRightOf="@+id/ad_iv"
+            android:text="xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+            android:textColor="@color/main_text_color_gray"
+            android:textSize="12sp" />
+
+        <TextView
+            android:id="@+id/ad_subtitle_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginBottom="5dp"
+            android:layout_marginRight="10dp"
+            android:text="阅读器"
+            android:textColor="@color/main_text_color_gray"
+            android:textSize="22sp" />
+    </RelativeLayout>
+</RelativeLayout>

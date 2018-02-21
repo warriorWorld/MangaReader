@@ -16,6 +16,7 @@ import com.truthower.suhang.mangareader.base.BaseActivity;
 import com.truthower.suhang.mangareader.bean.LoginBean;
 import com.truthower.suhang.mangareader.business.main.MainActivity;
 import com.truthower.suhang.mangareader.utils.MatchStringUtil;
+import com.truthower.suhang.mangareader.widget.dialog.SingleLoadBarUtil;
 
 
 public class RegisterActivity extends BaseActivity implements View.OnClickListener {
@@ -70,6 +71,7 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
 
 
     private void doRegister() {
+        SingleLoadBarUtil.getInstance().showLoadBar(RegisterActivity.this);
         AVUser user = new AVUser();// 新建 AVUser 对象实例
         user.setUsername(userIdEt.getText().toString());// 设置用户名
         user.setPassword(userPsdEt.getText().toString());// 设置密码
@@ -77,6 +79,7 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
         user.signUpInBackground(new SignUpCallback() {
             @Override
             public void done(AVException e) {
+                SingleLoadBarUtil.getInstance().dismissLoadBar();
                 if (e == null) {
                     // 注册成功，把用户对象赋值给当前用户 AVUser.getCurrentUser()
                     doNext();

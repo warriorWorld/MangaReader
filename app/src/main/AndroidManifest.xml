@@ -77,6 +77,7 @@
         <activity android:name=".business.other.AboutActivity"></activity>
         <activity android:name=".business.other.FeedbackActivity"></activity>
         <activity android:name=".business.search.SearchActivity"></activity>
+        <activity android:name=".business.ad.AdvertisingActivity"></activity>
 
         <service android:name=".business.download.DownloadService"></service>
         <service android:name=".business.download.DownloadIntentService"></service>

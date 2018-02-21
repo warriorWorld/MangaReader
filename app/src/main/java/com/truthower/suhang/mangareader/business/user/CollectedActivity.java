@@ -27,6 +27,7 @@ import com.truthower.suhang.mangareader.listener.OnRecycleItemClickListener;
 import com.truthower.suhang.mangareader.utils.DisplayUtil;
 import com.truthower.suhang.mangareader.utils.LeanCloundUtil;
 import com.truthower.suhang.mangareader.widget.bar.TopBar;
+import com.truthower.suhang.mangareader.widget.dialog.SingleLoadBarUtil;
 import com.truthower.suhang.mangareader.widget.recyclerview.RecyclerGridDecoration;
 
 import java.util.ArrayList;
@@ -92,12 +93,14 @@ public class CollectedActivity extends BaseActivity implements OnRefreshListener
             this.finish();
             return;
         }
+        SingleLoadBarUtil.getInstance().showLoadBar(CollectedActivity.this);
         AVQuery<AVObject> query = new AVQuery<>("Collected");
         query.whereEqualTo("owner", LoginBean.getInstance().getUserName());
         query.limit(999);
         query.findInBackground(new FindCallback<AVObject>() {
             @Override
             public void done(List<AVObject> list, AVException e) {
+                SingleLoadBarUtil.getInstance().dismissLoadBar();
                 if (LeanCloundUtil.handleLeanResult(CollectedActivity.this, e)) {
                     collectedMangaList = new ArrayList<MangaBean>();
                     if (null != list && list.size() > 0) {

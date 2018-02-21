@@ -14,6 +14,7 @@ import android.widget.TextView;
 import com.truthower.suhang.mangareader.R;
 import com.truthower.suhang.mangareader.base.BaseFragment;
 import com.truthower.suhang.mangareader.bean.LoginBean;
+import com.truthower.suhang.mangareader.business.ad.AdvertisingActivity;
 import com.truthower.suhang.mangareader.business.download.DownloadActivity;
 import com.truthower.suhang.mangareader.business.other.AboutActivity;
 import com.truthower.suhang.mangareader.business.tag.TagFilterActivity;
@@ -37,6 +38,7 @@ public class UserFragment extends BaseFragment implements View.OnClickListener {
     private RelativeLayout waitingForUpdateRl;
     private RelativeLayout userTopBarRl;
     private RelativeLayout finishedMangaRl;
+    private RelativeLayout adRl;
     private TextView userNameTv;
     private CircleImage userHeadCiv;
     private CheckBox autoToLastReadPositionCb, closeTranslateCb, economyModeCb, closeTutorialCb;
@@ -93,6 +95,7 @@ public class UserFragment extends BaseFragment implements View.OnClickListener {
         });
         aboutRl = (RelativeLayout) v.findViewById(R.id.about_rl);
         shareRl = (RelativeLayout) v.findViewById(R.id.share_rl);
+        adRl = (RelativeLayout) v.findViewById(R.id.ad_rl);
         finishedMangaRl = (RelativeLayout) v.findViewById(R.id.finished_manga_rl);
         userNameTv = (TextView) v.findViewById(R.id.user_name_tv);
         autoToLastReadPositionCb = (CheckBox) v.findViewById(R.id.auto_last_position_cb);
@@ -140,6 +143,8 @@ public class UserFragment extends BaseFragment implements View.OnClickListener {
         economyModeCb.setChecked
                 (SharedPreferencesUtils.getBooleanSharedPreferencesData(getActivity(),
                         ShareKeys.ECONOMY_MODE, false));
+
+        adRl.setOnClickListener(this);
         collectRl.setOnClickListener(this);
         statisticsRl.setOnClickListener(this);
         newWordBookRl.setOnClickListener(this);
@@ -199,6 +204,9 @@ public class UserFragment extends BaseFragment implements View.OnClickListener {
                 break;
             case R.id.about_rl:
                 intent = new Intent(getActivity(), AboutActivity.class);
+                break;
+            case R.id.ad_rl:
+                intent = new Intent(getActivity(), AdvertisingActivity.class);
                 break;
             case R.id.share_rl:
                 if (null != onShareAppClickListener) {

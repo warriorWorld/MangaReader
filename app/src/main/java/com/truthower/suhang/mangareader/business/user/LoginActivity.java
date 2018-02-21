@@ -20,6 +20,7 @@ import com.truthower.suhang.mangareader.business.main.MainActivity;
 import com.truthower.suhang.mangareader.config.ShareKeys;
 import com.truthower.suhang.mangareader.utils.SharedPreferencesUtils;
 import com.truthower.suhang.mangareader.widget.dialog.MangaDialog;
+import com.truthower.suhang.mangareader.widget.dialog.SingleLoadBarUtil;
 
 
 public class LoginActivity extends BaseActivity implements View.OnClickListener {
@@ -109,10 +110,12 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
 
 
     private void doLogin() {
+        SingleLoadBarUtil.getInstance().showLoadBar(LoginActivity.this);
         AVUser.logInInBackground(userIdEt.getText().toString(), userPsdEt.getText().toString(),
                 new LogInCallback<AVUser>() {
                     @Override
                     public void done(AVUser avUser, AVException e) {
+                        SingleLoadBarUtil.getInstance().dismissLoadBar();
                         if (e == null) {
                             LoginBean.getInstance().setEmail(LoginActivity.this, avUser.getEmail());
                             LoginBean.getInstance().setUserName(LoginActivity.this, avUser.getUsername());

@@ -21,6 +21,7 @@ import com.avos.avoscloud.ProgressCallback;
 import com.truthower.suhang.mangareader.R;
 import com.truthower.suhang.mangareader.base.BaseFragment;
 import com.truthower.suhang.mangareader.base.BaseFragmentActivity;
+import com.truthower.suhang.mangareader.bean.LoginBean;
 import com.truthower.suhang.mangareader.business.lunch.LunchActivity;
 import com.truthower.suhang.mangareader.config.Configure;
 import com.truthower.suhang.mangareader.config.ShareKeys;
@@ -82,6 +83,9 @@ public class MainActivity extends BaseFragmentActivity implements View.OnClickLi
         initFragment();
         doGetVersionInfo();
         doGetAnnouncement();
+        if (TextUtils.isEmpty(LoginBean.getInstance().getUserName())) {
+            baseToast.showToast("登录后就可以把漫画加入收藏了");
+        }
     }
 
     private void doGetAnnouncement() {
