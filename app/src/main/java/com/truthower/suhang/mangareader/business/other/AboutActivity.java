@@ -7,6 +7,8 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.text.TextUtils;
 import android.view.View;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -55,6 +57,7 @@ public class AboutActivity extends BaseActivity implements View.OnClickListener,
     private AVFile downloadFile;
     private MangaDialog versionDialog;
     private DownloadDialog downloadDialog;
+    private CheckBox closeTranslateCb, economyModeCb, closeTutorialCb;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,13 +87,47 @@ public class AboutActivity extends BaseActivity implements View.OnClickListener,
         authorRl = (RelativeLayout) findViewById(R.id.author_rl);
         feedbackRl = (RelativeLayout) findViewById(R.id.feedback_rl);
         logoutTv = (TextView) findViewById(R.id.logout_tv);
+        economyModeCb = (CheckBox) findViewById(R.id.economy_mode_cb);
+        economyModeCb.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                SharedPreferencesUtils.setSharedPreferencesData
+                        (AboutActivity.this, ShareKeys.ECONOMY_MODE, isChecked);
+            }
+        });
+        closeTranslateCb = (CheckBox) findViewById(R.id.close_translate_cb);
+        closeTranslateCb.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                SharedPreferencesUtils.setSharedPreferencesData
+                        (AboutActivity.this, ShareKeys.CLOSE_TRANSLATE, isChecked);
+            }
+        });
+        closeTutorialCb = (CheckBox) findViewById(R.id.close_tutorial_cb);
+        closeTutorialCb.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                SharedPreferencesUtils.setSharedPreferencesData
+                        (AboutActivity.this, ShareKeys.CLOSE_TUTORIAL, isChecked);
+            }
+        });
+
+        closeTranslateCb.setChecked
+                (SharedPreferencesUtils.getBooleanSharedPreferencesData(AboutActivity.this,
+                        ShareKeys.CLOSE_TRANSLATE, false));
+        closeTutorialCb.setChecked
+                (SharedPreferencesUtils.getBooleanSharedPreferencesData(AboutActivity.this,
+                        ShareKeys.CLOSE_TUTORIAL, true));
+        economyModeCb.setChecked
+                (SharedPreferencesUtils.getBooleanSharedPreferencesData(AboutActivity.this,
+                        ShareKeys.ECONOMY_MODE, false));
 
         appIconIv.setOnClickListener(this);
         checkUpdateRl.setOnClickListener(this);
         authorRl.setOnClickListener(this);
         feedbackRl.setOnClickListener(this);
         logoutTv.setOnClickListener(this);
-        baseTopBar.setTitle("关于");
+        baseTopBar.setTitle("设置");
     }
 
     private void doGetVersionInfo() {

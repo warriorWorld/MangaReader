@@ -41,7 +41,6 @@ public class UserFragment extends BaseFragment implements View.OnClickListener {
     private RelativeLayout adRl;
     private TextView userNameTv;
     private CircleImage userHeadCiv;
-    private CheckBox autoToLastReadPositionCb, closeTranslateCb, economyModeCb, closeTutorialCb;
     private OnShareAppClickListener onShareAppClickListener;
 
     @Override
@@ -56,8 +55,9 @@ public class UserFragment extends BaseFragment implements View.OnClickListener {
             dialog.show();
             dialog.setTitle("教程");
             dialog.setMessage("1,点击分享App,可以打开该App的下载二维码,让你想分享的人扫描即可下载,也可将该二维码保存(会保存在manga文件夹中)然后发给你想分享的人." +
-                    "\n2,想要更新App可以进入关于页检查更新下载最新App" +
-                    "\n3,退出登录可以进入关于页退出");
+                    "\n2,想要更新App可以进入设置页检查更新下载最新App" +
+                    "\n3,退出登录可以进入设置页退出"+
+                    "\n4,设置页可以关闭本教程");
         }
         return v;
     }
@@ -98,51 +98,6 @@ public class UserFragment extends BaseFragment implements View.OnClickListener {
         adRl = (RelativeLayout) v.findViewById(R.id.ad_rl);
         finishedMangaRl = (RelativeLayout) v.findViewById(R.id.finished_manga_rl);
         userNameTv = (TextView) v.findViewById(R.id.user_name_tv);
-        autoToLastReadPositionCb = (CheckBox) v.findViewById(R.id.auto_last_position_cb);
-        autoToLastReadPositionCb.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                SharedPreferencesUtils.setSharedPreferencesData
-                        (getActivity(), ShareKeys.AUTO_TO_LAST_POSITION, isChecked);
-            }
-        });
-        economyModeCb = (CheckBox) v.findViewById(R.id.economy_mode_cb);
-        economyModeCb.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                SharedPreferencesUtils.setSharedPreferencesData
-                        (getActivity(), ShareKeys.ECONOMY_MODE, isChecked);
-            }
-        });
-        closeTranslateCb = (CheckBox) v.findViewById(R.id.close_translate_cb);
-        closeTranslateCb.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                SharedPreferencesUtils.setSharedPreferencesData
-                        (getActivity(), ShareKeys.CLOSE_TRANSLATE, isChecked);
-            }
-        });
-        closeTutorialCb = (CheckBox) v.findViewById(R.id.close_tutorial_cb);
-        closeTutorialCb.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                SharedPreferencesUtils.setSharedPreferencesData
-                        (getActivity(), ShareKeys.CLOSE_TUTORIAL, isChecked);
-            }
-        });
-
-        autoToLastReadPositionCb.setChecked
-                (SharedPreferencesUtils.getBooleanSharedPreferencesData(getActivity(),
-                        ShareKeys.AUTO_TO_LAST_POSITION, false));
-        closeTranslateCb.setChecked
-                (SharedPreferencesUtils.getBooleanSharedPreferencesData(getActivity(),
-                        ShareKeys.CLOSE_TRANSLATE, false));
-        closeTutorialCb.setChecked
-                (SharedPreferencesUtils.getBooleanSharedPreferencesData(getActivity(),
-                        ShareKeys.CLOSE_TUTORIAL, true));
-        economyModeCb.setChecked
-                (SharedPreferencesUtils.getBooleanSharedPreferencesData(getActivity(),
-                        ShareKeys.ECONOMY_MODE, false));
 
         adRl.setOnClickListener(this);
         collectRl.setOnClickListener(this);
