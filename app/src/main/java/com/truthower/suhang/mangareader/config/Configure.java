@@ -13,7 +13,7 @@ import java.io.File;
  */
 
 public class Configure {
-    public final static boolean isTest = false;
+    public final static boolean isTest = true;
     public final static String[] websList = {"MangaReader", "KaKaLot"};
     public final static String[] masterWebsList = {"MangaReader", "NManga", "KaKaLot", "LManga"};
     public final static String DST_FOLDER_NAME = "aSpider";

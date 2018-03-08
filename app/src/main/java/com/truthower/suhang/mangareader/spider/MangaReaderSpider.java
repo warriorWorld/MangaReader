@@ -17,6 +17,7 @@ import com.truthower.suhang.mangareader.utils.Logger;
 import com.truthower.suhang.mangareader.utils.StringUtil;
 import com.truthower.suhang.mangareader.volley.MStringRequest;
 import com.truthower.suhang.mangareader.volley.VolleyTool;
+import com.truthower.suhang.mangareader.widget.dialog.MangaDialog;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Element;
@@ -230,7 +231,11 @@ public class MangaReaderSpider extends SpiderBase {
 
             @Override
             public void loadFailed(String error) {
-
+                if (Configure.isTest) {
+                    MangaDialog dialog = new MangaDialog(context);
+                    dialog.show();
+                    dialog.setTitle(error);
+                }
             }
         });
     }
