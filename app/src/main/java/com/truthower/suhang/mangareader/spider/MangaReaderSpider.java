@@ -293,58 +293,97 @@ public class MangaReaderSpider extends SpiderBase {
     }
 
 
+//    private <ResultObj> void initPicPathList(final Context context, final String chapterUrl, final int page,
+//                                             final int pageSize, final JsoupCallBack<ResultObj> jsoupCallBack) {
+//        String url = chapterUrl + "/" + page;
+//        HashMap<String, String> params = new HashMap<String, String>();
+//        MStringRequest request = new MStringRequest(url, params,
+//                new Response.Listener<String>() {
+//
+//                    @Override
+//                    public void onResponse(String arg0) {
+//                        // 得到包含某正则表达式的字符串
+//                        Pattern p;
+//                        p = Pattern.compile("https:[^\f\n\r\t]*?(jpg|png|gif|jpeg)");
+//                        Matcher m;
+//                        m = p.matcher(arg0);
+//                        // String xxx;
+//                        int cycle = 0;
+//                        String urlResult = "", prefetch = "";
+//                        while (m.find()) {
+//                            // 获取到图片的URL 先获取到的第二个后获取到的第一个
+//                            if (cycle == 1) {
+//                                urlResult = m.group();
+//                            } else if (cycle == 0) {
+//                                prefetch = m.group();
+//                            }
+//                            cycle++;
+//                        }
+//                        if (page != pageSize) {
+//                            pathList.add(urlResult);
+//                            pathList.add(prefetch);
+//                            Logger.d(urlResult + "\n" + prefetch);
+//                        } else {
+//                            //到最后一页时 只有一个图片
+//                            pathList.add(prefetch);
+//                            Logger.d(prefetch);
+//                        }
+//                        if (page == pageSize || page + 1 == pageSize) {
+//                            //已找到所有的图片地址
+//                            //TODO 得到结果
+//                            jsoupCallBack.loadSucceed((ResultObj) pathList);
+//                        } else {
+//                            initPicPathList(context, chapterUrl, page + 2, pageSize, jsoupCallBack);
+//                        }
+//                    }
+//                }, new Response.ErrorListener() {
+//
+//            @Override
+//            public void onErrorResponse(VolleyError arg0) {
+//                jsoupCallBack.loadFailed(arg0.toString());
+//            }
+//        });
+//        VolleyTool.getInstance(context).getRequestQueue()
+//                .add(request);
+//    }
+
     private <ResultObj> void initPicPathList(final Context context, final String chapterUrl, final int page,
                                              final int pageSize, final JsoupCallBack<ResultObj> jsoupCallBack) {
-        String url = chapterUrl + "/" + page;
-        HashMap<String, String> params = new HashMap<String, String>();
-        MStringRequest request = new MStringRequest(url, params,
-                new Response.Listener<String>() {
+        new Thread() {
+            @Override
+            public void run() {
+                for (int i = 0; i < pageSize; i++) {
+                    try {
+                        doc = Jsoup.connect(chapterUrl + "/" + (i + 1))
+                                .timeout(10000).get();
+                        Logger.d(chapterUrl + "/" + (i + 1));
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                        jsoupCallBack.loadFailed(e.toString());
+                    }
+                    if (null != doc) {
+                        Logger.d(doc.toString());
 
-                    @Override
-                    public void onResponse(String arg0) {
                         // 得到包含某正则表达式的字符串
                         Pattern p;
-                        p = Pattern.compile("http:[^\f\n\r\t]*?(jpg|png|gif|jpeg)");
+                        p = Pattern.compile("https:[^\f\n\r\t]*?(jpg|png|gif|jpeg)");
                         Matcher m;
-                        m = p.matcher(arg0);
+                        m = p.matcher(doc.toString());
                         // String xxx;
-                        int cycle = 0;
-                        String urlResult = "", prefetch = "";
+                        String urlResult = "";
                         while (m.find()) {
-                            // 获取到图片的URL 先获取到的第二个后获取到的第一个
-                            if (cycle == 1) {
-                                urlResult = m.group();
-                            } else if (cycle == 0) {
-                                prefetch = m.group();
-                            }
-                            cycle++;
+                            urlResult = m.group();
                         }
-                        if (page != pageSize) {
-                            pathList.add(urlResult);
-                            pathList.add(prefetch);
-                            Logger.d(urlResult + "\n" + prefetch);
-                        } else {
-                            //到最后一页时 只有一个图片
-                            pathList.add(prefetch);
-                            Logger.d(prefetch);
-                        }
-                        if (page == pageSize || page + 1 == pageSize) {
-                            //已找到所有的图片地址
-                            //TODO 得到结果
-                            jsoupCallBack.loadSucceed((ResultObj) pathList);
-                        } else {
-                            initPicPathList(context, chapterUrl, page + 2, pageSize, jsoupCallBack);
-                        }
+                        pathList.add(urlResult);
                     }
-                }, new Response.ErrorListener() {
-
-            @Override
-            public void onErrorResponse(VolleyError arg0) {
-                jsoupCallBack.loadFailed(arg0.toString());
+                }
+                if (null != pathList && pathList.size() > 0) {
+                    jsoupCallBack.loadSucceed((ResultObj) pathList);
+                } else {
+                    jsoupCallBack.loadFailed("doc load failed");
+                }
             }
-        });
-        VolleyTool.getInstance(context).getRequestQueue()
-                .add(request);
+        }.start();
     }
 
     private <ResultObj> void getPageSize(final String url, final JsoupCallBack<ResultObj> jsoupCallBack) {
