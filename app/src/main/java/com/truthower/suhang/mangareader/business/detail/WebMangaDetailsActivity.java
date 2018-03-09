@@ -125,6 +125,11 @@ public class WebMangaDetailsActivity extends BaseActivity implements AdapterView
     @Override
     protected void onResume() {
         super.onResume();
+        if (TextUtils.isEmpty(LoginBean.getInstance().getUserName(this))) {
+            //不登录不让用了
+            this.finish();
+            return;
+        }
         doGetIsCollected();
     }
 
