@@ -104,6 +104,11 @@ public class WebMangaDetailsActivity extends BaseActivity implements AdapterView
         if (TextUtils.isEmpty(mangaUrl)) {
             this.finish();
         }
+        if (TextUtils.isEmpty(LoginBean.getInstance().getUserName(this))) {
+            //不登录不让用了
+            this.finish();
+            return;
+        }
         initSpider();
 
         initUI();
@@ -125,11 +130,6 @@ public class WebMangaDetailsActivity extends BaseActivity implements AdapterView
     @Override
     protected void onResume() {
         super.onResume();
-        if (TextUtils.isEmpty(LoginBean.getInstance().getUserName(this))) {
-            //不登录不让用了
-            this.finish();
-            return;
-        }
         doGetIsCollected();
     }
 
