@@ -23,6 +23,7 @@ import com.truthower.suhang.mangareader.sort.FileComparatorAllNum;
 import com.truthower.suhang.mangareader.sort.FileComparatorDirectory;
 import com.truthower.suhang.mangareader.sort.FileComparatorWithBracket;
 import com.truthower.suhang.mangareader.spider.FileSpider;
+import com.truthower.suhang.mangareader.utils.ReplaceUtil;
 import com.truthower.suhang.mangareader.widget.bar.TopBar;
 import com.truthower.suhang.mangareader.widget.dialog.MangaDialog;
 import com.truthower.suhang.mangareader.widget.pulltorefresh.PullToRefreshBase;
@@ -152,6 +153,7 @@ public class LocalMangaDetailsActivity extends BaseActivity implements AdapterVi
                 firstDirectoryName = arri[arri.length - 2];
                 String[] arri1 = firstDirectoryName.split("-");
                 firstDirectoryName = arri1[0];
+                firstDirectoryName= ReplaceUtil.onlyNumber(firstDirectoryName);
 
                 //用于判断是否位数字的异教徒写法
                 int isInt = Integer.valueOf(firstDirectoryName);

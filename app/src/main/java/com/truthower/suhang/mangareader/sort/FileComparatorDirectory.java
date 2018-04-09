@@ -3,6 +3,7 @@ package com.truthower.suhang.mangareader.sort;
 import android.util.Log;
 
 import com.truthower.suhang.mangareader.bean.MangaBean;
+import com.truthower.suhang.mangareader.utils.ReplaceUtil;
 
 import java.util.Comparator;
 
@@ -15,6 +16,7 @@ public class FileComparatorDirectory implements Comparator<MangaBean> {
         s = arri[arri.length - 2];
         String[] arri1=s.split("-");
         s=arri1[0];
+        s= ReplaceUtil.onlyNumber(s);
         try {
             if (which) {
                 chapterL = Integer.valueOf(s);
