@@ -7,6 +7,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.speech.tts.TextToSpeech;
 import android.support.v4.view.ViewPager;
 import android.text.ClipboardManager;
 import android.text.TextUtils;
@@ -43,13 +44,14 @@ import org.adw.library.widgets.discreteseekbar.DiscreteSeekBar;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Locale;
 
 /**
  * /storage/sdcard0/reptile/one-piece
  * <p/>
  * Created by Administrator on 2016/4/4.
  */
-public class ReadMangaActivity extends BaseActivity implements OnClickListener {
+public class ReadMangaActivity extends BaseActivity implements OnClickListener, TextToSpeech.OnInitListener {
     private HackyViewPager mangaPager;
     private SpiderBase spider;
     private DiscreteSeekBar seekBar;
@@ -71,6 +73,7 @@ public class ReadMangaActivity extends BaseActivity implements OnClickListener {
     private String chapterUrl;//线上漫画章节地址
     private String progressSaveKey = "";
     private int toPage = 0;
+    private TextToSpeech tts;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -111,12 +114,17 @@ public class ReadMangaActivity extends BaseActivity implements OnClickListener {
                     "\n4,点击屏幕中间稍微靠下位置可调出进度条,可以跳转到指定位置" +
                     "\n5,长按屏幕中间稍微靠下位置可保存或删除当前图片");
         }
+        initTTS();
     }
 
 
     @Override
     protected int getLayoutId() {
         return R.layout.activity_read_manga;
+    }
+
+    private void initTTS() {
+        tts = new TextToSpeech(this, this); // 参数Context,TextToSpeech.OnInitListener
     }
 
     private void doGetWebPics() {
@@ -330,6 +338,7 @@ public class ReadMangaActivity extends BaseActivity implements OnClickListener {
 
     private void translateWord(final String word) {
         clip.setText(word);
+        text2Speech(word);
         if (SharedPreferencesUtils.getBooleanSharedPreferencesData(this, ShareKeys.CLOSE_TRANSLATE, false)) {
             //关闭自动翻译
             return;
@@ -370,6 +379,14 @@ public class ReadMangaActivity extends BaseActivity implements OnClickListener {
         VolleyTool.getInstance(this).requestData(Request.Method.GET,
                 ReadMangaActivity.this, url, params,
                 YoudaoResponse.class, callback);
+    }
+
+    private void text2Speech(String text) {
+        if (tts != null && !tts.isSpeaking()) {
+            tts.setPitch(0.0f);// 设置音调，值越大声音越尖（女生），值越小则变成男声,1.0是常规
+            tts.speak(text,
+                    TextToSpeech.QUEUE_FLUSH, null);
+        }
     }
 
     private void showTranslateResultDialog(final String title, String msg) {
@@ -555,6 +572,31 @@ public class ReadMangaActivity extends BaseActivity implements OnClickListener {
             case R.id.read_progress_tv:
 
                 break;
+        }
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        tts.stop(); // 不管是否正在朗读TTS都被打断
+        tts.shutdown(); // 关闭，释放资源
+    }
+
+    /**
+     * 用来初始化TextToSpeech引擎
+     * status:SUCCESS或ERROR这2个值
+     * setLanguage设置语言，帮助文档里面写了有22种
+     * TextToSpeech.LANG_MISSING_DATA：表示语言的数据丢失。
+     * TextToSpeech.LANG_NOT_SUPPORTED:不支持
+     */
+    @Override
+    public void onInit(int status) {
+        if (status == TextToSpeech.SUCCESS) {
+            int result = tts.setLanguage(Locale.ENGLISH);
+            if (result == TextToSpeech.LANG_MISSING_DATA
+                    || result == TextToSpeech.LANG_NOT_SUPPORTED) {
+                baseToast.showToast("数据丢失或不支持");
+            }
         }
     }
 }
