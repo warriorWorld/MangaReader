@@ -24,6 +24,7 @@ import com.truthower.suhang.mangareader.R;
 import com.truthower.suhang.mangareader.adapter.OneShotDetailsAdapter;
 import com.truthower.suhang.mangareader.adapter.OnlineMangaDetailAdapter;
 import com.truthower.suhang.mangareader.base.BaseActivity;
+import com.truthower.suhang.mangareader.base.TTSActivity;
 import com.truthower.suhang.mangareader.bean.ChapterBean;
 import com.truthower.suhang.mangareader.bean.DownloadBean;
 import com.truthower.suhang.mangareader.bean.LoginBean;
@@ -65,7 +66,7 @@ import java.util.List;
 import pub.devrel.easypermissions.AfterPermissionGranted;
 import pub.devrel.easypermissions.EasyPermissions;
 
-public class WebMangaDetailsActivity extends BaseActivity implements AdapterView.OnItemClickListener, View.OnClickListener,
+public class WebMangaDetailsActivity extends TTSActivity implements AdapterView.OnItemClickListener, View.OnClickListener,
         PullToRefreshBase.OnRefreshListener<GridView>,
         EasyPermissions.PermissionCallbacks, View.OnLongClickListener {
     private SpiderBase spider;
@@ -908,14 +909,9 @@ public class WebMangaDetailsActivity extends BaseActivity implements AdapterView
     public boolean onLongClick(View v) {
         switch (v.getId()) {
             case R.id.thumbnail:
-                if (isCollected) {
-                    showTopThisDialog();
-                }
+                text2Speech(currentManga.getDescription());
                 break;
             case R.id.collect_view:
-                if (isCollected) {
-                    showFinishedThisDialog();
-                }
                 break;
         }
         return true;
