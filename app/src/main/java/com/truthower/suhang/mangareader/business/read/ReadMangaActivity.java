@@ -515,6 +515,8 @@ public class ReadMangaActivity extends BaseActivity implements OnClickListener, 
     protected void onDestroy() {
         super.onDestroy();
         saveState();
+        tts.stop(); // 不管是否正在朗读TTS都被打断
+        tts.shutdown(); // 关闭，释放资源
     }
 
     @Override
@@ -573,13 +575,6 @@ public class ReadMangaActivity extends BaseActivity implements OnClickListener, 
 
                 break;
         }
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-        tts.stop(); // 不管是否正在朗读TTS都被打断
-        tts.shutdown(); // 关闭，释放资源
     }
 
     /**
