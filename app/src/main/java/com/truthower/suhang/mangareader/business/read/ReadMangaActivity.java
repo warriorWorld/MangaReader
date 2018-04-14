@@ -27,6 +27,7 @@ import com.truthower.suhang.mangareader.config.Configure;
 import com.truthower.suhang.mangareader.config.ShareKeys;
 import com.truthower.suhang.mangareader.listener.JsoupCallBack;
 import com.truthower.suhang.mangareader.listener.OnEditResultListener;
+import com.truthower.suhang.mangareader.listener.OnSpeakClickListener;
 import com.truthower.suhang.mangareader.spider.FileSpider;
 import com.truthower.suhang.mangareader.spider.SpiderBase;
 import com.truthower.suhang.mangareader.utils.SharedPreferencesUtils;
@@ -36,6 +37,7 @@ import com.truthower.suhang.mangareader.widget.bar.TopBar;
 import com.truthower.suhang.mangareader.widget.dialog.MangaDialog;
 import com.truthower.suhang.mangareader.widget.dialog.MangaImgEditDialog;
 import com.truthower.suhang.mangareader.widget.dialog.OnlyEditDialog;
+import com.truthower.suhang.mangareader.widget.dialog.TranslateDialog;
 import com.truthower.suhang.mangareader.widget.shotview.ScreenShot;
 import com.truthower.suhang.mangareader.widget.shotview.ShotView;
 
@@ -68,7 +70,7 @@ public class ReadMangaActivity extends TTSActivity implements OnClickListener {
     private OnlyEditDialog searchDialog;
     private MangaImgEditDialog mangaImgEditDialog;
     private ClipboardManager clip;//复制文本用
-    private MangaDialog translateResultDialog;
+    private TranslateDialog translateResultDialog;
     private String chapterUrl;//线上漫画章节地址
     private String progressSaveKey = "";
     private int toPage = 0;
@@ -377,7 +379,13 @@ public class ReadMangaActivity extends TTSActivity implements OnClickListener {
 
     private void showTranslateResultDialog(final String title, String msg) {
         if (null == translateResultDialog) {
-            translateResultDialog = new MangaDialog(this);
+            translateResultDialog = new TranslateDialog(this);
+            translateResultDialog.setOnSpeakClickListener(new OnSpeakClickListener() {
+                @Override
+                public void onSpeakClick(String word) {
+                    text2Speech(word);
+                }
+            });
         }
         translateResultDialog.show();
 
