@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/item_book_rl"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/divide">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:layout_marginBottom="10dp"
+        android:background="@color/white">
+
+
+        <TextView
+            android:id="@+id/book_title_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:layout_marginTop="10dp"
+            android:gravity="left"
+            android:singleLine="true"
+            android:text="https://www.buzzingandroid.com/tools/android-layout-finder/"
+            android:textColor="@color/manga_reader"
+            android:textSize="14sp" />
+
+        <TextView
+            android:id="@+id/query_word_c_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="5dp"
+            android:text="查词量:  55"
+            android:textColor="@color/main_text_color_gray"
+            android:textSize="14sp" />
+
+        <TextView
+            android:id="@+id/read_word_c_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:text="阅读量:  55"
+            android:textColor="@color/main_text_color_gray"
+            android:textSize="14sp" />
+
+        <TextView
+            android:id="@+id/query_word_r_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerVertical="true"
+            android:layout_marginBottom="10dp"
+            android:layout_marginLeft="5dp"
+            android:text="查词率:  55%"
+            android:textColor="@color/main_text_color_gray"
+            android:textSize="14sp" />
+
+        <TextView
+            android:id="@+id/date_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginBottom="10dp"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:text="2018年2月27日"
+            android:textColor="@color/main_text_color_gray"
+            android:textSize="14sp" />
+    </RelativeLayout>
+</RelativeLayout>

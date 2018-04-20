@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/divide"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:id="@+id/title_rl"
+        android:layout_width="match_parent"
+        android:layout_height="46dp"
+        android:background="@color/white"
+        android:orientation="horizontal">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_toLeftOf="@+id/toggle_ll"
+            android:background="@color/white">
+
+            <TextView
+                android:id="@+id/selected_date_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:textColor="@color/main_text_color"
+                android:textSize="@dimen/main_text_size" />
+
+            <RelativeLayout
+                android:id="@+id/to_last_month_rl"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_toLeftOf="@+id/selected_date_tv">
+
+                <ImageView
+                    android:layout_width="11dp"
+                    android:layout_height="19dp"
+                    android:layout_centerInParent="true"
+                    android:src="@drawable/back_gray" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/to_next_month_rl"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_toRightOf="@+id/selected_date_tv">
+
+                <ImageView
+                    android:layout_width="11dp"
+                    android:layout_height="19dp"
+                    android:layout_centerInParent="true"
+                    android:src="@drawable/forward_gray" />
+            </RelativeLayout>
+
+        </RelativeLayout>
+
+        <LinearLayout
+            android:id="@+id/toggle_ll"
+            android:layout_width="59dp"
+            android:layout_height="match_parent"
+            android:layout_alignParentRight="true"
+            android:background="@color/white"
+            android:gravity="center"
+            android:paddingRight="@dimen/activity_horizontal_margin">
+
+            <ImageView
+                android:layout_width="21dp"
+                android:layout_height="19dp"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="7dp"
+                android:layout_toLeftOf="@+id/toggle_calendar_iv"
+                android:src="@drawable/calendar_icon" />
+
+            <ImageView
+                android:id="@+id/toggle_calendar_iv"
+                android:layout_width="15dp"
+                android:layout_height="10dp"
+                android:layout_centerVertical="true"
+                android:src="@drawable/triangle_up_gray" />
+        </LinearLayout>
+    </RelativeLayout>
+
+    <LinearLayout
+        android:id="@+id/calendar_ll"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/title_rl"
+        android:layout_marginLeft="@dimen/activity_horizontal_margin"
+        android:layout_marginRight="@dimen/activity_horizontal_margin"
+        android:background="@color/divide"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_marginTop="9dp"
+            android:background="@color/manga_reader"
+            android:gravity="center">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="日"
+                android:textColor="@color/white"
+                android:textSize="@dimen/main_text_size" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="一"
+                android:textColor="@color/white"
+                android:textSize="@dimen/main_text_size" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="二"
+                android:textColor="@color/white"
+                android:textSize="@dimen/main_text_size" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="三"
+                android:textColor="@color/white"
+                android:textSize="@dimen/main_text_size" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="四"
+                android:textColor="@color/white"
+                android:textSize="@dimen/main_text_size" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="五"
+                android:textColor="@color/white"
+                android:textSize="@dimen/main_text_size" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="六"
+                android:textColor="@color/white"
+                android:textSize="@dimen/main_text_size" />
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="8dp"
+            android:background="@color/white"></View>
+
+        <com.truthower.suhang.mangareader.widget.layout.CalendarView
+            android:id="@+id/calendar_cv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="11dp"></com.truthower.suhang.mangareader.widget.layout.CalendarView>
+    </LinearLayout>
+</RelativeLayout>

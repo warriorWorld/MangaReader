@@ -9,9 +9,8 @@ public class DbHelper extends SQLiteOpenHelper {
     private Context xcontext;
     public static final String DATA_STATISTICS = "create table if not exists STATISTICS ("
             + "id integer primary key autoincrement,"
-            + "date_start text," + "date_end text," + "type text," + "progress float,"
-            + "query_word_c integer," + "word_c integer,"
-            + "book_name text)";
+            + "query_word_c integer," + "read_page integer,"
+            + "manga_name text)";
     public static final String WORDS_BOOK = "create table if not exists WordsBook ("
             + "id integer primary key autoincrement,"
             + "word text," + "time integer," + "createdtime TimeStamp NOT NULL DEFAULT (datetime('now','localtime')))";

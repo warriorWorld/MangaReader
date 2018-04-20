@@ -17,6 +17,7 @@ import com.truthower.suhang.mangareader.bean.LoginBean;
 import com.truthower.suhang.mangareader.business.ad.AdvertisingActivity;
 import com.truthower.suhang.mangareader.business.download.DownloadActivity;
 import com.truthower.suhang.mangareader.business.other.AboutActivity;
+import com.truthower.suhang.mangareader.business.statistics.StatisticsActivity;
 import com.truthower.suhang.mangareader.business.tag.TagFilterActivity;
 import com.truthower.suhang.mangareader.business.user.CollectedActivity;
 import com.truthower.suhang.mangareader.business.user.LoginActivity;
@@ -151,7 +152,8 @@ public class UserFragment extends BaseFragment implements View.OnClickListener {
                 intent.putExtra("collectType", Configure.COLLECT_TYPE_FINISHED);
                 break;
             case R.id.statistics_rl:
-                baseToast.showToast("待开发");
+                intent = new Intent(getActivity(), StatisticsActivity.class);
+                MobclickAgent.onEvent(getActivity(), "statistics");
                 break;
             case R.id.new_word_book_rl:
                 intent = new Intent(getActivity(), WordsBookActivity.class);
