@@ -231,22 +231,6 @@ public class ReadMangaActivity extends TTSActivity implements OnClickListener {
 
     private void initUI() {
         mangaPager = (HackyViewPager) findViewById(R.id.manga_viewpager);
-        mangaPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-            @Override
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-
-            }
-
-            @Override
-            public void onPageSelected(int position) {
-                updateStatisctics();
-            }
-
-            @Override
-            public void onPageScrollStateChanged(int state) {
-
-            }
-        });
         seekBar = (DiscreteSeekBar) findViewById(R.id.seekbar);
         showSeekBar = findViewById(R.id.show_seek_bar);
         readProgressTv = (TextView) findViewById(R.id.read_progress_tv);
@@ -435,6 +419,7 @@ public class ReadMangaActivity extends TTSActivity implements OnClickListener {
     private void translateWord(final String word) {
         clip.setText(word);
         text2Speech(word);
+        qureyWordCount++;
         //记录查过的单词
         db.insertWordsBookTb(word);
         if (SharedPreferencesUtils.getBooleanSharedPreferencesData(this, ShareKeys.CLOSE_TRANSLATE, false)) {
@@ -586,6 +571,8 @@ public class ReadMangaActivity extends TTSActivity implements OnClickListener {
                 public void onPageSelected(int position) {
                     historyPosition = position;
                     readProgressTv.setText(position + 1 + "/" + pathList.size());
+                    readPage++;
+                    updateStatisctics();
                 }
 
                 @Override
