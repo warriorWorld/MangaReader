@@ -61,6 +61,13 @@
             android:layout_marginRight="7dp"
             android:textColor="@color/main_text_color"
             android:textSize="10sp" />
+
+        <ImageView
+            android:id="@+id/test_iv"
+            android:layout_width="120dp"
+            android:layout_height="200dp"
+            android:layout_centerInParent="true"
+            android:visibility="gone" />
     </RelativeLayout>
 
     <com.truthower.suhang.mangareader.widget.shotview.ShotView

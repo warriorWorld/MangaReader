@@ -12,6 +12,7 @@ import android.text.ClipboardManager;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.android.volley.Request;
@@ -74,6 +75,7 @@ public class ReadMangaActivity extends TTSActivity implements OnClickListener {
     private String chapterUrl;//线上漫画章节地址
     private String progressSaveKey = "";
     private int toPage = 0;
+    private ImageView test_iv;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -209,6 +211,7 @@ public class ReadMangaActivity extends TTSActivity implements OnClickListener {
         seekBar = (DiscreteSeekBar) findViewById(R.id.seekbar);
         showSeekBar = findViewById(R.id.show_seek_bar);
         readProgressTv = (TextView) findViewById(R.id.read_progress_tv);
+        test_iv = (ImageView) findViewById(R.id.test_iv);
         readProgressTv.setOnClickListener(this);
 
         showSeekBar.setOnClickListener(this);
@@ -262,6 +265,19 @@ public class ReadMangaActivity extends TTSActivity implements OnClickListener {
                         bgBitmap.recycle();
                     }
                     bgBitmap = ScreenShot.takeScreenShot(ReadMangaActivity.this);
+                    /**
+                     * getDecorView这个方法是获取缓存的屏幕 显然PhotoView这个控件放大缩小并没有触发新的缓存 所以截屏后再放大缩小就会有问题了
+                     * 而我通过viewpager翻页的方法强行触发新的缓存解决这个问题
+                     */
+                    if (historyPosition + 1 == pathList.size()) {
+                        int temp = historyPosition;
+                        mangaPager.setCurrentItem(temp - 1);
+                        mangaPager.setCurrentItem(temp);
+                    } else {
+                        int temp = historyPosition;
+                        mangaPager.setCurrentItem(temp + 1);
+                        mangaPager.setCurrentItem(temp);
+                    }
                     shotView.setBitmap(bgBitmap);
                     shotView.setVisibility(View.VISIBLE);
                 } catch (Exception e) {

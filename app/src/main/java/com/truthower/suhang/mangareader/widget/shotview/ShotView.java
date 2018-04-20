@@ -256,79 +256,6 @@ public class ShotView extends SurfaceView implements SurfaceHolder.Callback,
         return -1;
     }
 
-//    private void setPopListener(View view) {
-//        // TODO Auto-generated method stub
-//        popupWindow.getContentView().setOnTouchListener(
-//                new View.OnTouchListener() {
-//
-//                    @Override
-//                    public boolean onTouch(View v, MotionEvent event) {
-//                        if (event.getAction() == MotionEvent.ACTION_OUTSIDE) {
-//                            Toast.makeText(getContext(), "点击了外部 销毁了",
-//                                    Toast.LENGTH_SHORT).show();
-//                            popupWindow.dismiss();
-//                            popupWindow = null;
-//                        }
-//                        return true;
-//                    }
-//                });
-//
-//        view.findViewById(R.id.cancle_ll).setOnClickListener(
-//                new OnClickListener() {
-//
-//                    @Override
-//                    public void onClick(View v) {
-//                        // TODO Auto-generated method stub
-//                        Toast.makeText(getContext(), "重新截图！",
-//                                Toast.LENGTH_SHORT).show();
-//                        rect.setEmpty();
-//                        invalidate();
-//                        if (popupWindow != null) {
-//                            popupWindow.dismiss();
-//                            popupWindow = null;
-//                        }
-//                    }
-//                });
-//
-//        view.findViewById(R.id.back_ll).setOnClickListener(
-//                new OnClickListener() {
-//
-//                    @Override
-//                    public void onClick(View v) {
-//                        // TODO Auto-generated method stub
-//                        Toast.makeText(getContext(), "回到原来视图！",
-//                                Toast.LENGTH_SHORT).show();
-//                        rect.setEmpty();
-//                        invalidate();
-//                        if (popupWindow != null) {
-//                            popupWindow.dismiss();
-//                            popupWindow = null;
-//                        }
-//                        isRunning = false;
-//                        setVisibility(View.INVISIBLE);
-//                    }
-//                });
-//
-//        view.findViewById(R.id.ok_ll).setOnClickListener(new OnClickListener() {
-//
-//            @Override
-//            public void onClick(View v) {
-//                // TODO Auto-generated method stub
-//                Toast.makeText(getContext(), "截图完成！", Toast.LENGTH_SHORT)
-//                        .show();
-//
-//                saveBitmap = Bitmap.createBitmap(ShotView.this.bitmap,
-//                        rect.left, rect.top, rect.width(), rect.height());
-//
-//                ImageView imgView = new ImageView(getContext());
-//                imgView.setImageBitmap(saveBitmap);
-//                new AlertDialog.Builder(getContext()).setTitle("截取到的图片")
-//                        .setView(imgView).setPositiveButton("确定", null).show();
-//
-//            }
-//        });
-//    }
-
     private void finishShot() {
         try {
             saveBitmap = Bitmap.createBitmap(ShotView.this.bitmap, rect.left,
@@ -337,7 +264,7 @@ public class ShotView extends SurfaceView implements SurfaceHolder.Callback,
                 l.finishShot(saveBitmap);
             }
             reSet();
-        }catch (Exception e){
+        } catch (Exception e) {
             //catch width<0的异常
         }
     }
@@ -349,6 +276,7 @@ public class ShotView extends SurfaceView implements SurfaceHolder.Callback,
             popupWindow.dismiss();
             popupWindow = null;
         }
+        bitmap = null;
         isRunning = false;
         setVisibility(View.INVISIBLE);
     }
