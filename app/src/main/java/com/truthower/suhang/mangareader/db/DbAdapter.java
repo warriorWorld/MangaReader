@@ -127,13 +127,13 @@ public class DbAdapter {
     public void updateStatistics(int query_word_c, int read_page, String manga_name) {
         //初始记录
         if (isStatisticsed(manga_name)) {
-            insertStatiscticsTb(query_word_c, read_page, manga_name);
-        } else {
             StatisticsBean item = queryStatisticsByBookName(manga_name);
             int query = item.getQuery_word_c() + query_word_c;
             int read = item.getRead_page() + read_page;
             db.execSQL("update STATISTICS set query_word_c=?,read_page=? where manga_name=?",
                     new Object[]{query, read, manga_name});
+        } else {
+            insertStatiscticsTb(query_word_c, read_page, manga_name);
         }
     }
 

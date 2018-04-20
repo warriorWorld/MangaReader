@@ -86,7 +86,7 @@ public class ReadMangaActivity extends TTSActivity implements OnClickListener {
     private ImageView test_iv;
     private DbAdapter db;//数据库
     private int qureyWordCount = 0, readPage = 0;
-    private String currentMangaName;
+    private String realMangaName;
     /**
      * 时间
      */
@@ -120,7 +120,13 @@ public class ReadMangaActivity extends TTSActivity implements OnClickListener {
                 mangaPager.setCurrentItem(toPage);
             }
         }
-        currentMangaName = intent.getStringExtra("currentMangaName");
+        String currentMangaName = intent.getStringExtra("currentMangaName");
+        if (currentMangaName.contains("(") && currentMangaName.contains(")")) {
+            int bracketPosition = currentMangaName.lastIndexOf("(");
+            realMangaName = currentMangaName.substring(0, bracketPosition);
+        } else {
+            realMangaName = currentMangaName;
+        }
         topBar.setTitle(currentMangaName);
 
         sdf = new SimpleDateFormat("yyyy-MM-dd");
@@ -335,9 +341,9 @@ public class ReadMangaActivity extends TTSActivity implements OnClickListener {
 
     private void updateStatisctics() {
         try {
-            db.updateStatistics(qureyWordCount, readPage, currentMangaName);
+            db.updateStatistics(qureyWordCount, readPage, realMangaName);
             if (!date.equals(SharedPreferencesUtils.getSharedPreferencesData(
-                    ReadMangaActivity.this, ShareKeys.STATISTICS_UPDATE_KEY + currentMangaName))) {
+                    ReadMangaActivity.this, ShareKeys.STATISTICS_UPDATE_KEY + realMangaName))) {
                 doStatisctics();
             }
         } catch (Exception e) {
@@ -355,19 +361,19 @@ public class ReadMangaActivity extends TTSActivity implements OnClickListener {
             return;
         }
         try {
-            StatisticsBean item = db.queryStatisticsByBookName(currentMangaName);
+            StatisticsBean item = db.queryStatisticsByBookName(realMangaName);
             AVObject object = new AVObject("Statistics");
             object.put("owner", LoginBean.getInstance().getUserName());
             object.put("query_word_c", item.getQuery_word_c());
             object.put("read_page", item.getRead_page());
-            object.put("manga_name", currentMangaName);
+            object.put("manga_name", realMangaName);
             object.saveInBackground(new SaveCallback() {
                 @Override
                 public void done(AVException e) {
                     if (LeanCloundUtil.handleLeanResult(ReadMangaActivity.this, e)) {
                         SharedPreferencesUtils.setSharedPreferencesData
-                                (ReadMangaActivity.this, ShareKeys.STATISTICS_UPDATE_KEY + currentMangaName, date);
-                        db.deleteStatiscticsByBookName(currentMangaName);
+                                (ReadMangaActivity.this, ShareKeys.STATISTICS_UPDATE_KEY + realMangaName, date);
+                        db.deleteStatiscticsByBookName(realMangaName);
                     }
                 }
             });
