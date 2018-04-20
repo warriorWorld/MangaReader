@@ -17,11 +17,15 @@ import android.widget.TextView;
 
 import com.android.volley.Request;
 import com.android.volley.VolleyError;
+import com.avos.avoscloud.AVException;
+import com.avos.avoscloud.AVObject;
+import com.avos.avoscloud.SaveCallback;
 import com.truthower.suhang.mangareader.R;
 import com.truthower.suhang.mangareader.adapter.ReadMangaAdapter;
 import com.truthower.suhang.mangareader.base.BaseActivity;
 import com.truthower.suhang.mangareader.base.TTSActivity;
 import com.truthower.suhang.mangareader.bean.LoginBean;
+import com.truthower.suhang.mangareader.bean.StatisticsBean;
 import com.truthower.suhang.mangareader.bean.YoudaoResponse;
 import com.truthower.suhang.mangareader.business.tag.TagManagerActivity;
 import com.truthower.suhang.mangareader.config.Configure;
@@ -32,6 +36,7 @@ import com.truthower.suhang.mangareader.listener.OnEditResultListener;
 import com.truthower.suhang.mangareader.listener.OnSpeakClickListener;
 import com.truthower.suhang.mangareader.spider.FileSpider;
 import com.truthower.suhang.mangareader.spider.SpiderBase;
+import com.truthower.suhang.mangareader.utils.LeanCloundUtil;
 import com.truthower.suhang.mangareader.utils.SharedPreferencesUtils;
 import com.truthower.suhang.mangareader.volley.VolleyCallBack;
 import com.truthower.suhang.mangareader.volley.VolleyTool;
@@ -46,6 +51,7 @@ import com.umeng.analytics.MobclickAgent;
 
 import org.adw.library.widgets.discreteseekbar.DiscreteSeekBar;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -79,6 +85,14 @@ public class ReadMangaActivity extends TTSActivity implements OnClickListener {
     private int toPage = 0;
     private ImageView test_iv;
     private DbAdapter db;//数据库
+    private int qureyWordCount = 0, readPage = 0;
+    private String currentMangaName;
+    /**
+     * 时间
+     */
+    private SimpleDateFormat sdf;
+    private Date curDate;
+    private String date;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -106,9 +120,12 @@ public class ReadMangaActivity extends TTSActivity implements OnClickListener {
                 mangaPager.setCurrentItem(toPage);
             }
         }
-        String currentMangaName = intent.getStringExtra("currentMangaName");
+        currentMangaName = intent.getStringExtra("currentMangaName");
         topBar.setTitle(currentMangaName);
 
+        sdf = new SimpleDateFormat("yyyy-MM-dd");
+        curDate = new Date(System.currentTimeMillis());//获取当前时间
+        date = sdf.format(curDate);
         db = new DbAdapter(this);
 
         if (!SharedPreferencesUtils.getBooleanSharedPreferencesData(this, ShareKeys.CLOSE_TUTORIAL, true)) {
@@ -214,6 +231,22 @@ public class ReadMangaActivity extends TTSActivity implements OnClickListener {
 
     private void initUI() {
         mangaPager = (HackyViewPager) findViewById(R.id.manga_viewpager);
+        mangaPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                updateStatisctics();
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
         seekBar = (DiscreteSeekBar) findViewById(R.id.seekbar);
         showSeekBar = findViewById(R.id.show_seek_bar);
         readProgressTv = (TextView) findViewById(R.id.read_progress_tv);
@@ -314,6 +347,49 @@ public class ReadMangaActivity extends TTSActivity implements OnClickListener {
                 }
             }
         });
+    }
+
+    private void updateStatisctics() {
+        try {
+            db.updateStatistics(qureyWordCount, readPage, currentMangaName);
+            if (!date.equals(SharedPreferencesUtils.getSharedPreferencesData(
+                    ReadMangaActivity.this, ShareKeys.STATISTICS_UPDATE_KEY + currentMangaName))) {
+                doStatisctics();
+            }
+        } catch (Exception e) {
+            //有可能空指针 不处理 不能阻断看书进程
+            if (Configure.isTest) {
+                MangaDialog dialog = new MangaDialog(this);
+                dialog.show();
+                dialog.setTitle(e + "");
+            }
+        }
+    }
+
+    private void doStatisctics() {
+        if (TextUtils.isEmpty(LoginBean.getInstance().getUserName())) {
+            return;
+        }
+        try {
+            StatisticsBean item = db.queryStatisticsByBookName(currentMangaName);
+            AVObject object = new AVObject("Statistics");
+            object.put("owner", LoginBean.getInstance().getUserName());
+            object.put("query_word_c", item.getQuery_word_c());
+            object.put("read_page", item.getRead_page());
+            object.put("manga_name", currentMangaName);
+            object.saveInBackground(new SaveCallback() {
+                @Override
+                public void done(AVException e) {
+                    if (LeanCloundUtil.handleLeanResult(ReadMangaActivity.this, e)) {
+                        SharedPreferencesUtils.setSharedPreferencesData
+                                (ReadMangaActivity.this, ShareKeys.STATISTICS_UPDATE_KEY + currentMangaName, date);
+                        db.deleteStatiscticsByBookName(currentMangaName);
+                    }
+                }
+            });
+        } catch (Exception e) {
+            //有可能空指针 不处理 不能阻断看书进程
+        }
     }
 
     private void showSearchDialog() {

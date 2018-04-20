@@ -52,14 +52,14 @@ public class CalendarStatisticsListAdapter extends RecyclerView.Adapter<Calendar
         StatisticsBean item = list.get(position);
         viewHolder.book_title_tv.setText(item.getManga_name());
         viewHolder.query_word_c_tv.setText
-                (UltimateTextSizeUtil.getEmphasizedSpannableString("当天查词量(个):  " +
+                (UltimateTextSizeUtil.getEmphasizedSpannableString("昨日查词量(个):  " +
                                 item.getQuery_word_c(), item.getQuery_word_c() + "",
                         0, context.getResources().getColor(R.color.manga_reader), 0));
         viewHolder.query_word_r_tv.setText(
-                UltimateTextSizeUtil.getEmphasizedSpannableString("当天查词率(个/百页):  " + NumberUtil.doubleDecimals(item.getQuery_word_r())
+                UltimateTextSizeUtil.getEmphasizedSpannableString("昨日查词率(个/百页):  " + NumberUtil.doubleDecimals(item.getQuery_word_r())
                         , NumberUtil.doubleDecimals(item.getQuery_word_r()),
                         0, context.getResources().getColor(R.color.manga_reader), 0));
-        viewHolder.read_word_c_tv.setText(UltimateTextSizeUtil.getEmphasizedSpannableString("当天阅读量(页):  " + item.getRead_page()
+        viewHolder.read_word_c_tv.setText(UltimateTextSizeUtil.getEmphasizedSpannableString("昨日阅读量(页):  " + item.getRead_page()
                 , item.getRead_page() + "",
                 0, context.getResources().getColor(R.color.manga_reader), 0));
         viewHolder.date_tv.setText(WeekUtil.getDateStringWithDate(item.getCreate_at()));

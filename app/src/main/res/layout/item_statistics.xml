@@ -9,9 +9,11 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="100dp"
+        android:layout_height="110dp"
         android:layout_marginBottom="10dp"
-        android:background="@color/white">
+        android:background="@color/white"
+        android:paddingLeft="12dp"
+        android:paddingRight="12dp">
 
 
         <TextView
@@ -26,7 +28,7 @@
             android:singleLine="true"
             android:text="https://www.buzzingandroid.com/tools/android-layout-finder/"
             android:textColor="@color/manga_reader"
-            android:textSize="14sp" />
+            android:textSize="18sp" />
 
         <TextView
             android:id="@+id/query_word_c_tv"
