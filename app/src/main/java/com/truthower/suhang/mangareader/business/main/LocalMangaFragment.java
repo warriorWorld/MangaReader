@@ -101,7 +101,7 @@ public class LocalMangaFragment extends BaseFragment implements
 
         initFilePath();
         initFile();
-        if (!SharedPreferencesUtils.getBooleanSharedPreferencesData(getActivity(), ShareKeys.CLOSE_TUTORIAL, false)) {
+        if (!SharedPreferencesUtils.getBooleanSharedPreferencesData(getActivity(), ShareKeys.CLOSE_TUTORIAL, true)) {
             MangaDialog dialog = new MangaDialog(getActivity());
             dialog.show();
             dialog.setTitle("教程");

@@ -65,7 +65,7 @@ public class DownloadActivity extends BaseActivity implements View.OnClickListen
         super.onCreate(savedInstanceState);
         initUI();
         initPullGridView();
-        if (!SharedPreferencesUtils.getBooleanSharedPreferencesData(this, ShareKeys.CLOSE_TUTORIAL, false)) {
+        if (!SharedPreferencesUtils.getBooleanSharedPreferencesData(this, ShareKeys.CLOSE_TUTORIAL, true)) {
             MangaDialog dialog = new MangaDialog(this);
             dialog.show();
             dialog.setTitle("教程");

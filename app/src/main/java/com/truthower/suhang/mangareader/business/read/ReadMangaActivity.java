@@ -106,7 +106,7 @@ public class ReadMangaActivity extends TTSActivity implements OnClickListener {
         String currentMangaName = intent.getStringExtra("currentMangaName");
         topBar.setTitle(currentMangaName);
 
-        if (!SharedPreferencesUtils.getBooleanSharedPreferencesData(this, ShareKeys.CLOSE_TUTORIAL, false)) {
+        if (!SharedPreferencesUtils.getBooleanSharedPreferencesData(this, ShareKeys.CLOSE_TUTORIAL, true)) {
             MangaDialog dialog = new MangaDialog(this);
             dialog.show();
             dialog.setTitle("教程");
