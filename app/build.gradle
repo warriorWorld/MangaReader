@@ -7,8 +7,8 @@ android {
         applicationId "com.truthower.suhang.mangareader"
         minSdkVersion 17
         targetSdkVersion 25
-        versionCode 31
-        versionName "2.1.2"
+        versionCode 32
+        versionName "3.0.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
@@ -49,9 +49,12 @@ dependencies {
     compile files('libs/Volley.jar')
     compile files('libs/gson-2.1.jar')
     // LeanCloud 基础包
-    compile('cn.leancloud.android:avoscloud-sdk:v4.4.3')
+    compile 'cn.leancloud.android:avoscloud-sdk:v4.4.3'
     //google的flexbox
     compile 'com.google.android:flexbox:0.3.0'
     //上下拉刷新
     compile 'com.github.Aspsine:SwipeToLoadLayout:1.0.4'
+    compile 'com.umeng.sdk:common:latest.integration'
+    compile 'com.umeng.sdk:analytics:latest.integration'
+    compile project(':push')
 }

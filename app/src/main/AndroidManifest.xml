@@ -81,6 +81,16 @@
 
         <service android:name=".business.download.DownloadService"></service>
         <service android:name=".business.download.DownloadIntentService"></service>
-    </application>
 
+        <meta-data
+            android:name="UMENG_APPKEY"
+            android:value="5ad99547f43e48081d0000cd" />
+        <!-- Channel ID用来标识App的推广渠道，作为推送消息时给用户分组的一个维度。-->
+        <meta-data
+            android:name="UMENG_CHANNEL"
+            android:value="manga" />
+        <meta-data
+            android:name="UMENG_MESSAGE_SECRET"
+            android:value="7f36f57339fc5c5549fd9ac474f2ff50"></meta-data>
+    </application>
 </manifest>

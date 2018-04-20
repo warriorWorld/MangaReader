@@ -41,6 +41,7 @@ import com.truthower.suhang.mangareader.widget.dialog.OnlyEditDialog;
 import com.truthower.suhang.mangareader.widget.dialog.TranslateDialog;
 import com.truthower.suhang.mangareader.widget.shotview.ScreenShot;
 import com.truthower.suhang.mangareader.widget.shotview.ShotView;
+import com.umeng.analytics.MobclickAgent;
 
 import org.adw.library.widgets.discreteseekbar.DiscreteSeekBar;
 
@@ -189,6 +190,7 @@ public class ReadMangaActivity extends TTSActivity implements OnClickListener {
 
             @Override
             public void onStopTrackingTouch(DiscreteSeekBar seekBar) {
+                MobclickAgent.onEvent(ReadMangaActivity.this,"seek_bar");
                 if (finalPosition >= 0) {
                     mangaPager.setCurrentItem(finalPosition - 1);
 //                    cutSeekBar();
@@ -235,15 +237,18 @@ public class ReadMangaActivity extends TTSActivity implements OnClickListener {
             @Override
             public void onRightClick() {
                 showSearchDialog();
+                MobclickAgent.onEvent(ReadMangaActivity.this, "translate");
             }
 
             @Override
             public void onTitleClick() {
                 showSearchDialog();
+                MobclickAgent.onEvent(ReadMangaActivity.this, "title_translate");
             }
 
             @Override
             public void onLeftClick() {
+                MobclickAgent.onEvent(ReadMangaActivity.this, "shot_translate");
                 try {
                     baseToast.showToast("开始划词翻译");
 

@@ -27,6 +27,7 @@ import com.truthower.suhang.mangareader.utils.SharedPreferencesUtils;
 import com.truthower.suhang.mangareader.widget.dialog.MangaDialog;
 import com.truthower.suhang.mangareader.widget.dialog.QrDialog;
 import com.truthower.suhang.mangareader.widget.imageview.CircleImage;
+import com.umeng.analytics.MobclickAgent;
 
 public class UserFragment extends BaseFragment implements View.OnClickListener {
     private RelativeLayout collectRl;
@@ -134,14 +135,17 @@ public class UserFragment extends BaseFragment implements View.OnClickListener {
         Intent intent = null;
         switch (v.getId()) {
             case R.id.collect_rl:
+                MobclickAgent.onEvent(getActivity(),"collect_type_collect");
                 intent = new Intent(getActivity(), CollectedActivity.class);
                 intent.putExtra("collectType", Configure.COLLECT_TYPE_COLLECT);
                 break;
             case R.id.waiting_for_update_rl:
+                MobclickAgent.onEvent(getActivity(),"collect_type_wait_for_update");
                 intent = new Intent(getActivity(), CollectedActivity.class);
                 intent.putExtra("collectType", Configure.COLLECT_TYPE_WAIT_FOR_UPDATE);
                 break;
             case R.id.finished_manga_rl:
+                MobclickAgent.onEvent(getActivity(),"collect_type_finished");
                 intent = new Intent(getActivity(), CollectedActivity.class);
                 intent.putExtra("collectType", Configure.COLLECT_TYPE_FINISHED);
                 break;
@@ -152,6 +156,7 @@ public class UserFragment extends BaseFragment implements View.OnClickListener {
                 baseToast.showToast("待开发");
                 break;
             case R.id.download_rl:
+                MobclickAgent.onEvent(getActivity(),"download");
                 intent = new Intent(getActivity(), DownloadActivity.class);
                 break;
             case R.id.user_top_bar_rl:
@@ -161,9 +166,11 @@ public class UserFragment extends BaseFragment implements View.OnClickListener {
                 intent = new Intent(getActivity(), AboutActivity.class);
                 break;
             case R.id.ad_rl:
+                MobclickAgent.onEvent(getActivity(),"ad");
                 intent = new Intent(getActivity(), AdvertisingActivity.class);
                 break;
             case R.id.share_rl:
+                MobclickAgent.onEvent(getActivity(),"share");
                 if (null != onShareAppClickListener) {
                     onShareAppClickListener.onClick();
                 }
