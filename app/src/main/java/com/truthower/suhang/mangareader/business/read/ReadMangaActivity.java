@@ -26,6 +26,7 @@ import com.truthower.suhang.mangareader.bean.YoudaoResponse;
 import com.truthower.suhang.mangareader.business.tag.TagManagerActivity;
 import com.truthower.suhang.mangareader.config.Configure;
 import com.truthower.suhang.mangareader.config.ShareKeys;
+import com.truthower.suhang.mangareader.db.DbAdapter;
 import com.truthower.suhang.mangareader.listener.JsoupCallBack;
 import com.truthower.suhang.mangareader.listener.OnEditResultListener;
 import com.truthower.suhang.mangareader.listener.OnSpeakClickListener;
@@ -77,6 +78,7 @@ public class ReadMangaActivity extends TTSActivity implements OnClickListener {
     private String progressSaveKey = "";
     private int toPage = 0;
     private ImageView test_iv;
+    private DbAdapter db;//数据库
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -106,6 +108,8 @@ public class ReadMangaActivity extends TTSActivity implements OnClickListener {
         }
         String currentMangaName = intent.getStringExtra("currentMangaName");
         topBar.setTitle(currentMangaName);
+
+        db = new DbAdapter(this);
 
         if (!SharedPreferencesUtils.getBooleanSharedPreferencesData(this, ShareKeys.CLOSE_TUTORIAL, true)) {
             MangaDialog dialog = new MangaDialog(this);
@@ -190,7 +194,7 @@ public class ReadMangaActivity extends TTSActivity implements OnClickListener {
 
             @Override
             public void onStopTrackingTouch(DiscreteSeekBar seekBar) {
-                MobclickAgent.onEvent(ReadMangaActivity.this,"seek_bar");
+                MobclickAgent.onEvent(ReadMangaActivity.this, "seek_bar");
                 if (finalPosition >= 0) {
                     mangaPager.setCurrentItem(finalPosition - 1);
 //                    cutSeekBar();
@@ -355,6 +359,8 @@ public class ReadMangaActivity extends TTSActivity implements OnClickListener {
     private void translateWord(final String word) {
         clip.setText(word);
         text2Speech(word);
+        //记录查过的单词
+        db.insertWordsBookTb(word);
         if (SharedPreferencesUtils.getBooleanSharedPreferencesData(this, ShareKeys.CLOSE_TRANSLATE, false)) {
             //关闭自动翻译
             return;
@@ -530,6 +536,7 @@ public class ReadMangaActivity extends TTSActivity implements OnClickListener {
     protected void onDestroy() {
         super.onDestroy();
         saveState();
+        db.closeDb();
     }
 
     @Override

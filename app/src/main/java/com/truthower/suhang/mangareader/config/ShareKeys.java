@@ -23,4 +23,5 @@ public class ShareKeys {
     public static final String IGNORE_THIS_VERSION_KEY = "ignore_this_version_key";
     public static final String ONLINE_MANGA_READ_CHAPTER_POSITION = "online_manga_read_chapter_position";
     public static final String ANNOUNCEMENT_READ_KEY="announcement_read_key";
+    public static final String WORDS_BOOK_PROGRESS_KEY="words_book_progress_key";
 }

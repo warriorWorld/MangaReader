@@ -20,6 +20,7 @@ import com.truthower.suhang.mangareader.business.other.AboutActivity;
 import com.truthower.suhang.mangareader.business.tag.TagFilterActivity;
 import com.truthower.suhang.mangareader.business.user.CollectedActivity;
 import com.truthower.suhang.mangareader.business.user.LoginActivity;
+import com.truthower.suhang.mangareader.business.wordsbook.WordsBookActivity;
 import com.truthower.suhang.mangareader.config.Configure;
 import com.truthower.suhang.mangareader.config.ShareKeys;
 import com.truthower.suhang.mangareader.listener.OnShareAppClickListener;
@@ -57,7 +58,7 @@ public class UserFragment extends BaseFragment implements View.OnClickListener {
             dialog.setTitle("教程");
             dialog.setMessage("1,点击分享App,可以打开该App的下载二维码,让你想分享的人扫描即可下载,也可将该二维码保存(会保存在manga文件夹中)然后发给你想分享的人." +
                     "\n2,想要更新App可以进入设置页检查更新下载最新App" +
-                    "\n3,退出登录可以进入设置页退出"+
+                    "\n3,退出登录可以进入设置页退出" +
                     "\n4,设置页可以关闭本教程");
         }
         return v;
@@ -135,17 +136,17 @@ public class UserFragment extends BaseFragment implements View.OnClickListener {
         Intent intent = null;
         switch (v.getId()) {
             case R.id.collect_rl:
-                MobclickAgent.onEvent(getActivity(),"collect_type_collect");
+                MobclickAgent.onEvent(getActivity(), "collect_type_collect");
                 intent = new Intent(getActivity(), CollectedActivity.class);
                 intent.putExtra("collectType", Configure.COLLECT_TYPE_COLLECT);
                 break;
             case R.id.waiting_for_update_rl:
-                MobclickAgent.onEvent(getActivity(),"collect_type_wait_for_update");
+                MobclickAgent.onEvent(getActivity(), "collect_type_wait_for_update");
                 intent = new Intent(getActivity(), CollectedActivity.class);
                 intent.putExtra("collectType", Configure.COLLECT_TYPE_WAIT_FOR_UPDATE);
                 break;
             case R.id.finished_manga_rl:
-                MobclickAgent.onEvent(getActivity(),"collect_type_finished");
+                MobclickAgent.onEvent(getActivity(), "collect_type_finished");
                 intent = new Intent(getActivity(), CollectedActivity.class);
                 intent.putExtra("collectType", Configure.COLLECT_TYPE_FINISHED);
                 break;
@@ -153,10 +154,11 @@ public class UserFragment extends BaseFragment implements View.OnClickListener {
                 baseToast.showToast("待开发");
                 break;
             case R.id.new_word_book_rl:
-                baseToast.showToast("待开发");
+                intent = new Intent(getActivity(), WordsBookActivity.class);
+                MobclickAgent.onEvent(getActivity(), "new_word_book");
                 break;
             case R.id.download_rl:
-                MobclickAgent.onEvent(getActivity(),"download");
+                MobclickAgent.onEvent(getActivity(), "download");
                 intent = new Intent(getActivity(), DownloadActivity.class);
                 break;
             case R.id.user_top_bar_rl:
@@ -166,11 +168,11 @@ public class UserFragment extends BaseFragment implements View.OnClickListener {
                 intent = new Intent(getActivity(), AboutActivity.class);
                 break;
             case R.id.ad_rl:
-                MobclickAgent.onEvent(getActivity(),"ad");
+                MobclickAgent.onEvent(getActivity(), "ad");
                 intent = new Intent(getActivity(), AdvertisingActivity.class);
                 break;
             case R.id.share_rl:
-                MobclickAgent.onEvent(getActivity(),"share");
+                MobclickAgent.onEvent(getActivity(), "share");
                 if (null != onShareAppClickListener) {
                     onShareAppClickListener.onClick();
                 }

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_marginBottom="120dp">
+
+
+    <TextView
+        android:id="@+id/word"
+        android:layout_width="match_parent"
+        android:layout_height="300dp"
+        android:layout_centerInParent="true"
+        android:layout_marginLeft="20dp"
+        android:background="@drawable/word_bg"
+        android:gravity="center"
+        android:padding="26dp"
+        android:text="Stranger"
+        android:textSize="38sp"
+        android:visibility="visible" />
+
+
+</RelativeLayout>
