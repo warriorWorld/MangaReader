@@ -25,6 +25,8 @@ import com.truthower.suhang.mangareader.adapter.ReadMangaAdapter;
 import com.truthower.suhang.mangareader.base.BaseActivity;
 import com.truthower.suhang.mangareader.base.TTSActivity;
 import com.truthower.suhang.mangareader.bean.LoginBean;
+import com.truthower.suhang.mangareader.bean.MangaBean;
+import com.truthower.suhang.mangareader.bean.MangaListBean;
 import com.truthower.suhang.mangareader.bean.StatisticsBean;
 import com.truthower.suhang.mangareader.bean.YoudaoResponse;
 import com.truthower.suhang.mangareader.business.tag.TagManagerActivity;
@@ -50,7 +52,10 @@ import com.truthower.suhang.mangareader.widget.shotview.ShotView;
 import com.umeng.analytics.MobclickAgent;
 
 import org.adw.library.widgets.discreteseekbar.DiscreteSeekBar;
+import org.jsoup.Jsoup;
+import org.jsoup.select.Elements;
 
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -341,7 +346,22 @@ public class ReadMangaActivity extends TTSActivity implements OnClickListener {
 
     private void updateStatisctics() {
         try {
-            db.updateStatistics(qureyWordCount, readPage, realMangaName);
+            new Thread() {
+                @Override
+                public void run() {
+                    try {
+                        db.updateStatistics(qureyWordCount, readPage, realMangaName);
+                        qureyWordCount = 0;
+                        readPage = 0;
+                    } catch (Exception e) {
+                        if (Configure.isTest) {
+                            MangaDialog dialog = new MangaDialog(ReadMangaActivity.this);
+                            dialog.show();
+                            dialog.setTitle(e + "");
+                        }
+                    }
+                }
+            }.start();
             if (!date.equals(SharedPreferencesUtils.getSharedPreferencesData(
                     ReadMangaActivity.this, ShareKeys.STATISTICS_UPDATE_KEY + realMangaName))) {
                 doStatisctics();
