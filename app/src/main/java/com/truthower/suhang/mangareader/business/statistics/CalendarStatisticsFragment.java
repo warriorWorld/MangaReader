@@ -126,16 +126,18 @@ public class CalendarStatisticsFragment extends BaseStatisticsFragment implement
     private ArrayList<StatisticsBean> handleList(ArrayList<StatisticsBean> list) {
         ArrayList<StatisticsBean> res = new ArrayList<>();
         for (int i = 0; i < list.size(); i++) {
-            //每月第一条不统计 因为这些是比对出来的数据 每月第一条没得比对  并且进度得向前才行
-            StatisticsBean item = list.get(i);
-            int todayQueryC = item.getQuery_word_c();
-            int todayReadC = item.getRead_page();
-            if (todayReadC == 0) {
-                item.setQuery_word_r(0);
-            } else {
-                item.setQuery_word_r(((float) todayQueryC * 100 / (float) todayReadC));
+            if (i > 0) {
+                //每月第一条不统计 因为这些是比对出来的数据 每月第一条没得比对  并且进度得向前才行
+                StatisticsBean item = list.get(i);
+                int todayQueryC = item.getQuery_word_c();
+                int todayReadC = item.getRead_page();
+                if (todayReadC == 0) {
+                    item.setQuery_word_r(0);
+                } else {
+                    item.setQuery_word_r(((float) todayQueryC * 100 / (float) todayReadC));
+                }
+                res.add(item);
             }
-            res.add(item);
         }
         return res;
     }
