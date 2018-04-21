@@ -70,7 +70,8 @@ public class UserFragment extends BaseFragment implements View.OnClickListener {
             dialog.setMessage("1,点击分享App,可以打开该App的下载二维码,让你想分享的人扫描即可下载,也可将该二维码保存(会保存在manga文件夹中)然后发给你想分享的人." +
                     "\n2,想要更新App可以进入设置页检查更新下载最新App" +
                     "\n3,退出登录可以进入设置页退出" +
-                    "\n4,设置页可以关闭本教程");
+                    "\n4,设置页可以关闭本教程" +
+                    "\n5,点击用户名称位置可以进入个人中心页");
         }
         return v;
     }

@@ -139,7 +139,8 @@ public class WebMangaDetailsActivity extends TTSActivity implements AdapterView.
                     "\n2,点击左上角漫画封面可显示漫画介绍" +
                     "\n3,点击右上角图标可以下载漫画" +
                     "\n4,点击漫画作者可以按漫画作者搜索漫画" +
-                    "\n5,点击漫画类型可以按漫画类型搜索漫画");
+                    "\n5,点击漫画类型可以按漫画类型搜索漫画" +
+                    "\n6,点击下方按钮给漫画评论和评分了");
         }
     }
 
