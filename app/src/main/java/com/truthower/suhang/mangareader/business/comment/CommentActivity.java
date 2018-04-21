@@ -30,10 +30,12 @@ import com.truthower.suhang.mangareader.bean.LoginBean;
 import com.truthower.suhang.mangareader.bean.MangaBean;
 import com.truthower.suhang.mangareader.business.detail.WebMangaDetailsActivity;
 import com.truthower.suhang.mangareader.config.Configure;
+import com.truthower.suhang.mangareader.config.ShareKeys;
 import com.truthower.suhang.mangareader.listener.OnCommenttemClickListener;
 import com.truthower.suhang.mangareader.listener.OnRecycleItemClickListener;
 import com.truthower.suhang.mangareader.utils.DisplayUtil;
 import com.truthower.suhang.mangareader.utils.LeanCloundUtil;
+import com.truthower.suhang.mangareader.utils.SharedPreferencesUtils;
 import com.truthower.suhang.mangareader.widget.bar.TopBar;
 import com.truthower.suhang.mangareader.widget.dialog.SingleLoadBarUtil;
 import com.truthower.suhang.mangareader.widget.recyclerview.LinearLayoutMangerWithoutBug;
@@ -113,6 +115,7 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
                             item.setReply_user(list.get(i).getString("reply_user"));
                             item.setOwner(list.get(i).getString("owner"));
                             item.setComment_content(list.get(i).getString("comment_content"));
+                            item.setObjectId(list.get(i).getObjectId());
                             commentList.add(item);
                         }
                     }
@@ -129,12 +132,12 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
                 adapter.setOnCommenttemClickListener(new OnCommenttemClickListener() {
                     @Override
                     public void onOOClick(int position) {
-
+                        doOO(commentList.get(position).getObjectId());
                     }
 
                     @Override
                     public void onXXClick(int position) {
-
+                        doXX(commentList.get(position).getObjectId());
                     }
 
                     @Override
@@ -177,6 +180,80 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
                     commentEt.setText("");
                     closeKeyBroad();
                     doGetData();
+                }
+            }
+        });
+    }
+
+    private void doOO(String objId) {
+        if (SharedPreferencesUtils.getBooleanSharedPreferencesData(this,
+                ShareKeys.COMMENT_OOXX_KEY + objId, false)) {
+            baseToast.showToast("你已经点过一次了...");
+            return;
+        }
+        String userName = LoginBean.getInstance().getUserName(this);
+        if (TextUtils.isEmpty(userName)) {
+            return;
+        }
+        SharedPreferencesUtils.setSharedPreferencesData
+                (this, ShareKeys.COMMENT_OOXX_KEY + objId, true);
+        SingleLoadBarUtil.getInstance().showLoadBar(CommentActivity.this);
+
+        AVQuery query = new AVQuery("Comment");
+        query.whereEqualTo("objectId", objId);
+        query.findInBackground(new FindCallback<AVObject>() {
+            @Override
+            public void done(List<AVObject> list, AVException e) {
+                SingleLoadBarUtil.getInstance().dismissLoadBar();
+                if (LeanCloundUtil.handleLeanResult(CommentActivity.this, e)) {
+                    commentList = new ArrayList<>();
+                    if (null != list && list.size() > 0) {
+                        list.get(0).increment("oo_number");
+                        list.get(0).setFetchWhenSave(true);
+                        list.get(0).saveInBackground(new SaveCallback() {
+                            @Override
+                            public void done(AVException e) {
+                                doGetData();
+                            }
+                        });
+                    }
+                }
+            }
+        });
+    }
+
+    private void doXX(String objId) {
+        if (SharedPreferencesUtils.getBooleanSharedPreferencesData(this,
+                ShareKeys.COMMENT_OOXX_KEY + objId, false)) {
+            baseToast.showToast("你已经点过一次了...");
+            return;
+        }
+        String userName = LoginBean.getInstance().getUserName(this);
+        if (TextUtils.isEmpty(userName)) {
+            return;
+        }
+        SharedPreferencesUtils.setSharedPreferencesData
+                (this, ShareKeys.COMMENT_OOXX_KEY + objId, true);
+        SingleLoadBarUtil.getInstance().showLoadBar(CommentActivity.this);
+
+        AVQuery query = new AVQuery("Comment");
+        query.whereEqualTo("objectId", objId);
+        query.findInBackground(new FindCallback<AVObject>() {
+            @Override
+            public void done(List<AVObject> list, AVException e) {
+                SingleLoadBarUtil.getInstance().dismissLoadBar();
+                if (LeanCloundUtil.handleLeanResult(CommentActivity.this, e)) {
+                    commentList = new ArrayList<>();
+                    if (null != list && list.size() > 0) {
+                        list.get(0).increment("xx_number");
+                        list.get(0).setFetchWhenSave(true);
+                        list.get(0).saveInBackground(new SaveCallback() {
+                            @Override
+                            public void done(AVException e) {
+                                doGetData();
+                            }
+                        });
+                    }
                 }
             }
         });

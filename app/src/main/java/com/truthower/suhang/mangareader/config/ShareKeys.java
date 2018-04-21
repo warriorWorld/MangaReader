@@ -25,4 +25,5 @@ public class ShareKeys {
     public static final String ANNOUNCEMENT_READ_KEY="announcement_read_key";
     public static final String WORDS_BOOK_PROGRESS_KEY="words_book_progress_key";
     public static final String STATISTICS_UPDATE_KEY="statistics_update_key";
+    public static final String COMMENT_OOXX_KEY="comment_ooxx_key";
 }

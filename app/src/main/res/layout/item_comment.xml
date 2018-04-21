@@ -5,12 +5,12 @@
     android:id="@+id/item_comment_rl"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/divide">
+    android:background="@color/manga_reader">
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="10dp"
+        android:layout_marginBottom="1px"
         android:background="@color/white"
         android:paddingLeft="12dp"
         android:paddingRight="12dp">
@@ -44,7 +44,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/user_name_tv"
-            android:layout_marginTop="5dp"
+            android:layout_marginTop="10dp"
             android:text="content content content content content content content content content content content content content content content content content content content content content"
             android:textColor="@color/main_text_color"
             android:textSize="14sp" />
@@ -56,7 +56,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/comment_content_tv"
             android:layout_marginBottom="10dp"
-            android:layout_marginTop="5dp"
+            android:layout_marginTop="10dp"
             android:text="2018-4-21 16:57:48"
             android:textColor="@color/main_text_color_gray"
             android:textSize="14sp" />
@@ -67,7 +67,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/comment_content_tv"
             android:layout_marginRight="8dp"
-            android:layout_marginTop="5dp"
+            android:layout_marginTop="10dp"
             android:layout_toLeftOf="@+id/xx_tv"
             android:text="OO"
             android:textColor="@color/manga_reader"
@@ -79,7 +79,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:layout_below="@+id/comment_content_tv"
-            android:layout_marginTop="5dp"
+            android:layout_marginTop="10dp"
             android:text="XX"
             android:textColor="@color/manga_reader_blue"
             android:textSize="16sp" />
