@@ -147,7 +147,11 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
 
                     @Override
                     public void onReplyClick(int position) {
-
+                        replyUser = commentList.get(position).getOwner();
+                        commentEt.setText("**回复  " + replyUser + "**\n");
+                        commentEt.setSelection(commentEt.getText().toString().length());
+                        commentEt.requestFocus();
+                        showKeyBroad();
                     }
                 });
                 commentRcv.setAdapter(adapter);

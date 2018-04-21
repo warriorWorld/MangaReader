@@ -5,6 +5,7 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.AdapterView;
@@ -19,6 +20,7 @@ import com.avos.avoscloud.AVException;
 import com.avos.avoscloud.AVObject;
 import com.avos.avoscloud.AVQuery;
 import com.avos.avoscloud.CloudQueryCallback;
+import com.avos.avoscloud.CountCallback;
 import com.avos.avoscloud.FindCallback;
 import com.avos.avoscloud.SaveCallback;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -139,6 +141,7 @@ public class WebMangaDetailsActivity extends TTSActivity implements AdapterView.
                     "\n4,点击漫画作者可以按漫画作者搜索漫画" +
                     "\n5,点击漫画类型可以按漫画类型搜索漫画");
         }
+        doGetCommentCount();
     }
 
     @Override
@@ -685,6 +688,19 @@ public class WebMangaDetailsActivity extends TTSActivity implements AdapterView.
         });
     }
 
+    private void doGetCommentCount() {
+        AVQuery<AVObject> query = new AVQuery<>("Comment");
+        query.whereEqualTo("mangaUrl", mangaUrl);
+        query.countInBackground(new CountCallback() {
+            @Override
+            public void done(int i, AVException e) {
+                if (LeanCloundUtil.handleLeanResult(WebMangaDetailsActivity.this, e)) {
+                    commentCountTv.setText(i + "");
+                }
+            }
+        });
+    }
+
     private void refreshGrade() {
         if (null == gradeList || gradeList.size() == 0) {
             return;
@@ -989,7 +1005,7 @@ public class WebMangaDetailsActivity extends TTSActivity implements AdapterView.
             case R.id.comment_msg_ll:
                 Intent intent = new Intent(WebMangaDetailsActivity.this, CommentActivity.class);
                 intent.putExtra("mangaName", currentManga.getName());
-                intent.putExtra("mangaUrl",mangaUrl);
+                intent.putExtra("mangaUrl", mangaUrl);
                 startActivity(intent);
                 break;
         }
