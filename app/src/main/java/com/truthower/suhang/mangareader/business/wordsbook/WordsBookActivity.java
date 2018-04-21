@@ -56,26 +56,30 @@ public class WordsBookActivity extends TTSActivity implements OnClickListener {
     @Override
     protected void onResume() {
         super.onResume();
-        text2Speech(wordsList.get(nowPosition).getWord());
+//        text2Speech(wordsList.get(nowPosition).getWord());
     }
 
     private void refresh() {
-        wordsList = db.queryAllWordsBook();
-        if (null == wordsList || wordsList.size() == 0) {
-            emptyView.setVisibility(View.VISIBLE);
-            killBtn.setVisibility(View.GONE);
-        } else {
-            emptyView.setVisibility(View.GONE);
-            killBtn.setVisibility(View.VISIBLE);
-        }
         try {
-            WordsBookBean item = wordsList.get(nowPosition);
-            topBarRight.setText("查询次数:" + item.getTime());
-            topBarLeft.setText("总计:" + wordsList.size() + "个生词,当前位置:" + (nowPosition + 1));
-        } catch (IndexOutOfBoundsException e) {
+            wordsList = db.queryAllWordsBook();
+            if (null == wordsList || wordsList.size() == 0) {
+                emptyView.setVisibility(View.VISIBLE);
+                killBtn.setVisibility(View.GONE);
+            } else {
+                emptyView.setVisibility(View.GONE);
+                killBtn.setVisibility(View.VISIBLE);
+            }
+            try {
+                WordsBookBean item = wordsList.get(nowPosition);
+                topBarRight.setText("查询次数:" + item.getTime());
+                topBarLeft.setText("总计:" + wordsList.size() + "个生词,当前位置:" + (nowPosition + 1));
+            } catch (IndexOutOfBoundsException e) {
+
+            }
+            initViewPager();
+        } catch (Exception e) {
 
         }
-        initViewPager();
     }
 
 
