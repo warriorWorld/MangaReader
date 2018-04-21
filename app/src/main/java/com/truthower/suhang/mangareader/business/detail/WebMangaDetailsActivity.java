@@ -989,6 +989,7 @@ public class WebMangaDetailsActivity extends TTSActivity implements AdapterView.
             case R.id.comment_msg_ll:
                 Intent intent = new Intent(WebMangaDetailsActivity.this, CommentActivity.class);
                 intent.putExtra("mangaName", currentManga.getName());
+                intent.putExtra("mangaUrl",mangaUrl);
                 startActivity(intent);
                 break;
         }

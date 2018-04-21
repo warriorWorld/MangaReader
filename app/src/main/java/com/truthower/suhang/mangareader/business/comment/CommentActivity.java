@@ -1,5 +1,6 @@
 package com.truthower.suhang.mangareader.business.comment;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
@@ -8,6 +9,8 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.text.TextUtils;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import com.aspsine.swipetoloadlayout.OnLoadMoreListener;
@@ -17,6 +20,7 @@ import com.avos.avoscloud.AVException;
 import com.avos.avoscloud.AVObject;
 import com.avos.avoscloud.AVQuery;
 import com.avos.avoscloud.FindCallback;
+import com.avos.avoscloud.SaveCallback;
 import com.truthower.suhang.mangareader.R;
 import com.truthower.suhang.mangareader.adapter.CommentAdapter;
 import com.truthower.suhang.mangareader.adapter.OnlineMangaRecyclerListAdapter;
@@ -47,30 +51,39 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
     private CommentAdapter adapter;
     private RecyclerView commentRcv;
     private String mangaName;
+    private EditText commentEt;
+    private TextView sentCommentTv;
+    private String replyUser = "";
+    private String mangaUrl;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Intent intent = getIntent();
         mangaName = intent.getStringExtra("mangaName");
+        mangaUrl = intent.getStringExtra("mangaUrl");
         initUI();
         doGetData();
     }
 
     private void initUI() {
-        commentRcv = (RecyclerView) findViewById(R.id.swipe_target);
+        commentRcv = (RecyclerView) findViewById(R.id.only_rcv);
         commentRcv.setLayoutManager
                 (new LinearLayoutMangerWithoutBug
                         (this, LinearLayoutManager.VERTICAL, false));
         commentRcv.setFocusableInTouchMode(false);
         commentRcv.setFocusable(false);
         commentRcv.setHasFixedSize(true);
+        commentEt = (EditText) findViewById(R.id.comment_et);
+        sentCommentTv = (TextView) findViewById(R.id.sent_comment_tv);
+
+        sentCommentTv.setOnClickListener(this);
         baseTopBar.setTitle("评论");
     }
 
     @Override
     protected int getLayoutId() {
-        return R.layout.collect_manga_list;
+        return R.layout.activity_comment;
     }
 
     private void doGetData() {
@@ -143,8 +156,63 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
         }
     }
 
+    private void doComment() {
+        String userName = LoginBean.getInstance().getUserName(this);
+        if (TextUtils.isEmpty(userName)) {
+            return;
+        }
+        SingleLoadBarUtil.getInstance().showLoadBar(CommentActivity.this);
+
+        AVObject object = new AVObject("Comment");
+        object.put("owner", userName);
+        object.put("reply_user", replyUser);
+        object.put("mangaUrl", mangaUrl);
+        object.put("mangaName", mangaName);
+        object.put("comment_content", commentEt.getText().toString().trim());
+        object.saveInBackground(new SaveCallback() {
+            @Override
+            public void done(AVException e) {
+                SingleLoadBarUtil.getInstance().dismissLoadBar();
+                if (LeanCloundUtil.handleLeanResult(CommentActivity.this, e)) {
+                    commentEt.setText("");
+                    closeKeyBroad();
+                    doGetData();
+                }
+            }
+        });
+    }
+
+    public void showKeyBroad() {
+        // 自动弹出键盘
+        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+//        imm.showSoftInput(translateET, InputMethodManager.RESULT_SHOWN);
+        imm.toggleSoftInput(InputMethodManager.SHOW_FORCED,
+                InputMethodManager.HIDE_IMPLICIT_ONLY);
+    }
+
+    private void closeKeyBroad() {
+        // 隐藏键盘
+        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.showSoftInput(commentEt, InputMethodManager.SHOW_FORCED);
+        imm.hideSoftInputFromWindow(commentEt.getWindowToken(), 0);
+    }
+
+    private boolean checkData() {
+        if (TextUtils.isEmpty(commentEt.getText().toString().trim())) {
+            baseToast.showToast("不能为空!");
+            return false;
+        }
+        return true;
+    }
+
     @Override
     public void onClick(View v) {
-
+        switch (v.getId()) {
+            case R.id.sent_comment_tv:
+                if (checkData()) {
+                    doComment();
+                }
+                break;
+        }
     }
 }

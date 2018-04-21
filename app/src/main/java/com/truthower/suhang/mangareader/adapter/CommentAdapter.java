@@ -80,6 +80,8 @@ public class CommentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                     }
                 }
             });
+            ((NormalViewHolder) viewHolder).ooTv.setText("OO [" + item.getOo_number() + "]");
+            ((NormalViewHolder) viewHolder).xxTv.setText("XX [" + item.getXx_number() + "]");
             ((NormalViewHolder) viewHolder).ooTv.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {

@@ -14,7 +14,7 @@
     <RelativeLayout
         android:id="@+id/comment_rl"
         android:layout_width="match_parent"
-        android:layout_height="50dp"
+        android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:background="@color/white">
 
@@ -24,18 +24,21 @@
             android:background="@color/manga_reader"></View>
 
         <EditText
-            android:id="@+id/user_id_et"
+            android:id="@+id/comment_et"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
+            android:layout_marginBottom="13dp"
             android:layout_marginLeft="13dp"
             android:layout_marginRight="5dp"
+            android:layout_marginTop="13dp"
             android:layout_toLeftOf="@+id/sent_comment_tv"
             android:background="@null"
-            android:hint="请输入评论内容"
+            android:hint="请输入评论内容(最多120字)"
+            android:maxLength="120"
             android:textColor="@color/main_text_color"
             android:textColorHint="@color/main_text_color_gray"
-            android:textSize="@dimen/main_text_size" />
+            android:textSize="13sp" />
 
         <TextView
             android:id="@+id/sent_comment_tv"
