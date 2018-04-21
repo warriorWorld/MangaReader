@@ -80,6 +80,9 @@
         <activity android:name=".business.ad.AdvertisingActivity"></activity>
         <activity android:name=".business.wordsbook.WordsBookActivity"></activity>
         <activity android:name=".business.statistics.StatisticsActivity"></activity>
+        <activity
+            android:name=".business.comment.CommentActivity"
+            android:windowSoftInputMode="adjustResize"></activity>
 
         <service android:name=".business.download.DownloadService"></service>
         <service android:name=".business.download.DownloadIntentService"></service>

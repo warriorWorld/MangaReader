@@ -18,6 +18,7 @@ import com.truthower.suhang.mangareader.R;
 import com.truthower.suhang.mangareader.listener.OnGradeDialogSelectedListener;
 import com.truthower.suhang.mangareader.listener.OnRecycleItemClickListener;
 import com.truthower.suhang.mangareader.widget.layout.StarLinearlayout;
+import com.truthower.suhang.mangareader.widget.toast.EasyToast;
 
 
 /**
@@ -68,6 +69,11 @@ public class GradeDialog extends Dialog {
             public void onClick(View v) {
                 dismiss();
                 if (null != onGradeDialogSelectedListener) {
+                    if (starLinearlayout.getStarNum() == 0) {
+                        EasyToast toast = new EasyToast(context);
+                        toast.showToast("最低1星.");
+                        return;
+                    }
                     onGradeDialogSelectedListener.onSelected(starLinearlayout.getStarNum());
                 }
             }

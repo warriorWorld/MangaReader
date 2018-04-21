@@ -3,6 +3,7 @@ package com.truthower.suhang.mangareader.business.comment;
 import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.text.TextUtils;
@@ -17,17 +18,21 @@ import com.avos.avoscloud.AVObject;
 import com.avos.avoscloud.AVQuery;
 import com.avos.avoscloud.FindCallback;
 import com.truthower.suhang.mangareader.R;
+import com.truthower.suhang.mangareader.adapter.CommentAdapter;
 import com.truthower.suhang.mangareader.adapter.OnlineMangaRecyclerListAdapter;
 import com.truthower.suhang.mangareader.base.BaseActivity;
+import com.truthower.suhang.mangareader.bean.CommentBean;
 import com.truthower.suhang.mangareader.bean.LoginBean;
 import com.truthower.suhang.mangareader.bean.MangaBean;
 import com.truthower.suhang.mangareader.business.detail.WebMangaDetailsActivity;
 import com.truthower.suhang.mangareader.config.Configure;
+import com.truthower.suhang.mangareader.listener.OnCommenttemClickListener;
 import com.truthower.suhang.mangareader.listener.OnRecycleItemClickListener;
 import com.truthower.suhang.mangareader.utils.DisplayUtil;
 import com.truthower.suhang.mangareader.utils.LeanCloundUtil;
 import com.truthower.suhang.mangareader.widget.bar.TopBar;
 import com.truthower.suhang.mangareader.widget.dialog.SingleLoadBarUtil;
+import com.truthower.suhang.mangareader.widget.recyclerview.LinearLayoutMangerWithoutBug;
 import com.truthower.suhang.mangareader.widget.recyclerview.RecyclerGridDecoration;
 
 import java.util.ArrayList;
@@ -37,50 +42,30 @@ import java.util.List;
  * Created by Administrator on 2017/7/29.
  */
 
-public class CommentActivity extends BaseActivity implements OnRefreshListener, OnLoadMoreListener {
-    private View emptyView;
-    private ArrayList<MangaBean> collectedMangaList = new ArrayList<>();
-    private int collectType;
-    private OnlineMangaRecyclerListAdapter adapter;
-    private RecyclerView mangaRcv;
-    private SwipeToLoadLayout swipeToLoadLayout;
-    private TextView totalCollectTv;
+public class CommentActivity extends BaseActivity implements View.OnClickListener {
+    private ArrayList<CommentBean> commentList = new ArrayList<>();
+    private CommentAdapter adapter;
+    private RecyclerView commentRcv;
+    private String mangaName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Intent intent = getIntent();
-        collectType = intent.getIntExtra("collectType", Configure.COLLECT_TYPE_COLLECT);
+        mangaName = intent.getStringExtra("mangaName");
         initUI();
         doGetData();
     }
 
     private void initUI() {
-        totalCollectTv = (TextView) findViewById(R.id.total_collect_tv);
-        swipeToLoadLayout = (SwipeToLoadLayout) findViewById(R.id.swipeToLoadLayout);
-        swipeToLoadLayout.setOnRefreshListener(this);
-        swipeToLoadLayout.setOnLoadMoreListener(this);
-        mangaRcv = (RecyclerView) findViewById(R.id.swipe_target);
-        mangaRcv.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
-        mangaRcv.setFocusableInTouchMode(false);
-        mangaRcv.setFocusable(false);
-        mangaRcv.setHasFixedSize(true);
-        TopBar topBar = (TopBar) findViewById(R.id.gradient_bar);
-        topBar.setVisibility(View.GONE);
-
-        emptyView = findViewById(R.id.empty_view);
-
-        switch (collectType) {
-            case Configure.COLLECT_TYPE_COLLECT:
-                baseTopBar.setTitle("我的收藏");
-                break;
-            case Configure.COLLECT_TYPE_WAIT_FOR_UPDATE:
-                baseTopBar.setTitle("正在追更");
-                break;
-            case Configure.COLLECT_TYPE_FINISHED:
-                baseTopBar.setTitle("我看完的");
-                break;
-        }
+        commentRcv = (RecyclerView) findViewById(R.id.swipe_target);
+        commentRcv.setLayoutManager
+                (new LinearLayoutMangerWithoutBug
+                        (this, LinearLayoutManager.VERTICAL, false));
+        commentRcv.setFocusableInTouchMode(false);
+        commentRcv.setFocusable(false);
+        commentRcv.setHasFixedSize(true);
+        baseTopBar.setTitle("评论");
     }
 
     @Override
@@ -94,40 +79,28 @@ public class CommentActivity extends BaseActivity implements OnRefreshListener, 
             return;
         }
         SingleLoadBarUtil.getInstance().showLoadBar(CommentActivity.this);
-        AVQuery<AVObject> query = new AVQuery<>("Collected");
-        query.whereEqualTo("owner", LoginBean.getInstance().getUserName());
+        AVQuery<AVObject> query = new AVQuery<>("Comment");
+        query.whereEqualTo("mangaName", mangaName);
         query.limit(999);
         query.findInBackground(new FindCallback<AVObject>() {
             @Override
             public void done(List<AVObject> list, AVException e) {
                 SingleLoadBarUtil.getInstance().dismissLoadBar();
                 if (LeanCloundUtil.handleLeanResult(CommentActivity.this, e)) {
-                    collectedMangaList = new ArrayList<MangaBean>();
+                    commentList = new ArrayList<>();
                     if (null != list && list.size() > 0) {
-                        MangaBean item;
+                        CommentBean item;
                         for (int i = 0; i < list.size(); i++) {
-                            item = new MangaBean();
-                            item.setName(list.get(i).getString("mangaName"));
-                            item.setWebThumbnailUrl(list.get(i).getString("webThumbnailUrl"));
-                            item.setUrl(list.get(i).getString("mangaUrl"));
-
-                            switch (collectType) {
-                                case Configure.COLLECT_TYPE_COLLECT:
-                                    if (!list.get(i).getBoolean("finished")) {
-                                        collectedMangaList.add(item);
-                                    }
-                                    break;
-                                case Configure.COLLECT_TYPE_WAIT_FOR_UPDATE:
-                                    if (list.get(i).getBoolean("top")) {
-                                        collectedMangaList.add(item);
-                                    }
-                                    break;
-                                case Configure.COLLECT_TYPE_FINISHED:
-                                    if (list.get(i).getBoolean("finished")) {
-                                        collectedMangaList.add(item);
-                                    }
-                                    break;
-                            }
+                            item = new CommentBean();
+                            item.setCreate_at(list.get(i).getCreatedAt());
+                            item.setMangaName(list.get(i).getString("mangaName"));
+                            item.setMangaUrl(list.get(i).getString("mangaUrl"));
+                            item.setOo_number(list.get(i).getInt("oo_number"));
+                            item.setXx_number(list.get(i).getInt("xx_number"));
+                            item.setReply_user(list.get(i).getString("reply_user"));
+                            item.setOwner(list.get(i).getString("owner"));
+                            item.setComment_content(list.get(i).getString("comment_content"));
+                            commentList.add(item);
                         }
                     }
                     initListView();
@@ -138,56 +111,40 @@ public class CommentActivity extends BaseActivity implements OnRefreshListener, 
 
     private void initListView() {
         try {
-            if (null == collectedMangaList || collectedMangaList.size() <= 0) {
-                emptyView.setVisibility(View.VISIBLE);
-            } else {
-                emptyView.setVisibility(View.GONE);
-            }
             if (null == adapter) {
-                adapter = new OnlineMangaRecyclerListAdapter(this, collectedMangaList);
-                adapter.setOnRecycleItemClickListener(new OnRecycleItemClickListener() {
+                adapter = new CommentAdapter(this, commentList);
+                adapter.setOnCommenttemClickListener(new OnCommenttemClickListener() {
                     @Override
-                    public void onItemClick(int position) {
-                        Intent intent = new Intent(CommentActivity.this, WebMangaDetailsActivity.class);
-                        intent.putExtra("mangaUrl", collectedMangaList.get(position).getUrl());
-                        startActivity(intent);
+                    public void onOOClick(int position) {
+
+                    }
+
+                    @Override
+                    public void onXXClick(int position) {
+
+                    }
+
+                    @Override
+                    public void onUserNameClick(int position) {
+
+                    }
+
+                    @Override
+                    public void onReplyClick(int position) {
+
                     }
                 });
-                mangaRcv.setAdapter(adapter);
-                ColorDrawable dividerDrawable = new ColorDrawable(0x00000000) {
-                    @Override
-                    public int getIntrinsicHeight() {
-                        return DisplayUtil.dip2px(CommentActivity.this, 8);
-                    }
-
-                    @Override
-                    public int getIntrinsicWidth() {
-                        return DisplayUtil.dip2px(CommentActivity.this, 8);
-                    }
-                };
-                RecyclerGridDecoration itemDecoration = new RecyclerGridDecoration(this,
-                        dividerDrawable, true);
-                mangaRcv.addItemDecoration(itemDecoration);
+                commentRcv.setAdapter(adapter);
             } else {
-                adapter.setList(collectedMangaList);
+                adapter.setDatas(commentList);
                 adapter.notifyDataSetChanged();
             }
-            totalCollectTv.setText(collectedMangaList.size() + "");
         } catch (Exception e) {
         }
-        swipeToLoadLayout.setRefreshing(false);
-        swipeToLoadLayout.setLoadingMore(false);
-    }
-
-
-    @Override
-    public void onLoadMore() {
-        swipeToLoadLayout.setRefreshing(false);
-        swipeToLoadLayout.setLoadingMore(false);
     }
 
     @Override
-    public void onRefresh() {
-        doGetData();
+    public void onClick(View v) {
+
     }
 }

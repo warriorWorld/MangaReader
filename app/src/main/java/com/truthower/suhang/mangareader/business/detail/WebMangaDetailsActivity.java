@@ -32,6 +32,7 @@ import com.truthower.suhang.mangareader.bean.DownloadBean;
 import com.truthower.suhang.mangareader.bean.GradeBean;
 import com.truthower.suhang.mangareader.bean.LoginBean;
 import com.truthower.suhang.mangareader.bean.MangaBean;
+import com.truthower.suhang.mangareader.business.comment.CommentActivity;
 import com.truthower.suhang.mangareader.business.download.DownloadActivity;
 import com.truthower.suhang.mangareader.business.download.DownloadMangaManager;
 import com.truthower.suhang.mangareader.business.main.MainActivity;
@@ -986,6 +987,9 @@ public class WebMangaDetailsActivity extends TTSActivity implements AdapterView.
                 showGradeDialog();
                 break;
             case R.id.comment_msg_ll:
+                Intent intent = new Intent(WebMangaDetailsActivity.this, CommentActivity.class);
+                intent.putExtra("mangaName", currentManga.getName());
+                startActivity(intent);
                 break;
         }
     }

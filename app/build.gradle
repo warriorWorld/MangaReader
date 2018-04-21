@@ -58,5 +58,4 @@ dependencies {
     compile 'com.umeng.sdk:common:latest.integration'
     compile 'com.umeng.sdk:analytics:latest.integration'
     compile project(':push')
-    implementation files('libs/umeng-debug-1.0.0.jar')
 }

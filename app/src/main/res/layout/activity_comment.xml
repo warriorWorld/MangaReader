@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <include
+        android:id="@+id/recycler_rl"
+        layout="@layout/activity_only_recycler"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/comment_rl"></include>
+
+    <RelativeLayout
+        android:id="@+id/comment_rl"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_alignParentBottom="true"
+        android:background="@color/white">
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1px"
+            android:background="@color/manga_reader"></View>
+
+        <EditText
+            android:id="@+id/user_id_et"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="13dp"
+            android:layout_marginRight="5dp"
+            android:layout_toLeftOf="@+id/sent_comment_tv"
+            android:background="@null"
+            android:hint="请输入评论内容"
+            android:textColor="@color/main_text_color"
+            android:textColorHint="@color/main_text_color_gray"
+            android:textSize="@dimen/main_text_size" />
+
+        <TextView
+            android:id="@+id/sent_comment_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="13dp"
+            android:text="发送"
+            android:textColor="@color/manga_reader"
+            android:textSize="15sp" />
+    </RelativeLayout>
+</RelativeLayout>
