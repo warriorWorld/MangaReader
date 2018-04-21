@@ -29,6 +29,7 @@ import com.truthower.suhang.mangareader.base.BaseActivity;
 import com.truthower.suhang.mangareader.base.TTSActivity;
 import com.truthower.suhang.mangareader.bean.ChapterBean;
 import com.truthower.suhang.mangareader.bean.DownloadBean;
+import com.truthower.suhang.mangareader.bean.GradeBean;
 import com.truthower.suhang.mangareader.bean.LoginBean;
 import com.truthower.suhang.mangareader.bean.MangaBean;
 import com.truthower.suhang.mangareader.business.download.DownloadActivity;
@@ -48,6 +49,7 @@ import com.truthower.suhang.mangareader.listener.OnSevenFourteenListDialogListen
 import com.truthower.suhang.mangareader.spider.SpiderBase;
 import com.truthower.suhang.mangareader.utils.ActivityPoor;
 import com.truthower.suhang.mangareader.utils.LeanCloundUtil;
+import com.truthower.suhang.mangareader.utils.NumberUtil;
 import com.truthower.suhang.mangareader.utils.SharedPreferencesUtils;
 import com.truthower.suhang.mangareader.utils.ThreeDESUtil;
 import com.truthower.suhang.mangareader.utils.UltimateTextSizeUtil;
@@ -105,6 +107,7 @@ public class WebMangaDetailsActivity extends TTSActivity implements AdapterView.
     private TextView gradeTv, gradeCountTv, commentCountTv;
     private LinearLayout commentMsgLl;
     private RelativeLayout gradeRl;
+    private ArrayList<GradeBean> gradeList = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -189,6 +192,8 @@ public class WebMangaDetailsActivity extends TTSActivity implements AdapterView.
                                             oneShotPathList.add(result.getChapters().get(i).getImgUrl());
                                         }
                                     }
+
+                                    doGetGrade();
                                 }
                             });
                         }
@@ -316,7 +321,7 @@ public class WebMangaDetailsActivity extends TTSActivity implements AdapterView.
         gradeTv = (TextView) findViewById(R.id.grade_tv);
         commentCountTv = (TextView) findViewById(R.id.comment_count_tv);
         commentMsgLl = (LinearLayout) findViewById(R.id.comment_msg_ll);
-        gradeRl= (RelativeLayout) findViewById(R.id.grade_rl);
+        gradeRl = (RelativeLayout) findViewById(R.id.grade_rl);
 
         gradeRl.setOnClickListener(this);
         commentMsgLl.setOnClickListener(this);
@@ -647,6 +652,79 @@ public class WebMangaDetailsActivity extends TTSActivity implements AdapterView.
         });
     }
 
+    private void doGetGrade() {
+        if (TextUtils.isEmpty(LoginBean.getInstance().getUserName(this))) {
+            this.finish();
+            return;
+        }
+        SingleLoadBarUtil.getInstance().showLoadBar(WebMangaDetailsActivity.this);
+        AVQuery<AVObject> query = new AVQuery<>("Grade");
+        query.whereEqualTo("manga_name", currentManga.getName());
+        query.limit(999);
+        query.findInBackground(new FindCallback<AVObject>() {
+            @Override
+            public void done(List<AVObject> list, AVException e) {
+                SingleLoadBarUtil.getInstance().dismissLoadBar();
+                if (LeanCloundUtil.handleLeanResult(WebMangaDetailsActivity.this, e)) {
+                    if (null != list && list.size() > 0) {
+                        gradeList = new ArrayList<>();
+                        GradeBean item;
+                        for (int i = 0; i < list.size(); i++) {
+                            item = new GradeBean();
+                            item.setMangaName(list.get(i).getString("manga_name"));
+                            item.setMangaUrl(list.get(i).getString("mangaUrl"));
+                            item.setStar(list.get(i).getInt("star"));
+                            item.setOwner(list.get(i).getString("owner"));
+                            gradeList.add(item);
+                        }
+                    }
+                    refreshGrade();
+                }
+            }
+        });
+    }
+
+    private void refreshGrade() {
+        if (null == gradeList || gradeList.size() == 0) {
+            return;
+        }
+        float gradeF = 0;
+        float total = 0;
+        for (int i = 0; i < gradeList.size(); i++) {
+            total += gradeList.get(i).getStar();
+        }
+        gradeF = total / gradeList.size();
+        starLinearlayout.setStarNum(gradeF);
+        gradeTv.setText(NumberUtil.doubleDecimals(gradeF) + "");
+        gradeCountTv.setText(gradeList.size() + "人评分");
+    }
+
+
+    private void doGrade(int star) {
+        String userName = LoginBean.getInstance().getUserName(this);
+        if (TextUtils.isEmpty(userName)) {
+            return;
+        }
+        SingleLoadBarUtil.getInstance().showLoadBar(WebMangaDetailsActivity.this);
+        String mangaName = currentManga.getName();
+
+        AVObject object = new AVObject("Grade");
+        object.put("owner", userName);
+        object.put("star", star);
+        object.put("mangaUrl", mangaUrl);
+        object.put("manga_name", mangaName);
+        object.saveInBackground(new SaveCallback() {
+            @Override
+            public void done(AVException e) {
+                SingleLoadBarUtil.getInstance().dismissLoadBar();
+                if (LeanCloundUtil.handleLeanResult(WebMangaDetailsActivity.this, e)) {
+                    baseToast.showToast("评分成功");
+                    doGetGrade();
+                }
+            }
+        });
+    }
+
     private void deleteCollected() {
         if (TextUtils.isEmpty(collectedId)) {
             return;
@@ -860,11 +938,22 @@ public class WebMangaDetailsActivity extends TTSActivity implements AdapterView.
         dialog.setOnGradeDialogSelectedListener(new OnGradeDialogSelectedListener() {
             @Override
             public void onSelected(float grade) {
-                //TODO
-                baseToast.showToast(grade + "");
+                doGrade((int) grade);
             }
         });
         dialog.show();
+    }
+
+    private boolean isGraded() {
+        if (null == gradeList || gradeList.size() == 0) {
+            return false;
+        }
+        for (int i = 0; i < gradeList.size(); i++) {
+            if (LoginBean.getInstance().getUserName().equals(gradeList.get(i).getOwner())) {
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override
@@ -890,6 +979,10 @@ public class WebMangaDetailsActivity extends TTSActivity implements AdapterView.
                 showAuthorSelector();
                 break;
             case R.id.grade_rl:
+                if (isGraded()) {
+                    baseToast.showToast("不可对同一漫画重复评分!");
+                    return;
+                }
                 showGradeDialog();
                 break;
             case R.id.comment_msg_ll:
