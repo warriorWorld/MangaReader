@@ -71,6 +71,11 @@ public class CommentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                 }
             });
             ((NormalViewHolder) viewHolder).commentContentTv.setText(item.getComment_content());
+            if (item.isHot()) {
+                ((NormalViewHolder) viewHolder).commentContentTv.setTextColor(context.getResources().getColor(R.color.manga_reader));
+            } else {
+                ((NormalViewHolder) viewHolder).commentContentTv.setTextColor(context.getResources().getColor(R.color.main_text_color));
+            }
             ((NormalViewHolder) viewHolder).commentDateTv.setText(WeekUtil.getDateDetailStringWithDate(item.getCreate_at()));
             ((NormalViewHolder) viewHolder).replyTv.setOnClickListener(new View.OnClickListener() {
                 @Override

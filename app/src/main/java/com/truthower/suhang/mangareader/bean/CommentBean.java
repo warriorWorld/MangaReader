@@ -15,6 +15,7 @@ public class CommentBean extends BaseBean {
     private String comment_content;
     private String owner;
     private Date create_at;
+    private boolean hot;
 
     public int getOo_number() {
         return oo_number;
@@ -78,5 +79,13 @@ public class CommentBean extends BaseBean {
 
     public void setCreate_at(Date create_at) {
         this.create_at = create_at;
+    }
+
+    public boolean isHot() {
+        return hot;
+    }
+
+    public void setHot(boolean hot) {
+        this.hot = hot;
     }
 }

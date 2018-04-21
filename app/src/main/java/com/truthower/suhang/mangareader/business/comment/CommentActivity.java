@@ -33,6 +33,8 @@ import com.truthower.suhang.mangareader.config.Configure;
 import com.truthower.suhang.mangareader.config.ShareKeys;
 import com.truthower.suhang.mangareader.listener.OnCommenttemClickListener;
 import com.truthower.suhang.mangareader.listener.OnRecycleItemClickListener;
+import com.truthower.suhang.mangareader.sort.CommentComparatorByOO;
+import com.truthower.suhang.mangareader.sort.FileComparatorWithBracket;
 import com.truthower.suhang.mangareader.utils.DisplayUtil;
 import com.truthower.suhang.mangareader.utils.LeanCloundUtil;
 import com.truthower.suhang.mangareader.utils.SharedPreferencesUtils;
@@ -42,6 +44,7 @@ import com.truthower.suhang.mangareader.widget.recyclerview.LinearLayoutMangerWi
 import com.truthower.suhang.mangareader.widget.recyclerview.RecyclerGridDecoration;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -80,7 +83,7 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
         sentCommentTv = (TextView) findViewById(R.id.sent_comment_tv);
 
         sentCommentTv.setOnClickListener(this);
-        baseTopBar.setTitle("评论");
+        baseTopBar.setTitle(mangaName+"的评论");
     }
 
     @Override
@@ -119,10 +122,44 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
                             commentList.add(item);
                         }
                     }
+                    commentList = sortComment(commentList);
                     initListView();
                 }
             }
         });
+    }
+
+    private ArrayList<CommentBean> sortComment(ArrayList<CommentBean> list) {
+        ArrayList<CommentBean> tempList = list;
+        ArrayList<CommentBean> resList = new ArrayList<>();
+
+        CommentComparatorByOO comparator1 = new CommentComparatorByOO();
+        Collections.sort(tempList, comparator1);
+//        CommentBean temp;
+//        for (int i = tempList.size() - 1; i > 0; --i) {
+//            for (int j = 0; j < i; ++j) {
+//                if (tempList.get(j + 1).getOo_number() < tempList.get(j).getOo_number()) {
+//                    temp = tempList.get(j);
+//                    tempList.set(j, tempList.get(j + 1));
+//                    tempList.set(j + 1, temp);
+//                }
+//            }
+//        }
+//        return tempList;
+        if (tempList.size() <= 5) {
+            return tempList;
+        } else {
+            for (int i = 0; i < 5; i++) {
+                if (tempList.get(0).getOo_number() > 0) {
+                    CommentBean item = tempList.get(0);
+                    item.setHot(true);
+                    resList.add(item);
+                    tempList.remove(0);
+                }
+            }
+            resList.addAll(tempList);
+            return resList;
+        }
     }
 
     private void initListView() {

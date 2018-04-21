@@ -141,13 +141,13 @@ public class WebMangaDetailsActivity extends TTSActivity implements AdapterView.
                     "\n4,点击漫画作者可以按漫画作者搜索漫画" +
                     "\n5,点击漫画类型可以按漫画类型搜索漫画");
         }
-        doGetCommentCount();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
         doGetIsCollected();
+        doGetCommentCount();
     }
 
     private void initSpider() {
