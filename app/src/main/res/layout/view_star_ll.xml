@@ -1,0 +1,16 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center"
+    android:background="@color/white"
+    android:gravity="left"
+    android:orientation="horizontal">
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/star_rv"
+        android:layout_width="match_parent"
+        android:layout_height="15dp"
+        android:layout_marginLeft="5dp"
+        android:orientation="horizontal"></android.support.v7.widget.RecyclerView>
+
+</LinearLayout>

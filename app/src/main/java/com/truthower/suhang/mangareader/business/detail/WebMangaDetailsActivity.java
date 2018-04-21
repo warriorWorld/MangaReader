@@ -52,6 +52,7 @@ import com.truthower.suhang.mangareader.widget.bar.TopBar;
 import com.truthower.suhang.mangareader.widget.dialog.ListDialog;
 import com.truthower.suhang.mangareader.widget.dialog.MangaDialog;
 import com.truthower.suhang.mangareader.widget.dialog.SingleLoadBarUtil;
+import com.truthower.suhang.mangareader.widget.layout.StarLinearlayout;
 import com.truthower.suhang.mangareader.widget.popupwindow.EasyPopupWindow;
 import com.truthower.suhang.mangareader.widget.pulltorefresh.PullToRefreshBase;
 import com.truthower.suhang.mangareader.widget.pulltorefresh.PullToRefreshGridView;
@@ -96,6 +97,7 @@ public class WebMangaDetailsActivity extends TTSActivity implements AdapterView.
     private String currentMangaName;
     private boolean isTopied, isFinished;
     private String[] authorOptions;
+    private StarLinearlayout starLinearlayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -253,6 +255,8 @@ public class WebMangaDetailsActivity extends TTSActivity implements AdapterView.
                     (WebMangaDetailsActivity.this,
                             ShareKeys.ONLINE_MANGA_READ_CHAPTER_POSITION + currentManga.getName()));
         }
+
+        starLinearlayout.setStarNum(4f);
     }
 
     private void initGridView() {
@@ -300,6 +304,8 @@ public class WebMangaDetailsActivity extends TTSActivity implements AdapterView.
         collectV = findViewById(R.id.collect_view);
         downloadIv = (ImageView) findViewById(R.id.download_iv);
         downloadTagTv = (TextView) findViewById(R.id.download_tag_tv);
+        starLinearlayout = (StarLinearlayout) findViewById(R.id.grade_star_sll);
+        starLinearlayout.setMaxStar(5);
 
         collectV.setOnClickListener(this);
         downloadIv.setOnClickListener(this);
