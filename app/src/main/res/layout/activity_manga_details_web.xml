@@ -142,6 +142,7 @@
             android:layout_height="1px"
             android:background="@color/manga_reader"></View>
 
+
         <com.truthower.suhang.mangareader.widget.layout.StarLinearlayout
             android:id="@+id/grade_star_sll"
             android:layout_width="75dp"
@@ -149,17 +150,24 @@
             android:layout_centerVertical="true"
             android:layout_marginLeft="15dp"></com.truthower.suhang.mangareader.widget.layout.StarLinearlayout>
 
+        <RelativeLayout
+            android:id="@+id/grade_rl"
+            android:layout_width="75dp"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="15dp"
+            android:background="@color/transparency"></RelativeLayout>
 
         <LinearLayout
             android:id="@+id/grade_ll"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_marginLeft="8dp"
-            android:layout_toRightOf="@+id/grade_star_sll"
+            android:layout_toRightOf="@+id/grade_rl"
             android:gravity="center_vertical"
             android:orientation="vertical">
 
             <TextView
+                android:id="@+id/grade_tv"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"

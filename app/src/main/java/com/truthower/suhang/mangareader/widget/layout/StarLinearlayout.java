@@ -11,6 +11,7 @@ import android.widget.LinearLayout;
 
 import com.truthower.suhang.mangareader.R;
 import com.truthower.suhang.mangareader.adapter.StarAdapter;
+import com.truthower.suhang.mangareader.listener.OnRecycleItemClickListener;
 import com.truthower.suhang.mangareader.widget.recyclerview.LinearLayoutMangerWithoutBug;
 
 import java.util.ArrayList;
@@ -22,6 +23,7 @@ public class StarLinearlayout extends LinearLayout {
     private float starNum;
     private int maxStar = 5;
     private ArrayList<StarAdapter.StarState> starStates = new ArrayList<>();
+    private OnRecycleItemClickListener onRecycleItemClickListener;
 
     public StarLinearlayout(Context context) {
         this(context, null);
@@ -49,6 +51,9 @@ public class StarLinearlayout extends LinearLayout {
         try {
             if (null == starAdapter) {
                 starAdapter = new StarAdapter(starStates);
+                if (null != onRecycleItemClickListener) {
+                    starAdapter.setOnRecycleItemClickListener(onRecycleItemClickListener);
+                }
                 starRv.setAdapter(starAdapter);
 
             } else {
@@ -97,5 +102,12 @@ public class StarLinearlayout extends LinearLayout {
 
     public void setMaxStar(int maxStar) {
         this.maxStar = maxStar;
+    }
+
+    public void setOnRecycleItemClickListener(OnRecycleItemClickListener onRecycleItemClickListener) {
+        this.onRecycleItemClickListener = onRecycleItemClickListener;
+        if (null != starAdapter) {
+            starAdapter.setOnRecycleItemClickListener(onRecycleItemClickListener);
+        }
     }
 }

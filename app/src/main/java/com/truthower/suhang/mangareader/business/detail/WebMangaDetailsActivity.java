@@ -10,6 +10,8 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.avos.avoscloud.AVCloudQueryResult;
@@ -41,6 +43,7 @@ import com.truthower.suhang.mangareader.eventbus.EventBusEvent;
 import com.truthower.suhang.mangareader.eventbus.JumpEvent;
 import com.truthower.suhang.mangareader.eventbus.TagClickEvent;
 import com.truthower.suhang.mangareader.listener.JsoupCallBack;
+import com.truthower.suhang.mangareader.listener.OnGradeDialogSelectedListener;
 import com.truthower.suhang.mangareader.listener.OnSevenFourteenListDialogListener;
 import com.truthower.suhang.mangareader.spider.SpiderBase;
 import com.truthower.suhang.mangareader.utils.ActivityPoor;
@@ -49,6 +52,7 @@ import com.truthower.suhang.mangareader.utils.SharedPreferencesUtils;
 import com.truthower.suhang.mangareader.utils.ThreeDESUtil;
 import com.truthower.suhang.mangareader.utils.UltimateTextSizeUtil;
 import com.truthower.suhang.mangareader.widget.bar.TopBar;
+import com.truthower.suhang.mangareader.widget.dialog.GradeDialog;
 import com.truthower.suhang.mangareader.widget.dialog.ListDialog;
 import com.truthower.suhang.mangareader.widget.dialog.MangaDialog;
 import com.truthower.suhang.mangareader.widget.dialog.SingleLoadBarUtil;
@@ -98,6 +102,9 @@ public class WebMangaDetailsActivity extends TTSActivity implements AdapterView.
     private boolean isTopied, isFinished;
     private String[] authorOptions;
     private StarLinearlayout starLinearlayout;
+    private TextView gradeTv, gradeCountTv, commentCountTv;
+    private LinearLayout commentMsgLl;
+    private RelativeLayout gradeRl;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -255,8 +262,6 @@ public class WebMangaDetailsActivity extends TTSActivity implements AdapterView.
                     (WebMangaDetailsActivity.this,
                             ShareKeys.ONLINE_MANGA_READ_CHAPTER_POSITION + currentManga.getName()));
         }
-
-        starLinearlayout.setStarNum(4f);
     }
 
     private void initGridView() {
@@ -306,7 +311,15 @@ public class WebMangaDetailsActivity extends TTSActivity implements AdapterView.
         downloadTagTv = (TextView) findViewById(R.id.download_tag_tv);
         starLinearlayout = (StarLinearlayout) findViewById(R.id.grade_star_sll);
         starLinearlayout.setMaxStar(5);
+        starLinearlayout.setStarNum(0f);
+        gradeCountTv = (TextView) findViewById(R.id.grade_count_tv);
+        gradeTv = (TextView) findViewById(R.id.grade_tv);
+        commentCountTv = (TextView) findViewById(R.id.comment_count_tv);
+        commentMsgLl = (LinearLayout) findViewById(R.id.comment_msg_ll);
+        gradeRl= (RelativeLayout) findViewById(R.id.grade_rl);
 
+        gradeRl.setOnClickListener(this);
+        commentMsgLl.setOnClickListener(this);
         collectV.setOnClickListener(this);
         downloadIv.setOnClickListener(this);
         mangaTypeTv.setOnClickListener(this);
@@ -842,6 +855,18 @@ public class WebMangaDetailsActivity extends TTSActivity implements AdapterView.
         ppw.hideIKnowTv();
     }
 
+    private void showGradeDialog() {
+        GradeDialog dialog = new GradeDialog(this);
+        dialog.setOnGradeDialogSelectedListener(new OnGradeDialogSelectedListener() {
+            @Override
+            public void onSelected(float grade) {
+                //TODO
+                baseToast.showToast(grade + "");
+            }
+        });
+        dialog.show();
+    }
+
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
@@ -863,6 +888,11 @@ public class WebMangaDetailsActivity extends TTSActivity implements AdapterView.
                 break;
             case R.id.manga_author:
                 showAuthorSelector();
+                break;
+            case R.id.grade_rl:
+                showGradeDialog();
+                break;
+            case R.id.comment_msg_ll:
                 break;
         }
     }

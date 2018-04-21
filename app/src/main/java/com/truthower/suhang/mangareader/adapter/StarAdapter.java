@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.truthower.suhang.mangareader.R;
+import com.truthower.suhang.mangareader.listener.OnRecycleItemClickListener;
 
 import java.util.ArrayList;
 
@@ -15,12 +16,17 @@ import java.util.ArrayList;
  * Created by Administrator on 2017/11/15.
  */
 public class StarAdapter extends RecyclerView.Adapter<StarAdapter.ViewHolder> {
+    public void setOnRecycleItemClickListener(OnRecycleItemClickListener onRecycleItemClickListener) {
+        this.onRecycleItemClickListener = onRecycleItemClickListener;
+    }
+
     public enum StarState {
         STAR,
         UNSTAR,
         HALF_STAR
     }
 
+    private OnRecycleItemClickListener onRecycleItemClickListener;
     private ArrayList<StarState> starStates = new ArrayList<>();
 
     public StarAdapter() {
@@ -54,6 +60,14 @@ public class StarAdapter extends RecyclerView.Adapter<StarAdapter.ViewHolder> {
                 //目前没有
                 break;
         }
+        viewHolder.starIv.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (null != onRecycleItemClickListener) {
+                    onRecycleItemClickListener.onItemClick(position);
+                }
+            }
+        });
     }
 
     //获取数据的数量
