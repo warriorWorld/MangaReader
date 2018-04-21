@@ -48,6 +48,7 @@ import java.util.List;
 public class UserCenterActivity extends BaseFragmentActivity {
     private ReplyMsgFragment replyMsgFragment;
     private UserCommentFragment userCommentFragment;
+    private GradeListFragment gradeListFragment;
     private TabLayout tabLayout;
     private ViewPager vp;
     private MyFragmentPagerAdapter adapter;
@@ -70,6 +71,8 @@ public class UserCenterActivity extends BaseFragmentActivity {
         replyMsgFragment.setOwner(owner);
         userCommentFragment = new UserCommentFragment();
         userCommentFragment.setOwner(owner);
+        gradeListFragment = new GradeListFragment();
+        gradeListFragment.setOwner(owner);
     }
 
     private void initUI() {
@@ -99,8 +102,9 @@ public class UserCenterActivity extends BaseFragmentActivity {
    调用了一个新增的虚函数 getItem()，因此，我们还至少需要实现一个 getItem()。因此，总体上来说，相对于继承自
    PagerAdapter，更方便一些。*/
     private class MyFragmentPagerAdapter extends FragmentPagerAdapter {
-        private final int PAGE_COUNT = 2;
-        private String[] pageTitle = new String[]{"回复我的", "我的评论"};
+        private final int PAGE_COUNT = 3;
+        private String[] pageTitle = new String[]{"回复我的", "我的评论", "我的评分"};
+        private String[] pageTitle1 = new String[]{"回复Ta的", "Ta的评论", "Ta的评分"};
 
         public MyFragmentPagerAdapter(FragmentManager fm) {
             super(fm);
@@ -113,6 +117,8 @@ public class UserCenterActivity extends BaseFragmentActivity {
                     return replyMsgFragment;
                 case 1:
                     return userCommentFragment;
+                case 2:
+                    return gradeListFragment;
                 default:
                     return null;
             }
@@ -126,7 +132,11 @@ public class UserCenterActivity extends BaseFragmentActivity {
 
         @Override
         public CharSequence getPageTitle(int position) {
-            return pageTitle[position];
+            if (owner.equals(LoginBean.getInstance().getUserName())) {
+                return pageTitle[position];
+            } else {
+                return pageTitle1[position];
+            }
         }
     }
 }

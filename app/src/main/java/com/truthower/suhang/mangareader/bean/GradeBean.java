@@ -4,7 +4,7 @@ package com.truthower.suhang.mangareader.bean;
  * Created by Administrator on 2018/4/21.
  */
 
-public class GradeBean extends BaseBean {
+public class GradeBean extends LeanBaseBean {
     private String mangaName;
     private String mangaUrl;
     private int star;

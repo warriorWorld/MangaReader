@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/item_grade_rl"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/manga_reader">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="1px"
+        android:background="@color/white"
+        android:paddingLeft="12dp"
+        android:paddingRight="12dp">
+
+
+        <TextView
+            android:id="@+id/manga_name_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_marginLeft="3dp"
+            android:layout_marginRight="5dp"
+            android:layout_marginTop="10dp"
+            android:gravity="left"
+            android:singleLine="true"
+            android:text="user name"
+            android:textColor="@color/manga_reader"
+            android:textSize="15sp" />
+
+        <com.truthower.suhang.mangareader.widget.layout.StarLinearlayout
+            android:id="@+id/grade_star_sll"
+            android:layout_width="75dp"
+            android:layout_height="16dp"
+            android:layout_below="@+id/manga_name_tv"
+            android:layout_marginTop="8dp"></com.truthower.suhang.mangareader.widget.layout.StarLinearlayout>
+
+        <TextView
+            android:id="@+id/grade_date_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_below="@+id/manga_name_tv"
+            android:layout_marginBottom="10dp"
+            android:layout_marginTop="10dp"
+            android:text="2018-4-21 16:57:48"
+            android:textColor="@color/main_text_color_gray"
+            android:textSize="14sp" />
+
+    </RelativeLayout>
+</RelativeLayout>

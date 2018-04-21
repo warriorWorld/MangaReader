@@ -6,7 +6,7 @@ import java.util.Date;
  * Created by Administrator on 2018/4/21.
  */
 
-public class CommentBean extends BaseBean {
+public class CommentBean extends LeanBaseBean {
     private String mangaName;
     private String mangaUrl;
     private int oo_number;

@@ -17,9 +17,16 @@
         app:tabSelectedTextColor="@color/manga_reader"
         app:tabTextColor="@color/main_text_color_gray" />
 
+    <View
+        android:id="@+id/divide_line_v"
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:layout_below="@+id/tab_layout"
+        android:background="@color/divide_line"></View>
+
     <android.support.v4.view.ViewPager
         android:id="@+id/view_pager"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/tab_layout"></android.support.v4.view.ViewPager>
+        android:layout_below="@+id/divide_line_v"></android.support.v4.view.ViewPager>
 </RelativeLayout>

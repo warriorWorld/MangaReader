@@ -54,6 +54,7 @@ public class UserFragment extends BaseFragment implements View.OnClickListener {
     private OnShareAppClickListener onShareAppClickListener;
     private TextView user_center_explain;
     private TextView user_msg_tip_tv;
+    private int msgCount = 0;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -152,6 +153,7 @@ public class UserFragment extends BaseFragment implements View.OnClickListener {
             @Override
             public void done(int i, AVException e) {
                 if (LeanCloundUtil.handleLeanResult(getActivity(), e)) {
+                    msgCount = i;
                     int newMsgCount = i - SharedPreferencesUtils.getIntSharedPreferencesData(getActivity(), ShareKeys.READ_COMMENT_COUNT_KEY);
                     if (newMsgCount > 0) {
                         user_msg_tip_tv.setText(newMsgCount + "");
@@ -197,7 +199,8 @@ public class UserFragment extends BaseFragment implements View.OnClickListener {
                 break;
             case R.id.user_top_bar_rl:
                 intent = new Intent(getActivity(), UserCenterActivity.class);
-                intent.putExtra("owner", LoginBean.getInstance().getUserName());
+                SharedPreferencesUtils.setSharedPreferencesData(getActivity(),ShareKeys.READ_COMMENT_COUNT_KEY,msgCount);
+                intent.putExtra("owner", LoginBean.getInstance().getUserName(getActivity()));
                 break;
             case R.id.about_rl:
                 intent = new Intent(getActivity(), AboutActivity.class);

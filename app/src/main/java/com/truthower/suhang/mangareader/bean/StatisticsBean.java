@@ -5,11 +5,10 @@ import java.util.Date;
 /**
  * Created by Administrator on 2016-06-16.
  */
-public class StatisticsBean extends BaseBean {
+public class StatisticsBean extends LeanBaseBean {
     private String manga_name;
     private int query_word_c;
     private int read_page;
-    private Date create_at;
     private String dateStart;
     private String dateEnd;
 
@@ -34,14 +33,6 @@ public class StatisticsBean extends BaseBean {
 
     public void setQuery_word_c(int query_word_c) {
         this.query_word_c = query_word_c;
-    }
-
-    public Date getCreate_at() {
-        return create_at;
-    }
-
-    public void setCreate_at(Date create_at) {
-        this.create_at = create_at;
     }
 
     public int getRead_page() {
