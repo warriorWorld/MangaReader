@@ -85,6 +85,8 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
 
         sentCommentTv.setOnClickListener(this);
         baseTopBar.setTitle(mangaName + "的评论");
+
+        closeKeyBroad();
     }
 
     @Override
@@ -136,17 +138,6 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
 
         CommentComparatorByOO comparator1 = new CommentComparatorByOO();
         Collections.sort(tempList, comparator1);
-//        CommentBean temp;
-//        for (int i = tempList.size() - 1; i > 0; --i) {
-//            for (int j = 0; j < i; ++j) {
-//                if (tempList.get(j + 1).getOo_number() < tempList.get(j).getOo_number()) {
-//                    temp = tempList.get(j);
-//                    tempList.set(j, tempList.get(j + 1));
-//                    tempList.set(j + 1, temp);
-//                }
-//            }
-//        }
-//        return tempList;
         if (tempList.size() <= 5) {
             return tempList;
         } else {
@@ -250,14 +241,15 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
             public void done(List<AVObject> list, AVException e) {
                 SingleLoadBarUtil.getInstance().dismissLoadBar();
                 if (LeanCloundUtil.handleLeanResult(CommentActivity.this, e)) {
-                    commentList = new ArrayList<>();
                     if (null != list && list.size() > 0) {
                         list.get(0).increment("oo_number");
                         list.get(0).setFetchWhenSave(true);
                         list.get(0).saveInBackground(new SaveCallback() {
                             @Override
                             public void done(AVException e) {
-                                doGetData();
+                                if (LeanCloundUtil.handleLeanResult(CommentActivity.this, e)) {
+                                    doGetData();
+                                }
                             }
                         });
                     }
@@ -287,14 +279,15 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
             public void done(List<AVObject> list, AVException e) {
                 SingleLoadBarUtil.getInstance().dismissLoadBar();
                 if (LeanCloundUtil.handleLeanResult(CommentActivity.this, e)) {
-                    commentList = new ArrayList<>();
                     if (null != list && list.size() > 0) {
                         list.get(0).increment("xx_number");
                         list.get(0).setFetchWhenSave(true);
                         list.get(0).saveInBackground(new SaveCallback() {
                             @Override
                             public void done(AVException e) {
-                                doGetData();
+                                if (LeanCloundUtil.handleLeanResult(CommentActivity.this, e)) {
+                                    doGetData();
+                                }
                             }
                         });
                     }

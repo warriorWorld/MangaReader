@@ -103,6 +103,14 @@ public class CommentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                     }
                 }
             });
+            ((NormalViewHolder) viewHolder).itemCommentRl.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (null != onRecycleItemClickListener) {
+                        onRecycleItemClickListener.onItemClick(position);
+                    }
+                }
+            });
         } else if (viewHolder instanceof EmptyViewHolder) {
             ((EmptyViewHolder) viewHolder).emptyText.setText("还没有人评论过!");
         }
