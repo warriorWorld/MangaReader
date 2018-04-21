@@ -31,6 +31,7 @@ public class CommentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     private final int TYPE_EMPTY = 1;
     private OnRecycleItemClickListener onRecycleItemClickListener;
     private OnCommenttemClickListener onCommenttemClickListener;
+    private boolean isUserCenter = false;
 
     public CommentAdapter(Context context, ArrayList<CommentBean> datas) {
         this.datas = datas;
@@ -77,6 +78,13 @@ public class CommentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                 ((NormalViewHolder) viewHolder).commentContentTv.setTextColor(context.getResources().getColor(R.color.main_text_color));
             }
             ((NormalViewHolder) viewHolder).commentDateTv.setText(WeekUtil.getDateDetailStringWithDate(item.getCreate_at()));
+            if (isUserCenter) {
+                ((NormalViewHolder) viewHolder).replyTv.setTextColor(context.getResources().getColor(R.color.manga_reader));
+                ((NormalViewHolder) viewHolder).replyTv.setText(item.getMangaName());
+            } else {
+                ((NormalViewHolder) viewHolder).replyTv.setTextColor(context.getResources().getColor(R.color.main_text_color));
+                ((NormalViewHolder) viewHolder).replyTv.setText("回复");
+            }
             ((NormalViewHolder) viewHolder).replyTv.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -140,6 +148,14 @@ public class CommentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
     public void setOnCommenttemClickListener(OnCommenttemClickListener onCommenttemClickListener) {
         this.onCommenttemClickListener = onCommenttemClickListener;
+    }
+
+    public boolean isUserCenter() {
+        return isUserCenter;
+    }
+
+    public void setUserCenter(boolean userCenter) {
+        isUserCenter = userCenter;
     }
 
     //自定义的ViewHolder，持有每个Item的的所有界面元素

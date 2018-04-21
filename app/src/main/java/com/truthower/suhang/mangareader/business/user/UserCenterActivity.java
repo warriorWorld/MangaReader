@@ -67,7 +67,9 @@ public class UserCenterActivity extends BaseFragmentActivity {
 
     private void initFragment() {
         replyMsgFragment = new ReplyMsgFragment();
-        userCommentFragment=new UserCommentFragment();
+        replyMsgFragment.setOwner(owner);
+        userCommentFragment = new UserCommentFragment();
+        userCommentFragment.setOwner(owner);
     }
 
     private void initUI() {
@@ -98,7 +100,7 @@ public class UserCenterActivity extends BaseFragmentActivity {
    PagerAdapter，更方便一些。*/
     private class MyFragmentPagerAdapter extends FragmentPagerAdapter {
         private final int PAGE_COUNT = 2;
-        private String[] pageTitle = new String[]{"回复我的","我的评论"};
+        private String[] pageTitle = new String[]{"回复我的", "我的评论"};
 
         public MyFragmentPagerAdapter(FragmentManager fm) {
             super(fm);

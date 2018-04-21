@@ -172,7 +172,7 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
                     @Override
                     public void onUserNameClick(int position) {
                         Intent intent = new Intent(CommentActivity.this, UserCenterActivity.class);
-                        intent.putExtra("owner", LoginBean.getInstance().getUserName());
+                        intent.putExtra("owner", commentList.get(position).getOwner());
                         startActivity(intent);
                     }
 

@@ -27,7 +27,7 @@ public class UserCommentFragment extends BaseCommentFragment implements View.OnC
         }
         SingleLoadBarUtil.getInstance().showLoadBar(getActivity());
         AVQuery<AVObject> query = new AVQuery<>("Comment");
-        query.whereEqualTo("owner", LoginBean.getInstance().getUserName());
+        query.whereEqualTo("owner", owner);
         query.limit(999);
         query.findInBackground(new FindCallback<AVObject>() {
             @Override

@@ -34,6 +34,7 @@ public abstract class BaseCommentFragment extends BaseFragment implements View.O
     protected ArrayList<CommentBean> commentList = new ArrayList<>();
     private RecyclerView commentRcv;
     private CommentAdapter adapter;
+    protected String owner;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -46,10 +47,15 @@ public abstract class BaseCommentFragment extends BaseFragment implements View.O
 
     protected abstract void doGetData();
 
+    public void setOwner(String owner) {
+        this.owner = owner;
+    }
+
     protected void initListView() {
         try {
             if (null == adapter) {
                 adapter = new CommentAdapter(getActivity(), commentList);
+                adapter.setUserCenter(true);
                 adapter.setOnRecycleItemClickListener(new OnRecycleItemClickListener() {
                     @Override
                     public void onItemClick(int position) {
