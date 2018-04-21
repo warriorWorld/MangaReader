@@ -120,7 +120,7 @@ public class CommentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                 }
             });
         } else if (viewHolder instanceof EmptyViewHolder) {
-            ((EmptyViewHolder) viewHolder).emptyText.setText("还没有人评论过!");
+            ((EmptyViewHolder) viewHolder).emptyText.setText("空的!");
         }
     }
 

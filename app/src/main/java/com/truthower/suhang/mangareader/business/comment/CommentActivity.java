@@ -161,12 +161,12 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
                 adapter.setOnCommenttemClickListener(new OnCommenttemClickListener() {
                     @Override
                     public void onOOClick(int position) {
-                        doOO(commentList.get(position).getObjectId());
+                        doOOXX(commentList.get(position).getObjectId(),"oo_number");
                     }
 
                     @Override
                     public void onXXClick(int position) {
-                        doXX(commentList.get(position).getObjectId());
+                        doOOXX(commentList.get(position).getObjectId(),"xx_number");
                     }
 
                     @Override
@@ -220,7 +220,7 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
         });
     }
 
-    private void doOO(String objId) {
+    private void doOOXX(String objId, final String type) {
         if (SharedPreferencesUtils.getBooleanSharedPreferencesData(this,
                 ShareKeys.COMMENT_OOXX_KEY + objId, false)) {
             baseToast.showToast("你已经点过一次了...");
@@ -242,47 +242,12 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
                 SingleLoadBarUtil.getInstance().dismissLoadBar();
                 if (LeanCloundUtil.handleLeanResult(CommentActivity.this, e)) {
                     if (null != list && list.size() > 0) {
-                        list.get(0).increment("oo_number");
-                        list.get(0).setFetchWhenSave(true);
-                        list.get(0).saveInBackground(new SaveCallback() {
-                            @Override
-                            public void done(AVException e) {
-                                if (LeanCloundUtil.handleLeanResult(CommentActivity.this, e)) {
-                                    doGetData();
-                                }
-                            }
-                        });
-                    }
-                }
-            }
-        });
-    }
-
-    private void doXX(String objId) {
-        if (SharedPreferencesUtils.getBooleanSharedPreferencesData(this,
-                ShareKeys.COMMENT_OOXX_KEY + objId, false)) {
-            baseToast.showToast("你已经点过一次了...");
-            return;
-        }
-        String userName = LoginBean.getInstance().getUserName(this);
-        if (TextUtils.isEmpty(userName)) {
-            return;
-        }
-        SharedPreferencesUtils.setSharedPreferencesData
-                (this, ShareKeys.COMMENT_OOXX_KEY + objId, true);
-        SingleLoadBarUtil.getInstance().showLoadBar(CommentActivity.this);
-
-        AVQuery query = new AVQuery("Comment");
-        query.whereEqualTo("objectId", objId);
-        query.findInBackground(new FindCallback<AVObject>() {
-            @Override
-            public void done(List<AVObject> list, AVException e) {
-                SingleLoadBarUtil.getInstance().dismissLoadBar();
-                if (LeanCloundUtil.handleLeanResult(CommentActivity.this, e)) {
-                    if (null != list && list.size() > 0) {
-                        list.get(0).increment("xx_number");
-                        list.get(0).setFetchWhenSave(true);
-                        list.get(0).saveInBackground(new SaveCallback() {
+                        AVObject item = list.get(0);
+                        // 也可以使用 incrementKey:byAmount: 来给 Number 类型字段累加一个特定数值。
+                        item.increment(type, 1);
+//                        list.get(0).increment("oo_number");
+//                        list.get(0).setFetchWhenSave(true);
+                        item.saveInBackground(new SaveCallback() {
                             @Override
                             public void done(AVException e) {
                                 if (LeanCloundUtil.handleLeanResult(CommentActivity.this, e)) {
