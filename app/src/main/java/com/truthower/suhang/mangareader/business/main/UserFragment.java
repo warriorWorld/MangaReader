@@ -11,20 +11,27 @@ import android.widget.CompoundButton;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.avos.avoscloud.AVException;
+import com.avos.avoscloud.AVObject;
+import com.avos.avoscloud.AVQuery;
+import com.avos.avoscloud.CountCallback;
 import com.truthower.suhang.mangareader.R;
 import com.truthower.suhang.mangareader.base.BaseFragment;
 import com.truthower.suhang.mangareader.bean.LoginBean;
 import com.truthower.suhang.mangareader.business.ad.AdvertisingActivity;
+import com.truthower.suhang.mangareader.business.detail.WebMangaDetailsActivity;
 import com.truthower.suhang.mangareader.business.download.DownloadActivity;
 import com.truthower.suhang.mangareader.business.other.AboutActivity;
 import com.truthower.suhang.mangareader.business.statistics.StatisticsActivity;
 import com.truthower.suhang.mangareader.business.tag.TagFilterActivity;
 import com.truthower.suhang.mangareader.business.user.CollectedActivity;
 import com.truthower.suhang.mangareader.business.user.LoginActivity;
+import com.truthower.suhang.mangareader.business.user.UserCenterActivity;
 import com.truthower.suhang.mangareader.business.wordsbook.WordsBookActivity;
 import com.truthower.suhang.mangareader.config.Configure;
 import com.truthower.suhang.mangareader.config.ShareKeys;
 import com.truthower.suhang.mangareader.listener.OnShareAppClickListener;
+import com.truthower.suhang.mangareader.utils.LeanCloundUtil;
 import com.truthower.suhang.mangareader.utils.SharedPreferencesUtils;
 import com.truthower.suhang.mangareader.widget.dialog.MangaDialog;
 import com.truthower.suhang.mangareader.widget.dialog.QrDialog;
@@ -45,6 +52,8 @@ public class UserFragment extends BaseFragment implements View.OnClickListener {
     private TextView userNameTv;
     private CircleImage userHeadCiv;
     private OnShareAppClickListener onShareAppClickListener;
+    private TextView user_center_explain;
+    private TextView user_msg_tip_tv;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -72,6 +81,7 @@ public class UserFragment extends BaseFragment implements View.OnClickListener {
         try {
             if (!hidden) {
                 toggleLoginStateUI();
+                doGetMsgCount();
             }
         } catch (Exception e) {
             //这时候有可能fragment还没绑定上activity
@@ -96,11 +106,13 @@ public class UserFragment extends BaseFragment implements View.OnClickListener {
                 return true;
             }
         });
+        user_center_explain = (TextView) v.findViewById(R.id.user_center_explain);
         aboutRl = (RelativeLayout) v.findViewById(R.id.about_rl);
         shareRl = (RelativeLayout) v.findViewById(R.id.share_rl);
         adRl = (RelativeLayout) v.findViewById(R.id.ad_rl);
         finishedMangaRl = (RelativeLayout) v.findViewById(R.id.finished_manga_rl);
         userNameTv = (TextView) v.findViewById(R.id.user_name_tv);
+        user_msg_tip_tv = (TextView) v.findViewById(R.id.user_msg_tip_tv);
 
         adRl.setOnClickListener(this);
         collectRl.setOnClickListener(this);
@@ -120,16 +132,36 @@ public class UserFragment extends BaseFragment implements View.OnClickListener {
     private void toggleLoginStateUI() {
         if (TextUtils.isEmpty(LoginBean.getInstance().getUserName())) {
             userNameTv.setText("点击登录");
-            userTopBarRl.setEnabled(true);
+            user_center_explain.setVisibility(View.GONE);
+            user_msg_tip_tv.setVisibility(View.GONE);
         } else {
             if (LoginBean.getInstance().isMaster()) {
                 userNameTv.setTextColor(getResources().getColor(R.color.master));
             } else {
                 userNameTv.setTextColor(getResources().getColor(R.color.white));
             }
+            user_center_explain.setVisibility(View.VISIBLE);
             userNameTv.setText(LoginBean.getInstance().getUserName());
-            userTopBarRl.setEnabled(false);
         }
+    }
+
+    private void doGetMsgCount() {
+        AVQuery<AVObject> query = new AVQuery<>("Comment");
+        query.whereEqualTo("reply_user", LoginBean.getInstance().getUserName());
+        query.countInBackground(new CountCallback() {
+            @Override
+            public void done(int i, AVException e) {
+                if (LeanCloundUtil.handleLeanResult(getActivity(), e)) {
+                    int newMsgCount = i - SharedPreferencesUtils.getIntSharedPreferencesData(getActivity(), ShareKeys.READ_COMMENT_COUNT_KEY);
+                    if (newMsgCount > 0) {
+                        user_msg_tip_tv.setText(newMsgCount + "");
+                        user_msg_tip_tv.setVisibility(View.VISIBLE);
+                    } else {
+                        user_msg_tip_tv.setVisibility(View.GONE);
+                    }
+                }
+            }
+        });
     }
 
     @Override
@@ -164,7 +196,8 @@ public class UserFragment extends BaseFragment implements View.OnClickListener {
                 intent = new Intent(getActivity(), DownloadActivity.class);
                 break;
             case R.id.user_top_bar_rl:
-                intent = new Intent(getActivity(), LoginActivity.class);
+                intent = new Intent(getActivity(), UserCenterActivity.class);
+                intent.putExtra("owner", LoginBean.getInstance().getUserName());
                 break;
             case R.id.about_rl:
                 intent = new Intent(getActivity(), AboutActivity.class);

@@ -29,6 +29,7 @@ import com.truthower.suhang.mangareader.bean.CommentBean;
 import com.truthower.suhang.mangareader.bean.LoginBean;
 import com.truthower.suhang.mangareader.bean.MangaBean;
 import com.truthower.suhang.mangareader.business.detail.WebMangaDetailsActivity;
+import com.truthower.suhang.mangareader.business.user.UserCenterActivity;
 import com.truthower.suhang.mangareader.config.Configure;
 import com.truthower.suhang.mangareader.config.ShareKeys;
 import com.truthower.suhang.mangareader.listener.OnCommenttemClickListener;
@@ -83,7 +84,7 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
         sentCommentTv = (TextView) findViewById(R.id.sent_comment_tv);
 
         sentCommentTv.setOnClickListener(this);
-        baseTopBar.setTitle(mangaName+"的评论");
+        baseTopBar.setTitle(mangaName + "的评论");
     }
 
     @Override
@@ -179,7 +180,9 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
 
                     @Override
                     public void onUserNameClick(int position) {
-
+                        Intent intent = new Intent(CommentActivity.this, UserCenterActivity.class);
+                        intent.putExtra("owner", LoginBean.getInstance().getUserName());
+                        startActivity(intent);
                     }
 
                     @Override

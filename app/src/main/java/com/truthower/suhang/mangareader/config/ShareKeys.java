@@ -22,8 +22,9 @@ public class ShareKeys {
     public static final String CURRENT_CHAPTER_KEY = "current_chapter_key";
     public static final String IGNORE_THIS_VERSION_KEY = "ignore_this_version_key";
     public static final String ONLINE_MANGA_READ_CHAPTER_POSITION = "online_manga_read_chapter_position";
-    public static final String ANNOUNCEMENT_READ_KEY="announcement_read_key";
-    public static final String WORDS_BOOK_PROGRESS_KEY="words_book_progress_key";
-    public static final String STATISTICS_UPDATE_KEY="statistics_update_key";
-    public static final String COMMENT_OOXX_KEY="comment_ooxx_key";
+    public static final String ANNOUNCEMENT_READ_KEY = "announcement_read_key";
+    public static final String WORDS_BOOK_PROGRESS_KEY = "words_book_progress_key";
+    public static final String STATISTICS_UPDATE_KEY = "statistics_update_key";
+    public static final String COMMENT_OOXX_KEY = "comment_ooxx_key";
+    public static final String READ_COMMENT_COUNT_KEY = "read_comment_count_key";
 }

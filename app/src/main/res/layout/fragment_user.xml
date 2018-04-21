@@ -329,24 +329,61 @@
         android:background="@color/manga_reader"
         android:paddingLeft="31dp">
 
-        <com.truthower.suhang.mangareader.widget.imageview.CircleImage
-            android:id="@+id/user_head_civ"
-            android:layout_width="52dp"
+        <RelativeLayout
+            android:layout_width="wrap_content"
             android:layout_height="52dp"
             android:layout_alignParentBottom="true"
-            android:layout_marginBottom="14dp"
-            android:src="@drawable/spider_hat_gray" />
+            android:layout_marginBottom="14dp">
 
-        <TextView
-            android:id="@+id/user_name_tv"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_marginBottom="31dp"
-            android:layout_marginLeft="19dp"
-            android:layout_toRightOf="@id/user_head_civ"
-            android:text="点击登录"
-            android:textColor="@color/white"
-            android:textSize="@dimen/main_text_size" />
+
+            <com.truthower.suhang.mangareader.widget.imageview.CircleImage
+                android:id="@+id/user_head_civ"
+                android:layout_width="52dp"
+                android:layout_height="match_parent"
+                android:src="@drawable/spider_hat_gray" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="10dp"
+                android:layout_toRightOf="@id/user_head_civ"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/user_name_tv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="点击登录"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/main_text_size" />
+
+                <TextView
+                    android:id="@+id/user_center_explain"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="3dp"
+                    android:text="个人中心"
+                    android:textColor="@color/main_text_color_gray"
+                    android:textSize="10sp" />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/user_msg_tip_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="-10dp"
+                android:layout_toRightOf="@+id/user_head_civ"
+                android:background="@drawable/tag_bg_white"
+                android:gravity="center"
+                android:paddingLeft="5dp"
+                android:paddingRight="5dp"
+                android:singleLine="true"
+                android:text="1"
+                android:textColor="@color/manga_reader_deep"
+                android:textSize="11sp" />
+        </RelativeLayout>
+
     </RelativeLayout>
 </RelativeLayout>
