@@ -3,6 +3,7 @@ package com.truthower.suhang.mangareader.app;
 import android.app.Application;
 import android.app.DownloadManager;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Build;
@@ -15,12 +16,15 @@ import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.nostra13.universalimageloader.core.assist.QueueProcessingType;
 import com.truthower.suhang.mangareader.bean.DownloadBean;
 import com.truthower.suhang.mangareader.bean.LoginBean;
+import com.truthower.suhang.mangareader.business.detail.WebMangaDetailsActivity;
 import com.truthower.suhang.mangareader.business.download.DownloadMangaManager;
 import com.truthower.suhang.mangareader.config.Configure;
 import com.truthower.suhang.mangareader.crash.CrashHandler;
 import com.umeng.commonsdk.UMConfigure;
 import com.umeng.message.IUmengRegisterCallback;
 import com.umeng.message.PushAgent;
+import com.umeng.message.UmengNotificationClickHandler;
+import com.umeng.message.entity.UMessage;
 
 /**
  * Created by Administrator on 2017/7/19.
@@ -57,6 +61,17 @@ public class App extends Application {
             @Override
             public void onFailure(String s, String s1) {
 
+            }
+        });
+        mPushAgent.setNotificationClickHandler(new UmengNotificationClickHandler() {
+            @Override
+            public void dealWithCustomAction(Context context, UMessage uMessage) {
+                super.dealWithCustomAction(context, uMessage);
+                //打开详情
+                Intent intent = new Intent(getApplicationContext(), WebMangaDetailsActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                intent.putExtra("mangaUrl", uMessage.custom);
+                startActivity(intent);
             }
         });
     }

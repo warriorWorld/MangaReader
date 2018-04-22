@@ -17,7 +17,9 @@ public abstract class SpiderBase {
 
     public enum SearchType {
         BY_MANGA_NAME,
-        BY_MANGA_AUTHOR
+        BY_MANGA_AUTHOR,
+        BY_COMMENT,
+        BY_GRADE
     }
 
     public abstract <ResultObj> void getMangaList(String type, String page, final JsoupCallBack<ResultObj> jsoupCallBack);

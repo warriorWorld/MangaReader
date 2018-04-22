@@ -50,6 +50,7 @@ public abstract class BaseActivity extends Activity {
         ActivityPoor.addActivity(this);
 
         PushAgent.getInstance(this).onAppStart();
+        MobclickAgent.onEvent(this, getLocalClassName().toString());
     }
 
     private void initUI() {
