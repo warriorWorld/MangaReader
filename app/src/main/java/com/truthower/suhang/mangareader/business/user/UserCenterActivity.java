@@ -37,6 +37,7 @@ import com.truthower.suhang.mangareader.utils.LeanCloundUtil;
 import com.truthower.suhang.mangareader.widget.bar.TopBar;
 import com.truthower.suhang.mangareader.widget.dialog.SingleLoadBarUtil;
 import com.truthower.suhang.mangareader.widget.recyclerview.RecyclerGridDecoration;
+import com.umeng.analytics.MobclickAgent;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -64,6 +65,7 @@ public class UserCenterActivity extends BaseFragmentActivity {
         }
         initUI();
         initFragment();
+        MobclickAgent.onEvent(this, "user_center");
     }
 
     private void initFragment() {

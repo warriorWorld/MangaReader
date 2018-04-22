@@ -18,6 +18,7 @@ public class Configure {
     public static final int DB_VERSION = 1;
     public final static String[] websList = {"MangaReader", "KaKaLot"};
     public final static String[] masterWebsList = {"MangaReader", "NManga", "KaKaLot", "LManga"};
+    public final static String[] VPN_MUST_LIST = {"KaKaLot"};
     public final static String DST_FOLDER_NAME = "aSpider";
     final public static String storagePath = Environment
             .getExternalStorageDirectory().getAbsolutePath() + "/" + DST_FOLDER_NAME;

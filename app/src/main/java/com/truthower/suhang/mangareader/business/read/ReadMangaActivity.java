@@ -90,7 +90,7 @@ public class ReadMangaActivity extends TTSActivity implements OnClickListener {
     private int toPage = 0;
     private ImageView test_iv;
     private DbAdapter db;//数据库
-    private int qureyWordCount = 0, readPage = 0;
+    private int qureyWordCount = 0;
     private String realMangaName;
     /**
      * 时间
@@ -350,9 +350,8 @@ public class ReadMangaActivity extends TTSActivity implements OnClickListener {
                 @Override
                 public void run() {
                     try {
-                        db.updateStatistics(qureyWordCount, readPage, realMangaName);
+                        db.updateStatistics(qureyWordCount, 1, realMangaName);
                         qureyWordCount = 0;
-                        readPage = 0;
                     } catch (Exception e) {
                         if (Configure.isTest) {
                             MangaDialog dialog = new MangaDialog(ReadMangaActivity.this);
@@ -597,7 +596,6 @@ public class ReadMangaActivity extends TTSActivity implements OnClickListener {
                 public void onPageSelected(int position) {
                     historyPosition = position;
                     readProgressTv.setText(position + 1 + "/" + pathList.size());
-                    readPage++;
                     updateStatisctics();
                 }
 

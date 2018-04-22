@@ -942,12 +942,19 @@ public class WebMangaDetailsActivity extends TTSActivity implements AdapterView.
     }
 
     private void showDescription() {
-        if (TextUtils.isEmpty(currentManga.getDescription())) {
+        String description = currentManga.getDescription();
+        for (int i = 0; i < Configure.VPN_MUST_LIST.length; i++) {
+            if (Configure.currentWebSite.equals(Configure.VPN_MUST_LIST[i])) {
+                description = "该漫画需要开启VPN后浏览";
+                break;
+            }
+        }
+        if (TextUtils.isEmpty(description)) {
             return;
         }
         EasyPopupWindow ppw = new EasyPopupWindow(this);
         ppw.adaptiveShowAsDropDown(thumbnailIV, 0, 0);
-        ppw.setMessage(currentManga.getDescription());
+        ppw.setMessage(description);
         ppw.hideIKnowTv();
     }
 
