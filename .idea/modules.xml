@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/MangaReader.iml" filepath="$PROJECT_DIR$/MangaReader.iml" />
+      <module fileurl="file://F:\studio_workspace\MangaReader\MangaReader.iml" filepath="F:\studio_workspace\MangaReader\MangaReader.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
       <module fileurl="file://$PROJECT_DIR$/push/push.iml" filepath="$PROJECT_DIR$/push/push.iml" />
     </modules>

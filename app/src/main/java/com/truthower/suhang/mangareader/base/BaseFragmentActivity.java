@@ -50,7 +50,7 @@ public abstract class BaseFragmentActivity extends FragmentActivity {
         EventBus.getDefault().register(this);
         ActivityPoor.addActivity(this);
 
-        PushAgent.getInstance(this).onAppStart();
+//        PushAgent.getInstance(this).onAppStart();
         MobclickAgent.onEvent(this, getLocalClassName().toString());
     }
 

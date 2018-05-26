@@ -40,7 +40,7 @@ public class App extends Application {
         initCrashHandler();
         dealFileUriExposedException();
         initDownloadManger();
-        initUmeng();
+//        initUmeng();
     }
 
     private void initUmeng() {

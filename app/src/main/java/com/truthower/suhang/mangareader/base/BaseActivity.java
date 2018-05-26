@@ -49,7 +49,7 @@ public abstract class BaseActivity extends Activity {
         EventBus.getDefault().register(this);
         ActivityPoor.addActivity(this);
 
-        PushAgent.getInstance(this).onAppStart();
+//        PushAgent.getInstance(this).onAppStart();
         MobclickAgent.onEvent(this, getLocalClassName().toString());
     }
 
