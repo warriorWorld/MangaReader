@@ -10,6 +10,7 @@ import java.util.ArrayList;
 public class MangaBean extends BaseBean {
     private String url;
     private String localThumbnailUrl;
+    private String userThumbnailUrl;
     private String name;
     private String webThumbnailUrl;
     private String author;
@@ -110,5 +111,18 @@ public class MangaBean extends BaseBean {
 
     public void setTypeCodes(String[] typeCodes) {
         this.typeCodes = typeCodes;
+    }
+
+    public String getUserThumbnailUrl() {
+        if (!TextUtils.isEmpty(userThumbnailUrl) && !userThumbnailUrl.contains("file://")
+                && !userThumbnailUrl.contains("http://") && !userThumbnailUrl.contains("https://")) {
+            return "file://" + userThumbnailUrl;
+        } else {
+            return userThumbnailUrl;
+        }
+    }
+
+    public void setUserThumbnailUrl(String userThumbnailUrl) {
+        this.userThumbnailUrl = userThumbnailUrl;
     }
 }

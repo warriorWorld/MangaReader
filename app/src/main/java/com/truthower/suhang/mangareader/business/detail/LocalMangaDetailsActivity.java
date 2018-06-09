@@ -12,19 +12,23 @@ import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.nostra13.universalimageloader.core.ImageLoader;
 import com.truthower.suhang.mangareader.R;
 import com.truthower.suhang.mangareader.adapter.LocalMangaListAdapter;
 import com.truthower.suhang.mangareader.base.BaseActivity;
 import com.truthower.suhang.mangareader.bean.MangaBean;
 import com.truthower.suhang.mangareader.business.read.ReadMangaActivity;
 import com.truthower.suhang.mangareader.config.Configure;
+import com.truthower.suhang.mangareader.listener.OnSevenFourteenListDialogListener;
 import com.truthower.suhang.mangareader.sort.FileComparator;
 import com.truthower.suhang.mangareader.sort.FileComparatorAllNum;
 import com.truthower.suhang.mangareader.sort.FileComparatorDirectory;
 import com.truthower.suhang.mangareader.sort.FileComparatorWithBracket;
 import com.truthower.suhang.mangareader.spider.FileSpider;
+import com.truthower.suhang.mangareader.spider.SpiderBase;
 import com.truthower.suhang.mangareader.utils.ReplaceUtil;
 import com.truthower.suhang.mangareader.widget.bar.TopBar;
+import com.truthower.suhang.mangareader.widget.dialog.ListDialog;
 import com.truthower.suhang.mangareader.widget.dialog.MangaDialog;
 import com.truthower.suhang.mangareader.widget.pulltorefresh.PullToRefreshBase;
 import com.truthower.suhang.mangareader.widget.pulltorefresh.PullToRefreshGridView;
@@ -51,6 +55,7 @@ public class LocalMangaDetailsActivity extends BaseActivity implements AdapterVi
     private String filePath;
     private ArrayList<String> pathList;
     private String currentMangaName;
+    private String[] selectOptions = {"设为封面", "删除该图片"};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -153,7 +158,7 @@ public class LocalMangaDetailsActivity extends BaseActivity implements AdapterVi
                 firstDirectoryName = arri[arri.length - 2];
                 String[] arri1 = firstDirectoryName.split("-");
                 firstDirectoryName = arri1[0];
-                firstDirectoryName= ReplaceUtil.onlyNumber(firstDirectoryName);
+                firstDirectoryName = ReplaceUtil.onlyNumber(firstDirectoryName);
 
                 //用于判断是否位数字的异教徒写法
                 int isInt = Integer.valueOf(firstDirectoryName);
@@ -248,8 +253,60 @@ public class LocalMangaDetailsActivity extends BaseActivity implements AdapterVi
 
     @Override
     public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
-        showDeleteDialog(i);
+        if (!isNextDirectory(mangaList.get(0).getUrl())) {
+            //阅读页的前一页
+            showOptionsDialog(i);
+        } else {
+            showDeleteDialog(i);
+        }
         return true;
+    }
+
+    private void showOptionsDialog(final int selectedPosition) {
+        ListDialog listDialog = new ListDialog(this);
+        listDialog.setOnSevenFourteenListDialogListener(new OnSevenFourteenListDialogListener() {
+            @Override
+            public void onItemClick(String selectedRes, String selectedCodeRes) {
+
+            }
+
+            @Override
+            public void onItemClick(String selectedRes) {
+
+            }
+
+            @Override
+            public void onItemClick(int position) {
+                switch (position) {
+                    case 0:
+                        File thumbnailFile = new File(Configure.thumnailPath);
+                        if (!thumbnailFile.exists()) {
+                            thumbnailFile.mkdirs();
+                        }
+
+                        String thumbnailFilePath = mangaList.get(selectedPosition).getLocalThumbnailUrl().substring(0,
+                                mangaList.get(selectedPosition).getLocalThumbnailUrl().lastIndexOf(File.separator));
+                        thumbnailFilePath = thumbnailFilePath.replaceAll("file://", "");
+                        thumbnailFilePath = thumbnailFilePath.replaceAll(Configure.storagePath, "");
+                        thumbnailFilePath = thumbnailFilePath.replaceAll(File.separator, "_");
+                        thumbnailFilePath = thumbnailFilePath.substring(1, thumbnailFilePath.length()) + ".png";
+                        //如果有就删
+                        FileSpider.getInstance().deleteFile(Configure.thumnailPath + File.separator + thumbnailFilePath);
+                        FileSpider.getInstance().copyFile
+                                (mangaList.get(selectedPosition).getLocalThumbnailUrl().replaceAll("file://", ""),
+                                        Configure.thumnailPath + File.separator + thumbnailFilePath);
+                        ImageLoader.getInstance().clearDiskCache();
+                        ImageLoader.getInstance().clearMemoryCache();
+                        baseToast.showToast("设置成功");
+                        break;
+                    case 1:
+                        showDeleteDialog(selectedPosition);
+                        break;
+                }
+            }
+        });
+        listDialog.show();
+        listDialog.setOptionsList(selectOptions);
     }
 
     private void showDeleteDialog(final int i) {

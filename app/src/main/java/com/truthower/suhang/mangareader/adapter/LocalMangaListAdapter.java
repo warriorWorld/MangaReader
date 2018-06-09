@@ -68,7 +68,9 @@ public class LocalMangaListAdapter extends BaseAdapter {
             viewHolder = (ViewHolder) convertView.getTag();
         }
         MangaBean item = mangaList.get(position);
-        if (!TextUtils.isEmpty(item.getLocalThumbnailUrl())) {
+        if (!TextUtils.isEmpty(item.getUserThumbnailUrl())) {
+            ImageLoader.getInstance().displayImage(item.getUserThumbnailUrl(), viewHolder.manga_view, Configure.smallImageOptions);
+        } else if (!TextUtils.isEmpty(item.getLocalThumbnailUrl())) {
             ImageLoader.getInstance().displayImage(item.getLocalThumbnailUrl(), viewHolder.manga_view, Configure.smallImageOptions);
         }
         viewHolder.manga_title.setText(item.getName());

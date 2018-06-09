@@ -13,6 +13,7 @@ import com.truthower.suhang.mangareader.eventbus.EventBusEvent;
 import com.truthower.suhang.mangareader.listener.DownloadCallBack;
 import com.truthower.suhang.mangareader.listener.JsoupCallBack;
 import com.truthower.suhang.mangareader.utils.ImageUtil;
+import com.truthower.suhang.mangareader.utils.StringUtil;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -73,9 +74,22 @@ public class FileSpider {
 
                 File[] files1 = files[i].listFiles();//第三级目录 某具体漫画内部
                 if (null != files1 && files1.length > 0 && !files1[0].isDirectory()) {
-                    //如果下一级目录就直接是图片文件 则显示第一张图片
-                    item.setLocalThumbnailUrl(files1[0].toString());
+                    String thumbnailFilePath = files1[0].toString().substring(0,
+                            files1[0].toString().lastIndexOf(File.separator));
+                    thumbnailFilePath = thumbnailFilePath.replaceAll("file://", "");
+                    thumbnailFilePath = thumbnailFilePath.replaceAll(Configure.storagePath, "");
+                    thumbnailFilePath = thumbnailFilePath.replaceAll(File.separator, "_");
+                    thumbnailFilePath = thumbnailFilePath.substring(1, thumbnailFilePath.length())+".png";
+                    thumbnailFilePath=Configure.thumnailPath+File.separator+thumbnailFilePath;
 
+                    File thumbnailFile = new File(thumbnailFilePath);
+                    if (thumbnailFile.exists()) {
+                        item.setUserThumbnailUrl(thumbnailFilePath);
+                    } else {
+                        item.setUserThumbnailUrl("");
+                        //如果下一级目录就直接是图片文件 则显示第一张图片
+                        item.setLocalThumbnailUrl(files1[0].toString());
+                    }
                 } else if (null != files1 && files1.length > 0 && files1[0].isDirectory()) {
                     //如果下一级目录不是图片而是文件夹们  二级文件夹
                     File[] files2 = files1[0].listFiles();//第四级目录 某具体漫画内部的内部
@@ -307,7 +321,7 @@ public class FileSpider {
      * @param destFile 复制到的目标文件
      * @return
      */
-    private boolean copyFile(String srcFile, String destFile) {
+    public boolean copyFile(String srcFile, String destFile) {
         try {
             InputStream streamFrom = new FileInputStream(srcFile);
             OutputStream streamTo = new FileOutputStream(destFile);
