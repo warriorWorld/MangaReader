@@ -17,7 +17,7 @@ public class ReplaceUtil {
 
     public static String onlyNumber(String s) {
         String str = s.replaceAll("[`~!@#$%^&*()+=|{}':;',\\[\\].<>/?~！@#￥%……&;*（）——+|{}【】\"‘；：”“’。，、？|]", "");
-        str = str.replaceAll("[abcdefghijklmnopqrstunwxyzABCDEFGHIJKLMNOPQRSTUNWXYZ]", "");
+        str = str.replaceAll("[abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ]", "");
         //留着空格
 //        str = str.replaceAll("\n", "");
 //        str = str.replaceAll("\r", "");

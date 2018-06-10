@@ -87,9 +87,9 @@ public class FileSpider {
                         item.setUserThumbnailUrl(thumbnailFilePath);
                     } else {
                         item.setUserThumbnailUrl("");
-                        //如果下一级目录就直接是图片文件 则显示第一张图片
-                        item.setLocalThumbnailUrl(files1[0].toString());
                     }
+                    //如果下一级目录就直接是图片文件 则显示第一张图片
+                    item.setLocalThumbnailUrl(files1[0].toString());
                 } else if (null != files1 && files1.length > 0 && files1[0].isDirectory()) {
                     //如果下一级目录不是图片而是文件夹们  二级文件夹
                     File[] files2 = files1[0].listFiles();//第四级目录 某具体漫画内部的内部
