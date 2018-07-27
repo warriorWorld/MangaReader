@@ -99,7 +99,6 @@ public class OnlineMangaFragment extends BaseFragment implements PullToRefreshBa
         currentPageTv = (TextView) v.findViewById(R.id.current_page_tv);
 
         topBar = (TopBar) v.findViewById(R.id.gradient_bar);
-        topBar.setTitle(BaseParameterUtil.getInstance().getCurrentWebSite(getActivity()));
         topBar.setOnTopBarClickListener(new TopBar.OnTopBarClickListener() {
             @Override
             public void onLeftClick() {
@@ -174,6 +173,7 @@ public class OnlineMangaFragment extends BaseFragment implements PullToRefreshBa
                             public void run() {
                                 currentMangaList = result.getMangaList();
                                 initListView();
+                                refreshTopBarTitle();
                             }
                         });
                     }
@@ -428,8 +428,22 @@ public class OnlineMangaFragment extends BaseFragment implements PullToRefreshBa
     public void toggleTag(String selectedRes, String selectedCode) {
         initToFirstPage();
         BaseParameterUtil.getInstance().saveCurrentType(getActivity(), selectedCode);
-        topBar.setTitle(BaseParameterUtil.getInstance().getCurrentWebSite(getActivity()) + "(" + selectedRes + ")");
+        refreshTopBarTitle();
         doGetData();
+    }
+
+
+    private void refreshTopBarTitle() {
+        String type = BaseParameterUtil.getInstance().getCurrentType(getActivity());
+        for (int i = 0; i < spider.getMangaTypeCodes().length; i++) {
+            if (type.equals(spider.getMangaTypeCodes()[i])) {
+                type = spider.getMangaTypes()[i];
+                break;
+            }
+        }
+        int actualPage = (BaseParameterUtil.getInstance().getCurrentPage(getActivity()) / spider.nextPageNeedAddCount()) ;
+        topBar.setTitle(BaseParameterUtil.getInstance().getCurrentWebSite(getActivity())
+                + "(" + type + "-" + actualPage + ")");
     }
 
     private void showWebsSelector() {
@@ -445,7 +459,7 @@ public class OnlineMangaFragment extends BaseFragment implements PullToRefreshBa
                 initToFirstPage();
                 BaseParameterUtil.getInstance().saveCurrentType(getActivity(), spider.getMangaTypes()[0]);
                 BaseParameterUtil.getInstance().saveCurrentWebSite(getActivity(), selectedRes);
-                topBar.setTitle(BaseParameterUtil.getInstance().getCurrentWebSite(getActivity()) + "(" + BaseParameterUtil.getInstance().getCurrentType(getActivity()) + ")");
+                refreshTopBarTitle();
                 if (selectedRes.equals("KaKaLot")) {
 //                    baseToast.showToast("该网站中大部分漫画需要开启VPN后浏览");
                 }
@@ -507,8 +521,7 @@ public class OnlineMangaFragment extends BaseFragment implements PullToRefreshBa
                     try {
                         BaseParameterUtil.getInstance().saveCurrentPage(getActivity(), (Integer.valueOf(text) - 1) * spider.nextPageNeedAddCount());
                         startPage = BaseParameterUtil.getInstance().getCurrentPage(getActivity());
-                        int actualPage = (startPage / spider.nextPageNeedAddCount()) + 1;
-                        topBar.setTitle(BaseParameterUtil.getInstance().getCurrentWebSite(getActivity()) + "(" + actualPage + ")");
+                        refreshTopBarTitle();
                         doGetData();
                     } catch (NumberFormatException e) {
                         e.printStackTrace();
