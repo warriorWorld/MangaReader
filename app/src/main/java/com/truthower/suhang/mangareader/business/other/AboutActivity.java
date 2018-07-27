@@ -142,11 +142,11 @@ public class AboutActivity extends BaseActivity implements View.OnClickListener,
                         forceUpdate = list.get(0).getBoolean("forceUpdate");
                         msg = list.get(0).getString("description");
                         downloadFile = list.get(0).getAVFile("apk");
-                        if (versionCode == BaseParameterUtil.getInstance(AboutActivity.this).getAppVersionCode()) {
-                            versionTv.setText(BaseParameterUtil.getInstance(AboutActivity.this).getAppVersionName()
+                        if (versionCode == BaseParameterUtil.getInstance().getAppVersionCode(AboutActivity.this)) {
+                            versionTv.setText(BaseParameterUtil.getInstance().getAppVersionName(AboutActivity.this)
                                     + "(最新版本)");
                         } else {
-                            versionTv.setText(BaseParameterUtil.getInstance(AboutActivity.this).getAppVersionName()
+                            versionTv.setText(BaseParameterUtil.getInstance().getAppVersionName(AboutActivity.this)
                                     + "(有新版本啦~)");
                             showVersionDialog();
                         }
@@ -284,7 +284,7 @@ public class AboutActivity extends BaseActivity implements View.OnClickListener,
             case R.id.app_icon_iv:
                 break;
             case R.id.check_update_rl:
-                if (versionCode == BaseParameterUtil.getInstance(AboutActivity.this).getAppVersionCode()) {
+                if (versionCode == BaseParameterUtil.getInstance().getAppVersionCode(AboutActivity.this)) {
                     baseToast.showToast("已经是最新版本啦~");
                 } else {
                     showVersionDialog();

@@ -51,6 +51,7 @@ import com.truthower.suhang.mangareader.listener.OnGradeDialogSelectedListener;
 import com.truthower.suhang.mangareader.listener.OnSevenFourteenListDialogListener;
 import com.truthower.suhang.mangareader.spider.SpiderBase;
 import com.truthower.suhang.mangareader.utils.ActivityPoor;
+import com.truthower.suhang.mangareader.utils.BaseParameterUtil;
 import com.truthower.suhang.mangareader.utils.LeanCloundUtil;
 import com.truthower.suhang.mangareader.utils.NumberUtil;
 import com.truthower.suhang.mangareader.utils.SharedPreferencesUtils;
@@ -154,7 +155,7 @@ public class WebMangaDetailsActivity extends TTSActivity implements AdapterView.
     private void initSpider() {
         try {
             spider = (SpiderBase) Class.forName
-                    ("com.truthower.suhang.mangareader.spider." + Configure.currentWebSite + "Spider").newInstance();
+                    ("com.truthower.suhang.mangareader.spider." + BaseParameterUtil.getInstance().getCurrentWebSite(this) + "Spider").newInstance();
         } catch (ClassNotFoundException e) {
             baseToast.showToast(e + "");
             e.printStackTrace();
@@ -209,9 +210,9 @@ public class WebMangaDetailsActivity extends TTSActivity implements AdapterView.
                             if (error.equals(Configure.WRONG_WEBSITE_EXCEPTION)) {
                                 try {
                                     if (LoginBean.getInstance().isMaster()) {
-                                        Configure.currentWebSite = Configure.masterWebsList[trySpiderPosition];
+                                        BaseParameterUtil.getInstance().saveCurrentWebSite(WebMangaDetailsActivity.this, Configure.masterWebsList[trySpiderPosition]);
                                     } else {
-                                        Configure.currentWebSite = Configure.websList[trySpiderPosition];
+                                        BaseParameterUtil.getInstance().saveCurrentWebSite(WebMangaDetailsActivity.this, Configure.websList[trySpiderPosition]);
                                     }
                                     initSpider();
                                     initWebManga(url);
@@ -455,7 +456,7 @@ public class WebMangaDetailsActivity extends TTSActivity implements AdapterView.
             @Override
             public void onOkBtnClick(String selectedRes, String selectedCodeRes) {
                 Intent intent = new Intent(WebMangaDetailsActivity.this, SearchActivity.class);
-                intent.putExtra("selectedWebSite", Configure.currentWebSite);
+                intent.putExtra("selectedWebSite", BaseParameterUtil.getInstance().getCurrentWebSite(WebMangaDetailsActivity.this));
                 intent.putExtra("searchType", "author");
                 intent.putExtra("keyWord", selectedRes);
                 intent.putExtra("immediateSearch", true);
@@ -497,7 +498,7 @@ public class WebMangaDetailsActivity extends TTSActivity implements AdapterView.
             DownloadBean.getInstance().setMangaBean(this, temp);
             DownloadBean.getInstance().setOne_shot(this, spider.isOneShot());
             DownloadBean.getInstance().initDownloadChapters();
-            DownloadBean.getInstance().setWebSite(this, Configure.currentWebSite);
+            DownloadBean.getInstance().setWebSite(this, BaseParameterUtil.getInstance().getCurrentWebSite(this));
             DownloadMangaManager.getInstance().doDownload(getApplicationContext());
 
             Intent intent = new Intent(this, DownloadActivity.class);
@@ -944,7 +945,7 @@ public class WebMangaDetailsActivity extends TTSActivity implements AdapterView.
     private void showDescription() {
         String description = currentManga.getDescription();
         for (int i = 0; i < Configure.VPN_MUST_LIST.length; i++) {
-            if (Configure.currentWebSite.equals(Configure.VPN_MUST_LIST[i])) {
+            if (BaseParameterUtil.getInstance().getCurrentWebSite(this).equals(Configure.VPN_MUST_LIST[i])) {
                 description = "该漫画需要开启VPN后浏览";
                 break;
             }

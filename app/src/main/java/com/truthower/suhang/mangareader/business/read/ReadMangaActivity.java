@@ -38,6 +38,7 @@ import com.truthower.suhang.mangareader.listener.OnEditResultListener;
 import com.truthower.suhang.mangareader.listener.OnSpeakClickListener;
 import com.truthower.suhang.mangareader.spider.FileSpider;
 import com.truthower.suhang.mangareader.spider.SpiderBase;
+import com.truthower.suhang.mangareader.utils.BaseParameterUtil;
 import com.truthower.suhang.mangareader.utils.LeanCloundUtil;
 import com.truthower.suhang.mangareader.utils.SharedPreferencesUtils;
 import com.truthower.suhang.mangareader.volley.VolleyCallBack;
@@ -182,7 +183,7 @@ public class ReadMangaActivity extends TTSActivity implements OnClickListener {
     private void initSpider() {
         try {
             spider = (SpiderBase) Class.forName
-                    ("com.truthower.suhang.mangareader.spider." + Configure.currentWebSite + "Spider").newInstance();
+                    ("com.truthower.suhang.mangareader.spider." +  BaseParameterUtil.getInstance().getCurrentWebSite(this) + "Spider").newInstance();
         } catch (ClassNotFoundException e) {
             baseToast.showToast(e + "");
             e.printStackTrace();

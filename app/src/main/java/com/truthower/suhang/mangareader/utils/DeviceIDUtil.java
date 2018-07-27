@@ -4,6 +4,7 @@ package com.truthower.suhang.mangareader.utils;/**
 
 import android.Manifest;
 import android.app.Activity;
+import android.content.Context;
 import android.content.pm.PackageManager;
 import android.provider.Settings;
 import android.support.v4.app.ActivityCompat;
@@ -17,7 +18,7 @@ import java.util.UUID;
  * 邮箱：772192594@qq.com
  */
 public class DeviceIDUtil {
-    public static String getDeviceID(Activity context) {
+    public static String getDeviceID(Context context) {
         String deviceID = SharedPreferencesUtils.getSharedPreferencesData(context, "deviceID");
         if (TextUtils.isEmpty(deviceID)) {
             TelephonyManager tm = (TelephonyManager) context

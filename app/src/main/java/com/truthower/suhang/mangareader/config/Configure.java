@@ -28,8 +28,6 @@ public class Configure {
     final public static String WRONG_WEBSITE_EXCEPTION = "wrong_website_exception";
     //仅用于显示当前的漫画名称
 //    public static String currentMangaName = "";
-    //TODO final
-    public static String currentWebSite = websList[0];
     //获取正在运行的服务 有的手机获取不到 所以换一种方式
     final public static String YOUDAO = "http://fanyi.youdao.com/openapi.do?keyfrom=mangaeasywa" +
             "tch&key=986400551&type=data&doctype=json&version=1.1&q=";

@@ -46,7 +46,7 @@ public class LunchActivity extends BaseActivity implements View.OnClickListener,
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         initUI();
-        BaseParameterUtil.getInstance(this);
+        BaseParameterUtil.getInstance();
         doGetVersionInfo();
     }
 
@@ -71,8 +71,8 @@ public class LunchActivity extends BaseActivity implements View.OnClickListener,
                         forceUpdate = list.get(0).getBoolean("forceUpdate");
                         msg = list.get(0).getString("description");
                         downloadFile = list.get(0).getAVFile("apk");
-                        if (BaseParameterUtil.getInstance(LunchActivity.this).
-                                getAppVersionCode() >= versionCode || SharedPreferencesUtils.
+                        if (BaseParameterUtil.getInstance().
+                                getAppVersionCode(LunchActivity.this) >= versionCode || SharedPreferencesUtils.
                                 getBooleanSharedPreferencesData(LunchActivity.this,
                                         ShareKeys.IGNORE_THIS_VERSION_KEY + versionName, false)) {
 //                            baseToast.showToast("已经是最新版啦~~");

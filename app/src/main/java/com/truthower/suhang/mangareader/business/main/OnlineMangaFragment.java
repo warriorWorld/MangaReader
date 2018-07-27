@@ -29,6 +29,7 @@ import com.truthower.suhang.mangareader.listener.JsoupCallBack;
 import com.truthower.suhang.mangareader.listener.OnEditResultListener;
 import com.truthower.suhang.mangareader.listener.OnSevenFourteenListDialogListener;
 import com.truthower.suhang.mangareader.spider.SpiderBase;
+import com.truthower.suhang.mangareader.utils.BaseParameterUtil;
 import com.truthower.suhang.mangareader.utils.MatchStringUtil;
 import com.truthower.suhang.mangareader.utils.SharedPreferencesUtils;
 import com.truthower.suhang.mangareader.widget.bar.TopBar;
@@ -70,7 +71,8 @@ public class OnlineMangaFragment extends BaseFragment implements PullToRefreshBa
         View v = inflater.inflate(R.layout.fragment_online_manga_list, container, false);
         initUI(v);
         initPullListView();
-        initSpider(Configure.currentWebSite);
+
+        initSpider(BaseParameterUtil.getInstance().getCurrentWebSite(getActivity()));
 
         if (!isWifi(getActivity()) &&
                 SharedPreferencesUtils.getBooleanSharedPreferencesData(getActivity(), ShareKeys.ECONOMY_MODE, false)) {
@@ -98,7 +100,7 @@ public class OnlineMangaFragment extends BaseFragment implements PullToRefreshBa
         currentPageTv = (TextView) v.findViewById(R.id.current_page_tv);
 
         topBar = (TopBar) v.findViewById(R.id.gradient_bar);
-        topBar.setTitle(Configure.currentWebSite);
+        topBar.setTitle(BaseParameterUtil.getInstance().getCurrentWebSite(getActivity()));
         topBar.setOnTopBarClickListener(new TopBar.OnTopBarClickListener() {
             @Override
             public void onLeftClick() {
@@ -326,7 +328,7 @@ public class OnlineMangaFragment extends BaseFragment implements PullToRefreshBa
                     case 0:
                         //切换站点
                         showWebsSelector();
-                        MobclickAgent.onEvent(getActivity(),"select_website");
+                        MobclickAgent.onEvent(getActivity(), "select_website");
                         break;
                     case 1:
                         //搜索
@@ -339,12 +341,12 @@ public class OnlineMangaFragment extends BaseFragment implements PullToRefreshBa
 //                                    "才能搜索\nPS:kakalot这个站点的搜索只能输入网址搜索");
 //                        }
                         Intent intent = new Intent(getActivity(), SearchActivity.class);
-                        intent.putExtra("selectedWebSite", Configure.currentWebSite);
+                        intent.putExtra("selectedWebSite", BaseParameterUtil.getInstance().getCurrentWebSite(getActivity()));
                         startActivity(intent);
-                        MobclickAgent.onEvent(getActivity(),"search");
+                        MobclickAgent.onEvent(getActivity(), "search");
                         break;
                     case 2:
-                        MobclickAgent.onEvent(getActivity(),"select_type");
+                        MobclickAgent.onEvent(getActivity(), "select_type");
                         //分类
                         showTypesSelector();
 //                        showTypesSelectorDialog();
@@ -352,7 +354,7 @@ public class OnlineMangaFragment extends BaseFragment implements PullToRefreshBa
                     case 3:
                         //跳转
                         showToPageDialog("跳转");
-                        MobclickAgent.onEvent(getActivity(),"jump_page");
+                        MobclickAgent.onEvent(getActivity(), "jump_page");
                         break;
                 }
             }
@@ -426,7 +428,7 @@ public class OnlineMangaFragment extends BaseFragment implements PullToRefreshBa
     public void toggleTag(String selectedRes, String selectedCode) {
         initToFirstPage();
         nowTypeName = selectedCode;
-        topBar.setTitle(Configure.currentWebSite + "(" + selectedRes + ")");
+        topBar.setTitle(BaseParameterUtil.getInstance().getCurrentWebSite(getActivity()) + "(" + selectedRes + ")");
         doGetData();
     }
 
@@ -442,8 +444,8 @@ public class OnlineMangaFragment extends BaseFragment implements PullToRefreshBa
                 initSpider(selectedRes);
                 initToFirstPage();
                 nowTypeName = spider.getMangaTypes()[0];
-                Configure.currentWebSite = selectedRes;
-                topBar.setTitle(Configure.currentWebSite + "(" + nowTypeName + ")");
+                BaseParameterUtil.getInstance().saveCurrentWebSite(getActivity(), selectedRes);
+                topBar.setTitle(BaseParameterUtil.getInstance().getCurrentWebSite(getActivity()) + "(" + nowTypeName + ")");
                 if (selectedRes.equals("KaKaLot")) {
 //                    baseToast.showToast("该网站中大部分漫画需要开启VPN后浏览");
                 }
@@ -506,7 +508,7 @@ public class OnlineMangaFragment extends BaseFragment implements PullToRefreshBa
                         nowPage = (Integer.valueOf(text) - 1) * spider.nextPageNeedAddCount();
                         startPage = nowPage;
                         int actualPage = (startPage / spider.nextPageNeedAddCount()) + 1;
-                        topBar.setTitle(Configure.currentWebSite + "(" + actualPage + ")");
+                        topBar.setTitle(BaseParameterUtil.getInstance().getCurrentWebSite(getActivity()) + "(" + actualPage + ")");
                         doGetData();
                     } catch (NumberFormatException e) {
                         e.printStackTrace();
