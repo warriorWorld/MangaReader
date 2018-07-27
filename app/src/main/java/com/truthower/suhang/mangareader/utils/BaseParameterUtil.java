@@ -81,10 +81,7 @@ public class BaseParameterUtil {
         String website = SharedPreferencesUtils.getSharedPreferencesData(context,
                 ShareKeys.CURRENT_WEBSITE);
         if (TextUtils.isEmpty(website)) {
-            website = DeviceIDUtil.getDeviceID(context);
-            if (TextUtils.isEmpty(website)) {
-                return Configure.websList[0];
-            }
+            website = Configure.websList[0];
             SharedPreferencesUtils.setSharedPreferencesData(context, ShareKeys.CURRENT_WEBSITE,
                     website);
         }
@@ -94,6 +91,33 @@ public class BaseParameterUtil {
     public void saveCurrentWebSite(Context context, String website) {
         SharedPreferencesUtils.setSharedPreferencesData(context, ShareKeys.CURRENT_WEBSITE,
                 website);
+    }
+
+    public String getCurrentType(Context context) {
+        String res = SharedPreferencesUtils.getSharedPreferencesData(context,
+                ShareKeys.CURRENT_TYPE);
+        if (TextUtils.isEmpty(res)) {
+            res = "all";
+            SharedPreferencesUtils.setSharedPreferencesData(context, ShareKeys.CURRENT_TYPE,
+                    res);
+        }
+        return res;
+    }
+
+    public void saveCurrentType(Context context, String string) {
+        SharedPreferencesUtils.setSharedPreferencesData(context, ShareKeys.CURRENT_TYPE,
+                string);
+    }
+
+    public int getCurrentPage(Context context) {
+        int res = SharedPreferencesUtils.getIntSharedPreferencesData(context,
+                ShareKeys.CURRENT_PAGE,1);
+        return res;
+    }
+
+    public void saveCurrentPage(Context context, int res) {
+        SharedPreferencesUtils.setSharedPreferencesData(context, ShareKeys.CURRENT_PAGE,
+                res);
     }
 //    public String getDeviceToken() {
 //        String deviceToken = SharedPreferencesUtils.getSharedPreferencesData(context,

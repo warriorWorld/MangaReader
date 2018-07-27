@@ -50,11 +50,15 @@ public class SharedPreferencesUtils {
     }
 
     public static Integer getIntSharedPreferencesData(Context mContext, String mKey) {
+        return getIntSharedPreferencesData(mContext, mKey, 0);
+    }
+
+    public static Integer getIntSharedPreferencesData(Context mContext, String mKey, int defaultValue) {
         if (null == mSharedPreferences) {
             mSharedPreferences = mContext.getSharedPreferences(
                     "manga_reader", Context.MODE_PRIVATE);
         }
-        return mSharedPreferences.getInt(mKey, 0);
+        return mSharedPreferences.getInt(mKey, defaultValue);
     }
 
     public static boolean getBooleanSharedPreferencesData(Context mContext, String mKey, boolean defaultValue) {

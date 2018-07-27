@@ -61,8 +61,7 @@ public class OnlineMangaFragment extends BaseFragment implements PullToRefreshBa
     private String[] optionsList = {"切换站点", "搜索", "分类", "跳转"};
     private WheelSelectorDialog optionsSelector, typesSelector, webSelector;
     private MangaEditDialog searchDialog, toPageDialog;
-    private int nowPage = 1, startPage = 1;
-    private String nowTypeName = "all";
+    private int startPage = 1;
     private boolean onLoadingMore = false;
 
     @Override
@@ -166,27 +165,28 @@ public class OnlineMangaFragment extends BaseFragment implements PullToRefreshBa
     }
 
     private void doGetData() {
-        spider.getMangaList(nowTypeName, nowPage + "", new JsoupCallBack<MangaListBean>() {
-            @Override
-            public void loadSucceed(final MangaListBean result) {
-                getActivity().runOnUiThread(new Runnable() {
+        spider.getMangaList(BaseParameterUtil.getInstance().getCurrentType(getActivity()),
+                BaseParameterUtil.getInstance().getCurrentPage(getActivity()) + "", new JsoupCallBack<MangaListBean>() {
                     @Override
-                    public void run() {
-                        currentMangaList = result.getMangaList();
-                        initListView();
+                    public void loadSucceed(final MangaListBean result) {
+                        getActivity().runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                currentMangaList = result.getMangaList();
+                                initListView();
+                            }
+                        });
+                    }
+
+                    @Override
+                    public void loadFailed(String error) {
+
                     }
                 });
-            }
-
-            @Override
-            public void loadFailed(String error) {
-
-            }
-        });
     }
 
     private void initListView() {
-        if (nowPage > startPage) {
+        if (BaseParameterUtil.getInstance().getCurrentPage(getActivity()) > startPage) {
             //如果不是首页 那就加上之后的
             totalMangaList.addAll(currentMangaList);
         } else {
@@ -238,7 +238,7 @@ public class OnlineMangaFragment extends BaseFragment implements PullToRefreshBa
         }
         pullListView.onPullDownRefreshComplete();// 动画结束方法
         pullListView.onPullUpRefreshComplete();
-        int displayPage = (nowPage - 1) / spider.nextPageNeedAddCount() + 1;
+        int displayPage = (BaseParameterUtil.getInstance().getCurrentPage(getActivity()) - 1) / spider.nextPageNeedAddCount() + 1;
         currentPageTv.setText(displayPage + "");
 
         onLoadingMore = false;
@@ -427,7 +427,7 @@ public class OnlineMangaFragment extends BaseFragment implements PullToRefreshBa
 
     public void toggleTag(String selectedRes, String selectedCode) {
         initToFirstPage();
-        nowTypeName = selectedCode;
+        BaseParameterUtil.getInstance().saveCurrentType(getActivity(), selectedCode);
         topBar.setTitle(BaseParameterUtil.getInstance().getCurrentWebSite(getActivity()) + "(" + selectedRes + ")");
         doGetData();
     }
@@ -443,9 +443,9 @@ public class OnlineMangaFragment extends BaseFragment implements PullToRefreshBa
             public void onOkBtnClick(String selectedRes, String selectedCodeRes) {
                 initSpider(selectedRes);
                 initToFirstPage();
-                nowTypeName = spider.getMangaTypes()[0];
+                BaseParameterUtil.getInstance().saveCurrentType(getActivity(), spider.getMangaTypes()[0]);
                 BaseParameterUtil.getInstance().saveCurrentWebSite(getActivity(), selectedRes);
-                topBar.setTitle(BaseParameterUtil.getInstance().getCurrentWebSite(getActivity()) + "(" + nowTypeName + ")");
+                topBar.setTitle(BaseParameterUtil.getInstance().getCurrentWebSite(getActivity()) + "(" + BaseParameterUtil.getInstance().getCurrentType(getActivity()) + ")");
                 if (selectedRes.equals("KaKaLot")) {
 //                    baseToast.showToast("该网站中大部分漫画需要开启VPN后浏览");
                 }
@@ -505,8 +505,8 @@ public class OnlineMangaFragment extends BaseFragment implements PullToRefreshBa
                 @Override
                 public void onResult(String text) {
                     try {
-                        nowPage = (Integer.valueOf(text) - 1) * spider.nextPageNeedAddCount();
-                        startPage = nowPage;
+                        BaseParameterUtil.getInstance().saveCurrentPage(getActivity(), (Integer.valueOf(text) - 1) * spider.nextPageNeedAddCount());
+                        startPage = BaseParameterUtil.getInstance().getCurrentPage(getActivity());
                         int actualPage = (startPage / spider.nextPageNeedAddCount()) + 1;
                         topBar.setTitle(BaseParameterUtil.getInstance().getCurrentWebSite(getActivity()) + "(" + actualPage + ")");
                         doGetData();
@@ -545,14 +545,15 @@ public class OnlineMangaFragment extends BaseFragment implements PullToRefreshBa
     }
 
     private void initToFirstPage() {
-        nowPage = 1;
+        BaseParameterUtil.getInstance().saveCurrentPage(getActivity(), 1);
         startPage = 1;
     }
 
     private void loadMore() {
         if (!onLoadingMore) {
             onLoadingMore = true;
-            nowPage += spider.nextPageNeedAddCount();
+            BaseParameterUtil.getInstance().saveCurrentPage
+                    (getActivity(), BaseParameterUtil.getInstance().getCurrentPage(getActivity()) + spider.nextPageNeedAddCount());
             doGetData();
         }
     }

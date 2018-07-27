@@ -28,4 +28,6 @@ public class ShareKeys {
     public static final String COMMENT_OOXX_KEY = "comment_ooxx_key";
     public static final String READ_COMMENT_COUNT_KEY = "read_comment_count_key";
     public static final String CURRENT_WEBSITE="current_website_key";
+    public static final String CURRENT_TYPE="current_type_key";
+    public static final String CURRENT_PAGE="current_page_key";
 }
