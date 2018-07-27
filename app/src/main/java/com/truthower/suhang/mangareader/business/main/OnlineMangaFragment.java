@@ -186,6 +186,9 @@ public class OnlineMangaFragment extends BaseFragment implements PullToRefreshBa
     }
 
     private void initListView() {
+        pullListView.onPullDownRefreshComplete();// 动画结束方法
+        pullListView.onPullUpRefreshComplete();
+
         if (BaseParameterUtil.getInstance().getCurrentPage(getActivity()) > startPage) {
             //如果不是首页 那就加上之后的
             totalMangaList.addAll(currentMangaList);
@@ -236,8 +239,6 @@ public class OnlineMangaFragment extends BaseFragment implements PullToRefreshBa
             onlineMangaListAdapter.setList(totalMangaList);
             onlineMangaListAdapter.notifyDataSetChanged();
         }
-        pullListView.onPullDownRefreshComplete();// 动画结束方法
-        pullListView.onPullUpRefreshComplete();
         int displayPage = (BaseParameterUtil.getInstance().getCurrentPage(getActivity()) - 1) / spider.nextPageNeedAddCount() + 1;
         currentPageTv.setText(displayPage + "");
 
