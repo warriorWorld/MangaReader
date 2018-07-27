@@ -445,7 +445,7 @@ public class OnlineMangaFragment extends BaseFragment implements PullToRefreshBa
                 Configure.currentWebSite = selectedRes;
                 topBar.setTitle(Configure.currentWebSite + "(" + nowTypeName + ")");
                 if (selectedRes.equals("KaKaLot")) {
-                    baseToast.showToast("该网站中大部分漫画需要开启VPN后浏览");
+//                    baseToast.showToast("该网站中大部分漫画需要开启VPN后浏览");
                 }
                 doGetData();
             }
