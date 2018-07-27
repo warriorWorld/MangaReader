@@ -343,8 +343,7 @@ public class LocalMangaDetailsActivity extends BaseActivity implements AdapterVi
 
     @Override
     public void onPullUpToRefresh(PullToRefreshBase<GridView> refreshView) {
-        pullToRefreshGridView.onPullDownRefreshComplete();// 动画结束方法
-        pullToRefreshGridView.onPullUpRefreshComplete();
+        initFile();
     }
 
     @Override
