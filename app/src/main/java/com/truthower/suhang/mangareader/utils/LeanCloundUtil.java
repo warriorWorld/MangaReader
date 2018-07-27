@@ -5,6 +5,7 @@ import android.view.WindowManager;
 
 import com.avos.avoscloud.AVException;
 import com.truthower.suhang.mangareader.business.detail.WebMangaDetailsActivity;
+import com.truthower.suhang.mangareader.config.Configure;
 import com.truthower.suhang.mangareader.widget.dialog.MangaDialog;
 
 /**
@@ -18,10 +19,12 @@ public class LeanCloundUtil {
             return true;
         } else {
             try {
-                MangaDialog errorDialog = new MangaDialog(context);
-                errorDialog.show();
-                errorDialog.setTitle("出错了");
-                errorDialog.setMessage(e.getMessage());
+                if (Configure.isTest) {
+                    MangaDialog errorDialog = new MangaDialog(context);
+                    errorDialog.show();
+                    errorDialog.setTitle("出错了");
+                    errorDialog.setMessage(e.getMessage());
+                }
             } catch (WindowManager.BadTokenException exception) {
 
             }

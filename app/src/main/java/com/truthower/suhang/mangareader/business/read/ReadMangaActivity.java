@@ -183,7 +183,7 @@ public class ReadMangaActivity extends TTSActivity implements OnClickListener {
     private void initSpider() {
         try {
             spider = (SpiderBase) Class.forName
-                    ("com.truthower.suhang.mangareader.spider." +  BaseParameterUtil.getInstance().getCurrentWebSite(this) + "Spider").newInstance();
+                    ("com.truthower.suhang.mangareader.spider." + BaseParameterUtil.getInstance().getCurrentWebSite(this) + "Spider").newInstance();
         } catch (ClassNotFoundException e) {
             baseToast.showToast(e + "");
             e.printStackTrace();
@@ -376,11 +376,17 @@ public class ReadMangaActivity extends TTSActivity implements OnClickListener {
         }
     }
 
+    boolean isRequesting = false;
+
     private void doStatisctics() {
         if (TextUtils.isEmpty(LoginBean.getInstance().getUserName())) {
             return;
         }
         try {
+            if (isRequesting) {
+                return;
+            }
+            isRequesting = true;
             StatisticsBean item = db.queryStatisticsByBookName(realMangaName);
             AVObject object = new AVObject("Statistics");
             object.put("owner", LoginBean.getInstance().getUserName());
@@ -390,6 +396,7 @@ public class ReadMangaActivity extends TTSActivity implements OnClickListener {
             object.saveInBackground(new SaveCallback() {
                 @Override
                 public void done(AVException e) {
+                    isRequesting = false;
                     if (LeanCloundUtil.handleLeanResult(ReadMangaActivity.this, e)) {
                         SharedPreferencesUtils.setSharedPreferencesData
                                 (ReadMangaActivity.this, ShareKeys.STATISTICS_UPDATE_KEY + realMangaName, date);
