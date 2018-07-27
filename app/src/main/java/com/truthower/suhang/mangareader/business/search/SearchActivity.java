@@ -27,6 +27,7 @@ import com.truthower.suhang.mangareader.listener.OnRecycleItemClickListener;
 import com.truthower.suhang.mangareader.listener.OnSevenFourteenListDialogListener;
 import com.truthower.suhang.mangareader.spider.SpiderBase;
 import com.truthower.suhang.mangareader.widget.dialog.ListDialog;
+import com.truthower.suhang.mangareader.widget.dialog.MangaDialog;
 import com.truthower.suhang.mangareader.widget.recyclerview.LinearLayoutMangerWithoutBug;
 
 import java.util.ArrayList;
@@ -154,6 +155,9 @@ public class SearchActivity extends BaseActivity implements View.OnClickListener
                     @Override
                     public void run() {
                         searchResultList = result.getMangaList();
+                        if (null == searchResultList || searchResultList.size() == 0) {
+                            showNothingToShowDialog();
+                        }
                         initSearchResultRv();
                         closeKeyBroad();
                     }
@@ -165,6 +169,13 @@ public class SearchActivity extends BaseActivity implements View.OnClickListener
 
             }
         });
+    }
+
+    private void showNothingToShowDialog() {
+        MangaDialog dialog = new MangaDialog(this);
+        dialog.show();
+        dialog.setTitle("没有搜索结果!");
+        dialog.setOkText("知道了");
     }
 
     private void initSearchResultRv() {
