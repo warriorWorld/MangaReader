@@ -18,6 +18,7 @@ import com.truthower.suhang.mangareader.business.detail.WebMangaDetailsActivity;
 import com.truthower.suhang.mangareader.eventbus.EventBusEvent;
 import com.truthower.suhang.mangareader.service.CopyBoardService;
 import com.truthower.suhang.mangareader.utils.ActivityPoor;
+import com.truthower.suhang.mangareader.utils.ServiceUtil;
 import com.truthower.suhang.mangareader.widget.bar.TopBar;
 import com.truthower.suhang.mangareader.widget.dialog.MangaDialog;
 import com.truthower.suhang.mangareader.widget.toast.EasyToast;
@@ -56,9 +57,6 @@ public abstract class BaseFragmentActivity extends FragmentActivity {
 
 //        PushAgent.getInstance(this).onAppStart();
         MobclickAgent.onEvent(this, getLocalClassName().toString());
-
-        Intent intent = new Intent(this, CopyBoardService.class);
-        startService(intent);
     }
 
     private void initUI() {
@@ -164,6 +162,11 @@ public abstract class BaseFragmentActivity extends FragmentActivity {
     public void onResume() {
         super.onResume();
         MobclickAgent.onResume(this);
+        if (!ServiceUtil.isServiceWork(this,
+                "com.truthower.suhang.mangareader.service.CopyBoardService")) {
+            Intent intent = new Intent(this, CopyBoardService.class);
+            startService(intent);
+        }
     }
 
     @Override

@@ -60,6 +60,8 @@ public class DownloadMangaManager {
             return;
         }
         if (DownloadBean.getInstance().isOne_shot()) {
+            oneShotDownloadList = DownloadBean.getInstance().getDownload_chapters();
+            oneShotListTotalSize = oneShotDownloadList.size();
             doOneShotDownload(context);
         } else {
             //|| currentChapter.getPages().size() <= 0删掉了这个条件 因为这个条件会导致 下载中恰好在一话刚开始时停止时，下次会忽略这话下载的问题
@@ -129,16 +131,12 @@ public class DownloadMangaManager {
     public void doOneShotDownload(final Context context) {
         String mangaName = DownloadBean.getInstance().initMangaFileName();
 
-        oneShotDownloadList = DownloadBean.getInstance().getDownload_chapters();
-        oneShotListTotalSize = oneShotDownloadList.size();
         Intent intent = new Intent(context, DownloadIntentService.class);
-        for (int i = 0; i < oneShotDownloadList.size(); i++) {//循环启动任务
-            intent.putExtra(DownloadIntentService.DOWNLOAD_URL, oneShotDownloadList.get(i).getImg_url());
-            intent.putExtra(DownloadIntentService.MANGA_FOLDER_NAME, mangaName);
-            intent.putExtra(DownloadIntentService.CHILD_FOLDER_NAME, "one shot");
-            intent.putExtra(DownloadIntentService.PAGE_NAME, oneShotDownloadList.get(i).getChapter_title());
-            context.startService(intent);
-        }
+        intent.putExtra(DownloadIntentService.DOWNLOAD_URL, oneShotDownloadList.get(0).getImg_url());
+        intent.putExtra(DownloadIntentService.MANGA_FOLDER_NAME, mangaName);
+        intent.putExtra(DownloadIntentService.CHILD_FOLDER_NAME, "one shot");
+        intent.putExtra(DownloadIntentService.PAGE_NAME, oneShotDownloadList.get(0).getChapter_title());
+        context.startService(intent);
     }
 
     private void initSpider() {
@@ -157,12 +155,14 @@ public class DownloadMangaManager {
     public void downloadOneShotPageDone(Context context, String url) {
         EventBus.getDefault().post(new DownLoadEvent(EventBusEvent.DOWNLOAD_CHAPTER_START_EVENT));
         if (oneShotDownloadList.size() == 1 && oneShotDownloadList.get(0).getImg_url().equals(url)) {
+            //下载完成
             reset(context);
             return;
         }
         for (int i = 0; i < oneShotDownloadList.size(); i++) {
             if (url.equals(oneShotDownloadList.get(i).getImg_url())) {
                 oneShotDownloadList.remove(i);
+                doOneShotDownload(context);
                 return;
             }
         }
@@ -176,6 +176,7 @@ public class DownloadMangaManager {
                 EventBus.getDefault().post(new DownLoadEvent(EventBusEvent.DOWNLOAD_PAGE_FINISH_EVENT));
 
                 if (currentChapter.getPages().size() == 1 && currentChapter.getPages().get(0).getPage_url().equals(url)) {
+                    //下载完一个章节
                     currentChapter = null;
                     doDownload(context);
                     return;

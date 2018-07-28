@@ -54,8 +54,8 @@ public class BookStatisticsListAdapter extends RecyclerView.Adapter<BookStatisti
                                 item.getQurey_word_c_total(), item.getQurey_word_c_total() + "",
                         0, context.getResources().getColor(R.color.manga_reader), 0));
         viewHolder.query_word_r_tv.setText(
-                UltimateTextSizeUtil.getEmphasizedSpannableString("查词率(个/百页):  " + NumberUtil.doubleDecimals(item.getQuery_word_r_total())
-                        , NumberUtil.doubleDecimals(item.getQuery_word_r_total()),
+                UltimateTextSizeUtil.getEmphasizedSpannableString("查词率(个/百页):  " + NumberUtil.doubleDecimals(item.getQuery_word_r())
+                        , NumberUtil.doubleDecimals(item.getQuery_word_r()),
                         0, context.getResources().getColor(R.color.manga_reader), 0));
         viewHolder.read_word_c_tv.setText(UltimateTextSizeUtil.getEmphasizedSpannableString("阅读量(页):  " + item.getRead_page_total()
                 , item.getRead_page_total() + "",

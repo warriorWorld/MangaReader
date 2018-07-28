@@ -22,6 +22,7 @@ import org.greenrobot.eventbus.EventBus;
 
 public class CopyBoardService extends Service implements ClipboardManager.OnPrimaryClipChangedListener {
     ClipboardManager clipboard;
+    private String lastOne="";
 
     @Override
     public void onCreate() {
@@ -37,8 +38,9 @@ public class CopyBoardService extends Service implements ClipboardManager.OnPrim
 
             CharSequence addedText = clipboard.getPrimaryClip().getItemAt(0).getText();
 
-            if (addedText != null && MatchStringUtil.isURL(addedText.toString())) {
+            if (addedText != null && MatchStringUtil.isURL(addedText.toString()) && !lastOne.equals(addedText.toString())) {
                 try {
+                    lastOne = addedText.toString();
                     EventBus.getDefault().post(new EventBusEvent(addedText.toString(), EventBusEvent.COPY_BOARD_EVENT));
                 } catch (Exception e) {
                     Logger.d(e + "");
