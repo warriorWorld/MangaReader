@@ -87,6 +87,7 @@
 
         <service android:name=".business.download.DownloadService"></service>
         <service android:name=".business.download.DownloadIntentService"></service>
+        <service android:name=".service.CopyBoardService"></service>
 
         <meta-data
             android:name="UMENG_APPKEY"

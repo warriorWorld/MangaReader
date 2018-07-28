@@ -6,5 +6,13 @@
     {
         "merged": "D:\\android_workspace\\MangaReader\\push\\build\\intermediates\\res\\merged\\androidTest\\debug\\layout_upush_notification.xml.flat",
         "source": "D:\\android_workspace\\MangaReader\\push\\build\\intermediates\\bundles\\debug\\res\\layout\\upush_notification.xml"
+    },
+    {
+        "merged": "F:\\studio_workspace\\MangaReader\\push\\build\\intermediates\\res\\merged\\androidTest\\debug\\layout_upush_notification.xml.flat",
+        "source": "F:\\studio_workspace\\MangaReader\\push\\build\\intermediates\\bundles\\debug\\res\\layout\\upush_notification.xml"
+    },
+    {
+        "merged": "F:\\studio_workspace\\MangaReader\\push\\build\\intermediates\\res\\merged\\androidTest\\debug\\layout_upush_bar_image_notification.xml.flat",
+        "source": "F:\\studio_workspace\\MangaReader\\push\\build\\intermediates\\bundles\\debug\\res\\layout\\upush_bar_image_notification.xml"
     }
 ]

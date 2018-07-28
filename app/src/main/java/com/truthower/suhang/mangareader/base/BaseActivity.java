@@ -6,6 +6,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,9 +14,12 @@ import android.view.Window;
 import android.view.WindowManager;
 
 import com.truthower.suhang.mangareader.R;
+import com.truthower.suhang.mangareader.business.detail.WebMangaDetailsActivity;
 import com.truthower.suhang.mangareader.eventbus.EventBusEvent;
+import com.truthower.suhang.mangareader.service.CopyBoardService;
 import com.truthower.suhang.mangareader.utils.ActivityPoor;
 import com.truthower.suhang.mangareader.widget.bar.TopBar;
+import com.truthower.suhang.mangareader.widget.dialog.MangaDialog;
 import com.truthower.suhang.mangareader.widget.toast.EasyToast;
 import com.umeng.analytics.MobclickAgent;
 import com.umeng.message.PushAgent;
@@ -51,6 +55,9 @@ public abstract class BaseActivity extends Activity {
 
 //        PushAgent.getInstance(this).onAppStart();
         MobclickAgent.onEvent(this, getLocalClassName().toString());
+
+        Intent intent = new Intent(this, CopyBoardService.class);
+        startService(intent);
     }
 
     private void initUI() {
@@ -107,7 +114,7 @@ public abstract class BaseActivity extends Activity {
      * @param event
      */
     @Subscribe
-    public void onEventMainThread(EventBusEvent event) {
+    public void onEventMainThread(final EventBusEvent event) {
         if (null == event)
             return;
         Intent intent = null;
@@ -116,9 +123,44 @@ public abstract class BaseActivity extends Activity {
 //                ToastUtil.tipShort(BaseActivity.this, "需要登录");
 //                intent = new Intent(BaseActivity.this, LoginActivity.class);
 //                break;
+            case EventBusEvent.COPY_BOARD_EVENT:
+                showBaseDialog("检测到你复制了某漫画地址，是否跳转到详情页？", "", "是", "否",
+                        new MangaDialog.OnPeanutDialogClickListener() {
+                            @Override
+                            public void onOkClick() {
+                                Intent intent1 = new Intent(BaseActivity.this, WebMangaDetailsActivity.class);
+                                intent1.putExtra("mangaUrl", event.getMsg());
+                                startActivity(intent1);
+                            }
+
+                            @Override
+                            public void onCancelClick() {
+
+                            }
+                        });
+                break;
         }
         if (null != intent) {
             startActivity(intent);
+        }
+    }
+
+    protected void showBaseDialog(String title, String msg, String okText, String cancelText, MangaDialog.OnPeanutDialogClickListener listener) {
+        MangaDialog baseDialog = new MangaDialog(this);
+        if (null != listener)
+            baseDialog.setOnPeanutDialogClickListener(listener);
+        baseDialog.show();
+        if (!TextUtils.isEmpty(title)) {
+            baseDialog.setTitle(title);
+        }
+        if (!TextUtils.isEmpty(msg)) {
+            baseDialog.setMessage(msg);
+        }
+        if (!TextUtils.isEmpty(okText)) {
+            baseDialog.setOkText(okText);
+        }
+        if (!TextUtils.isEmpty(cancelText)) {
+            baseDialog.setCancelText(cancelText);
         }
     }
 

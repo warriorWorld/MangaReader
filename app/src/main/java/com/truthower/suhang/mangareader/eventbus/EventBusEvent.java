@@ -13,6 +13,8 @@ public class EventBusEvent {
     public static final int DOWNLOAD_CHAPTER_START_EVENT = 21;
     public static final int TAG_CLICK_EVENT = 19;
     public static final int JUMP_EVENT = 20;
+    public static final int COPY_BOARD_EVENT=21;
+
     private String msg;
     private int intMsg;
     private int eventType;
