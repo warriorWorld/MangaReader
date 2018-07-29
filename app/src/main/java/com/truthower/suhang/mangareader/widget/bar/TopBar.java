@@ -185,6 +185,7 @@ public class TopBar extends GradientBar {
 
     public void setLeftBackground(int bg) {
         leftLayout.setVisibility(View.VISIBLE);
+        leftIV.setVisibility(VISIBLE);
         leftIV.setImageResource(bg);
     }
 

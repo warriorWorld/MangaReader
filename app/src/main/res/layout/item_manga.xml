@@ -8,14 +8,33 @@
     android:orientation="vertical"
     android:padding="2dp">
 
-    <ImageView
-        android:id="@+id/manga_view"
-        android:layout_width="match_parent"
+    <RelativeLayout
+        android:layout_width="wrap_content"
         android:layout_height="0dp"
-        android:layout_weight="4"
-        android:scaleType="centerCrop">
+        android:layout_weight="4">
 
-    </ImageView>
+        <ImageView
+            android:id="@+id/manga_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="centerCrop"></ImageView>
+
+        <ImageView
+            android:id="@+id/edit_mode_iv"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:visibility="gone"
+            android:layout_centerInParent="true"
+            android:src="@drawable/check_box_icon" />
+
+        <ImageView
+            android:id="@+id/checked_iv"
+            android:visibility="gone"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_centerInParent="true"
+            android:src="@drawable/check_mark_icon" />
+    </RelativeLayout>
 
 
     <TextView

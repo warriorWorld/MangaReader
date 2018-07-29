@@ -19,6 +19,7 @@ public class MangaBean extends BaseBean {
     private boolean isCollected;
     private ArrayList<ChapterBean> chapters;
     private String description;//漫画介绍
+    private boolean isChecked;
 
     public String getAuthor() {
         return author;
@@ -124,5 +125,13 @@ public class MangaBean extends BaseBean {
 
     public void setUserThumbnailUrl(String userThumbnailUrl) {
         this.userThumbnailUrl = userThumbnailUrl;
+    }
+
+    public boolean isChecked() {
+        return isChecked;
+    }
+
+    public void setChecked(boolean checked) {
+        isChecked = checked;
     }
 }

@@ -56,6 +56,7 @@ public class LocalMangaDetailsActivity extends BaseActivity implements AdapterVi
     private ArrayList<String> pathList;
     private String currentMangaName;
     private String[] selectOptions = {"设为封面", "删除该图片"};
+    private boolean isInEditMode = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -207,6 +208,46 @@ public class LocalMangaDetailsActivity extends BaseActivity implements AdapterVi
         });
         emptyTV = (TextView) findViewById(R.id.empty_text);
         emptyTV.setText("没有内容~");
+        baseTopBar.setRightText("编辑");
+        baseTopBar.setOnTopBarClickListener(new TopBar.OnTopBarClickListener() {
+            @Override
+            public void onLeftClick() {
+                if (isInEditMode) {
+                    isInEditMode = false;
+                    resetEditMode();
+                } else {
+                    finish();
+                }
+            }
+
+            @Override
+            public void onRightClick() {
+                if (isInEditMode) {
+                    showDeleteAllThisDialog();
+                } else {
+                    isInEditMode = true;
+                    resetEditMode();
+                }
+            }
+
+            @Override
+            public void onTitleClick() {
+
+            }
+        });
+    }
+
+    private void resetEditMode() {
+        adapter.setInEditMode(isInEditMode);
+        adapter.notifyDataSetChanged();
+        if (isInEditMode) {
+            baseTopBar.setLeftText("取消");
+            baseTopBar.setRightText("删除");
+        } else {
+            baseTopBar.setLeftText("");
+            baseTopBar.setLeftBackground(R.drawable.back);
+            baseTopBar.setRightText("编辑");
+        }
     }
 
     private void initPullGridView() {
@@ -220,21 +261,26 @@ public class LocalMangaDetailsActivity extends BaseActivity implements AdapterVi
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 //        baseToast.showToast(mangaList.get(position).getUrl());
-        Intent intent = null;
-        if (isNextDirectory(mangaList.get(position).getUrl())) {
-            intent = new Intent(LocalMangaDetailsActivity.this, LocalMangaDetailsActivity.class);
-            intent.putExtra("filePath", mangaList.get(position).getUrl());
+        if (isInEditMode) {
+            mangaList.get(position).setChecked(!mangaList.get(position).isChecked());
+            adapter.notifyDataSetChanged();
         } else {
+            Intent intent = null;
+            if (isNextDirectory(mangaList.get(position).getUrl())) {
+                intent = new Intent(LocalMangaDetailsActivity.this, LocalMangaDetailsActivity.class);
+                intent.putExtra("filePath", mangaList.get(position).getUrl());
+            } else {
 //            baseToast.showToast("接下来就要进入看漫画页了" + mangaList.get(position).getLocalThumbnailUrl());
-            intent = new Intent(LocalMangaDetailsActivity.this, ReadMangaActivity.class);
-            Bundle pathListBundle = new Bundle();
-            pathListBundle.putSerializable("pathList", pathList);
-            intent.putExtras(pathListBundle);
-            intent.putExtra("img_position", position);
-        }
-        intent.putExtra("currentMangaName", currentMangaName);
-        if (null != intent) {
-            startActivity(intent);
+                intent = new Intent(LocalMangaDetailsActivity.this, ReadMangaActivity.class);
+                Bundle pathListBundle = new Bundle();
+                pathListBundle.putSerializable("pathList", pathList);
+                intent.putExtras(pathListBundle);
+                intent.putExtra("img_position", position);
+            }
+            intent.putExtra("currentMangaName", currentMangaName);
+            if (null != intent) {
+                startActivity(intent);
+            }
         }
     }
 
@@ -307,6 +353,39 @@ public class LocalMangaDetailsActivity extends BaseActivity implements AdapterVi
         });
         listDialog.show();
         listDialog.setOptionsList(selectOptions);
+    }
+
+    private void showDeleteAllThisDialog() {
+        MangaDialog deleteDialog = new MangaDialog(this);
+        deleteDialog.setOnPeanutDialogClickListener(new MangaDialog.OnPeanutDialogClickListener() {
+            @Override
+            public void onOkClick() {
+                for (int i = 0; i < mangaList.size(); i++) {
+                    if (mangaList.get(i).isChecked()) {
+                        if (isNextDirectory(mangaList.get(i).getUrl())) {
+                            //是文件夹就删这个路径的
+                            FileSpider.getInstance().deleteFile(mangaList.get(i).getUrl());
+                        } else {
+                            FileSpider.getInstance().deleteFile(mangaList.get(i).getLocalThumbnailUrl());
+                        }
+                    }
+                }
+                isInEditMode=false;
+                resetEditMode();
+                initFile();
+            }
+
+            @Override
+            public void onCancelClick() {
+
+            }
+        });
+        deleteDialog.show();
+
+        deleteDialog.setTitle("确定删除选中的所有文件吗?");
+        deleteDialog.setOkText("删除");
+        deleteDialog.setCancelText("算了");
+        deleteDialog.setCancelable(true);
     }
 
     private void showDeleteDialog(final int i) {

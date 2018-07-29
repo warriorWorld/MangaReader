@@ -22,6 +22,7 @@ import java.util.ArrayList;
 
 public class LocalMangaListAdapter extends BaseAdapter {
     private Context context;
+    private boolean isInEditMode=false;
     private ArrayList<MangaBean> mangaList = new ArrayList<MangaBean>();
 
     public LocalMangaListAdapter(Context context) {
@@ -61,7 +62,10 @@ public class LocalMangaListAdapter extends BaseAdapter {
                     .findViewById(R.id.manga_view);
             viewHolder.manga_title = (TextView) convertView
                     .findViewById(R.id.manga_title);
-
+            viewHolder.editModeIv = (ImageView) convertView
+                    .findViewById(R.id.edit_mode_iv);
+            viewHolder.checkedIv = (ImageView) convertView
+                    .findViewById(R.id.checked_iv);
             convertView.setTag(viewHolder);
         } else {
             // 初始化过的话就直接获取
@@ -74,6 +78,16 @@ public class LocalMangaListAdapter extends BaseAdapter {
             ImageLoader.getInstance().displayImage(item.getLocalThumbnailUrl(), viewHolder.manga_view, Configure.smallImageOptions);
         }
         viewHolder.manga_title.setText(item.getName());
+        if (isInEditMode){
+            viewHolder.editModeIv.setVisibility(View.VISIBLE);
+        }else {
+            viewHolder.editModeIv.setVisibility(View.GONE);
+        }
+        if (item.isChecked()&&isInEditMode){
+            viewHolder.checkedIv.setVisibility(View.VISIBLE);
+        }else {
+            viewHolder.checkedIv.setVisibility(View.GONE);
+        }
         return convertView;
     }
 
@@ -85,8 +99,13 @@ public class LocalMangaListAdapter extends BaseAdapter {
         this.mangaList = mangaList;
     }
 
+    public void setInEditMode(boolean inEditMode) {
+        isInEditMode = inEditMode;
+    }
+
     private class ViewHolder {
         private ImageView manga_view;
         private TextView manga_title;
+        private ImageView editModeIv,checkedIv;
     }
 }

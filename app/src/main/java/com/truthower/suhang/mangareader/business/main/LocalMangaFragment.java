@@ -476,8 +476,7 @@ public class LocalMangaFragment extends BaseFragment implements
 
     @Override
     public void onLoadMore() {
-        swipeToLoadLayout.setRefreshing(false);
-        swipeToLoadLayout.setLoadingMore(false);
+        initFile();
     }
 
     @Override
