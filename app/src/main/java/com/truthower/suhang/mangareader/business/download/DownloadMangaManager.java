@@ -1,9 +1,15 @@
 
 package com.truthower.suhang.mangareader.business.download;
 
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.support.v7.app.NotificationCompat;
+import android.widget.RemoteViews;
 
+import com.truthower.suhang.mangareader.R;
 import com.truthower.suhang.mangareader.bean.DownloadBean;
 import com.truthower.suhang.mangareader.bean.DownloadChapterBean;
 import com.truthower.suhang.mangareader.bean.DownloadPageBean;
@@ -13,6 +19,7 @@ import com.truthower.suhang.mangareader.eventbus.DownLoadEvent;
 import com.truthower.suhang.mangareader.eventbus.EventBusEvent;
 import com.truthower.suhang.mangareader.listener.JsoupCallBack;
 import com.truthower.suhang.mangareader.spider.SpiderBase;
+import com.truthower.suhang.mangareader.utils.Logger;
 import com.truthower.suhang.mangareader.utils.ShareObjUtil;
 
 import org.greenrobot.eventbus.EventBus;
@@ -30,6 +37,9 @@ public class DownloadMangaManager {
     private SpiderBase spider;
     private ArrayList<DownloadChapterBean> oneShotDownloadList;
     private int oneShotListTotalSize = 0;
+    private NotificationCompat.Builder notificationBuilder;
+    private RemoteViews remoteViews;
+    private NotificationManager notificationManager;
 
     private DownloadMangaManager() {
         initSpider();
@@ -48,7 +58,53 @@ public class DownloadMangaManager {
         return instance;
     }
 
+    private void createNotification(Context context) {
+        try {
+            notificationBuilder = new NotificationCompat.Builder(context);
+            remoteViews = new RemoteViews(context.getPackageName(), R.layout.notification_download);
+            notificationManager = (NotificationManager) context.getSystemService
+                    (context.NOTIFICATION_SERVICE);
+            notificationBuilder.setSmallIcon(R.drawable.spider_128);
+            notificationBuilder.setContent(remoteViews);
+            notificationBuilder.setDefaults(Notification.DEFAULT_SOUND);
+
+//        remoteViews.setImageViewResource(R.id.image, R.mipmap.timg);
+            remoteViews.setTextViewText(R.id.notification_title_tv, DownloadBean.getInstance().getCurrentManga().getName()+"下载中...");
+            if (DownloadBean.getInstance().isOne_shot()) {
+                remoteViews.setProgressBar(R.id.notification_download_progress_bar, oneShotListTotalSize, 0, false);
+            } else {
+                remoteViews.setProgressBar(R.id.notification_download_progress_bar, 10,
+                        0, false);
+            }
+            notificationManager.notify(10, notificationBuilder.build());
+
+            Intent intent = new Intent(context, DownloadActivity.class);
+            PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
+            notificationBuilder.setContentIntent(pendingIntent);
+        } catch (Exception e) {
+            Logger.d("e" + e);
+        }
+    }
+
+    private void updateNotification() {
+        try {
+            if (DownloadBean.getInstance().isOne_shot()) {
+                remoteViews.setProgressBar(R.id.notification_download_progress_bar,
+                        oneShotListTotalSize,
+                        oneShotListTotalSize
+                                - oneShotDownloadList.size(), false);
+            } else {
+                remoteViews.setProgressBar(R.id.notification_download_progress_bar, currentChapter.getChapter_size()
+                        , currentChapter.getChapter_size() - currentChapter.getPages().size(), false);
+            }
+            notificationManager.notify(10, notificationBuilder.build());
+        } catch (Exception e) {
+            Logger.d("e" + e);
+        }
+    }
+
     public void doDownload(final Context context) {
+        createNotification(context);
         stopDownload(context);
         if ((null == DownloadBean.getInstance().getDownload_chapters() ||
                 DownloadBean.getInstance().getDownload_chapters().size() <= 0) &&
@@ -170,6 +226,7 @@ public class DownloadMangaManager {
 
     public void downloadPageDone(Context context, String url) {
         try {
+            updateNotification();
             if (DownloadBean.getInstance().isOne_shot()) {
                 downloadOneShotPageDone(context, url);
             } else {
@@ -213,6 +270,9 @@ public class DownloadMangaManager {
 
     public void reset(Context context) {
         stopDownload(context);
+        if (null!=notificationManager){
+            notificationManager.cancelAll();
+        }
         DownloadBean.getInstance().clean(context);
         oneShotDownloadList = null;
         currentChapter = null;
