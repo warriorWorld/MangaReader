@@ -7,6 +7,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.view.ViewPager;
 import android.text.ClipboardManager;
 import android.text.TextUtils;
@@ -142,9 +143,23 @@ public class ReadMangaActivity extends TTSActivity implements OnClickListener {
         curDate = new Date(System.currentTimeMillis());//获取当前时间
         date = sdf.format(curDate);
         db = new DbAdapter(this);
-        if (SharedPreferencesUtils.getBooleanSharedPreferencesData(this, ShareKeys.THIS_USER_IS_NOT_AN_IDIOT, true)) {
-            text2Speech("点击右上角图标或者顶部标题可以直接查单词,点击左上角图标可以先划定区域查单词.");
-        }
+
+
+        Handler handler = new Handler();
+        Runnable updateThread = new Runnable() {
+            public void run() {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (SharedPreferencesUtils.getBooleanSharedPreferencesData(ReadMangaActivity.this, ShareKeys.THIS_USER_IS_NOT_AN_IDIOT, true)) {
+                            text2Speech("点击右上角图标或者顶部标题可以直接查单词,点击左上角图标可以先划定区域查单词.");
+                        }
+                    }
+                });
+            }
+        };
+        handler.postDelayed(updateThread, 50);
+
         if (!SharedPreferencesUtils.getBooleanSharedPreferencesData(this, ShareKeys.CLOSE_TUTORIAL, true)) {
             MangaDialog dialog = new MangaDialog(this);
             dialog.show();
@@ -161,6 +176,11 @@ public class ReadMangaActivity extends TTSActivity implements OnClickListener {
     @Override
     protected int getLayoutId() {
         return R.layout.activity_read_manga;
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
     }
 
     private void doGetWebPics() {
