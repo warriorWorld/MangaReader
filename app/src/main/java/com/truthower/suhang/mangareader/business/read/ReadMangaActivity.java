@@ -29,10 +29,12 @@ import com.truthower.suhang.mangareader.bean.MangaBean;
 import com.truthower.suhang.mangareader.bean.MangaListBean;
 import com.truthower.suhang.mangareader.bean.StatisticsBean;
 import com.truthower.suhang.mangareader.bean.YoudaoResponse;
+import com.truthower.suhang.mangareader.business.detail.WebMangaDetailsActivity;
 import com.truthower.suhang.mangareader.business.tag.TagManagerActivity;
 import com.truthower.suhang.mangareader.config.Configure;
 import com.truthower.suhang.mangareader.config.ShareKeys;
 import com.truthower.suhang.mangareader.db.DbAdapter;
+import com.truthower.suhang.mangareader.eventbus.EventBusEvent;
 import com.truthower.suhang.mangareader.listener.JsoupCallBack;
 import com.truthower.suhang.mangareader.listener.OnEditResultListener;
 import com.truthower.suhang.mangareader.listener.OnSpeakClickListener;
@@ -53,6 +55,7 @@ import com.truthower.suhang.mangareader.widget.shotview.ShotView;
 import com.umeng.analytics.MobclickAgent;
 
 import org.adw.library.widgets.discreteseekbar.DiscreteSeekBar;
+import org.greenrobot.eventbus.Subscribe;
 import org.jsoup.Jsoup;
 import org.jsoup.select.Elements;
 
@@ -139,7 +142,9 @@ public class ReadMangaActivity extends TTSActivity implements OnClickListener {
         curDate = new Date(System.currentTimeMillis());//获取当前时间
         date = sdf.format(curDate);
         db = new DbAdapter(this);
-
+        if (SharedPreferencesUtils.getBooleanSharedPreferencesData(this, ShareKeys.THIS_USER_IS_NOT_AN_IDIOT, true)) {
+            text2Speech("点击右上角图标或者顶部标题可以直接查单词,点击左上角图标可以先划定区域查单词.");
+        }
         if (!SharedPreferencesUtils.getBooleanSharedPreferencesData(this, ShareKeys.CLOSE_TUTORIAL, true)) {
             MangaDialog dialog = new MangaDialog(this);
             dialog.show();
@@ -233,6 +238,42 @@ public class ReadMangaActivity extends TTSActivity implements OnClickListener {
         });
     }
 
+    /**
+     * 在主线程中执行,eventbus遍历所有方法,就为了找到该方法并执行.传值自己随意写
+     *
+     * @param event
+     */
+    @Subscribe
+    public void onEventMainThread(final EventBusEvent event) {
+        if (null == event)
+            return;
+        Intent intent = null;
+        switch (event.getEventType()) {
+//            case EventBusEvent.NEED_LOGIN:
+//                ToastUtil.tipShort(BaseActivity.this, "需要登录");
+//                intent = new Intent(BaseActivity.this, LoginActivity.class);
+//                break;
+            case EventBusEvent.COPY_BOARD_EVENT:
+                showBaseDialog("检测到你复制了某漫画地址，是否跳转到详情页？", "", "是", "否",
+                        new MangaDialog.OnPeanutDialogClickListener() {
+                            @Override
+                            public void onOkClick() {
+                                Intent intent1 = new Intent(ReadMangaActivity.this, WebMangaDetailsActivity.class);
+                                intent1.putExtra("mangaUrl", event.getMsg());
+                                startActivity(intent1);
+                            }
+
+                            @Override
+                            public void onCancelClick() {
+
+                            }
+                        });
+                break;
+        }
+        if (null != intent) {
+            startActivity(intent);
+        }
+    }
 
     private void refresh() {
         initViewPager();
@@ -450,6 +491,8 @@ public class ReadMangaActivity extends TTSActivity implements OnClickListener {
     }
 
     private void translateWord(final String word) {
+        SharedPreferencesUtils.setSharedPreferencesData(this, ShareKeys.THIS_USER_IS_NOT_AN_IDIOT,
+                false);
         clip.setText(word);
         text2Speech(word);
         qureyWordCount++;

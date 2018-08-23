@@ -41,6 +41,7 @@ import com.truthower.suhang.mangareader.listener.OnSevenFourteenListDialogListen
 import com.truthower.suhang.mangareader.sort.FileComparatorByTime;
 import com.truthower.suhang.mangareader.spider.FileSpider;
 import com.truthower.suhang.mangareader.utils.DisplayUtil;
+import com.truthower.suhang.mangareader.utils.Logger;
 import com.truthower.suhang.mangareader.utils.SharedPreferencesUtils;
 import com.truthower.suhang.mangareader.widget.bar.TopBar;
 import com.truthower.suhang.mangareader.widget.dialog.ListDialog;
@@ -136,11 +137,13 @@ public class LocalMangaFragment extends BaseFragment implements
             // Already have permission, do the thing
             // ...
             try {
-                mangaList.clear();
+                if (null != mangaList) {
+                    mangaList.clear();
+                }
                 mangaList = FileSpider.getInstance().getMangaList(storagePath);
                 initGridView();
             } catch (Exception e) {
-
+                Logger.d(e + "");
             }
         } else {
             // Do not have permissions, request them now
@@ -210,6 +213,13 @@ public class LocalMangaFragment extends BaseFragment implements
         mangaRcv.setFocusable(false);
         mangaRcv.setHasFixedSize(true);
         emptyView = v.findViewById(R.id.empty_view);
+
+        emptyView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                initFile();
+            }
+        });
 
         topBar = (TopBar) v.findViewById(R.id.gradient_bar);
         topBar.setOnTopBarClickListener(new TopBar.OnTopBarClickListener() {

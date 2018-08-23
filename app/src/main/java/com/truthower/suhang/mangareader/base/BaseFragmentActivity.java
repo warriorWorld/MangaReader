@@ -118,20 +118,6 @@ public abstract class BaseFragmentActivity extends FragmentActivity {
 //                intent = new Intent(BaseFragmentActivity.this, LoginActivity.class);
 //                break;
             case EventBusEvent.COPY_BOARD_EVENT:
-                showBaseDialog("检测到你复制了某漫画地址，是否跳转到详情页？", "", "是", "否",
-                        new MangaDialog.OnPeanutDialogClickListener() {
-                            @Override
-                            public void onOkClick() {
-                                Intent intent1 = new Intent(BaseFragmentActivity.this, WebMangaDetailsActivity.class);
-                                intent1.putExtra("mangaUrl", event.getMsg());
-                                startActivity(intent1);
-                            }
-
-                            @Override
-                            public void onCancelClick() {
-
-                            }
-                        });
                 break;
         }
         if (null != intent) {
