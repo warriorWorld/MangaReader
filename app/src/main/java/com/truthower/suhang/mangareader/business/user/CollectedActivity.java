@@ -90,7 +90,7 @@ public class CollectedActivity extends BaseActivity implements OnRefreshListener
 
             @Override
             public void onRightClick() {
-
+                repairThumbil();
             }
 
             @Override
@@ -151,6 +151,15 @@ public class CollectedActivity extends BaseActivity implements OnRefreshListener
                 }
             }
         });
+    }
+
+    private void repairThumbil() {
+        SingleLoadBarUtil.getInstance().showLoadBar(this);
+        if (null==adapter.getThumbleFailedList()||adapter.getThumbleFailedList().size()==0){
+            SingleLoadBarUtil.getInstance().dismissLoadBar();
+            return;
+        }
+
     }
 
     private void initListView() {
