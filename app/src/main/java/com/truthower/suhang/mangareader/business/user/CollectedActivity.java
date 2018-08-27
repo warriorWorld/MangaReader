@@ -16,6 +16,7 @@ import com.avos.avoscloud.AVException;
 import com.avos.avoscloud.AVObject;
 import com.avos.avoscloud.AVQuery;
 import com.avos.avoscloud.FindCallback;
+import com.avos.avoscloud.SaveCallback;
 import com.truthower.suhang.mangareader.R;
 import com.truthower.suhang.mangareader.adapter.OnlineMangaRecyclerListAdapter;
 import com.truthower.suhang.mangareader.base.BaseActivity;
@@ -23,15 +24,30 @@ import com.truthower.suhang.mangareader.bean.LoginBean;
 import com.truthower.suhang.mangareader.bean.MangaBean;
 import com.truthower.suhang.mangareader.business.detail.WebMangaDetailsActivity;
 import com.truthower.suhang.mangareader.config.Configure;
+import com.truthower.suhang.mangareader.listener.JsoupCallBack;
 import com.truthower.suhang.mangareader.listener.OnRecycleItemClickListener;
+import com.truthower.suhang.mangareader.spider.SpiderBase;
+import com.truthower.suhang.mangareader.utils.BaseParameterUtil;
 import com.truthower.suhang.mangareader.utils.DisplayUtil;
 import com.truthower.suhang.mangareader.utils.LeanCloundUtil;
+import com.truthower.suhang.mangareader.utils.Logger;
 import com.truthower.suhang.mangareader.widget.bar.TopBar;
 import com.truthower.suhang.mangareader.widget.dialog.SingleLoadBarUtil;
 import com.truthower.suhang.mangareader.widget.recyclerview.RecyclerGridDecoration;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+
+import io.reactivex.Observable;
+import io.reactivex.ObservableEmitter;
+import io.reactivex.ObservableOnSubscribe;
+import io.reactivex.ObservableSource;
+import io.reactivex.Observer;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Function;
+import io.reactivex.schedulers.Schedulers;
 
 /**
  * Created by Administrator on 2017/7/29.
@@ -45,6 +61,7 @@ public class CollectedActivity extends BaseActivity implements OnRefreshListener
     private RecyclerView mangaRcv;
     private SwipeToLoadLayout swipeToLoadLayout;
     private TextView totalCollectTv;
+    private SpiderBase spider;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,6 +69,7 @@ public class CollectedActivity extends BaseActivity implements OnRefreshListener
         Intent intent = getIntent();
         collectType = intent.getIntExtra("collectType", Configure.COLLECT_TYPE_COLLECT);
         initUI();
+        initSpider();
         doGetData();
     }
 
@@ -153,13 +171,139 @@ public class CollectedActivity extends BaseActivity implements OnRefreshListener
         });
     }
 
+    private void initSpider() {
+        try {
+            spider = (SpiderBase) Class.forName
+                    ("com.truthower.suhang.mangareader.spider." + BaseParameterUtil.getInstance().getCurrentWebSite(this) + "Spider").newInstance();
+        } catch (ClassNotFoundException e) {
+            baseToast.showToast(e + "");
+            e.printStackTrace();
+        } catch (java.lang.InstantiationException e) {
+            baseToast.showToast(e + "");
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            baseToast.showToast(e + "");
+            e.printStackTrace();
+        }
+    }
+
     private void repairThumbil() {
         SingleLoadBarUtil.getInstance().showLoadBar(this);
-        if (null==adapter.getThumbleFailedList()||adapter.getThumbleFailedList().size()==0){
+        if (null == adapter.getThumbleFailedList() || adapter.getThumbleFailedList().size() == 0) {
             SingleLoadBarUtil.getInstance().dismissLoadBar();
+            baseToast.showToast("没有需要修复的");
             return;
         }
+        Observable.create(new ObservableOnSubscribe<MangaBean>() {
+            @Override
+            public void subscribe(final ObservableEmitter<MangaBean> emitter) throws Exception {
+                for (int i = 0; i < adapter.getThumbleFailedList().size(); i++) {
+                    getMangaDetail(adapter.getThumbleFailedList().get(i).getUrl(), new JsoupCallBack<MangaBean>() {
+                        @Override
+                        public void loadSucceed(MangaBean result) {
+                            emitter.onNext(result);
+                        }
 
+                        @Override
+                        public void loadFailed(String error) {
+//                            emitter.onError(new Throwable(error));
+                        }
+                    });
+                }
+//                emitter.onComplete();
+            }
+        })
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io())
+                .subscribe(new Observer<MangaBean>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+
+                    }
+
+                    @Override
+                    public void onNext(MangaBean value) {
+//                        baseToast.showToast(value.getName());
+                        modifyThumbilUrl(value);
+                        Logger.d("RXJAVA" + value.getName());
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        Logger.d("RXJAVA" + e);
+                        SingleLoadBarUtil.getInstance().dismissLoadBar();
+                    }
+
+                    @Override
+                    public void onComplete() {
+                        Logger.d("RXJAVA   onComplete");
+                        SingleLoadBarUtil.getInstance().dismissLoadBar();
+                    }
+                });
+    }
+
+    //因为我不知道当期收藏的漫画是哪个网站的 所以就一个个试
+    private int trySpiderPosition = 0;
+
+    private void getMangaDetail(final String url, final JsoupCallBack<MangaBean> resultListener) {
+        spider.getMangaDetail(url, new JsoupCallBack<MangaBean>() {
+            @Override
+            public void loadSucceed(final MangaBean result) {
+                resultListener.loadSucceed(result);
+            }
+
+            @Override
+            public void loadFailed(String error) {
+                if (error.equals(Configure.WRONG_WEBSITE_EXCEPTION)) {
+                    try {
+                        if (LoginBean.getInstance().isMaster()) {
+                            BaseParameterUtil.getInstance().saveCurrentWebSite(CollectedActivity.this, Configure.masterWebsList[trySpiderPosition]);
+                        } else {
+                            BaseParameterUtil.getInstance().saveCurrentWebSite(CollectedActivity.this, Configure.websList[trySpiderPosition]);
+                        }
+                        initSpider();
+                        getMangaDetail(url, resultListener);
+                        trySpiderPosition++;
+                    } catch (IndexOutOfBoundsException e) {
+                        resultListener.loadFailed("failed");
+                    }
+                } else {
+                    resultListener.loadFailed("failed");
+                }
+            }
+        });
+    }
+
+    private void modifyThumbilUrl(final MangaBean mangaBean) {
+        if (TextUtils.isEmpty(LoginBean.getInstance().getUserName())) {
+            return;
+        }
+        AVQuery<AVObject> query1 = new AVQuery<>("Collected");
+        query1.whereEqualTo("mangaUrl", mangaBean.getUrl());
+
+        AVQuery<AVObject> query2 = new AVQuery<>("Collected");
+        query2.whereEqualTo("owner", LoginBean.getInstance().getUserName());
+        AVQuery<AVObject> query = AVQuery.and(Arrays.asList(query1, query2));
+        query.findInBackground(new FindCallback<AVObject>() {
+            @Override
+            public void done(List<AVObject> list, AVException e) {
+                if (LeanCloundUtil.handleLeanResult(CollectedActivity.this, e)) {
+                    if (null != list && list.size() > 0) {
+                        //已存在的保存
+                        AVObject object = AVObject.createWithoutData("Collected", list.get(0).getObjectId());
+                        object.put("webThumbnailUrl", mangaBean.getWebThumbnailUrl());
+                        object.saveInBackground(new SaveCallback() {
+                            @Override
+                            public void done(AVException e) {
+                                if (LeanCloundUtil.handleLeanResult(CollectedActivity.this, e)) {
+                                        baseToast.showToast(mangaBean.getName()+"修复缩略图成功!");
+                                }
+                            }
+                        });
+                    }
+                }
+            }
+        });
     }
 
     private void initListView() {

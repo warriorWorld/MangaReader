@@ -138,6 +138,7 @@ public class MangaReaderSpider extends SpiderBase {
                         Element descriptionElement = readmangasumElement.select("p").first();
 
                         MangaBean item = new MangaBean();
+                        item.setUrl(mangaURL);
                         item.setDescription(Html.fromHtml(descriptionElement.text()).toString());
                         item.setWebThumbnailUrl(imgElement1.attr("src"));
                         item.setName(masthead.text());

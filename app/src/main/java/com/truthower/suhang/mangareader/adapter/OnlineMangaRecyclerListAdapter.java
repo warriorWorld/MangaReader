@@ -71,6 +71,9 @@ public class OnlineMangaRecyclerListAdapter extends RecyclerView.Adapter<OnlineM
 
                 @Override
                 public void onLoadingFailed(String s, View view, FailReason reason) {
+                    if (thumbleFailedList.contains(item)){
+                        return;
+                    }
                     thumbleFailedList.add(item);
                 }
 
