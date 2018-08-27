@@ -23,6 +23,8 @@ import com.truthower.suhang.mangareader.listener.OnRecycleItemClickListener;
 import com.truthower.suhang.mangareader.listener.OnRecycleItemLongClickListener;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 
 /**
@@ -32,7 +34,8 @@ public class OnlineMangaRecyclerListAdapter extends RecyclerView.Adapter<OnlineM
     private Context context;
     private OnRecycleItemClickListener onRecycleItemClickListener;
     private OnRecycleItemLongClickListener onRecycleItemLongClickListener;
-    private ArrayList<MangaBean> thumbleFailedList=new ArrayList<MangaBean>();
+    private ArrayList<MangaBean> thumbleFailedList = new ArrayList<MangaBean>();
+    private Map<String, MangaBean> failImgList = new HashMap<>();
 
     public void setOnRecycleItemClickListener(OnRecycleItemClickListener onRecycleItemClickListener) {
         this.onRecycleItemClickListener = onRecycleItemClickListener;
@@ -62,7 +65,7 @@ public class OnlineMangaRecyclerListAdapter extends RecyclerView.Adapter<OnlineM
     @Override
     public void onBindViewHolder(ViewHolder viewHolder, final int position) {
         final MangaBean item = list.get(position);
-        if (!TextUtils.isEmpty(item.getWebThumbnailUrl())){
+        if (!TextUtils.isEmpty(item.getWebThumbnailUrl())) {
             ImageLoader.getInstance().displayImage(item.getWebThumbnailUrl(), viewHolder.mangaThumbnailIv, Configure.smallImageOptions);
             ImageLoader.getInstance().setDefaultLoadingListener(new ImageLoadingListener() {
                 @Override
@@ -72,10 +75,21 @@ public class OnlineMangaRecyclerListAdapter extends RecyclerView.Adapter<OnlineM
 
                 @Override
                 public void onLoadingFailed(String s, View view, FailReason reason) {
-                    if (thumbleFailedList.contains(item)){
+//                    if (thumbleFailedList.contains(item)){
+//                        return;
+//                    }
+//                    thumbleFailedList.add(item);
+                    if (TextUtils.isEmpty(s) || failImgList.containsKey(s))
                         return;
+                    MangaBean mangaRes = null;
+                    for (MangaBean manga : list) {
+                        if (s.equals(manga.getWebThumbnailUrl())) {
+                            mangaRes = manga;
+                            break;
+                        }
                     }
-                    thumbleFailedList.add(item);
+                    if (mangaRes != null)
+                        failImgList.put(s, mangaRes);
                 }
 
                 @Override
@@ -88,7 +102,7 @@ public class OnlineMangaRecyclerListAdapter extends RecyclerView.Adapter<OnlineM
 
                 }
             });
-        }else {
+        } else {
             ImageLoader.getInstance().displayImage(item.getLocalThumbnailUrl(), viewHolder.mangaThumbnailIv, Configure.smallImageOptions);
         }
 
@@ -104,7 +118,7 @@ public class OnlineMangaRecyclerListAdapter extends RecyclerView.Adapter<OnlineM
         viewHolder.item_collect_manga_rl.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                if (null!=onRecycleItemLongClickListener){
+                if (null != onRecycleItemLongClickListener) {
                     onRecycleItemLongClickListener.onItemLongClick(position);
                 }
                 return true;
@@ -112,6 +126,9 @@ public class OnlineMangaRecyclerListAdapter extends RecyclerView.Adapter<OnlineM
         });
     }
 
+    public Map<String, MangaBean> getFailImgList() {
+        return failImgList;
+    }
 
     //获取数据的数量
     @Override

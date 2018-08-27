@@ -8,6 +8,7 @@ import java.util.ArrayList;
  * Created by Administrator on 2016/4/3.
  */
 public class MangaBean extends BaseBean {
+    private boolean isSuccess;
     private String url;
     private String localThumbnailUrl;
     private String userThumbnailUrl;
@@ -20,6 +21,14 @@ public class MangaBean extends BaseBean {
     private ArrayList<ChapterBean> chapters;
     private String description;//漫画介绍
     private boolean isChecked;
+
+    public boolean isSuccess() {
+        return isSuccess;
+    }
+
+    public void setSuccess(boolean success) {
+        isSuccess = success;
+    }
 
     public String getAuthor() {
         return author;

@@ -188,58 +188,115 @@ public class CollectedActivity extends BaseActivity implements OnRefreshListener
     }
 
     private void repairThumbil() {
-        SingleLoadBarUtil.getInstance().showLoadBar(this);
-        if (null == adapter.getThumbleFailedList() || adapter.getThumbleFailedList().size() == 0) {
-            SingleLoadBarUtil.getInstance().dismissLoadBar();
+        if (adapter.getFailImgList().isEmpty()) {
             baseToast.showToast("没有需要修复的");
             return;
         }
-        Observable.create(new ObservableOnSubscribe<MangaBean>() {
-            @Override
-            public void subscribe(final ObservableEmitter<MangaBean> emitter) throws Exception {
-                for (int i = 0; i < adapter.getThumbleFailedList().size(); i++) {
-                    getMangaDetail(adapter.getThumbleFailedList().get(i).getUrl(), new JsoupCallBack<MangaBean>() {
-                        @Override
-                        public void loadSucceed(MangaBean result) {
-                            emitter.onNext(result);
-                        }
+        Observable.fromIterable(adapter.getFailImgList().values())
+                .flatMap(new Function<MangaBean, ObservableSource<MangaBean>>() {
+                    @Override
+                    public ObservableSource<MangaBean> apply(final MangaBean bean) throws Exception {
+                        return Observable.create(new ObservableOnSubscribe<MangaBean>() {//创建新的支流
+                            @Override
+                            public void subscribe(final ObservableEmitter<MangaBean> e) throws Exception {
+                                getMangaDetail(bean.getUrl(), new JsoupCallBack<MangaBean>() {
+                                    @Override
+                                    public void loadSucceed(MangaBean result) {
+                                        result.setSuccess(true);
+                                        e.onNext(result);//这个onnext和onComplete并不是最后的那个onnext和onComplete而是其中一个分支，最终这些分支经过flatMap汇聚
+                                        e.onComplete();
+                                    }
 
-                        @Override
-                        public void loadFailed(String error) {
-//                            emitter.onError(new Throwable(error));
-                        }
-                    });
-                }
-//                emitter.onComplete();
-            }
-        })
-                .observeOn(AndroidSchedulers.mainThread())
+                                    @Override
+                                    public void loadFailed(String error) {
+                                        MangaBean res = new MangaBean();
+                                        res.setSuccess(false);
+                                        e.onNext(res);
+                                        e.onComplete();
+                                    }
+                                });
+                            }
+                        });
+                    }
+                })
                 .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<MangaBean>() {
                     @Override
                     public void onSubscribe(Disposable d) {
-
+                        SingleLoadBarUtil.getInstance().showLoadBar(CollectedActivity.this);
                     }
 
                     @Override
                     public void onNext(MangaBean value) {
 //                        baseToast.showToast(value.getName());
-                        modifyThumbilUrl(value);
-                        Logger.d("RXJAVA" + value.getName());
+                        if (value.isSuccess())
+                            modifyThumbilUrl(value);
+                        else
+                            onError(new RuntimeException("not success"));
+                        Logger.d("RXJAVA onNext" + value.getName());
                     }
 
                     @Override
                     public void onError(Throwable e) {
-                        Logger.d("RXJAVA" + e);
+                        Logger.d("RXJAVA onError" + e);
+                        doGetData();
                         SingleLoadBarUtil.getInstance().dismissLoadBar();
                     }
 
                     @Override
                     public void onComplete() {
                         Logger.d("RXJAVA   onComplete");
+                        doGetData();
                         SingleLoadBarUtil.getInstance().dismissLoadBar();
                     }
                 });
+//        Observable.create(new ObservableOnSubscribe<MangaBean>() {
+//            @Override
+//            public void subscribe(final ObservableEmitter<MangaBean> emitter) throws Exception {
+//                for (int i = 0; i < adapter.getThumbleFailedList().size(); i++) {
+//                    getMangaDetail(adapter.getThumbleFailedList().get(i).getUrl(), new JsoupCallBack<MangaBean>() {
+//                        @Override
+//                        public void loadSucceed(MangaBean result) {
+//                            emitter.onNext(result);
+//                        }
+//
+//                        @Override
+//                        public void loadFailed(String error) {
+////                            emitter.onError(new Throwable(error));
+//                        }
+//                    });
+//                }
+////                emitter.onComplete();
+//            }
+//        })
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .subscribeOn(Schedulers.io())
+//                .subscribe(new Observer<MangaBean>() {
+//                    @Override
+//                    public void onSubscribe(Disposable d) {
+//
+//                    }
+//
+//                    @Override
+//                    public void onNext(MangaBean value) {
+////                        baseToast.showToast(value.getName());
+//                        modifyThumbilUrl(value);
+//                        Logger.d("RXJAVA" + value.getName());
+//                    }
+//
+//                    @Override
+//                    public void onError(Throwable e) {
+//                        Logger.d("RXJAVA" + e);
+//                        SingleLoadBarUtil.getInstance().dismissLoadBar();
+//                    }
+//
+//                    @Override
+//                    public void onComplete() {
+//                        Logger.d("RXJAVA   onComplete");
+//                        SingleLoadBarUtil.getInstance().dismissLoadBar();
+//                    }
+//                });
     }
 
     //因为我不知道当期收藏的漫画是哪个网站的 所以就一个个试
@@ -265,10 +322,10 @@ public class CollectedActivity extends BaseActivity implements OnRefreshListener
                         getMangaDetail(url, resultListener);
                         trySpiderPosition++;
                     } catch (IndexOutOfBoundsException e) {
-                        resultListener.loadFailed("failed");
+                        resultListener.loadFailed("IndexOutOfBoundsException");
                     }
                 } else {
-                    resultListener.loadFailed("failed");
+                    resultListener.loadFailed("orther failed");
                 }
             }
         });
@@ -296,7 +353,7 @@ public class CollectedActivity extends BaseActivity implements OnRefreshListener
                             @Override
                             public void done(AVException e) {
                                 if (LeanCloundUtil.handleLeanResult(CollectedActivity.this, e)) {
-                                        baseToast.showToast(mangaBean.getName()+"修复缩略图成功!");
+                                    baseToast.showToast(mangaBean.getName() + "修复缩略图成功!");
                                 }
                             }
                         });
