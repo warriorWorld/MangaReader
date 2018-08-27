@@ -8,7 +8,8 @@ import java.util.ArrayList;
  * Created by Administrator on 2016/4/3.
  */
 public class MangaBean extends BaseBean {
-    private boolean isSuccess;
+    private boolean isThumbnailLoadFail;
+    private boolean isMangaDetailLoadSuccess;
     private String url;
     private String localThumbnailUrl;
     private String userThumbnailUrl;
@@ -22,12 +23,20 @@ public class MangaBean extends BaseBean {
     private String description;//漫画介绍
     private boolean isChecked;
 
-    public boolean isSuccess() {
-        return isSuccess;
+    public boolean isThumbnailLoadFail() {
+        return isThumbnailLoadFail;
     }
 
-    public void setSuccess(boolean success) {
-        isSuccess = success;
+    public void setThumbnailLoadFail(boolean thumbnailLoadFail) {
+        isThumbnailLoadFail = thumbnailLoadFail;
+    }
+
+    public boolean isMangaDetailLoadSuccess() {
+        return isMangaDetailLoadSuccess;
+    }
+
+    public void setMangaDetailLoadSuccess(boolean mangaDetailLoadSuccess) {
+        isMangaDetailLoadSuccess = mangaDetailLoadSuccess;
     }
 
     public String getAuthor() {
