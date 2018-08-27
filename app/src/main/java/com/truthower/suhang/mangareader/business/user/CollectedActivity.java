@@ -81,6 +81,23 @@ public class CollectedActivity extends BaseActivity implements OnRefreshListener
                 baseTopBar.setTitle("我看完的");
                 break;
         }
+        baseTopBar.setRightText("修复缩略图");
+        baseTopBar.setOnTopBarClickListener(new TopBar.OnTopBarClickListener() {
+            @Override
+            public void onLeftClick() {
+                finish();
+            }
+
+            @Override
+            public void onRightClick() {
+
+            }
+
+            @Override
+            public void onTitleClick() {
+
+            }
+        });
     }
 
     @Override
