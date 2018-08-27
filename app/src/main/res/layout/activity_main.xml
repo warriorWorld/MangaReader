@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
 
 
     <FrameLayout
@@ -22,7 +22,7 @@
         <View
             android:layout_width="match_parent"
             android:layout_height="1px"
-            android:background="@color/divide_line" />
+            android:background="@color/divide_line"/>
 
         <LinearLayout
             android:id="@+id/id_switch_tab_ll"
@@ -44,7 +44,7 @@
                     android:id="@+id/online_bottom_iv"
                     android:layout_width="@dimen/main_tab_icon"
                     android:layout_height="@dimen/main_tab_icon"
-                    android:src="@drawable/online_icon" />
+                    android:src="@drawable/online_icon"/>
 
                 <TextView
                     android:id="@+id/online_bottom_tv"
@@ -54,7 +54,35 @@
                     android:gravity="center"
                     android:text="在线"
                     android:textColor="@color/manga_reader"
-                    android:textSize="11sp" />
+                    android:textSize="11sp"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/recommend_bottom_ll"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="1"
+                android:clickable="true"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:saveEnabled="false">
+
+                <ImageView
+                    android:id="@+id/recommend_bottom_iv"
+                    android:layout_width="@dimen/main_tab_icon"
+                    android:layout_height="@dimen/main_tab_icon"
+                    android:src="@drawable/recommended"/>
+
+                <TextView
+                    android:id="@+id/recommend_bottom_tv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="3dp"
+                    android:gravity="center"
+                    android:text="推荐"
+                    android:textColor="@color/main_text_color_gray"
+                    android:textSize="11sp"/>
             </LinearLayout>
 
             <LinearLayout
@@ -72,7 +100,7 @@
                     android:id="@+id/local_bottom_iv"
                     android:layout_width="@dimen/main_tab_icon"
                     android:layout_height="@dimen/main_tab_icon"
-                    android:src="@drawable/local_icon" />
+                    android:src="@drawable/local_icon"/>
 
                 <TextView
                     android:id="@+id/local_bottom_tv"
@@ -82,7 +110,7 @@
                     android:gravity="center"
                     android:text="本地"
                     android:textColor="@color/main_text_color_gray"
-                    android:textSize="11sp" />
+                    android:textSize="11sp"/>
             </LinearLayout>
 
             <LinearLayout
@@ -99,7 +127,7 @@
                     android:id="@+id/user_bottom_iv"
                     android:layout_width="@dimen/main_tab_icon"
                     android:layout_height="@dimen/main_tab_icon"
-                    android:src="@drawable/user_icon" />
+                    android:src="@drawable/user_icon"/>
 
                 <TextView
                     android:id="@+id/user_bottom_tv"
@@ -109,7 +137,7 @@
                     android:gravity="center"
                     android:text="我的"
                     android:textColor="@color/main_text_color_gray"
-                    android:textSize="11sp" />
+                    android:textSize="11sp"/>
             </LinearLayout>
         </LinearLayout>
     </LinearLayout>

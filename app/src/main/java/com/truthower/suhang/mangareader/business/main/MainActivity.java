@@ -50,11 +50,11 @@ import pub.devrel.easypermissions.EasyPermissions;
 
 public class MainActivity extends BaseFragmentActivity implements View.OnClickListener,
         EasyPermissions.PermissionCallbacks {
-    private LinearLayout mTabOnlinePageLL, mTabLocalLL, mTabUserLL;
+    private LinearLayout mTabOnlinePageLL, mTabLocalLL, mTabUserLL, mTabRecommendLL;
     /**
      * Tab显示内容TextView
      */
-    private TextView mTabOnlinePageTv, mTabLocalTv, mTabUserTv;
+    private TextView mTabOnlinePageTv, mTabLocalTv, mTabUserTv, mTabRecommendTv;
     private ImageView mTabOnlinePageIv, mTabLocalIv, mTabUserIv;
     /**
      * Fragment
@@ -62,6 +62,7 @@ public class MainActivity extends BaseFragmentActivity implements View.OnClickLi
     private OnlineMangaFragment onlinePageFg;
     private LocalMangaFragment localFg;
     private UserFragment userFg;
+    private RecommendFragment mRecommendFragment;
     /**
      * 当前选中页
      */
@@ -123,17 +124,20 @@ public class MainActivity extends BaseFragmentActivity implements View.OnClickLi
         mTabLocalTv = (TextView) this.findViewById(R.id.local_bottom_tv);
         mTabOnlinePageTv = (TextView) this.findViewById(R.id.online_bottom_tv);
         mTabUserTv = (TextView) this.findViewById(R.id.user_bottom_tv);
+        mTabRecommendTv = (TextView) this.findViewById(R.id.recommend_bottom_tv);
         mTabOnlinePageIv = (ImageView) findViewById(R.id.online_bottom_iv);
         mTabLocalIv = (ImageView) findViewById(R.id.local_bottom_iv);
         mTabUserIv = (ImageView) findViewById(R.id.user_bottom_iv);
         mTabOnlinePageLL = (LinearLayout) findViewById(R.id.online_bottom_ll);
         mTabLocalLL = (LinearLayout) findViewById(R.id.local_bottom_ll);
         mTabUserLL = (LinearLayout) findViewById(R.id.user_bottom_ll);
+        mTabRecommendLL = (LinearLayout) findViewById(R.id.recommend_bottom_ll);
 
 
         mTabOnlinePageLL.setOnClickListener(this);
         mTabLocalLL.setOnClickListener(this);
         mTabUserLL.setOnClickListener(this);
+        mTabRecommendLL.setOnClickListener(this);
     }
 
     @Override
@@ -215,6 +219,7 @@ public class MainActivity extends BaseFragmentActivity implements View.OnClickLi
             }
         });
         onlinePageFg = new OnlineMangaFragment();
+        mRecommendFragment = new RecommendFragment();
 
         switchContent(null, onlinePageFg);
     }
@@ -235,10 +240,14 @@ public class MainActivity extends BaseFragmentActivity implements View.OnClickLi
                     toggleBottomBar(mTabOnlinePageLL);
                     break;
                 case 1:
+                    switchContent(curFragment, mRecommendFragment);
+                    toggleBottomBar(mTabRecommendLL);
+                    break;
+                case 2:
                     switchContent(curFragment, localFg);
                     toggleBottomBar(mTabLocalLL);
                     break;
-                case 2:
+                case 3:
                     switchContent(curFragment, userFg);
                     toggleBottomBar(mTabUserLL);
                     break;
@@ -338,6 +347,7 @@ public class MainActivity extends BaseFragmentActivity implements View.OnClickLi
         mTabOnlinePageTv.setTextColor(getResources().getColor(R.color.main_text_color_gray));
         mTabLocalTv.setTextColor(getResources().getColor(R.color.main_text_color_gray));
         mTabUserTv.setTextColor(getResources().getColor(R.color.main_text_color_gray));
+        mTabRecommendTv.setTextColor(getResources().getColor(R.color.main_text_color_gray));
         switch (v.getId()) {
             case R.id.online_bottom_ll:
                 mTabOnlinePageTv.setTextColor(getResources().getColor(R.color.manga_reader));
@@ -347,6 +357,9 @@ public class MainActivity extends BaseFragmentActivity implements View.OnClickLi
                 break;
             case R.id.user_bottom_ll:
                 mTabUserTv.setTextColor(getResources().getColor(R.color.manga_reader));
+                break;
+            case R.id.recommend_bottom_ll:
+                mTabRecommendTv.setTextColor(getResources().getColor(R.color.manga_reader));
                 break;
         }
     }
@@ -363,6 +376,9 @@ public class MainActivity extends BaseFragmentActivity implements View.OnClickLi
                 break;
             case R.id.user_bottom_ll:
                 switchContent(curFragment, userFg);
+                break;
+            case R.id.recommend_bottom_ll:
+                switchContent(curFragment, mRecommendFragment);
                 break;
         }
     }
