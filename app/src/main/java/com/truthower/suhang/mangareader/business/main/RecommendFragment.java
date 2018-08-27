@@ -183,9 +183,11 @@ public class RecommendFragment extends BaseFragment implements
 
     @Override
     public void onLoadMore() {
+        doGetData();
     }
 
     @Override
     public void onRefresh() {
+        doGetData();
     }
 }
