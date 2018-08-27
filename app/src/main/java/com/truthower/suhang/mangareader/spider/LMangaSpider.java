@@ -98,7 +98,7 @@ public class LMangaSpider extends SpiderBase {
                         Elements mangaTagElements = doc.select("ul.tags a");
 
                         MangaBean mangaBean = new MangaBean();
-
+                        mangaBean.setUrl(mangaURL);
                         mangaBean.setName("Can't found");
                         mangaBean.setWebThumbnailUrl("https:" + mangaThumbnailElement.attr("src"));
 

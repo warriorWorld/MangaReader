@@ -1,7 +1,9 @@
 package com.truthower.suhang.mangareader.adapter;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.support.v7.widget.RecyclerView;
+import android.text.Html;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,6 +14,8 @@ import android.widget.TextView;
 
 
 import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.assist.FailReason;
+import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
 import com.truthower.suhang.mangareader.R;
 import com.truthower.suhang.mangareader.bean.MangaBean;
 import com.truthower.suhang.mangareader.config.Configure;
@@ -28,6 +32,7 @@ public class OnlineMangaRecyclerListAdapter extends RecyclerView.Adapter<OnlineM
     private Context context;
     private OnRecycleItemClickListener onRecycleItemClickListener;
     private OnRecycleItemLongClickListener onRecycleItemLongClickListener;
+    private ArrayList<MangaBean> thumbleFailedList=new ArrayList<MangaBean>();
 
     public void setOnRecycleItemClickListener(OnRecycleItemClickListener onRecycleItemClickListener) {
         this.onRecycleItemClickListener = onRecycleItemClickListener;
@@ -56,14 +61,38 @@ public class OnlineMangaRecyclerListAdapter extends RecyclerView.Adapter<OnlineM
     //将数据与界面进行绑定的操作
     @Override
     public void onBindViewHolder(ViewHolder viewHolder, final int position) {
-        MangaBean item = list.get(position);
+        final MangaBean item = list.get(position);
         if (!TextUtils.isEmpty(item.getWebThumbnailUrl())){
             ImageLoader.getInstance().displayImage(item.getWebThumbnailUrl(), viewHolder.mangaThumbnailIv, Configure.smallImageOptions);
+            ImageLoader.getInstance().setDefaultLoadingListener(new ImageLoadingListener() {
+                @Override
+                public void onLoadingStarted(String s, View view) {
+
+                }
+
+                @Override
+                public void onLoadingFailed(String s, View view, FailReason reason) {
+                    if (thumbleFailedList.contains(item)){
+                        return;
+                    }
+                    thumbleFailedList.add(item);
+                }
+
+                @Override
+                public void onLoadingComplete(String s, View view, Bitmap bitmap) {
+
+                }
+
+                @Override
+                public void onLoadingCancelled(String s, View view) {
+
+                }
+            });
         }else {
             ImageLoader.getInstance().displayImage(item.getLocalThumbnailUrl(), viewHolder.mangaThumbnailIv, Configure.smallImageOptions);
         }
 
-        viewHolder.mangaTitleTv.setText(item.getName());
+        viewHolder.mangaTitleTv.setText(Html.fromHtml(item.getName()));
         viewHolder.item_collect_manga_rl.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -109,6 +138,10 @@ public class OnlineMangaRecyclerListAdapter extends RecyclerView.Adapter<OnlineM
             mangaThumbnailIv = (ImageView) view.findViewById(R.id.manga_thumbnail_iv);
             mangaTitleTv = (TextView) view.findViewById(R.id.manga_title_tv);
         }
+    }
+
+    public ArrayList<MangaBean> getThumbleFailedList() {
+        return thumbleFailedList;
     }
 
     public ArrayList<MangaBean> getList() {

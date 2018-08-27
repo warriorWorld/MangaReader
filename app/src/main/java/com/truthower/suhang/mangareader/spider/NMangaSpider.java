@@ -101,7 +101,7 @@ public class NMangaSpider extends SpiderBase {
                         Element imgElement = doc.getElementById("cover").getElementsByTag("img").last();
                         Elements chaptersElement = doc.getElementsByClass("gallerythumb");
                         MangaBean mangaBean = new MangaBean();
-
+                        mangaBean.setUrl(mangaURL);
                         String tilte = test1.select("h1").text();
                         String thumbnail = imgElement.attr("src");
                         ChapterBean item = new ChapterBean();

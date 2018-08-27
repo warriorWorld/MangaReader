@@ -92,6 +92,7 @@ public class KaKaLotSpider extends SpiderBase {
                             mangaTagDetailElements = mangaTextDetailElements.get(6).select("a");
                         }
                         MangaBean item = new MangaBean();
+                        item.setUrl(mangaURL);
                         item.setWebThumbnailUrl(mangaPicDetailElements.first().getElementsByTag("img").last().attr("src"));
 
                         if (null != mangaTagDetailElements) {
