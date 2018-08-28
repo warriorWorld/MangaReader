@@ -192,11 +192,6 @@ public class CollectedActivity extends BaseActivity implements OnRefreshListener
     }
 
     private void repairThumbil() {
-//        if (adapter.getFailImgList().isEmpty()) {
-//            baseToast.showToast("没有需要修复的");
-//            return;
-//        }
-
         Observable.fromIterable(collectedMangaList)
                 .flatMap(new Function<MangaBean, ObservableSource<MangaBean>>() {
                     @Override

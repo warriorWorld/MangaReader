@@ -121,11 +121,6 @@ public class WebMangaDetailsActivity extends TTSActivity implements AdapterView.
         if (TextUtils.isEmpty(mangaUrl)) {
             this.finish();
         }
-        if (TextUtils.isEmpty(LoginBean.getInstance().getUserName(this))) {
-            //不登录不让用了
-            this.finish();
-            return;
-        }
         initSpider();
 
         initUI();
@@ -445,7 +440,6 @@ public class WebMangaDetailsActivity extends TTSActivity implements AdapterView.
         }
     }
 
-    //TODO
     private void showAuthorSelector() {
         if (null == authorSelector) {
             authorSelector = new WheelSelectorDialog(this);
@@ -515,7 +509,7 @@ public class WebMangaDetailsActivity extends TTSActivity implements AdapterView.
      * 给已收藏的漫画置顶
      */
     private void doTopThisManga(final boolean isTop) {
-        if (TextUtils.isEmpty(LoginBean.getInstance().getUserName())) {
+        if (TextUtils.isEmpty(LoginBean.getInstance().getUserName(this))) {
             return;
         }
         SingleLoadBarUtil.getInstance().showLoadBar(WebMangaDetailsActivity.this);
@@ -559,7 +553,7 @@ public class WebMangaDetailsActivity extends TTSActivity implements AdapterView.
      * 给已收藏的漫画标记为已看完
      */
     private void doFinishedThisManga(final boolean isFinished) {
-        if (TextUtils.isEmpty(LoginBean.getInstance().getUserName())) {
+        if (TextUtils.isEmpty(LoginBean.getInstance().getUserName(this))) {
             return;
         }
         SingleLoadBarUtil.getInstance().showLoadBar(WebMangaDetailsActivity.this);
@@ -659,10 +653,6 @@ public class WebMangaDetailsActivity extends TTSActivity implements AdapterView.
     }
 
     private void doGetGrade() {
-        if (TextUtils.isEmpty(LoginBean.getInstance().getUserName(this))) {
-            this.finish();
-            return;
-        }
         SingleLoadBarUtil.getInstance().showLoadBar(WebMangaDetailsActivity.this);
         AVQuery<AVObject> query = new AVQuery<>("Grade");
         query.whereEqualTo("manga_name", currentManga.getName());
@@ -749,7 +739,7 @@ public class WebMangaDetailsActivity extends TTSActivity implements AdapterView.
             return;
         }
         SingleLoadBarUtil.getInstance().showLoadBar(WebMangaDetailsActivity.this);
-        // 执行 CQL 语句实现删除一个 Todo 对象
+        // 执行 CQL 语句实现删除一个  对象
         AVQuery.doCloudQueryInBackground(
                 "delete from Collected where objectId='" + collectedId + "'"
                 , new CloudQueryCallback<AVCloudQueryResult>() {

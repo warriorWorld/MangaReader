@@ -184,6 +184,11 @@ public class ReadMangaActivity extends TTSActivity implements OnClickListener {
     }
 
     private void doGetWebPics() {
+        if (TextUtils.isEmpty(LoginBean.getInstance().getUserName(this))) {
+            //不登录不让用了
+            this.finish();
+            return;
+        }
         loadBar.show();
         spider.getMangaChapterPics(this, chapterUrl, new JsoupCallBack<ArrayList<String>>() {
             @Override

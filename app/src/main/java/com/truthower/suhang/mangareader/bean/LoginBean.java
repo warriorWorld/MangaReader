@@ -21,6 +21,7 @@ public class LoginBean extends BaseBean {
     private String userName;
     private String email;
     private boolean master;
+    private boolean creator;
 
     private LoginBean() {
     }
@@ -98,6 +99,15 @@ public class LoginBean extends BaseBean {
 
     public void setMaster(Context context, boolean master) {
         this.master = master;
+        saveLoginInfo(context, instance);
+    }
+
+    public boolean isCreator() {
+        return creator;
+    }
+
+    public void setCreator(Context context, boolean creator) {
+        this.creator = creator;
         saveLoginInfo(context, instance);
     }
 }

@@ -2,6 +2,7 @@ package com.truthower.suhang.mangareader.service;
 
 
 import com.truthower.suhang.mangareader.base.BaseActivity;
+import com.truthower.suhang.mangareader.base.BaseFragmentActivity;
 import com.truthower.suhang.mangareader.business.user.CollectedActivity;
 import com.truthower.suhang.mangareader.widget.dialog.SingleLoadBarUtil;
 
@@ -14,15 +15,26 @@ import io.reactivex.disposables.Disposable;
 
 public abstract class BaseObserver<T> implements Observer<T> {
     private BaseActivity mContext;
+    private BaseFragmentActivity mBaseFragmentActivity;
 
     public BaseObserver(BaseActivity context) {
         this.mContext = context;
     }
 
+    public BaseObserver(BaseFragmentActivity context) {
+        this.mBaseFragmentActivity = context;
+    }
+
     @Override
     public void onSubscribe(Disposable d) {
-        mContext.mDisposable.add(d);
-        SingleLoadBarUtil.getInstance().showLoadBar(mContext);
+        if (null != mContext) {
+            mContext.mDisposable.add(d);
+            SingleLoadBarUtil.getInstance().showLoadBar(mContext);
+        }
+        if (null != mBaseFragmentActivity) {
+            mBaseFragmentActivity.mDisposable.add(d);
+            SingleLoadBarUtil.getInstance().showLoadBar(mBaseFragmentActivity);
+        }
     }
 
     @Override

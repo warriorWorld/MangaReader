@@ -84,9 +84,6 @@ public class MainActivity extends BaseFragmentActivity implements View.OnClickLi
         initFragment();
         doGetVersionInfo();
         doGetAnnouncement();
-        if (TextUtils.isEmpty(LoginBean.getInstance().getUserName())) {
-            baseToast.showToast("登录后就可以把漫画加入收藏了");
-        }
     }
 
     private void doGetAnnouncement() {

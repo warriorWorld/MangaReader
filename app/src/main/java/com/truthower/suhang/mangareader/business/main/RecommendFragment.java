@@ -2,6 +2,7 @@ package com.truthower.suhang.mangareader.business.main;
 
 import android.Manifest;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.Environment;
@@ -10,6 +11,7 @@ import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,9 +23,14 @@ import com.avos.avoscloud.AVException;
 import com.avos.avoscloud.AVObject;
 import com.avos.avoscloud.AVQuery;
 import com.avos.avoscloud.FindCallback;
+import com.avos.avoscloud.SaveCallback;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.assist.FailReason;
+import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
 import com.truthower.suhang.mangareader.R;
 import com.truthower.suhang.mangareader.adapter.OnlineMangaRecyclerListAdapter;
 import com.truthower.suhang.mangareader.base.BaseFragment;
+import com.truthower.suhang.mangareader.base.BaseFragmentActivity;
 import com.truthower.suhang.mangareader.bean.LoginBean;
 import com.truthower.suhang.mangareader.bean.MangaBean;
 import com.truthower.suhang.mangareader.business.detail.LocalMangaDetailsActivity;
@@ -31,12 +38,16 @@ import com.truthower.suhang.mangareader.business.detail.WebMangaDetailsActivity;
 import com.truthower.suhang.mangareader.business.user.CollectedActivity;
 import com.truthower.suhang.mangareader.config.Configure;
 import com.truthower.suhang.mangareader.config.ShareKeys;
+import com.truthower.suhang.mangareader.listener.JsoupCallBack;
 import com.truthower.suhang.mangareader.listener.OnEditResultListener;
 import com.truthower.suhang.mangareader.listener.OnRecycleItemClickListener;
 import com.truthower.suhang.mangareader.listener.OnRecycleItemLongClickListener;
 import com.truthower.suhang.mangareader.listener.OnSevenFourteenListDialogListener;
+import com.truthower.suhang.mangareader.service.BaseObserver;
 import com.truthower.suhang.mangareader.sort.FileComparatorByTime;
 import com.truthower.suhang.mangareader.spider.FileSpider;
+import com.truthower.suhang.mangareader.spider.SpiderBase;
+import com.truthower.suhang.mangareader.utils.BaseParameterUtil;
 import com.truthower.suhang.mangareader.utils.DisplayUtil;
 import com.truthower.suhang.mangareader.utils.LeanCloundUtil;
 import com.truthower.suhang.mangareader.utils.Logger;
@@ -51,10 +62,19 @@ import com.truthower.suhang.mangareader.widget.wheelview.wheelselector.WheelSele
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
+import io.reactivex.Observable;
+import io.reactivex.ObservableEmitter;
+import io.reactivex.ObservableOnSubscribe;
+import io.reactivex.ObservableSource;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.functions.Function;
+import io.reactivex.functions.Predicate;
+import io.reactivex.schedulers.Schedulers;
 import pub.devrel.easypermissions.AfterPermissionGranted;
 import pub.devrel.easypermissions.EasyPermissions;
 
@@ -68,6 +88,7 @@ public class RecommendFragment extends BaseFragment implements
     private OnlineMangaRecyclerListAdapter adapter;
     private RecyclerView mangaRcv;
     private SwipeToLoadLayout swipeToLoadLayout;
+    private SpiderBase spider;
 
     @Nullable
     @Override
@@ -87,6 +108,22 @@ public class RecommendFragment extends BaseFragment implements
             }
         } catch (Exception e) {
             //这时候有可能fragment还没绑定上activity
+        }
+    }
+
+    private void initSpider() {
+        try {
+            spider = (SpiderBase) Class.forName
+                    ("com.truthower.suhang.mangareader.spider." + BaseParameterUtil.getInstance().getCurrentWebSite(getActivity()) + "Spider").newInstance();
+        } catch (ClassNotFoundException e) {
+            baseToast.showToast(e + "");
+            e.printStackTrace();
+        } catch (java.lang.InstantiationException e) {
+            baseToast.showToast(e + "");
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            baseToast.showToast(e + "");
+            e.printStackTrace();
         }
     }
 
@@ -179,6 +216,191 @@ public class RecommendFragment extends BaseFragment implements
 
         topBar = (TopBar) v.findViewById(R.id.gradient_bar);
         topBar.setTitle("推荐");
+        if (LoginBean.getInstance().isCreator()) {
+            topBar.setRightText("修复缩略图");
+        } else {
+            topBar.setRightText("");
+        }
+        topBar.setOnTopBarClickListener(new TopBar.OnTopBarClickListener() {
+            @Override
+            public void onLeftClick() {
+
+            }
+
+            @Override
+            public void onRightClick() {
+                if (LoginBean.getInstance().isCreator()) {
+                    repairThumbnail();
+                }
+            }
+
+            @Override
+            public void onTitleClick() {
+
+            }
+        });
+    }
+
+    private void repairThumbnail() {
+        Observable.fromIterable(mangaList)
+                .flatMap(new Function<MangaBean, ObservableSource<MangaBean>>() {
+                    @Override
+                    public ObservableSource<MangaBean> apply(final MangaBean bean) throws Exception {
+                        return Observable.create(new ObservableOnSubscribe<MangaBean>() {
+                            @Override
+                            public void subscribe(final ObservableEmitter<MangaBean> e) throws Exception {
+                                ImageLoader.getInstance().loadImage(bean.getWebThumbnailUrl(), new ImageLoadingListener() {
+                                    @Override
+                                    public void onLoadingStarted(String s, View view) {
+
+                                    }
+
+                                    @Override
+                                    public void onLoadingFailed(String s, View view, FailReason reason) {
+                                        bean.setThumbnailLoadFail(true);
+                                        e.onNext(bean);
+                                        e.onComplete();
+                                    }
+
+                                    @Override
+                                    public void onLoadingComplete(String s, View view, Bitmap bitmap) {
+                                        bean.setThumbnailLoadFail(false);
+                                        e.onNext(bean);
+                                        e.onComplete();
+                                    }
+
+                                    @Override
+                                    public void onLoadingCancelled(String s, View view) {
+                                        bean.setThumbnailLoadFail(true);
+                                        e.onNext(bean);
+                                        e.onComplete();
+                                    }
+                                });
+                            }
+                        });
+                    }
+                })
+                .filter(new Predicate<MangaBean>() {
+                    @Override
+                    public boolean test(MangaBean bean) throws Exception {
+                        return bean.isThumbnailLoadFail();
+                    }
+                })
+                .flatMap(new Function<MangaBean, ObservableSource<MangaBean>>() {
+                    @Override
+                    public ObservableSource<MangaBean> apply(final MangaBean bean) throws Exception {
+                        return Observable.create(new ObservableOnSubscribe<MangaBean>() {//创建新的支流
+                            @Override
+                            public void subscribe(final ObservableEmitter<MangaBean> e) throws Exception {
+                                getMangaDetail(bean.getUrl(), new JsoupCallBack<MangaBean>() {
+                                    @Override
+                                    public void loadSucceed(MangaBean result) {
+                                        result.setMangaDetailLoadSuccess(true);
+                                        e.onNext(result);//这个onnext和onComplete并不是最后的那个onnext和onComplete而是其中一个分支，最终这些分支经过flatMap汇聚
+                                        e.onComplete();
+                                    }
+
+                                    @Override
+                                    public void loadFailed(String error) {
+                                        MangaBean res = new MangaBean();
+                                        res.setMangaDetailLoadSuccess(false);
+                                        e.onNext(res);
+                                        e.onComplete();
+                                    }
+                                });
+                            }
+                        });
+                    }
+                })
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new BaseObserver<MangaBean>((BaseFragmentActivity) getActivity()) {
+
+                    @Override
+                    public void onNext(MangaBean value) {
+//                        baseToast.showToast(value.getName());
+                        if (value.isMangaDetailLoadSuccess())
+                            modifyThumbnailUrl(value);
+                        else
+                            onError(new RuntimeException("not success"));
+                        Logger.d("RXJAVA onNext" + value.getName());
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        super.onError(e);
+                        Logger.d("RXJAVA onError" + e);
+                        doGetData();
+                    }
+
+                    @Override
+                    public void onComplete() {
+                        super.onComplete();
+                        Logger.d("RXJAVA   onComplete");
+                        doGetData();
+                    }
+                });
+    }
+
+    //因为我不知道当期收藏的漫画是哪个网站的 所以就一个个试
+    private int trySpiderPosition = 0;
+
+    private void getMangaDetail(final String url, final JsoupCallBack<MangaBean> resultListener) {
+        spider.getMangaDetail(url, new JsoupCallBack<MangaBean>() {
+            @Override
+            public void loadSucceed(final MangaBean result) {
+                resultListener.loadSucceed(result);
+            }
+
+            @Override
+            public void loadFailed(String error) {
+                if (error.equals(Configure.WRONG_WEBSITE_EXCEPTION)) {
+                    try {
+                        if (LoginBean.getInstance().isMaster()) {
+                            BaseParameterUtil.getInstance().saveCurrentWebSite(getActivity(), Configure.masterWebsList[trySpiderPosition]);
+                        } else {
+                            BaseParameterUtil.getInstance().saveCurrentWebSite(getActivity(), Configure.websList[trySpiderPosition]);
+                        }
+                        initSpider();
+                        getMangaDetail(url, resultListener);
+                        trySpiderPosition++;
+                    } catch (IndexOutOfBoundsException e) {
+                        resultListener.loadFailed("IndexOutOfBoundsException");
+                    }
+                } else {
+                    resultListener.loadFailed("orther failed");
+                }
+            }
+        });
+    }
+
+    private void modifyThumbnailUrl(final MangaBean mangaBean) {
+        if (TextUtils.isEmpty(LoginBean.getInstance().getUserName())) {
+            return;
+        }
+        AVQuery<AVObject> query1 = new AVQuery<>("Recommend");
+        query1.whereEqualTo("mangaUrl", mangaBean.getUrl());
+
+        query1.findInBackground(new FindCallback<AVObject>() {
+            @Override
+            public void done(List<AVObject> list, AVException e) {
+                if (LeanCloundUtil.handleLeanResult(getActivity(), e)) {
+                    if (null != list && list.size() > 0) {
+                        //已存在的保存
+                        AVObject object = AVObject.createWithoutData("Recommend", list.get(0).getObjectId());
+                        object.put("thumbnailUrl", mangaBean.getWebThumbnailUrl());
+                        object.saveInBackground(new SaveCallback() {
+                            @Override
+                            public void done(AVException e) {
+                                if (LeanCloundUtil.handleLeanResult(getActivity(), e)) {
+                                    baseToast.showToast(mangaBean.getName() + "修复缩略图成功!");
+                                }
+                            }
+                        });
+                    }
+                }
+            }
+        });
     }
 
     @Override
