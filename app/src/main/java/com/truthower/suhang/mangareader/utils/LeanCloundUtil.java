@@ -4,6 +4,7 @@ import android.content.Context;
 import android.view.WindowManager;
 
 import com.avos.avoscloud.AVException;
+import com.truthower.suhang.mangareader.bean.LoginBean;
 import com.truthower.suhang.mangareader.business.detail.WebMangaDetailsActivity;
 import com.truthower.suhang.mangareader.config.Configure;
 import com.truthower.suhang.mangareader.widget.dialog.MangaDialog;
@@ -19,7 +20,7 @@ public class LeanCloundUtil {
             return true;
         } else {
             try {
-                if (Configure.isTest) {
+                if (Configure.isTest|| LoginBean.getInstance().isCreator()) {
                     MangaDialog errorDialog = new MangaDialog(context);
                     errorDialog.show();
                     errorDialog.setTitle("出错了");

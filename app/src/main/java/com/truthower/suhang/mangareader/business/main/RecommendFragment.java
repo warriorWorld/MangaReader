@@ -97,6 +97,7 @@ public class RecommendFragment extends BaseFragment implements
         initUI(mainView);
         initGridView();
         doGetData();
+        initSpider();
         return mainView;
     }
 
@@ -375,9 +376,6 @@ public class RecommendFragment extends BaseFragment implements
     }
 
     private void modifyThumbnailUrl(final MangaBean mangaBean) {
-        if (TextUtils.isEmpty(LoginBean.getInstance().getUserName())) {
-            return;
-        }
         AVQuery<AVObject> query1 = new AVQuery<>("Recommend");
         query1.whereEqualTo("mangaUrl", mangaBean.getUrl());
 
