@@ -6,11 +6,17 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.view.ViewPager;
 import android.text.ClipboardManager;
+import android.text.SpannableString;
+import android.text.Spanned;
 import android.text.TextUtils;
+import android.text.style.AbsoluteSizeSpan;
+import android.text.style.ForegroundColorSpan;
+import android.text.style.UnderlineSpan;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ImageView;
@@ -43,6 +49,7 @@ import com.truthower.suhang.mangareader.spider.FileSpider;
 import com.truthower.suhang.mangareader.spider.SpiderBase;
 import com.truthower.suhang.mangareader.utils.Base64BitmapUtil;
 import com.truthower.suhang.mangareader.utils.BaseParameterUtil;
+import com.truthower.suhang.mangareader.utils.ImageUtil;
 import com.truthower.suhang.mangareader.utils.LeanCloundUtil;
 import com.truthower.suhang.mangareader.utils.SharedPreferencesUtils;
 import com.truthower.suhang.mangareader.volley.VolleyCallBack;
@@ -56,20 +63,29 @@ import com.truthower.suhang.mangareader.widget.shotview.ScreenShot;
 import com.truthower.suhang.mangareader.widget.shotview.ShotView;
 import com.umeng.analytics.MobclickAgent;
 import com.youdao.ocr.online.ImageOCRecognizer;
+import com.youdao.ocr.online.Line;
+import com.youdao.ocr.online.Line_Line;
 import com.youdao.ocr.online.OCRListener;
+import com.youdao.ocr.online.OCRParameters;
 import com.youdao.ocr.online.OCRResult;
 import com.youdao.ocr.online.OcrErrorCode;
+import com.youdao.ocr.online.Region;
+import com.youdao.ocr.online.Region_Line;
+import com.youdao.ocr.online.Word;
+import com.youdao.sdk.app.EncryptHelper;
 
 import org.adw.library.widgets.discreteseekbar.DiscreteSeekBar;
 import org.greenrobot.eventbus.Subscribe;
 import org.jsoup.Jsoup;
 import org.jsoup.select.Elements;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 
 /**
  * /storage/sdcard0/reptile/one-piece
@@ -403,8 +419,23 @@ public class ReadMangaActivity extends TTSActivity implements OnClickListener {
             @Override
             public void onRightLongClick() {
                 if (LoginBean.getInstance().isCreator()) {
-                    ImageOCRecognizer.getInstance(Configure.tps).recognize(Base64BitmapUtil.bitmapToBase64
-                                    (ScreenShot.takeScreenShot(ReadMangaActivity.this)),
+                    Bitmap bitmap = ImageUtil.readBitmapFromFile(pathList.get(mangaPager.getCurrentItem()).replaceAll("file://", ""), 768);
+                    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                    int quality = 100;
+                    bitmap.compress(Bitmap.CompressFormat.JPEG, quality, baos);
+                    byte[] datas = baos.toByteArray();
+                    String bases64 = EncryptHelper.getBase64(datas);
+                    int count = bases64.length();
+                    while (count > 1.4 * 1024 * 1024) {
+                        quality = quality - 10;
+                        baos = new ByteArrayOutputStream();
+                        bitmap.compress(Bitmap.CompressFormat.JPEG, quality, baos);
+                        datas = baos.toByteArray();
+                        bases64 = EncryptHelper.getBase64(datas);
+                    }
+                    final String base64 = bases64;
+
+                    ImageOCRecognizer.getInstance(Configure.tps).recognize(base64,
                             new OCRListener() {
 
                                 @Override
@@ -414,15 +445,27 @@ public class ReadMangaActivity extends TTSActivity implements OnClickListener {
                                     runOnUiThread(new Runnable() {
                                         @Override
                                         public void run() {
-                                            String res = "";
-                                            for (int i = 0; i < result.getRegions().size(); i++) {
-                                                for (int j = 0; j < result.getRegions().get(i).getLines().size(); j++) {
-                                                    for (int z = 0; z < result.getRegions().get(i).getLines().get(j).getWords().size(); z++) {
-                                                        res += result.getRegions().get(i).getLines().get(j).getWords().get(z).getText() + "\n";
-                                                    }
+                                            // TODO Auto-generated method stub
+                                            String text = getResult(result);
+                                            SpannableString spannableString = new SpannableString(text);
+                                            int start = 0;
+                                            while (start < text.length() && start >= 0) {
+                                                int s = text.indexOf("文本", start);
+                                                int end = text.indexOf("：", s) + 1;
+                                                if (s >= 0) {
+                                                    ForegroundColorSpan colorSpan = new ForegroundColorSpan(Color.parseColor("#808080"));
+                                                    AbsoluteSizeSpan sizeSpan = new AbsoluteSizeSpan(35);
+                                                    UnderlineSpan underlineSpan = new UnderlineSpan();
+                                                    spannableString.setSpan(sizeSpan, s, end, Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+                                                    spannableString.setSpan(colorSpan, s, end, Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+                                                    spannableString.setSpan(underlineSpan, s, end - 1, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
+                                                    start = end;
+                                                } else {
+                                                    break;
                                                 }
+
                                             }
-                                            showBaseDialog("", res, "", "", null);
+                                            showOcrResultDialog(spannableString);
                                         }
                                     });
                                 }
@@ -433,7 +476,7 @@ public class ReadMangaActivity extends TTSActivity implements OnClickListener {
                                     runOnUiThread(new Runnable() {
                                         @Override
                                         public void run() {
-                                            showBaseDialog("失败", error.toString()+error.getCode(), "", "", null);
+                                            showBaseDialog("失败", error.toString() + error.getCode(), "", "", null);
                                         }
                                     });
                                 }
@@ -450,6 +493,51 @@ public class ReadMangaActivity extends TTSActivity implements OnClickListener {
                 }
             }
         });
+    }
+
+    private String getResult(OCRResult result) {
+        StringBuilder sb = new StringBuilder();
+        int i = 1;
+        if (OCRParameters.TYPE_TEXT.equals(result.getType())) {
+            //按文本识别
+            List<Region> regions = result.getRegions();
+            for (Region region : regions) {
+                List<Line> lines = region.getLines();
+                for (Line line : lines) {
+                    sb.append("文本" + i++ + "： ");
+                    List<Word> words = line.getWords();
+                    for (Word word : words) {
+                        sb.append(word.getText()).append(" ");
+                    }
+                    sb.append("\n");
+                }
+            }
+        } else {
+            //按行识别
+            List<Region_Line> regions = result.getRegions_Line();
+            for (Region_Line region : regions) {
+                List<Line_Line> lines = region.getLines();
+                for (Line_Line line : lines) {
+                    sb.append("文本" + i++ + "： ");
+                    sb.append(line.getText());
+                    sb.append("\n");
+                }
+            }
+        }
+        String text = sb.toString();
+        if (!TextUtils.isEmpty(text)) {
+            text = text.substring(0, text.length() - 2);
+        }
+        return text;
+
+    }
+
+    private void showOcrResultDialog(SpannableString spannableString) {
+        MangaDialog dialog = new MangaDialog(this);
+        dialog.show();
+        dialog.setTitle("结果");
+        dialog.setMessage(spannableString);
+        dialog.setOkText("知道了");
     }
 
     private void updateStatisctics() {

@@ -6,6 +6,7 @@ import android.os.Environment;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.truthower.suhang.mangareader.R;
 import com.youdao.ocr.online.OCRParameters;
+import com.youdao.ocr.online.RecognizeLanguage;
 
 import java.io.File;
 
@@ -60,7 +61,6 @@ public class Configure {
     final public static int COLLECT_TYPE_WAIT_FOR_UPDATE = 1;
     final public static int COLLECT_TYPE_FINISHED = 2;
     //OCR识别
-    final public static OCRParameters tps = new OCRParameters.Builder()
-            .source("youdaoocr").timeout(100000)
-            .type("10011").lanType("zh-en").build();
+    final public static OCRParameters tps = new OCRParameters.Builder().source("youdaoocr").timeout(100000)
+            .type(OCRParameters.TYPE_LINE).lanType(RecognizeLanguage.LINE_CHINESE_ENGLISH.getCode()).build();//
 }

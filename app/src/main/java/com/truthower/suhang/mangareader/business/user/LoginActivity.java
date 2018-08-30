@@ -13,13 +13,18 @@ import android.widget.TextView;
 import com.avos.avoscloud.AVException;
 import com.avos.avoscloud.AVUser;
 import com.avos.avoscloud.LogInCallback;
+import com.avos.avoscloud.RequestPasswordResetCallback;
 import com.truthower.suhang.mangareader.R;
 import com.truthower.suhang.mangareader.base.BaseActivity;
 import com.truthower.suhang.mangareader.bean.LoginBean;
 import com.truthower.suhang.mangareader.business.main.MainActivity;
+import com.truthower.suhang.mangareader.business.read.ReadMangaActivity;
 import com.truthower.suhang.mangareader.config.ShareKeys;
+import com.truthower.suhang.mangareader.listener.OnEditResultListener;
+import com.truthower.suhang.mangareader.utils.LeanCloundUtil;
 import com.truthower.suhang.mangareader.utils.SharedPreferencesUtils;
 import com.truthower.suhang.mangareader.widget.dialog.MangaDialog;
+import com.truthower.suhang.mangareader.widget.dialog.MangaEditDialog;
 import com.truthower.suhang.mangareader.widget.dialog.SingleLoadBarUtil;
 
 
@@ -130,6 +135,33 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
                 });
     }
 
+    private void showResetPsdDialog() {
+        MangaEditDialog editDialog = new MangaEditDialog(this);
+        editDialog.setOnEditResultListener(new OnEditResultListener() {
+            @Override
+            public void onResult(String text) {
+                AVUser.requestPasswordResetInBackground(text, new RequestPasswordResetCallback() {
+                    @Override
+                    public void done(AVException e) {
+                        if (LeanCloundUtil.handleLeanResult(LoginActivity.this, e)) {
+                            baseToast.showToast("重置密码邮件已发送到指定邮箱");
+                        }
+                    }
+                });
+            }
+
+            @Override
+            public void onCancelClick() {
+
+            }
+        });
+        editDialog.show();
+        editDialog.setOkText("确定");
+        editDialog.setCancelText("取消");
+        editDialog.setHint("请输入注册邮箱");
+        editDialog.setTitle("发送重置密码邮件");
+    }
+
     @Override
     public void onClick(View v) {
         Intent intent = null;
@@ -146,7 +178,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
                 intent = new Intent(LoginActivity.this, RegisterActivity.class);
                 break;
             case R.id.forgot_psd_tv:
-//                intent = new Intent(LoginActivity.this, ModifyPsdActivity.class);
+                showResetPsdDialog();
                 break;
         }
         if (null != intent) {
