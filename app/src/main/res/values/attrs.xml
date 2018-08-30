@@ -71,4 +71,7 @@
         <attr name="count" />
         <attr name="tryTimes" />
     </declare-styleable>
+    <declare-styleable name="max_height_scrollview">
+        <attr name="max_height" format="dimension" />
+    </declare-styleable>
 </resources>
