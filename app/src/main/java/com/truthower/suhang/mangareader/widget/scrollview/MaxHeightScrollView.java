@@ -26,7 +26,6 @@ public class MaxHeightScrollView extends ScrollView {
     public MaxHeightScrollView(Context context, AttributeSet attrs) {
         super(context, attrs);
         init(context, attrs);
-
     }
 
     public MaxHeightScrollView(Context context, AttributeSet attrs, int defStyleAttr) {
