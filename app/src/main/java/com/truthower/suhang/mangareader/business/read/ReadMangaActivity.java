@@ -41,6 +41,7 @@ import com.truthower.suhang.mangareader.listener.OnEditResultListener;
 import com.truthower.suhang.mangareader.listener.OnSpeakClickListener;
 import com.truthower.suhang.mangareader.spider.FileSpider;
 import com.truthower.suhang.mangareader.spider.SpiderBase;
+import com.truthower.suhang.mangareader.utils.Base64BitmapUtil;
 import com.truthower.suhang.mangareader.utils.BaseParameterUtil;
 import com.truthower.suhang.mangareader.utils.LeanCloundUtil;
 import com.truthower.suhang.mangareader.utils.SharedPreferencesUtils;
@@ -54,6 +55,10 @@ import com.truthower.suhang.mangareader.widget.dialog.TranslateDialog;
 import com.truthower.suhang.mangareader.widget.shotview.ScreenShot;
 import com.truthower.suhang.mangareader.widget.shotview.ShotView;
 import com.umeng.analytics.MobclickAgent;
+import com.youdao.ocr.online.ImageOCRecognizer;
+import com.youdao.ocr.online.OCRListener;
+import com.youdao.ocr.online.OCRResult;
+import com.youdao.ocr.online.OcrErrorCode;
 
 import org.adw.library.widgets.discreteseekbar.DiscreteSeekBar;
 import org.greenrobot.eventbus.Subscribe;
@@ -397,7 +402,43 @@ public class ReadMangaActivity extends TTSActivity implements OnClickListener {
 
             @Override
             public void onRightLongClick() {
+                if (LoginBean.getInstance().isCreator()) {
+                    ImageOCRecognizer.getInstance(Configure.tps).recognize(Base64BitmapUtil.bitmapToBase64
+                                    (ScreenShot.takeScreenShot(ReadMangaActivity.this)),
+                            new OCRListener() {
 
+                                @Override
+                                public void onResult(final OCRResult result,
+                                                     String input) {
+                                    //识别成功
+                                    runOnUiThread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            String res = "";
+                                            for (int i = 0; i < result.getRegions().size(); i++) {
+                                                for (int j = 0; j < result.getRegions().get(i).getLines().size(); j++) {
+                                                    for (int z = 0; z < result.getRegions().get(i).getLines().get(j).getWords().size(); z++) {
+                                                        res += result.getRegions().get(i).getLines().get(j).getWords().get(z).getText() + "\n";
+                                                    }
+                                                }
+                                            }
+                                            showBaseDialog("", res, "", "", null);
+                                        }
+                                    });
+                                }
+
+                                @Override
+                                public void onError(final OcrErrorCode error) {
+                                    //识别失败
+                                    runOnUiThread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            showBaseDialog("失败", error.toString()+error.getCode(), "", "", null);
+                                        }
+                                    });
+                                }
+                            });
+                }
             }
 
             @Override

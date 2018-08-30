@@ -25,6 +25,7 @@ import com.umeng.message.IUmengRegisterCallback;
 import com.umeng.message.PushAgent;
 import com.umeng.message.UmengNotificationClickHandler;
 import com.umeng.message.entity.UMessage;
+import com.youdao.sdk.app.YouDaoApplication;
 
 /**
  * Created by Administrator on 2017/7/19.
@@ -37,10 +38,15 @@ public class App extends Application {
         initImageLoader(getApplicationContext());
         initLeanCloud();
         initUserInfo();
-        initCrashHandler();
+//        initCrashHandler();
         dealFileUriExposedException();
         initDownloadManger();
 //        initUmeng();
+        initYouDaoOCR();
+    }
+
+    private void initYouDaoOCR() {
+        YouDaoApplication.init(this, "627fbbbd88df98c2");
     }
 
     private void initUmeng() {
