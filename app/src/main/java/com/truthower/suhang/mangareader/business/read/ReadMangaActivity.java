@@ -19,6 +19,7 @@ import android.text.style.ForegroundColorSpan;
 import android.text.style.UnderlineSpan;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -69,6 +70,7 @@ import com.youdao.ocr.online.OCRListener;
 import com.youdao.ocr.online.OCRParameters;
 import com.youdao.ocr.online.OCRResult;
 import com.youdao.ocr.online.OcrErrorCode;
+import com.youdao.ocr.online.RecognizeLanguage;
 import com.youdao.ocr.online.Region;
 import com.youdao.ocr.online.Region_Line;
 import com.youdao.ocr.online.Word;
@@ -96,6 +98,7 @@ public class ReadMangaActivity extends TTSActivity implements OnClickListener {
     private HackyViewPager mangaPager;
     private SpiderBase spider;
     private DiscreteSeekBar seekBar;
+    private Button ocrBtn;
     private View showSeekBar;
     private TextView readProgressTv;
     // 截图的view
@@ -124,6 +127,9 @@ public class ReadMangaActivity extends TTSActivity implements OnClickListener {
     private SimpleDateFormat sdf;
     private Date curDate;
     private String date;
+    //OCR识别
+    final public static OCRParameters tps = new OCRParameters.Builder().source("youdaoocr").timeout(100000)
+            .type(OCRParameters.TYPE_LINE).lanType(RecognizeLanguage.LINE_CHINESE_ENGLISH.getCode()).build();//
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -332,6 +338,7 @@ public class ReadMangaActivity extends TTSActivity implements OnClickListener {
         mangaPager = (HackyViewPager) findViewById(R.id.manga_viewpager);
         seekBar = (DiscreteSeekBar) findViewById(R.id.seekbar);
         showSeekBar = findViewById(R.id.show_seek_bar);
+        ocrBtn = (Button) findViewById(R.id.ocr_btn);
         readProgressTv = (TextView) findViewById(R.id.read_progress_tv);
         test_iv = (ImageView) findViewById(R.id.test_iv);
         readProgressTv.setOnClickListener(this);
@@ -418,70 +425,7 @@ public class ReadMangaActivity extends TTSActivity implements OnClickListener {
 
             @Override
             public void onRightLongClick() {
-                if (LoginBean.getInstance().isCreator()) {
-                    Bitmap bitmap = ImageUtil.readBitmapFromFile(pathList.get(mangaPager.getCurrentItem()).replaceAll("file://", ""), 768);
-                    ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                    int quality = 100;
-                    bitmap.compress(Bitmap.CompressFormat.JPEG, quality, baos);
-                    byte[] datas = baos.toByteArray();
-                    String bases64 = EncryptHelper.getBase64(datas);
-                    int count = bases64.length();
-                    while (count > 1.4 * 1024 * 1024) {
-                        quality = quality - 10;
-                        baos = new ByteArrayOutputStream();
-                        bitmap.compress(Bitmap.CompressFormat.JPEG, quality, baos);
-                        datas = baos.toByteArray();
-                        bases64 = EncryptHelper.getBase64(datas);
-                    }
-                    final String base64 = bases64;
 
-                    ImageOCRecognizer.getInstance(Configure.tps).recognize(base64,
-                            new OCRListener() {
-
-                                @Override
-                                public void onResult(final OCRResult result,
-                                                     String input) {
-                                    //识别成功
-                                    runOnUiThread(new Runnable() {
-                                        @Override
-                                        public void run() {
-                                            // TODO Auto-generated method stub
-                                            String text = getResult(result);
-                                            SpannableString spannableString = new SpannableString(text);
-                                            int start = 0;
-                                            while (start < text.length() && start >= 0) {
-                                                int s = text.indexOf("文本", start);
-                                                int end = text.indexOf("：", s) + 1;
-                                                if (s >= 0) {
-                                                    ForegroundColorSpan colorSpan = new ForegroundColorSpan(Color.parseColor("#808080"));
-                                                    AbsoluteSizeSpan sizeSpan = new AbsoluteSizeSpan(35);
-                                                    UnderlineSpan underlineSpan = new UnderlineSpan();
-                                                    spannableString.setSpan(sizeSpan, s, end, Spanned.SPAN_INCLUSIVE_INCLUSIVE);
-                                                    spannableString.setSpan(colorSpan, s, end, Spanned.SPAN_INCLUSIVE_INCLUSIVE);
-                                                    spannableString.setSpan(underlineSpan, s, end - 1, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
-                                                    start = end;
-                                                } else {
-                                                    break;
-                                                }
-
-                                            }
-                                            showOcrResultDialog(spannableString);
-                                        }
-                                    });
-                                }
-
-                                @Override
-                                public void onError(final OcrErrorCode error) {
-                                    //识别失败
-                                    runOnUiThread(new Runnable() {
-                                        @Override
-                                        public void run() {
-                                            showBaseDialog("失败", error.toString() + error.getCode(), "", "", null);
-                                        }
-                                    });
-                                }
-                            });
-                }
             }
 
             @Override
@@ -493,6 +437,8 @@ public class ReadMangaActivity extends TTSActivity implements OnClickListener {
                 }
             }
         });
+
+        ocrBtn.setOnClickListener(this);
     }
 
     private String getResult(OCRResult result) {
@@ -885,6 +831,72 @@ public class ReadMangaActivity extends TTSActivity implements OnClickListener {
                 break;
             case R.id.read_progress_tv:
 
+                break;
+            case R.id.ocr_btn:
+                if (LoginBean.getInstance().isCreator()) {
+                    Bitmap bitmap = ImageUtil.readBitmapFromFile(pathList.get(mangaPager.getCurrentItem()).replaceAll("file://", ""), 768);
+                    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                    int quality = 100;
+                    bitmap.compress(Bitmap.CompressFormat.JPEG, quality, baos);
+                    byte[] datas = baos.toByteArray();
+                    String bases64 = EncryptHelper.getBase64(datas);
+                    int count = bases64.length();
+                    while (count > 1.4 * 1024 * 1024) {
+                        quality = quality - 10;
+                        baos = new ByteArrayOutputStream();
+                        bitmap.compress(Bitmap.CompressFormat.JPEG, quality, baos);
+                        datas = baos.toByteArray();
+                        bases64 = EncryptHelper.getBase64(datas);
+                    }
+                    final String base64 = bases64;
+
+                    ImageOCRecognizer.getInstance(Configure.tps).recognize(base64,
+                            new OCRListener() {
+
+                                @Override
+                                public void onResult(final OCRResult result,
+                                                     String input) {
+                                    //识别成功
+                                    runOnUiThread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            // TODO Auto-generated method stub
+                                            String text = getResult(result);
+                                            SpannableString spannableString = new SpannableString(text);
+                                            int start = 0;
+                                            while (start < text.length() && start >= 0) {
+                                                int s = text.indexOf("文本", start);
+                                                int end = text.indexOf("：", s) + 1;
+                                                if (s >= 0) {
+                                                    ForegroundColorSpan colorSpan = new ForegroundColorSpan(Color.parseColor("#808080"));
+                                                    AbsoluteSizeSpan sizeSpan = new AbsoluteSizeSpan(35);
+                                                    UnderlineSpan underlineSpan = new UnderlineSpan();
+                                                    spannableString.setSpan(sizeSpan, s, end, Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+                                                    spannableString.setSpan(colorSpan, s, end, Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+                                                    spannableString.setSpan(underlineSpan, s, end - 1, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
+                                                    start = end;
+                                                } else {
+                                                    break;
+                                                }
+
+                                            }
+                                            showOcrResultDialog(spannableString);
+                                        }
+                                    });
+                                }
+
+                                @Override
+                                public void onError(final OcrErrorCode error) {
+                                    //识别失败
+                                    runOnUiThread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            showBaseDialog("失败", error.toString() + error.getCode(), "", "", null);
+                                        }
+                                    });
+                                }
+                            });
+                }
                 break;
         }
     }

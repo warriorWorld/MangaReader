@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
+             xmlns:app="http://schemas.android.com/apk/res-auto"
+             xmlns:tools="http://schemas.android.com/tools"
+             android:layout_width="match_parent"
+             android:layout_height="match_parent"
+             android:orientation="vertical">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -43,13 +43,27 @@
             android:layout_marginRight="5dp"
             android:visibility="gone"
             app:dsb_max="100"
-            app:dsb_min="1" />
+            app:dsb_min="1"/>
 
         <View
             android:id="@+id/show_seek_bar"
             android:layout_width="60dp"
             android:layout_height="60dp"
             android:layout_centerInParent="true"></View>
+
+        <Button
+            android:id="@+id/ocr_btn"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginBottom="20dp"
+            android:layout_marginRight="7dp"
+            android:background="@drawable/circle_oriange_transparency"
+            android:gravity="center"
+            android:text="OCR"
+            android:textColor="@color/white"
+            android:textSize="12sp"/>
 
         <TextView
             android:id="@+id/read_progress_tv"
@@ -60,20 +74,20 @@
             android:layout_marginBottom="7dp"
             android:layout_marginRight="7dp"
             android:textColor="@color/main_text_color"
-            android:textSize="10sp" />
+            android:textSize="10sp"/>
 
         <ImageView
             android:id="@+id/test_iv"
             android:layout_width="120dp"
             android:layout_height="200dp"
             android:layout_centerInParent="true"
-            android:visibility="gone" />
+            android:visibility="gone"/>
     </RelativeLayout>
 
     <com.truthower.suhang.mangareader.widget.shotview.ShotView
         android:id="@+id/shot_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:visibility="invisible" />
+        android:visibility="invisible"/>
 
 </FrameLayout>
