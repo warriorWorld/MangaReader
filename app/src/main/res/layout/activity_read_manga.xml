@@ -62,6 +62,7 @@
             android:background="@drawable/circle_oriange_transparency"
             android:gravity="center"
             android:text="OCR"
+            android:visibility="gone"
             android:textColor="@color/white"
             android:textSize="12sp"/>
 

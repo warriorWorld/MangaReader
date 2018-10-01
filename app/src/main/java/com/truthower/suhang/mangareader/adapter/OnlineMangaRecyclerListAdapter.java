@@ -105,8 +105,13 @@ public class OnlineMangaRecyclerListAdapter extends RecyclerView.Adapter<OnlineM
         } else {
             ImageLoader.getInstance().displayImage(item.getLocalThumbnailUrl(), viewHolder.mangaThumbnailIv, Configure.smallImageOptions);
         }
-
-        viewHolder.mangaTitleTv.setText(Html.fromHtml(item.getName()));
+        if (!TextUtils.isEmpty(item.getName())) {
+            if (TextUtils.isEmpty(item.getLast_update())) {
+                viewHolder.mangaTitleTv.setText(Html.fromHtml(item.getName()));
+            } else {
+                viewHolder.mangaTitleTv.setText(Html.fromHtml(item.getName()) + "\n" + item.getLast_update());
+            }
+        }
         viewHolder.item_collect_manga_rl.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

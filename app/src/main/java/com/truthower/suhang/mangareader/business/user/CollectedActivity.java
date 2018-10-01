@@ -30,16 +30,20 @@ import com.truthower.suhang.mangareader.business.detail.WebMangaDetailsActivity;
 import com.truthower.suhang.mangareader.config.Configure;
 import com.truthower.suhang.mangareader.listener.JsoupCallBack;
 import com.truthower.suhang.mangareader.listener.OnRecycleItemClickListener;
+import com.truthower.suhang.mangareader.listener.OnSevenFourteenListDialogListener;
 import com.truthower.suhang.mangareader.service.BaseObserver;
+import com.truthower.suhang.mangareader.spider.FileSpider;
 import com.truthower.suhang.mangareader.spider.SpiderBase;
 import com.truthower.suhang.mangareader.utils.BaseParameterUtil;
 import com.truthower.suhang.mangareader.utils.DisplayUtil;
 import com.truthower.suhang.mangareader.utils.LeanCloundUtil;
 import com.truthower.suhang.mangareader.utils.Logger;
 import com.truthower.suhang.mangareader.widget.bar.TopBar;
+import com.truthower.suhang.mangareader.widget.dialog.ListDialog;
 import com.truthower.suhang.mangareader.widget.dialog.SingleLoadBarUtil;
 import com.truthower.suhang.mangareader.widget.recyclerview.RecyclerGridDecoration;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -48,7 +52,9 @@ import io.reactivex.Observable;
 import io.reactivex.ObservableEmitter;
 import io.reactivex.ObservableOnSubscribe;
 import io.reactivex.ObservableSource;
+import io.reactivex.SingleObserver;
 import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Function;
 import io.reactivex.functions.Predicate;
 import io.reactivex.schedulers.Schedulers;
@@ -66,6 +72,7 @@ public class CollectedActivity extends BaseActivity implements OnRefreshListener
     private SwipeToLoadLayout swipeToLoadLayout;
     private TextView totalCollectTv;
     private SpiderBase spider;
+    private String[] selectOptions = {"获取最后更新日期", "修复缩略图"};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -103,7 +110,7 @@ public class CollectedActivity extends BaseActivity implements OnRefreshListener
                 baseTopBar.setTitle("我看完的");
                 break;
         }
-        baseTopBar.setRightText("修复缩略图");
+        baseTopBar.setRightBackground(R.drawable.more);
         baseTopBar.setOnTopBarClickListener(new TopBar.OnTopBarClickListener() {
             @Override
             public void onLeftClick() {
@@ -112,7 +119,7 @@ public class CollectedActivity extends BaseActivity implements OnRefreshListener
 
             @Override
             public void onRightClick() {
-                repairThumbil();
+                showOptionsDialog();
             }
 
             @Override
@@ -189,6 +196,86 @@ public class CollectedActivity extends BaseActivity implements OnRefreshListener
             baseToast.showToast(e + "");
             e.printStackTrace();
         }
+    }
+
+    private void showOptionsDialog() {
+        ListDialog listDialog = new ListDialog(this);
+        listDialog.setOnSevenFourteenListDialogListener(new OnSevenFourteenListDialogListener() {
+            @Override
+            public void onItemClick(String selectedRes, String selectedCodeRes) {
+
+            }
+
+            @Override
+            public void onItemClick(String selectedRes) {
+
+            }
+
+            @Override
+            public void onItemClick(int position) {
+                switch (position) {
+                    case 0:
+                        getLastUpdateList();
+                        break;
+                    case 1:
+                        repairThumbil();
+                        break;
+                }
+            }
+        });
+        listDialog.show();
+        listDialog.setOptionsList(selectOptions);
+    }
+
+    private void getLastUpdateList() {
+        Observable.fromIterable(collectedMangaList)
+                .flatMap(new Function<MangaBean, ObservableSource<MangaBean>>() {
+                    @Override
+                    public ObservableSource<MangaBean> apply(final MangaBean bean) throws Exception {
+                        return Observable.create(new ObservableOnSubscribe<MangaBean>() {//创建新的支流
+                            @Override
+                            public void subscribe(final ObservableEmitter<MangaBean> e) throws Exception {
+                                getMangaDetail(bean.getUrl(), new JsoupCallBack<MangaBean>() {
+                                    @Override
+                                    public void loadSucceed(MangaBean result) {
+                                        result.setUrl(bean.getUrl());
+                                        result.setName(bean.getName());
+                                        result.setWebThumbnailUrl(bean.getWebThumbnailUrl());
+                                        e.onNext(result);//这个onnext和onComplete并不是最后的那个onnext和onComplete而是其中一个分支，最终这些分支经过flatMap汇聚
+                                        e.onComplete();
+                                    }
+
+                                    @Override
+                                    public void loadFailed(String error) {
+                                        e.onNext(bean);
+                                        e.onComplete();
+                                    }
+                                });
+                            }
+                        });
+                    }
+                })
+                .toList()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new SingleObserver<List<MangaBean>>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+
+                    }
+
+                    @Override
+                    public void onSuccess(List<MangaBean> value) {
+                        collectedMangaList = (ArrayList<MangaBean>) value;
+                        initListView();
+                        baseToast.showToast("获取完成");
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+                });
     }
 
     private void repairThumbil() {
