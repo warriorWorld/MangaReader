@@ -594,7 +594,10 @@ public class ReadMangaActivity extends TTSActivity implements OnClickListener {
         SharedPreferencesUtils.setSharedPreferencesData(this, ShareKeys.THIS_USER_IS_NOT_AN_IDIOT,
                 false);
         clip.setText(word);
-        text2Speech(word);
+        if (!SharedPreferencesUtils.getBooleanSharedPreferencesData
+                (this, ShareKeys.CLOSE_TTS, false)) {
+            text2Speech(word);
+        }
         qureyWordCount++;
         //记录查过的单词
         db.insertWordsBookTb(word);

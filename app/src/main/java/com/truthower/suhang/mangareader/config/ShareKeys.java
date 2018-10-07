@@ -9,6 +9,7 @@ public class ShareKeys {
     public static final String ECONOMY_MODE = "economy_mode";
     public static final String CLOSE_TRANSLATE = "close_translate";
     public static final String CLOSE_TUTORIAL = "close_tutorial";
+    public static final String CLOSE_TTS = "close_TTS";
     public static final String DOWNLOAD_EXPLAIN = "download_explain";
     public static final String CURRENT_DOWNLOAD_EPISODE = "current_download_episode";
     public static final String CURRENT_DOWNLOAD_PAGE = "current_download_page";
