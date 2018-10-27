@@ -1,0 +1,24 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+    >
+
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/md_til"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        app:hintTextAppearance="@style/FloatingStyle"
+        app:passwordToggleEnabled="true">
+
+        <EditText
+            android:id="@+id/md_et"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:singleLine="true"
+            android:maxLines="1"
+            android:textColor="@color/main_text_color"
+            android:textColorHint="@color/main_text_color_gray"/>
+    </android.support.design.widget.TextInputLayout>
+</RelativeLayout>

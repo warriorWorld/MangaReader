@@ -2,11 +2,11 @@ package com.truthower.suhang.mangareader.business.user;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.InputType;
 import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -17,8 +17,6 @@ import com.avos.avoscloud.RequestPasswordResetCallback;
 import com.truthower.suhang.mangareader.R;
 import com.truthower.suhang.mangareader.base.BaseActivity;
 import com.truthower.suhang.mangareader.bean.LoginBean;
-import com.truthower.suhang.mangareader.business.main.MainActivity;
-import com.truthower.suhang.mangareader.business.read.ReadMangaActivity;
 import com.truthower.suhang.mangareader.config.ShareKeys;
 import com.truthower.suhang.mangareader.listener.OnEditResultListener;
 import com.truthower.suhang.mangareader.utils.LeanCloundUtil;
@@ -26,16 +24,18 @@ import com.truthower.suhang.mangareader.utils.SharedPreferencesUtils;
 import com.truthower.suhang.mangareader.widget.dialog.MangaDialog;
 import com.truthower.suhang.mangareader.widget.dialog.MangaEditDialog;
 import com.truthower.suhang.mangareader.widget.dialog.SingleLoadBarUtil;
+import com.truthower.suhang.mangareader.widget.edittext.MyEdittext;
+
+import java.lang.reflect.Type;
 
 
 public class LoginActivity extends BaseActivity implements View.OnClickListener {
     private ImageView crossIv;
-    private EditText userIdEt;
-    private EditText userPsdEt;
     private Button loginBtn;
     private TextView forgotPsdTv;
     private TextView registerNowTv;
-
+    private MyEdittext userMet;
+    private MyEdittext passwordMet;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,15 +60,18 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
     protected void onResume() {
         super.onResume();
         if (!TextUtils.isEmpty(LoginBean.getInstance().getUserName())) {
-            userIdEt.setText(LoginBean.getInstance().getUserName());
+            userMet.setText(LoginBean.getInstance().getUserName());
         }
     }
 
     private void initUI() {
         crossIv = (ImageView) findViewById(R.id.cross_iv);
-        userIdEt = (EditText) findViewById(R.id.user_id_et);
-        userPsdEt = (EditText) findViewById(R.id.user_psd_et);
-        userPsdEt.setOnKeyListener(new View.OnKeyListener() {
+        userMet = (MyEdittext) findViewById(R.id.user_met);
+        userMet.setHint("用户名");
+        passwordMet = (MyEdittext) findViewById(R.id.password_met);
+        passwordMet.setHint("密码");
+        passwordMet.setPasswordMode();
+        passwordMet.setOnKeyListener(new View.OnKeyListener() {
             @Override
             public boolean onKey(View v, int keyCode, KeyEvent event) {
                 //因为DOWN和UP都算回车 所以这样写 避免调用两次
@@ -102,12 +105,12 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
     }
 
     private boolean checkData() {
-        if (TextUtils.isEmpty(userIdEt.getText().toString())) {
-            baseToast.showToast("请输入用户名!");
+        if (TextUtils.isEmpty(userMet.getText())) {
+            userMet.setErrorText("请输入用户名!");
             return false;
         }
-        if (TextUtils.isEmpty(userPsdEt.getText().toString())) {
-            baseToast.showToast("请输入密码!");
+        if (TextUtils.isEmpty(passwordMet.getText())) {
+            passwordMet.setErrorText("请输入密码!");
             return false;
         }
         return true;
@@ -116,7 +119,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
 
     private void doLogin() {
         SingleLoadBarUtil.getInstance().showLoadBar(LoginActivity.this);
-        AVUser.logInInBackground(userIdEt.getText().toString(), userPsdEt.getText().toString(),
+        AVUser.logInInBackground(userMet.getText(), passwordMet.getText(),
                 new LogInCallback<AVUser>() {
                     @Override
                     public void done(AVUser avUser, AVException e) {
@@ -127,7 +130,6 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
                             LoginBean.getInstance().setMaster(LoginActivity.this, avUser.getBoolean("master"));
                             LoginBean.getInstance().setCreator(LoginActivity.this, avUser.getBoolean("creator"));
                             LoginActivity.this.finish();
-//                            startActivity(new Intent(LoginActivity.this, MainActivity.class));
                         } else {
                             baseToast.showToast(e.getMessage());
                         }

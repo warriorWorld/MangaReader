@@ -3,7 +3,7 @@
     <color name="transparency">#00000000</color>
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
-    <color name="colorAccent">#FF4081</color>
+    <color name="colorAccent">#e66c25</color>
     <!--主流的几个颜色-->
     <color name="manga_reader">#e66c25</color>
     <color name="manga_reader_deep">#e9193b</color>

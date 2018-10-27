@@ -33,4 +33,58 @@
         </item>
         <item name="android:progressDrawable">@drawable/shape_progressbar_mini</item>
     </style>
+    <style name="FloatingStyle" parent="@android:style/TextAppearance">
+        <item name="android:textColor">@color/tag_blue</item>
+        <item name="android:textSize">12sp</item>
+    </style>
+
+    <style name="TextInputLayoutStyle">
+        　　
+        <item name="android:layout_width">match_parent</item>
+        　　
+        <item name="android:layout_height">wrap_content</item>
+
+    </style>
+
+    <style name="EditTextStyle">
+        　　
+        <item name="android:layout_width">match_parent</item>
+        　　
+        <item name="android:layout_height">wrap_content</item>
+        　　
+        <item name="android:textSize">18sp</item>
+        　　
+        <item name="android:textColor">@color/main_text_color</item>
+    </style>
+
+    <style name="HintAppearance" parent="TextAppearance.AppCompat">
+        　　
+        <item name="android:textSize">18sp</item>
+        　　
+        <item name="android:textColor">@color/colorAccent</item>
+    </style>
+
+    <style name="HintErrorAppearance" parent="TextAppearance.AppCompat">
+        　　
+        <item name="android:textSize">12sp</item>
+        　　
+        <item name="android:textColor">@color/manga_reader_deep</item>
+        　　
+        <item name="textColorError">@color/manga_reader_deep</item>
+    </style>
+
+    <style name="TextErrorAppearance" parent="TextAppearance.AppCompat">
+        　　
+        <item name="android:textSize">12sp</item>
+        　　
+        <item name="android:textColor">@color/manga_reader_deep</item>
+        　　
+        <item name="textColorError">@color/manga_reader_deep</item>
+    </style>
+
+    <style name="MyEditText" parent="Theme.AppCompat.Light">
+        <item name="colorControlNormal">@color/main_text_color</item>
+        <item name="colorControlActivated">@color/tag_blue</item>
+    </style>
+
 </resources>

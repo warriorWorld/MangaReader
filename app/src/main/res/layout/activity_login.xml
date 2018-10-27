@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/divide">
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/divide">
 
 
     <ImageView
@@ -12,53 +12,41 @@
         android:layout_alignParentRight="true"
         android:layout_marginRight="24dp"
         android:layout_marginTop="25dp"
-        android:src="@drawable/cross_red" />
+        android:src="@drawable/cross_red"/>
 
     <ImageView
         android:id="@+id/xhh_icon_iv"
-        android:layout_width="116dp"
-        android:layout_height="128dp"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="60dp"
-        android:src="@drawable/spider_128" />
+        android:layout_marginTop="40dp"
+        android:src="@drawable/spider_128"/>
 
-    <RelativeLayout
-        android:id="@+id/user_id_rl"
-        android:layout_width="278dp"
-        android:layout_height="45dp"
-        android:layout_below="@+id/xhh_icon_iv"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="70dp"
-        android:background="@color/white">
-
-        <ImageView
-            android:id="@+id/user_id_icon_iv"
-            android:layout_width="16dp"
-            android:layout_height="16dp"
-            android:layout_centerVertical="true"
-            android:layout_marginLeft="10dp"
-            android:src="@drawable/user_name" />
-
-        <EditText
-            android:id="@+id/user_id_et"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_marginLeft="13dp"
-            android:layout_toRightOf="@+id/user_id_icon_iv"
-            android:background="@null"
-            android:hint="请输入用户名"
-            android:singleLine="true"
-            android:textColor="@color/main_text_color"
-            android:textColorHint="@color/main_text_color_gray"
-            android:textSize="@dimen/main_text_size" />
-    </RelativeLayout>
-
-    <RelativeLayout
-        android:layout_width="278dp"
+    <com.truthower.suhang.mangareader.widget.edittext.MyEdittext
+        android:id="@+id/user_met"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/user_psd_rl"
+        android:layout_below="@+id/xhh_icon_iv"
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="30dp"
+        android:layout_marginTop="38dp"></com.truthower.suhang.mangareader.widget.edittext.MyEdittext>
+
+    <com.truthower.suhang.mangareader.widget.edittext.MyEdittext
+        android:id="@+id/password_met"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/user_met"
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="30dp"
+        android:layout_marginTop="6dp"></com.truthower.suhang.mangareader.widget.edittext.MyEdittext>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/password_met"
         android:layout_centerHorizontal="true"
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="30dp"
         android:layout_marginTop="15dp"
         android:background="@color/divide">
 
@@ -70,7 +58,7 @@
             android:background="@drawable/btn_click_rewrite"
             android:text="登录"
             android:textColor="@drawable/btn_text_click_rewrite"
-            android:textSize="18sp" />
+            android:textSize="18sp"/>
 
         <TextView
             android:id="@+id/forgot_psd_tv"
@@ -80,7 +68,7 @@
             android:layout_below="@+id/login_btn"
             android:layout_marginTop="15dp"
             android:text="忘记密码?"
-            android:textColor="@color/manga_reader" />
+            android:textColor="@color/manga_reader"/>
     </RelativeLayout>
 
     <TextView
@@ -91,39 +79,5 @@
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="39dp"
         android:text="立即注册  >"
-        android:textColor="@color/manga_reader" />
-
-    <RelativeLayout
-        android:id="@+id/user_psd_rl"
-        android:layout_width="278dp"
-        android:layout_height="45dp"
-        android:layout_alignLeft="@+id/user_id_rl"
-        android:layout_alignStart="@+id/user_id_rl"
-        android:layout_below="@+id/user_id_rl"
-        android:layout_marginTop="12dp"
-        android:background="@color/white">
-
-        <ImageView
-            android:id="@+id/user_psd_icon_iv"
-            android:layout_width="16dp"
-            android:layout_height="16dp"
-            android:layout_centerVertical="true"
-            android:layout_marginLeft="14dp"
-            android:src="@drawable/key" />
-
-        <EditText
-            android:id="@+id/user_psd_et"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_marginLeft="14dp"
-            android:layout_toRightOf="@+id/user_psd_icon_iv"
-            android:background="@null"
-            android:hint="请输入密码"
-            android:inputType="textPassword"
-            android:singleLine="true"
-            android:textColor="@color/main_text_color"
-            android:textColorHint="@color/main_text_color_gray"
-            android:textSize="@dimen/main_text_size" />
-    </RelativeLayout>
+        android:textColor="@color/manga_reader"/>
 </RelativeLayout>
