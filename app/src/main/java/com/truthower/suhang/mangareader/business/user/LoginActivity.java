@@ -131,7 +131,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
                             LoginBean.getInstance().setCreator(LoginActivity.this, avUser.getBoolean("creator"));
                             LoginActivity.this.finish();
                         } else {
-                            baseToast.showToast(e.getMessage());
+                            passwordMet.setErrorText(e.getMessage());
                         }
                     }
                 });

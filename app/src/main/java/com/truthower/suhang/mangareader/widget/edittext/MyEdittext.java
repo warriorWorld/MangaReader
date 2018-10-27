@@ -4,12 +4,15 @@ import android.content.Context;
 import android.support.design.widget.TextInputLayout;
 import android.text.Editable;
 import android.text.InputFilter;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.text.method.PasswordTransformationMethod;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
+import android.view.View;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -19,6 +22,8 @@ import com.truthower.suhang.mangareader.R;
 public class MyEdittext extends LinearLayout {
     private Context context;
     private EditText mdEt;
+    private ImageView clearIv;
+    private View holderV;
     private TextInputLayout mdTil;
 
     public MyEdittext(Context context) {
@@ -37,6 +42,14 @@ public class MyEdittext extends LinearLayout {
 
     private void init() {
         LayoutInflater.from(context).inflate(getLayoutId(), this);
+        clearIv = (ImageView) findViewById(R.id.clear_iv);
+        clearIv.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mdEt.setText("");
+            }
+        });
+        holderV = findViewById(R.id.hodler_view);
         mdEt = (EditText) findViewById(R.id.md_et);
         mdTil = (TextInputLayout) findViewById(R.id.md_til);
         mdEt.addTextChangedListener(new TextWatcher() {
@@ -52,6 +65,11 @@ public class MyEdittext extends LinearLayout {
             @Override
             public void afterTextChanged(Editable s) {
                 mdTil.setError("");
+                if (TextUtils.isEmpty(s)) {
+                    clearIv.setVisibility(GONE);
+                } else {
+                    clearIv.setVisibility(VISIBLE);
+                }
             }
         });
     }
@@ -94,6 +112,7 @@ public class MyEdittext extends LinearLayout {
     }
 
     public void setPasswordMode() {
+        holderV.setVisibility(VISIBLE);
         mdEt.setTransformationMethod(PasswordTransformationMethod.getInstance());
     }
 
