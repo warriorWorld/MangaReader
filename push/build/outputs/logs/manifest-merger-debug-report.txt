@@ -91,13 +91,13 @@ ADDED from F:\studio_workspace\MangaReader\push\AndroidManifest.xml:26:9-36:19
 		ADDED from F:\studio_workspace\MangaReader\push\AndroidManifest.xml:28:13-36
 	android:name
 		ADDED from F:\studio_workspace\MangaReader\push\AndroidManifest.xml:27:13-58
-intent-filter#com.taobao.accs.intent.action.SERVICE
+intent-filter#action:name:com.taobao.accs.intent.action.SERVICE
 ADDED from F:\studio_workspace\MangaReader\push\AndroidManifest.xml:30:13-32:29
 action#com.taobao.accs.intent.action.SERVICE
 ADDED from F:\studio_workspace\MangaReader\push\AndroidManifest.xml:31:17-80
 	android:name
 		ADDED from F:\studio_workspace\MangaReader\push\AndroidManifest.xml:31:25-77
-intent-filter#com.taobao.accs.intent.action.ELECTION
+intent-filter#action:name:com.taobao.accs.intent.action.ELECTION
 ADDED from F:\studio_workspace\MangaReader\push\AndroidManifest.xml:33:13-35:29
 action#com.taobao.accs.intent.action.ELECTION
 ADDED from F:\studio_workspace\MangaReader\push\AndroidManifest.xml:34:17-81
@@ -109,7 +109,7 @@ ADDED from F:\studio_workspace\MangaReader\push\AndroidManifest.xml:38:9-44:19
 		ADDED from F:\studio_workspace\MangaReader\push\AndroidManifest.xml:40:13-36
 	android:name
 		ADDED from F:\studio_workspace\MangaReader\push\AndroidManifest.xml:39:13-69
-intent-filter#com.taobao.accs.intent.action.RECEIVE
+intent-filter#action:name:com.taobao.accs.intent.action.RECEIVE
 ADDED from F:\studio_workspace\MangaReader\push\AndroidManifest.xml:41:13-43:29
 action#com.taobao.accs.intent.action.RECEIVE
 ADDED from F:\studio_workspace\MangaReader\push\AndroidManifest.xml:42:17-80
@@ -121,19 +121,19 @@ ADDED from F:\studio_workspace\MangaReader\push\AndroidManifest.xml:46:9-62:20
 		ADDED from F:\studio_workspace\MangaReader\push\AndroidManifest.xml:48:13-39
 	android:name
 		ADDED from F:\studio_workspace\MangaReader\push\AndroidManifest.xml:47:13-57
-intent-filter#android.intent.action.BOOT_COMPLETED
+intent-filter#action:name:android.intent.action.BOOT_COMPLETED
 ADDED from F:\studio_workspace\MangaReader\push\AndroidManifest.xml:49:13-51:29
 action#android.intent.action.BOOT_COMPLETED
 ADDED from F:\studio_workspace\MangaReader\push\AndroidManifest.xml:50:17-79
 	android:name
 		ADDED from F:\studio_workspace\MangaReader\push\AndroidManifest.xml:50:25-76
-intent-filter#android.net.conn.CONNECTIVITY_CHANGE
+intent-filter#action:name:android.net.conn.CONNECTIVITY_CHANGE
 ADDED from F:\studio_workspace\MangaReader\push\AndroidManifest.xml:52:13-54:29
 action#android.net.conn.CONNECTIVITY_CHANGE
 ADDED from F:\studio_workspace\MangaReader\push\AndroidManifest.xml:53:17-79
 	android:name
 		ADDED from F:\studio_workspace\MangaReader\push\AndroidManifest.xml:53:25-76
-intent-filter#android.intent.action.PACKAGE_REMOVED
+intent-filter#action:name:android.intent.action.PACKAGE_REMOVED+data:scheme:package
 ADDED from F:\studio_workspace\MangaReader\push\AndroidManifest.xml:55:13-58:29
 action#android.intent.action.PACKAGE_REMOVED
 ADDED from F:\studio_workspace\MangaReader\push\AndroidManifest.xml:56:17-80
@@ -143,7 +143,7 @@ data
 ADDED from F:\studio_workspace\MangaReader\push\AndroidManifest.xml:57:17-50
 	android:scheme
 		ADDED from F:\studio_workspace\MangaReader\push\AndroidManifest.xml:57:23-47
-intent-filter#android.intent.action.USER_PRESENT
+intent-filter#action:name:android.intent.action.USER_PRESENT
 ADDED from F:\studio_workspace\MangaReader\push\AndroidManifest.xml:59:13-61:29
 action#android.intent.action.USER_PRESENT
 ADDED from F:\studio_workspace\MangaReader\push\AndroidManifest.xml:60:17-77
@@ -155,13 +155,13 @@ ADDED from F:\studio_workspace\MangaReader\push\AndroidManifest.xml:64:9-73:20
 		ADDED from F:\studio_workspace\MangaReader\push\AndroidManifest.xml:66:13-39
 	android:name
 		ADDED from F:\studio_workspace\MangaReader\push\AndroidManifest.xml:65:13-59
-intent-filter#com.taobao.accs.intent.action.COMMAND
+intent-filter#action:name:com.taobao.accs.intent.action.COMMAND
 ADDED from F:\studio_workspace\MangaReader\push\AndroidManifest.xml:67:13-69:29
 action#com.taobao.accs.intent.action.COMMAND
 ADDED from F:\studio_workspace\MangaReader\push\AndroidManifest.xml:68:17-80
 	android:name
 		ADDED from F:\studio_workspace\MangaReader\push\AndroidManifest.xml:68:25-77
-intent-filter#com.taobao.accs.intent.action.START_FROM_AGOO
+intent-filter#action:name:com.taobao.accs.intent.action.START_FROM_AGOO
 ADDED from F:\studio_workspace\MangaReader\push\AndroidManifest.xml:70:13-72:29
 action#com.taobao.accs.intent.action.START_FROM_AGOO
 ADDED from F:\studio_workspace\MangaReader\push\AndroidManifest.xml:71:17-88
@@ -195,7 +195,7 @@ ADDED from F:\studio_workspace\MangaReader\push\AndroidManifest.xml:92:9-99:19
 		ADDED from F:\studio_workspace\MangaReader\push\AndroidManifest.xml:94:13-36
 	android:name
 		ADDED from F:\studio_workspace\MangaReader\push\AndroidManifest.xml:93:13-64
-intent-filter#org.agoo.android.intent.action.RECEIVE
+intent-filter#action:name:org.agoo.android.intent.action.RECEIVE
 ADDED from F:\studio_workspace\MangaReader\push\AndroidManifest.xml:96:13-98:29
 action#org.agoo.android.intent.action.RECEIVE
 ADDED from F:\studio_workspace\MangaReader\push\AndroidManifest.xml:97:17-81
@@ -217,7 +217,7 @@ ADDED from F:\studio_workspace\MangaReader\push\AndroidManifest.xml:110:9-121:20
 		ADDED from F:\studio_workspace\MangaReader\push\AndroidManifest.xml:112:13-36
 	android:name
 		ADDED from F:\studio_workspace\MangaReader\push\AndroidManifest.xml:111:13-63
-intent-filter#${applicationId}.intent.action.COMMAND
+intent-filter#action:name:${applicationId}.intent.action.COMMAND
 ADDED from F:\studio_workspace\MangaReader\push\AndroidManifest.xml:114:13-116:29
 action#${applicationId}.intent.action.COMMAND
 ADDED from F:\studio_workspace\MangaReader\push\AndroidManifest.xml:115:17-81
@@ -231,7 +231,7 @@ ADDED from F:\studio_workspace\MangaReader\push\AndroidManifest.xml:123:9-130:19
 		ADDED from F:\studio_workspace\MangaReader\push\AndroidManifest.xml:125:13-36
 	android:name
 		ADDED from F:\studio_workspace\MangaReader\push\AndroidManifest.xml:124:13-79
-intent-filter#org.android.agoo.client.MessageReceiverService
+intent-filter#action:name:org.android.agoo.client.MessageReceiverService
 ADDED from F:\studio_workspace\MangaReader\push\AndroidManifest.xml:127:13-129:29
 action#org.android.agoo.client.MessageReceiverService
 ADDED from F:\studio_workspace\MangaReader\push\AndroidManifest.xml:128:17-89
@@ -249,31 +249,31 @@ ADDED from F:\studio_workspace\MangaReader\push\AndroidManifest.xml:136:9-154:19
 		ADDED from F:\studio_workspace\MangaReader\push\AndroidManifest.xml:138:13-37
 	android:name
 		ADDED from F:\studio_workspace\MangaReader\push\AndroidManifest.xml:137:13-80
-intent-filter#com.umeng.messge.registercallback.action
+intent-filter#action:name:com.umeng.messge.registercallback.action
 ADDED from F:\studio_workspace\MangaReader\push\AndroidManifest.xml:139:13-141:29
 action#com.umeng.messge.registercallback.action
 ADDED from F:\studio_workspace\MangaReader\push\AndroidManifest.xml:140:17-83
 	android:name
 		ADDED from F:\studio_workspace\MangaReader\push\AndroidManifest.xml:140:25-80
-intent-filter#com.umeng.message.enablecallback.action
+intent-filter#action:name:com.umeng.message.enablecallback.action
 ADDED from F:\studio_workspace\MangaReader\push\AndroidManifest.xml:142:13-144:29
 action#com.umeng.message.enablecallback.action
 ADDED from F:\studio_workspace\MangaReader\push\AndroidManifest.xml:143:17-82
 	android:name
 		ADDED from F:\studio_workspace\MangaReader\push\AndroidManifest.xml:143:25-79
-intent-filter#com.umeng.message.disablecallback.action
+intent-filter#action:name:com.umeng.message.disablecallback.action
 ADDED from F:\studio_workspace\MangaReader\push\AndroidManifest.xml:145:13-147:29
 action#com.umeng.message.disablecallback.action
 ADDED from F:\studio_workspace\MangaReader\push\AndroidManifest.xml:146:17-83
 	android:name
 		ADDED from F:\studio_workspace\MangaReader\push\AndroidManifest.xml:146:25-80
-intent-filter#com.umeng.message.message.handler.action
+intent-filter#action:name:com.umeng.message.message.handler.action
 ADDED from F:\studio_workspace\MangaReader\push\AndroidManifest.xml:148:13-150:29
 action#com.umeng.message.message.handler.action
 ADDED from F:\studio_workspace\MangaReader\push\AndroidManifest.xml:149:17-83
 	android:name
 		ADDED from F:\studio_workspace\MangaReader\push\AndroidManifest.xml:149:25-80
-intent-filter#com.umeng.message.message.sendmessage.action
+intent-filter#action:name:com.umeng.message.message.sendmessage.action
 ADDED from F:\studio_workspace\MangaReader\push\AndroidManifest.xml:151:13-153:29
 action#com.umeng.message.message.sendmessage.action
 ADDED from F:\studio_workspace\MangaReader\push\AndroidManifest.xml:152:17-87
