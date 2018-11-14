@@ -30,7 +30,7 @@ public class KeyBoardDialog extends Dialog implements View.OnClickListener, Gest
     private GestureButton pqrsGb;
     private GestureButton tuvGb;
     private GestureButton wxyzGb;
-
+    private TextView resTv;
     private Button deleteBtn;
     private Button spaceBtn;
     private Button okBtn;
@@ -91,6 +91,7 @@ public class KeyBoardDialog extends Dialog implements View.OnClickListener, Gest
         deleteBtn = (Button) findViewById(R.id.delete_btn);
         spaceBtn = (Button) findViewById(R.id.space_btn);
         okBtn = (Button) findViewById(R.id.ok_btn);
+        resTv = (TextView) findViewById(R.id.res_tv);
 
         abcGb.setOnResultListener(this);
         defGb.setOnResultListener(this);
@@ -114,9 +115,15 @@ public class KeyBoardDialog extends Dialog implements View.OnClickListener, Gest
 
     @Override
     public void onResult(String result) {
+        resTv.setText("");
         if (null != mOnKeyboardChangeListener) {
-            mOnKeyboardChangeListener.onChange(result);
+            mOnKeyboardChangeListener.onFinish(result);
         }
+    }
+
+    @Override
+    public void onChange(String result) {
+        resTv.setText(result);
     }
 
     public void setOnKeyboardChangeListener(OnKeyboardChangeListener onKeyboardChangeListener) {

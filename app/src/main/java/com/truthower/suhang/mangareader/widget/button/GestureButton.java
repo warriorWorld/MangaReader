@@ -106,6 +106,9 @@ public class GestureButton extends RelativeLayout {
                         finalRes = gestureTv2.getText().toString();
                     }
                 }
+                if (null!=mOnResultListener){
+                    mOnResultListener.onChange(finalRes);
+                }
                 break;
             case MotionEvent.ACTION_UP:
             case MotionEvent.ACTION_CANCEL:
@@ -126,5 +129,7 @@ public class GestureButton extends RelativeLayout {
 
     public interface OnResultListener {
         void onResult(String result);
+
+        void onChange(String result);
     }
 }

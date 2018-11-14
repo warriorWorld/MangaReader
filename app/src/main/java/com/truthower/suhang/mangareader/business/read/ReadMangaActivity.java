@@ -45,6 +45,7 @@ import com.truthower.suhang.mangareader.db.DbAdapter;
 import com.truthower.suhang.mangareader.eventbus.EventBusEvent;
 import com.truthower.suhang.mangareader.listener.JsoupCallBack;
 import com.truthower.suhang.mangareader.listener.OnEditResultListener;
+import com.truthower.suhang.mangareader.listener.OnKeyboardChangeListener;
 import com.truthower.suhang.mangareader.listener.OnSpeakClickListener;
 import com.truthower.suhang.mangareader.spider.FileSpider;
 import com.truthower.suhang.mangareader.spider.SpiderBase;
@@ -56,6 +57,7 @@ import com.truthower.suhang.mangareader.utils.SharedPreferencesUtils;
 import com.truthower.suhang.mangareader.volley.VolleyCallBack;
 import com.truthower.suhang.mangareader.volley.VolleyTool;
 import com.truthower.suhang.mangareader.widget.bar.TopBar;
+import com.truthower.suhang.mangareader.widget.dialog.KeyBoardDialog;
 import com.truthower.suhang.mangareader.widget.dialog.MangaDialog;
 import com.truthower.suhang.mangareader.widget.dialog.MangaImgEditDialog;
 import com.truthower.suhang.mangareader.widget.dialog.OnlyEditDialog;
@@ -568,6 +570,21 @@ public class ReadMangaActivity extends TTSActivity implements OnClickListener {
         }
         searchDialog.show();
         searchDialog.clearEdit();
+        searchDialog.disableShowSoftInput();
+        showKeyboardDialog();
+    }
+
+    private void showKeyboardDialog() {
+        KeyBoardDialog dialog = new KeyBoardDialog(this);
+        dialog.setOnKeyboardChangeListener(new OnKeyboardChangeListener() {
+            @Override
+            public void onFinish(String res) {
+                if (null != searchDialog && searchDialog.isShowing()) {
+                    searchDialog.setText(searchDialog.getText() + res);
+                }
+            }
+        });
+        dialog.show();
     }
 
     private void showImgEditDialog(Bitmap bp) {

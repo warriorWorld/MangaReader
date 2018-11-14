@@ -7,6 +7,7 @@ import android.app.Dialog;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.text.InputType;
 import android.text.TextUtils;
 import android.view.Display;
 import android.view.KeyEvent;
@@ -22,6 +23,8 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import com.truthower.suhang.mangareader.R;
 import com.truthower.suhang.mangareader.config.Configure;
 import com.truthower.suhang.mangareader.listener.OnEditResultListener;
+
+import java.lang.reflect.Method;
 
 
 /**
@@ -94,6 +97,41 @@ public class OnlyEditDialog extends Dialog {
     public void dismiss() {
         closeKeyBroad();
         super.dismiss();
+    }
+
+    public void setText(String text) {
+        editText.setText(text);
+    }
+
+    public String getText() {
+        return editText.getText().toString();
+    }
+
+    /**
+     * 禁止Edittext弹出软件盘，光标依然正常显示。
+     */
+    public void disableShowSoftInput() {
+        if (android.os.Build.VERSION.SDK_INT <= 10) {
+            editText.setInputType(InputType.TYPE_NULL);
+        } else {
+            Class<EditText> cls = EditText.class;
+            Method method;
+            try {
+                method = cls.getMethod("setShowSoftInputOnFocus", boolean.class);
+                method.setAccessible(true);
+                method.invoke(editText, false);
+            } catch (Exception e) {
+                // TODO: handle exception
+            }
+            try {
+                method = cls.getMethod("setSoftInputShownOnFocus", boolean.class);
+                method.setAccessible(true);
+                method.invoke(editText, false);
+            } catch (Exception e) {
+                // TODO: handle exception
+            }
+        }
+        closeKeyBroad();
     }
 
     public void showKeyBroad() {

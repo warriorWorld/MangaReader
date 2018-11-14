@@ -1,144 +1,161 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:layout_width="match_parent"
-              android:layout_height="wrap_content"
-              android:background="@color/divide"
-              android:orientation="vertical"
-              android:padding="5dp">
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/transparency">
+
+    <TextView
+        android:id="@+id/res_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:textColor="@color/manga_reader"
+        android:textSize="18sp"/>
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:orientation="horizontal">
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/res_tv"
+        android:layout_marginTop="20dp"
+        android:background="@color/divide"
+        android:orientation="vertical"
+        android:padding="5dp">
 
-        <Button
-            style="?android:attr/borderlessButtonStyle"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:background="@drawable/item_click"
-            android:gravity="center"
-            android:textColor="@color/main_text_color"
-            android:textSize="14sp"/>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:orientation="horizontal">
 
-        <com.truthower.suhang.mangareader.widget.button.GestureButton
-            android:id="@+id/abc_gb"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_marginLeft="5dp"
-            android:layout_marginRight="5dp"
-            android:layout_weight="1"
-            ></com.truthower.suhang.mangareader.widget.button.GestureButton>
+            <Button
+                style="?android:attr/borderlessButtonStyle"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:text="question"
+                android:background="@drawable/item_click"
+                android:gravity="center"
+                android:textColor="@color/main_text_color"
+                android:textSize="14sp"/>
 
-        <com.truthower.suhang.mangareader.widget.button.GestureButton
-            android:id="@+id/def_gb"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            ></com.truthower.suhang.mangareader.widget.button.GestureButton>
+            <com.truthower.suhang.mangareader.widget.button.GestureButton
+                android:id="@+id/abc_gb"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                android:layout_weight="1"
+                ></com.truthower.suhang.mangareader.widget.button.GestureButton>
+
+            <com.truthower.suhang.mangareader.widget.button.GestureButton
+                android:id="@+id/def_gb"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                ></com.truthower.suhang.mangareader.widget.button.GestureButton>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginTop="5dp"
+            android:orientation="horizontal">
+
+            <com.truthower.suhang.mangareader.widget.button.GestureButton
+                android:id="@+id/ghi_gb"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                ></com.truthower.suhang.mangareader.widget.button.GestureButton>
+
+            <com.truthower.suhang.mangareader.widget.button.GestureButton
+                android:id="@+id/jkl_gb"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                android:layout_weight="1"
+                ></com.truthower.suhang.mangareader.widget.button.GestureButton>
+
+            <com.truthower.suhang.mangareader.widget.button.GestureButton
+                android:id="@+id/mno_gb"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                ></com.truthower.suhang.mangareader.widget.button.GestureButton>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginTop="5dp"
+            android:orientation="horizontal">
+
+            <com.truthower.suhang.mangareader.widget.button.GestureButton
+                android:id="@+id/pqrs_gb"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                ></com.truthower.suhang.mangareader.widget.button.GestureButton>
+
+            <com.truthower.suhang.mangareader.widget.button.GestureButton
+                android:id="@+id/tuv_gb"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                android:layout_weight="1"
+                ></com.truthower.suhang.mangareader.widget.button.GestureButton>
+
+            <com.truthower.suhang.mangareader.widget.button.GestureButton
+                android:id="@+id/wxyz_gb"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                ></com.truthower.suhang.mangareader.widget.button.GestureButton>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginTop="5dp"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/delete_btn"
+                style="?android:attr/borderlessButtonStyle"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@drawable/item_click"
+                android:gravity="center"
+                android:text="delete"
+                android:textColor="@color/main_text_color"
+                android:textSize="14sp"/>
+
+            <Button
+                android:id="@+id/space_btn"
+                style="?android:attr/borderlessButtonStyle"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                android:layout_weight="1"
+                android:background="@drawable/item_click"
+                android:gravity="center"
+                android:text="space"
+                android:textColor="@color/main_text_color"
+                android:textSize="14sp"/>
+
+            <Button
+                android:id="@+id/ok_btn"
+                style="?android:attr/borderlessButtonStyle"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@drawable/item_click"
+                android:gravity="center"
+                android:text="ok"
+                android:textColor="@color/main_text_color"
+                android:textSize="14sp"/>
+        </LinearLayout>
     </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:layout_marginTop="5dp"
-        android:orientation="horizontal">
-
-        <com.truthower.suhang.mangareader.widget.button.GestureButton
-            android:id="@+id/ghi_gb"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            ></com.truthower.suhang.mangareader.widget.button.GestureButton>
-
-        <com.truthower.suhang.mangareader.widget.button.GestureButton
-            android:id="@+id/jkl_gb"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_marginLeft="5dp"
-            android:layout_marginRight="5dp"
-            android:layout_weight="1"
-            ></com.truthower.suhang.mangareader.widget.button.GestureButton>
-
-        <com.truthower.suhang.mangareader.widget.button.GestureButton
-            android:id="@+id/mno_gb"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            ></com.truthower.suhang.mangareader.widget.button.GestureButton>
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:layout_marginTop="5dp"
-        android:orientation="horizontal">
-
-        <com.truthower.suhang.mangareader.widget.button.GestureButton
-            android:id="@+id/pqrs_gb"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            ></com.truthower.suhang.mangareader.widget.button.GestureButton>
-
-        <com.truthower.suhang.mangareader.widget.button.GestureButton
-            android:id="@+id/tuv_gb"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_marginLeft="5dp"
-            android:layout_marginRight="5dp"
-            android:layout_weight="1"
-            ></com.truthower.suhang.mangareader.widget.button.GestureButton>
-
-        <com.truthower.suhang.mangareader.widget.button.GestureButton
-            android:id="@+id/wxyz_gb"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            ></com.truthower.suhang.mangareader.widget.button.GestureButton>
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:layout_marginTop="5dp"
-        android:orientation="horizontal">
-
-        <Button
-            android:id="@+id/delete_btn"
-            style="?android:attr/borderlessButtonStyle"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:background="@drawable/item_click"
-            android:gravity="center"
-            android:text="delete"
-            android:textColor="@color/main_text_color"
-            android:textSize="14sp"/>
-
-        <Button
-            android:id="@+id/space_btn"
-            style="?android:attr/borderlessButtonStyle"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_marginLeft="5dp"
-            android:layout_marginRight="5dp"
-            android:layout_weight="1"
-            android:background="@drawable/item_click"
-            android:gravity="center"
-            android:text="space"
-            android:textColor="@color/main_text_color"
-            android:textSize="14sp"/>
-
-        <Button
-            android:id="@+id/ok_btn"
-            style="?android:attr/borderlessButtonStyle"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:background="@drawable/item_click"
-            android:gravity="center"
-            android:text="ok"
-            android:textColor="@color/main_text_color"
-            android:textSize="14sp"/>
-    </LinearLayout>
-</LinearLayout>
+</RelativeLayout>
