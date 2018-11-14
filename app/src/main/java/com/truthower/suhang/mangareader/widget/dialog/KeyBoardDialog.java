@@ -51,6 +51,10 @@ public class KeyBoardDialog extends Dialog implements View.OnClickListener, Gest
         setContentView(R.layout.dialog_keyboard);
         init();
 
+        windowSet();
+    }
+
+    protected void windowSet() {
         Window window = this.getWindow();
         WindowManager.LayoutParams lp = window.getAttributes();
         WindowManager wm = ((Activity) context).getWindowManager();
@@ -67,7 +71,7 @@ public class KeyBoardDialog extends Dialog implements View.OnClickListener, Gest
         // lp.height = 30;
         // lp.width = 20;
         window.setAttributes(lp);
-
+        window.setDimAmount(0);//去掉蒙层
         window.setBackgroundDrawableResource(android.R.color.transparent);
     }
 

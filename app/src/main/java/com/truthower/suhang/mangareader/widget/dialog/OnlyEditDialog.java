@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.text.InputType;
 import android.text.TextUtils;
 import android.view.Display;
+import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.Window;
@@ -54,6 +55,7 @@ public class OnlyEditDialog extends Dialog {
         WindowManager wm = ((Activity) context).getWindowManager();
         Display d = wm.getDefaultDisplay();
         lp.width = (int) (d.getWidth() * 0.9);
+        window.setGravity(Gravity.TOP);
         window.setAttributes(lp);
     }
 
