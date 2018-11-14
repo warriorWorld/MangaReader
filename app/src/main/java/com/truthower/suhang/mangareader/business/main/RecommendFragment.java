@@ -53,6 +53,7 @@ import com.truthower.suhang.mangareader.utils.LeanCloundUtil;
 import com.truthower.suhang.mangareader.utils.Logger;
 import com.truthower.suhang.mangareader.utils.SharedPreferencesUtils;
 import com.truthower.suhang.mangareader.widget.bar.TopBar;
+import com.truthower.suhang.mangareader.widget.dialog.KeyBoardDialog;
 import com.truthower.suhang.mangareader.widget.dialog.ListDialog;
 import com.truthower.suhang.mangareader.widget.dialog.MangaDialog;
 import com.truthower.suhang.mangareader.widget.dialog.MangaEditDialog;
@@ -237,7 +238,10 @@ public class RecommendFragment extends BaseFragment implements
 
             @Override
             public void onTitleClick() {
-
+                if (Configure.isTest) {
+                    KeyBoardDialog keyBoardDialog=new KeyBoardDialog(getActivity());
+                    keyBoardDialog.show();
+                }
             }
         });
     }
