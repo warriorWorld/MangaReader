@@ -6,6 +6,8 @@ import android.content.Context;
 import android.os.Bundle;
 import android.view.Display;
 import android.view.Gravity;
+import android.view.MotionEvent;
+import android.view.VelocityTracker;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -14,47 +16,25 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.truthower.suhang.mangareader.R;
+import com.truthower.suhang.mangareader.listener.OnKeyboardChangeListener;
+import com.truthower.suhang.mangareader.widget.button.GestureButton;
 
 
-public class KeyBoardDialog extends Dialog implements View.OnClickListener {
+public class KeyBoardDialog extends Dialog implements View.OnClickListener, GestureButton.OnResultListener {
     private Context context;
-    private RelativeLayout abcRl;
-    private TextView aTv;
-    private TextView bTv;
-    private TextView cTv;
-    private RelativeLayout defRl;
-    private TextView dTv;
-    private TextView eTv;
-    private TextView fTv;
-    private RelativeLayout ghiRl;
-    private TextView gTv;
-    private TextView hTv;
-    private TextView iTv;
-    private RelativeLayout jklRl;
-    private TextView jTv;
-    private TextView kTv;
-    private TextView lTv;
-    private RelativeLayout mnoRl;
-    private TextView mTv;
-    private TextView nTv;
-    private TextView oTv;
-    private RelativeLayout pqrsRl;
-    private TextView pTv;
-    private TextView qTv;
-    private TextView rTv;
-    private TextView sTv;
-    private RelativeLayout tuvRl;
-    private TextView tTv;
-    private TextView uTv;
-    private TextView vTv;
-    private RelativeLayout wxyzRl;
-    private TextView wTv;
-    private TextView xTv;
-    private TextView yTv;
-    private TextView zTv;
+    private GestureButton abcGb;
+    private GestureButton defGb;
+    private GestureButton ghiGb;
+    private GestureButton jklGb;
+    private GestureButton mnoGb;
+    private GestureButton pqrsGb;
+    private GestureButton tuvGb;
+    private GestureButton wxyzGb;
+
     private Button deleteBtn;
     private Button spaceBtn;
     private Button okBtn;
+    private OnKeyboardChangeListener mOnKeyboardChangeListener;
 
     public KeyBoardDialog(Context context) {
         super(context);
@@ -92,52 +72,34 @@ public class KeyBoardDialog extends Dialog implements View.OnClickListener {
     }
 
     private void init() {
-        abcRl = (RelativeLayout) findViewById(R.id.abc_rl);
-        aTv = (TextView) findViewById(R.id.a_tv);
-        bTv = (TextView) findViewById(R.id.b_tv);
-        cTv = (TextView) findViewById(R.id.c_tv);
-        defRl = (RelativeLayout) findViewById(R.id.def_rl);
-        dTv = (TextView) findViewById(R.id.d_tv);
-        eTv = (TextView) findViewById(R.id.e_tv);
-        fTv = (TextView) findViewById(R.id.f_tv);
-        ghiRl = (RelativeLayout) findViewById(R.id.ghi_rl);
-        gTv = (TextView) findViewById(R.id.g_tv);
-        hTv = (TextView) findViewById(R.id.h_tv);
-        iTv = (TextView) findViewById(R.id.i_tv);
-        jklRl = (RelativeLayout) findViewById(R.id.jkl_rl);
-        jTv = (TextView) findViewById(R.id.j_tv);
-        kTv = (TextView) findViewById(R.id.k_tv);
-        lTv = (TextView) findViewById(R.id.l_tv);
-        mnoRl = (RelativeLayout) findViewById(R.id.mno_rl);
-        mTv = (TextView) findViewById(R.id.m_tv);
-        nTv = (TextView) findViewById(R.id.n_tv);
-        oTv = (TextView) findViewById(R.id.o_tv);
-        pqrsRl = (RelativeLayout) findViewById(R.id.pqrs_rl);
-        pTv = (TextView) findViewById(R.id.p_tv);
-        qTv = (TextView) findViewById(R.id.q_tv);
-        rTv = (TextView) findViewById(R.id.r_tv);
-        sTv = (TextView) findViewById(R.id.s_tv);
-        tuvRl = (RelativeLayout) findViewById(R.id.tuv_rl);
-        tTv = (TextView) findViewById(R.id.t_tv);
-        uTv = (TextView) findViewById(R.id.u_tv);
-        vTv = (TextView) findViewById(R.id.v_tv);
-        wxyzRl = (RelativeLayout) findViewById(R.id.wxyz_rl);
-        wTv = (TextView) findViewById(R.id.w_tv);
-        xTv = (TextView) findViewById(R.id.x_tv);
-        yTv = (TextView) findViewById(R.id.y_tv);
-        zTv = (TextView) findViewById(R.id.z_tv);
+        abcGb = (GestureButton) findViewById(R.id.abc_gb);
+        abcGb.setKeys("ABC");
+        defGb = (GestureButton) findViewById(R.id.def_gb);
+        defGb.setKeys("DEF");
+        ghiGb = (GestureButton) findViewById(R.id.ghi_gb);
+        ghiGb.setKeys("GHI");
+        jklGb = (GestureButton) findViewById(R.id.jkl_gb);
+        jklGb.setKeys("JKL");
+        mnoGb = (GestureButton) findViewById(R.id.mno_gb);
+        mnoGb.setKeys("MNO");
+        pqrsGb = (GestureButton) findViewById(R.id.pqrs_gb);
+        pqrsGb.setKeys("PQRS");
+        tuvGb = (GestureButton) findViewById(R.id.tuv_gb);
+        tuvGb.setKeys("TUV");
+        wxyzGb = (GestureButton) findViewById(R.id.wxyz_gb);
+        wxyzGb.setKeys("WXYZ");
         deleteBtn = (Button) findViewById(R.id.delete_btn);
         spaceBtn = (Button) findViewById(R.id.space_btn);
         okBtn = (Button) findViewById(R.id.ok_btn);
 
-        abcRl.setOnClickListener(this);
-        defRl.setOnClickListener(this);
-        ghiRl.setOnClickListener(this);
-        jklRl.setOnClickListener(this);
-        pqrsRl.setOnClickListener(this);
-        mnoRl.setOnClickListener(this);
-        tuvRl.setOnClickListener(this);
-        wxyzRl.setOnClickListener(this);
+        abcGb.setOnResultListener(this);
+        defGb.setOnResultListener(this);
+        ghiGb.setOnResultListener(this);
+        jklGb.setOnResultListener(this);
+        mnoGb.setOnResultListener(this);
+        pqrsGb.setOnResultListener(this);
+        tuvGb.setOnResultListener(this);
+        wxyzGb.setOnResultListener(this);
         deleteBtn.setOnClickListener(this);
         spaceBtn.setOnClickListener(this);
         okBtn.setOnClickListener(this);
@@ -148,5 +110,16 @@ public class KeyBoardDialog extends Dialog implements View.OnClickListener {
         dismiss();
         switch (view.getId()) {
         }
+    }
+
+    @Override
+    public void onResult(String result) {
+        if (null != mOnKeyboardChangeListener) {
+            mOnKeyboardChangeListener.onChange(result);
+        }
+    }
+
+    public void setOnKeyboardChangeListener(OnKeyboardChangeListener onKeyboardChangeListener) {
+        mOnKeyboardChangeListener = onKeyboardChangeListener;
     }
 }
