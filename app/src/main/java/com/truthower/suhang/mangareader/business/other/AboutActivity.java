@@ -57,7 +57,7 @@ public class AboutActivity extends BaseActivity implements View.OnClickListener,
     private AVFile downloadFile;
     private MangaDialog versionDialog;
     private DownloadDialog downloadDialog;
-    private CheckBox closeTranslateCb, economyModeCb, closeTutorialCb;
+    private CheckBox closeTranslateCb, economyModeCb, closeTutorialCb, closeShKeyboardCb;
     private CheckBox closeTtsCb;
 
     @Override
@@ -120,6 +120,14 @@ public class AboutActivity extends BaseActivity implements View.OnClickListener,
                         (AboutActivity.this, ShareKeys.CLOSE_TTS, isChecked);
             }
         });
+        closeShKeyboardCb = (CheckBox) findViewById(R.id.close_sh_keyboard_cb);
+        closeShKeyboardCb.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                SharedPreferencesUtils.setSharedPreferencesData
+                        (AboutActivity.this, ShareKeys.CLOSE_SH_KEYBOARD, isChecked);
+            }
+        });
 
         closeTranslateCb.setChecked
                 (SharedPreferencesUtils.getBooleanSharedPreferencesData(AboutActivity.this,
@@ -133,7 +141,9 @@ public class AboutActivity extends BaseActivity implements View.OnClickListener,
         closeTtsCb.setChecked
                 (SharedPreferencesUtils.getBooleanSharedPreferencesData(AboutActivity.this,
                         ShareKeys.CLOSE_TTS, false));
-
+        closeShKeyboardCb.setChecked
+                (SharedPreferencesUtils.getBooleanSharedPreferencesData(AboutActivity.this,
+                        ShareKeys.CLOSE_SH_KEYBOARD, false));
         appIconIv.setOnClickListener(this);
         checkUpdateRl.setOnClickListener(this);
         authorRl.setOnClickListener(this);

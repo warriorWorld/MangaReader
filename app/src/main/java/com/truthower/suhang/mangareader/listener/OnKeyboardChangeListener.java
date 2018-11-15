@@ -17,5 +17,6 @@
 package com.truthower.suhang.mangareader.listener;
 
 public interface OnKeyboardChangeListener {
+    void onChange(String res);
     void onFinish(String res);
 }

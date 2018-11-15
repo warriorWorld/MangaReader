@@ -106,15 +106,15 @@ public class GestureButton extends RelativeLayout {
                         finalRes = gestureTv2.getText().toString();
                     }
                 }
-                if (null!=mOnResultListener){
-                    mOnResultListener.onChange(finalRes);
+                if (null != mOnResultListener) {
+                    mOnResultListener.onChange(finalRes.toLowerCase());
                 }
                 break;
             case MotionEvent.ACTION_UP:
             case MotionEvent.ACTION_CANCEL:
                 setBackground(getResources().getDrawable(R.drawable.item_click_white));
                 if (null != mOnResultListener) {
-                    mOnResultListener.onResult(finalRes);
+                    mOnResultListener.onResult(finalRes.toLowerCase());
                 }
                 break;
             default:
@@ -128,8 +128,10 @@ public class GestureButton extends RelativeLayout {
     }
 
     public interface OnResultListener {
+        //输入完一个字母
         void onResult(String result);
 
+        //用户停留在一个字母
         void onChange(String result);
     }
 }

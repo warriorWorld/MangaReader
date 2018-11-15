@@ -55,7 +55,7 @@ public class OnlyEditDialog extends Dialog {
         WindowManager wm = ((Activity) context).getWindowManager();
         Display d = wm.getDefaultDisplay();
         lp.width = (int) (d.getWidth() * 0.9);
-        window.setGravity(Gravity.TOP);
+//        window.setGravity(Gravity.TOP);
         window.setAttributes(lp);
     }
 
@@ -107,33 +107,6 @@ public class OnlyEditDialog extends Dialog {
 
     public String getText() {
         return editText.getText().toString();
-    }
-
-    /**
-     * 禁止Edittext弹出软件盘，光标依然正常显示。
-     */
-    public void disableShowSoftInput() {
-        if (android.os.Build.VERSION.SDK_INT <= 10) {
-            editText.setInputType(InputType.TYPE_NULL);
-        } else {
-            Class<EditText> cls = EditText.class;
-            Method method;
-            try {
-                method = cls.getMethod("setShowSoftInputOnFocus", boolean.class);
-                method.setAccessible(true);
-                method.invoke(editText, false);
-            } catch (Exception e) {
-                // TODO: handle exception
-            }
-            try {
-                method = cls.getMethod("setSoftInputShownOnFocus", boolean.class);
-                method.setAccessible(true);
-                method.invoke(editText, false);
-            } catch (Exception e) {
-                // TODO: handle exception
-            }
-        }
-        closeKeyBroad();
     }
 
     public void showKeyBroad() {

@@ -4,10 +4,20 @@
                 android:background="@color/transparency">
 
     <TextView
-        android:id="@+id/res_tv"
+        android:id="@+id/final_res_tv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
+        android:textColor="@color/manga_reader"
+        android:textSize="22sp"/>
+
+    <TextView
+        android:id="@+id/res_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/final_res_tv"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="20dp"
         android:textColor="@color/manga_reader"
         android:textSize="18sp"/>
 
@@ -30,9 +40,9 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:text="question"
                 android:background="@drawable/item_click"
                 android:gravity="center"
+                android:text="question"
                 android:textColor="@color/main_text_color"
                 android:textSize="14sp"/>
 

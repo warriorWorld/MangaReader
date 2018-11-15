@@ -30,6 +30,7 @@ public class KeyBoardDialog extends Dialog implements View.OnClickListener, Gest
     private GestureButton pqrsGb;
     private GestureButton tuvGb;
     private GestureButton wxyzGb;
+    private TextView finalResTv;
     private TextView resTv;
     private Button deleteBtn;
     private Button spaceBtn;
@@ -71,11 +72,12 @@ public class KeyBoardDialog extends Dialog implements View.OnClickListener, Gest
         // lp.height = 30;
         // lp.width = 20;
         window.setAttributes(lp);
-        window.setDimAmount(0);//去掉蒙层
+//        window.setDimAmount(0);//去掉蒙层
         window.setBackgroundDrawableResource(android.R.color.transparent);
     }
 
     private void init() {
+        finalResTv = (TextView) findViewById(R.id.final_res_tv);
         abcGb = (GestureButton) findViewById(R.id.abc_gb);
         abcGb.setKeys("ABC");
         defGb = (GestureButton) findViewById(R.id.def_gb);
@@ -114,14 +116,28 @@ public class KeyBoardDialog extends Dialog implements View.OnClickListener, Gest
     public void onClick(View view) {
         dismiss();
         switch (view.getId()) {
+            case R.id.delete_btn:
+                if (finalResTv.getText().toString().length() > 0) {
+                    finalResTv.setText(finalResTv.getText().toString().substring(0, finalResTv.getText().length()));
+                }
+                break;
+            case R.id.ok_btn:
+                if (null != mOnKeyboardChangeListener) {
+                    mOnKeyboardChangeListener.onFinish(finalResTv.getText().toString());
+                }
+                break;
+            case R.id.space_btn:
+                finalResTv.setText(finalResTv.getText().toString() + " ");
+                break;
         }
     }
 
     @Override
     public void onResult(String result) {
         resTv.setText("");
+        finalResTv.setText(finalResTv.getText().toString() + result);
         if (null != mOnKeyboardChangeListener) {
-            mOnKeyboardChangeListener.onFinish(result);
+            mOnKeyboardChangeListener.onChange(result);
         }
     }
 

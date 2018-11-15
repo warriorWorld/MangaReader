@@ -173,22 +173,22 @@ public class ReadMangaActivity extends TTSActivity implements OnClickListener {
         date = sdf.format(curDate);
         db = new DbAdapter(this);
 
-
-        Handler handler = new Handler();
-        Runnable updateThread = new Runnable() {
-            public void run() {
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (SharedPreferencesUtils.getBooleanSharedPreferencesData(ReadMangaActivity.this, ShareKeys.THIS_USER_IS_NOT_AN_IDIOT, true)) {
-                            text2Speech("点击右上角图标或者顶部标题可以直接查单词,点击左上角图标可以先划定区域查单词.");
+        if (!SharedPreferencesUtils.getBooleanSharedPreferencesData(this, ShareKeys.CLOSE_TTS, true)) {
+            Handler handler = new Handler();
+            Runnable updateThread = new Runnable() {
+                public void run() {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (SharedPreferencesUtils.getBooleanSharedPreferencesData(ReadMangaActivity.this, ShareKeys.THIS_USER_IS_NOT_AN_IDIOT, true)) {
+                                text2Speech("点击右上角图标或者顶部标题可以直接查单词,点击左上角图标可以先划定区域查单词.");
+                            }
                         }
-                    }
-                });
-            }
-        };
-        handler.postDelayed(updateThread, 50);
-
+                    });
+                }
+            };
+            handler.postDelayed(updateThread, 50);
+        }
         if (!SharedPreferencesUtils.getBooleanSharedPreferencesData(this, ShareKeys.CLOSE_TUTORIAL, true)) {
             MangaDialog dialog = new MangaDialog(this);
             dialog.show();
@@ -365,13 +365,23 @@ public class ReadMangaActivity extends TTSActivity implements OnClickListener {
         topBar.setOnTopBarClickListener(new TopBar.OnTopBarClickListener() {
             @Override
             public void onRightClick() {
-                showSearchDialog();
+                if (SharedPreferencesUtils.getBooleanSharedPreferencesData
+                        (ReadMangaActivity.this, ShareKeys.CLOSE_SH_KEYBOARD, false)) {
+                    showSearchDialog();
+                } else {
+                    showKeyboardDialog();
+                }
                 MobclickAgent.onEvent(ReadMangaActivity.this, "translate");
             }
 
             @Override
             public void onTitleClick() {
-                showSearchDialog();
+                if (SharedPreferencesUtils.getBooleanSharedPreferencesData
+                        (ReadMangaActivity.this, ShareKeys.CLOSE_SH_KEYBOARD, false)) {
+                    showSearchDialog();
+                } else {
+                    showKeyboardDialog();
+                }
                 MobclickAgent.onEvent(ReadMangaActivity.this, "title_translate");
             }
 
@@ -570,18 +580,19 @@ public class ReadMangaActivity extends TTSActivity implements OnClickListener {
         }
         searchDialog.show();
         searchDialog.clearEdit();
-        searchDialog.disableShowSoftInput();
-        showKeyboardDialog();
     }
 
     private void showKeyboardDialog() {
         KeyBoardDialog dialog = new KeyBoardDialog(this);
         dialog.setOnKeyboardChangeListener(new OnKeyboardChangeListener() {
             @Override
+            public void onChange(String res) {
+
+            }
+
+            @Override
             public void onFinish(String res) {
-                if (null != searchDialog && searchDialog.isShowing()) {
-                    searchDialog.setText(searchDialog.getText() + res);
-                }
+                translateWord(res);
             }
         });
         dialog.show();
