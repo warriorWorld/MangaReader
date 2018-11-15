@@ -35,6 +35,7 @@ public class KeyBoardDialog extends Dialog implements View.OnClickListener, Gest
     private Button deleteBtn;
     private Button spaceBtn;
     private Button okBtn;
+    private Button helpBtn;
     private OnKeyboardChangeListener mOnKeyboardChangeListener;
 
     public KeyBoardDialog(Context context) {
@@ -102,7 +103,9 @@ public class KeyBoardDialog extends Dialog implements View.OnClickListener, Gest
         spaceBtn = (Button) findViewById(R.id.space_btn);
         okBtn = (Button) findViewById(R.id.ok_btn);
         resTv = (TextView) findViewById(R.id.res_tv);
+        helpBtn = (Button) findViewById(R.id.help_btn);
 
+        helpBtn.setOnClickListener(this);
         abcGb.setOnResultListener(this);
         defGb.setOnResultListener(this);
         ghiGb.setOnResultListener(this);
@@ -114,6 +117,22 @@ public class KeyBoardDialog extends Dialog implements View.OnClickListener, Gest
         deleteBtn.setOnClickListener(this);
         spaceBtn.setOnClickListener(this);
         okBtn.setOnClickListener(this);
+        deleteBtn.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                finalResTv.setText("");
+                return true;
+            }
+        });
+    }
+
+    private void showHelpDialog() {
+        MangaDialog dialog = new MangaDialog(context);
+        dialog.show();
+        dialog.setTitle("教程");
+        dialog.setMessage("1,按住键盘然后滑动到你想选择的字母然后松手即可输入" +
+                "\n2,输入完成点击OK即可查单词" +
+                "\n3,不想使用这个键盘可在设置中关闭");
     }
 
     @Override
@@ -132,6 +151,9 @@ public class KeyBoardDialog extends Dialog implements View.OnClickListener, Gest
                 break;
             case R.id.space_btn:
                 finalResTv.setText(finalResTv.getText().toString() + " ");
+                break;
+            case R.id.help_btn:
+                showHelpDialog();
                 break;
         }
     }

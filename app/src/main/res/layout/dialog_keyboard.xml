@@ -36,13 +36,14 @@
             android:orientation="horizontal">
 
             <Button
+                android:id="@+id/help_btn"
                 style="?android:attr/borderlessButtonStyle"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:background="@drawable/item_click"
                 android:gravity="center"
-                android:text="question"
+                android:text="help"
                 android:textColor="@color/main_text_color"
                 android:textSize="14sp"/>
 
