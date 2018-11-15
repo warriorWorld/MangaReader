@@ -57,6 +57,7 @@ import com.truthower.suhang.mangareader.utils.SharedPreferencesUtils;
 import com.truthower.suhang.mangareader.volley.VolleyCallBack;
 import com.truthower.suhang.mangareader.volley.VolleyTool;
 import com.truthower.suhang.mangareader.widget.bar.TopBar;
+import com.truthower.suhang.mangareader.widget.dialog.ImgKeyboardDialog;
 import com.truthower.suhang.mangareader.widget.dialog.KeyBoardDialog;
 import com.truthower.suhang.mangareader.widget.dialog.MangaDialog;
 import com.truthower.suhang.mangareader.widget.dialog.MangaImgEditDialog;
@@ -396,9 +397,13 @@ public class ReadMangaActivity extends TTSActivity implements OnClickListener {
                         shotView.setL(new ShotView.FinishShotListener() {
                             @Override
                             public void finishShot(Bitmap bp) {
-                                showImgEditDialog(bp);
+                                if (SharedPreferencesUtils.getBooleanSharedPreferencesData
+                                        (ReadMangaActivity.this, ShareKeys.CLOSE_SH_KEYBOARD, false)) {
+                                    showImgEditDialog(bp);
+                                } else {
+                                    showImgKeyBoardDialog(bp);
+                                }
                             }
-
                         });
                     } else {
                         shotView.setIsRunning(true);
@@ -616,6 +621,23 @@ public class ReadMangaActivity extends TTSActivity implements OnClickListener {
         mangaImgEditDialog.show();
         mangaImgEditDialog.setImgRes(bp);
         mangaImgEditDialog.clearEdit();
+    }
+
+    private void showImgKeyBoardDialog(Bitmap bp) {
+        ImgKeyboardDialog dialog=new ImgKeyboardDialog(this);
+        dialog.setOnKeyboardChangeListener(new OnKeyboardChangeListener() {
+            @Override
+            public void onChange(String res) {
+
+            }
+
+            @Override
+            public void onFinish(String res) {
+                translateWord(res);
+            }
+        });
+        dialog.show();
+        dialog.setImgRes(bp);
     }
 
     private void translateWord(final String word) {

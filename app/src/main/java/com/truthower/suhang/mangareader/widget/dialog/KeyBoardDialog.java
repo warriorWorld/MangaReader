@@ -49,10 +49,14 @@ public class KeyBoardDialog extends Dialog implements View.OnClickListener, Gest
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
-        setContentView(R.layout.dialog_keyboard);
+        setContentView(getLayoutId());
         init();
 
         windowSet();
+    }
+
+    protected int getLayoutId() {
+        return R.layout.dialog_keyboard;
     }
 
     protected void windowSet() {
@@ -76,7 +80,7 @@ public class KeyBoardDialog extends Dialog implements View.OnClickListener, Gest
         window.setBackgroundDrawableResource(android.R.color.transparent);
     }
 
-    private void init() {
+    protected void init() {
         finalResTv = (TextView) findViewById(R.id.final_res_tv);
         abcGb = (GestureButton) findViewById(R.id.abc_gb);
         abcGb.setKeys("ABC");
@@ -114,14 +118,14 @@ public class KeyBoardDialog extends Dialog implements View.OnClickListener, Gest
 
     @Override
     public void onClick(View view) {
-        dismiss();
         switch (view.getId()) {
             case R.id.delete_btn:
                 if (finalResTv.getText().toString().length() > 0) {
-                    finalResTv.setText(finalResTv.getText().toString().substring(0, finalResTv.getText().length()));
+                    finalResTv.setText(finalResTv.getText().toString().substring(0, finalResTv.getText().length() - 1));
                 }
                 break;
             case R.id.ok_btn:
+                dismiss();
                 if (null != mOnKeyboardChangeListener) {
                     mOnKeyboardChangeListener.onFinish(finalResTv.getText().toString());
                 }
