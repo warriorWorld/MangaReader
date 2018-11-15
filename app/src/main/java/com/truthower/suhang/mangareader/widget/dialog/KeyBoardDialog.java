@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -30,13 +31,14 @@ public class KeyBoardDialog extends Dialog implements View.OnClickListener, Gest
     private GestureButton pqrsGb;
     private GestureButton tuvGb;
     private GestureButton wxyzGb;
-    private TextView finalResTv;
+    protected TextView finalResTv;
     private TextView resTv;
     private Button deleteBtn;
     private Button spaceBtn;
     private Button okBtn;
     private Button helpBtn;
-    private OnKeyboardChangeListener mOnKeyboardChangeListener;
+    private ImageView crossIv;
+    protected OnKeyboardChangeListener mOnKeyboardChangeListener;
 
     public KeyBoardDialog(Context context) {
         super(context);
@@ -84,26 +86,27 @@ public class KeyBoardDialog extends Dialog implements View.OnClickListener, Gest
     protected void init() {
         finalResTv = (TextView) findViewById(R.id.final_res_tv);
         abcGb = (GestureButton) findViewById(R.id.abc_gb);
-        abcGb.setKeys("ABC");
+        abcGb.setKeys("bac");
         defGb = (GestureButton) findViewById(R.id.def_gb);
-        defGb.setKeys("DEF");
+        defGb.setKeys("edf");
         ghiGb = (GestureButton) findViewById(R.id.ghi_gb);
-        ghiGb.setKeys("GHI");
+        ghiGb.setKeys("hgi");
         jklGb = (GestureButton) findViewById(R.id.jkl_gb);
-        jklGb.setKeys("JKL");
+        jklGb.setKeys("kjl");
         mnoGb = (GestureButton) findViewById(R.id.mno_gb);
-        mnoGb.setKeys("MNO");
+        mnoGb.setKeys("nmo");
         pqrsGb = (GestureButton) findViewById(R.id.pqrs_gb);
-        pqrsGb.setKeys("PQRS");
+        pqrsGb.setKeys("qprs");
         tuvGb = (GestureButton) findViewById(R.id.tuv_gb);
-        tuvGb.setKeys("TUV");
+        tuvGb.setKeys("utv");
         wxyzGb = (GestureButton) findViewById(R.id.wxyz_gb);
-        wxyzGb.setKeys("WXYZ");
+        wxyzGb.setKeys("xwyz");
         deleteBtn = (Button) findViewById(R.id.delete_btn);
         spaceBtn = (Button) findViewById(R.id.space_btn);
         okBtn = (Button) findViewById(R.id.ok_btn);
         resTv = (TextView) findViewById(R.id.res_tv);
         helpBtn = (Button) findViewById(R.id.help_btn);
+        crossIv = (ImageView) findViewById(R.id.cross_iv);
 
         helpBtn.setOnClickListener(this);
         abcGb.setOnResultListener(this);
@@ -117,6 +120,7 @@ public class KeyBoardDialog extends Dialog implements View.OnClickListener, Gest
         deleteBtn.setOnClickListener(this);
         spaceBtn.setOnClickListener(this);
         okBtn.setOnClickListener(this);
+        crossIv.setOnClickListener(this);
         deleteBtn.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
@@ -135,6 +139,13 @@ public class KeyBoardDialog extends Dialog implements View.OnClickListener, Gest
                 "\n3,不想使用这个键盘可在设置中关闭");
     }
 
+    protected void onOkBtnClick() {
+        if (null != mOnKeyboardChangeListener) {
+            mOnKeyboardChangeListener.onFinish(finalResTv.getText().toString());
+        }
+        finalResTv.setText("");
+    }
+
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
@@ -144,16 +155,16 @@ public class KeyBoardDialog extends Dialog implements View.OnClickListener, Gest
                 }
                 break;
             case R.id.ok_btn:
-                dismiss();
-                if (null != mOnKeyboardChangeListener) {
-                    mOnKeyboardChangeListener.onFinish(finalResTv.getText().toString());
-                }
+                onOkBtnClick();
                 break;
             case R.id.space_btn:
                 finalResTv.setText(finalResTv.getText().toString() + " ");
                 break;
             case R.id.help_btn:
                 showHelpDialog();
+                break;
+            case R.id.cross_iv:
+                dismiss();
                 break;
         }
     }

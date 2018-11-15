@@ -6,12 +6,21 @@
     <TextView
         android:id="@+id/final_res_tv"
         android:layout_width="wrap_content"
-        android:hint="点按然后滑动输入"
-        android:textColorHint="@color/white"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
+        android:gravity="center"
+        android:hint="点按然后滑动输入"
         android:textColor="@color/manga_reader"
+        android:textColorHint="@color/white"
         android:textSize="22sp"/>
+
+    <ImageView
+        android:id="@+id/cross_iv"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="10dp"
+        android:src="@drawable/cross2"/>
 
     <TextView
         android:id="@+id/res_tv"
