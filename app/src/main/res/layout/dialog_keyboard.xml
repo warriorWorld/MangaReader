@@ -6,6 +6,8 @@
     <TextView
         android:id="@+id/final_res_tv"
         android:layout_width="wrap_content"
+        android:hint="点按然后滑动输入"
+        android:textColorHint="@color/white"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:textColor="@color/manga_reader"
