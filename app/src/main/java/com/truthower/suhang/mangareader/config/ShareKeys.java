@@ -34,4 +34,5 @@ public class ShareKeys {
     public static final String CURRENT_PAGE="current_page_key";
     public static final String THIS_USER_IS_NOT_AN_IDIOT = "this_user_is_not_an_idiot";
     public static final String MAIN_PAGE_CHCHE = "main_page_chche";
+    public static final String IS_OTHER_LETTER_ORDER = "is_other_letter_order";
 }

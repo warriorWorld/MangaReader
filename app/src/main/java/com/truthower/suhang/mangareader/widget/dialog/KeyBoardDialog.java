@@ -17,7 +17,9 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.truthower.suhang.mangareader.R;
+import com.truthower.suhang.mangareader.config.ShareKeys;
 import com.truthower.suhang.mangareader.listener.OnKeyboardChangeListener;
+import com.truthower.suhang.mangareader.utils.SharedPreferencesUtils;
 import com.truthower.suhang.mangareader.widget.button.GestureButton;
 
 
@@ -86,21 +88,18 @@ public class KeyBoardDialog extends Dialog implements View.OnClickListener, Gest
     protected void init() {
         finalResTv = (TextView) findViewById(R.id.final_res_tv);
         abcGb = (GestureButton) findViewById(R.id.abc_gb);
-        abcGb.setKeys("bac");
         defGb = (GestureButton) findViewById(R.id.def_gb);
-        defGb.setKeys("edf");
         ghiGb = (GestureButton) findViewById(R.id.ghi_gb);
-        ghiGb.setKeys("hgi");
         jklGb = (GestureButton) findViewById(R.id.jkl_gb);
-        jklGb.setKeys("kjl");
         mnoGb = (GestureButton) findViewById(R.id.mno_gb);
-        mnoGb.setKeys("nmo");
         pqrsGb = (GestureButton) findViewById(R.id.pqrs_gb);
-        pqrsGb.setKeys("qprs");
         tuvGb = (GestureButton) findViewById(R.id.tuv_gb);
-        tuvGb.setKeys("utv");
         wxyzGb = (GestureButton) findViewById(R.id.wxyz_gb);
-        wxyzGb.setKeys("xwyz");
+        if (SharedPreferencesUtils.getBooleanSharedPreferencesData(context,ShareKeys.IS_OTHER_LETTER_ORDER,false)){
+            setupKeys();
+        }else {
+            setupKeys1();
+        }
         deleteBtn = (Button) findViewById(R.id.delete_btn);
         spaceBtn = (Button) findViewById(R.id.space_btn);
         okBtn = (Button) findViewById(R.id.ok_btn);
@@ -130,13 +129,54 @@ public class KeyBoardDialog extends Dialog implements View.OnClickListener, Gest
         });
     }
 
+    private void setupKeys() {
+        abcGb.setKeys("bac");
+        defGb.setKeys("edf");
+        ghiGb.setKeys("hgi");
+        jklGb.setKeys("kjl");
+        mnoGb.setKeys("nmo");
+        pqrsGb.setKeys("qprs");
+        tuvGb.setKeys("utv");
+        wxyzGb.setKeys("xwyz");
+    }
+
+    private void setupKeys1() {
+        abcGb.setKeys("abc");
+        defGb.setKeys("def");
+        ghiGb.setKeys("ghi");
+        jklGb.setKeys("jkl");
+        mnoGb.setKeys("mno");
+        pqrsGb.setKeys("pqrs");
+        tuvGb.setKeys("tuv");
+        wxyzGb.setKeys("wxyz");
+    }
+
     private void showHelpDialog() {
         MangaDialog dialog = new MangaDialog(context);
+        dialog.setOnPeanutDialogClickListener(new MangaDialog.OnPeanutDialogClickListener() {
+            @Override
+            public void onOkClick() {
+                if (SharedPreferencesUtils.getBooleanSharedPreferencesData(context,ShareKeys.IS_OTHER_LETTER_ORDER,false)){
+                    SharedPreferencesUtils.setSharedPreferencesData(context,ShareKeys.IS_OTHER_LETTER_ORDER,false);
+                    setupKeys1();
+                }else {
+                    SharedPreferencesUtils.setSharedPreferencesData(context,ShareKeys.IS_OTHER_LETTER_ORDER,true);
+                    setupKeys();
+                }
+            }
+
+            @Override
+            public void onCancelClick() {
+
+            }
+        });
         dialog.show();
         dialog.setTitle("教程");
         dialog.setMessage("1,按住键盘然后滑动到你想选择的字母然后松手即可输入" +
                 "\n2,输入完成点击OK即可查单词" +
                 "\n3,不想使用这个键盘可在设置中关闭");
+        dialog.setCancelText("知道了");
+        dialog.setOkText("切换字母顺序");
     }
 
     protected void onOkBtnClick() {
