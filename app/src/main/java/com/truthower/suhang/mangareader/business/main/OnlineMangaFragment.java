@@ -31,6 +31,7 @@ import com.truthower.suhang.mangareader.listener.OnSevenFourteenListDialogListen
 import com.truthower.suhang.mangareader.spider.SpiderBase;
 import com.truthower.suhang.mangareader.utils.BaseParameterUtil;
 import com.truthower.suhang.mangareader.utils.MatchStringUtil;
+import com.truthower.suhang.mangareader.utils.ShareObjUtil;
 import com.truthower.suhang.mangareader.utils.SharedPreferencesUtils;
 import com.truthower.suhang.mangareader.widget.bar.TopBar;
 import com.truthower.suhang.mangareader.widget.dialog.ListDialog;
@@ -79,7 +80,17 @@ public class OnlineMangaFragment extends BaseFragment implements PullToRefreshBa
             emptyTv.setText("当前未连接WiFi,如果你流量多就刷新.");
             initListView();
         } else {
-            doGetData();
+            if (null != ShareObjUtil.getObject(getActivity(), ShareKeys.MAIN_PAGE_CHCHE)) {
+                try {
+                    currentMangaList = (ArrayList<MangaBean>) ShareObjUtil.getObject(getActivity(), ShareKeys.MAIN_PAGE_CHCHE);
+                    initListView();
+                    refreshTopBarTitle();
+                }catch (Exception e){
+                    doGetData();
+                }
+            } else {
+                doGetData();
+            }
         }
         return v;
     }
@@ -172,6 +183,7 @@ public class OnlineMangaFragment extends BaseFragment implements PullToRefreshBa
                             @Override
                             public void run() {
                                 currentMangaList = result.getMangaList();
+                                ShareObjUtil.saveObject(getActivity(), currentMangaList, ShareKeys.MAIN_PAGE_CHCHE);
                                 initListView();
                                 refreshTopBarTitle();
                             }
@@ -442,7 +454,7 @@ public class OnlineMangaFragment extends BaseFragment implements PullToRefreshBa
                 break;
             }
         }
-        int actualPage = (BaseParameterUtil.getInstance().getCurrentPage(getActivity()) / spider.nextPageNeedAddCount()) ;
+        int actualPage = (BaseParameterUtil.getInstance().getCurrentPage(getActivity()) / spider.nextPageNeedAddCount());
         topBar.setTitle(BaseParameterUtil.getInstance().getCurrentWebSite(getActivity())
                 + "(" + type + "-" + actualPage + ")");
     }
