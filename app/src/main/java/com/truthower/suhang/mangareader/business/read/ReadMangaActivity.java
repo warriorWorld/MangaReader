@@ -54,6 +54,7 @@ import com.truthower.suhang.mangareader.utils.BaseParameterUtil;
 import com.truthower.suhang.mangareader.utils.ImageUtil;
 import com.truthower.suhang.mangareader.utils.LeanCloundUtil;
 import com.truthower.suhang.mangareader.utils.SharedPreferencesUtils;
+import com.truthower.suhang.mangareader.utils.VibratorUtil;
 import com.truthower.suhang.mangareader.volley.VolleyCallBack;
 import com.truthower.suhang.mangareader.volley.VolleyTool;
 import com.truthower.suhang.mangareader.widget.bar.TopBar;
@@ -592,7 +593,14 @@ public class ReadMangaActivity extends TTSActivity implements OnClickListener {
         dialog.setOnKeyboardChangeListener(new OnKeyboardChangeListener() {
             @Override
             public void onChange(String res) {
-
+                if (!SharedPreferencesUtils.getBooleanSharedPreferencesData
+                        (ReadMangaActivity.this, ShareKeys.CLOSE_SH_KEYBOARD_VIBRATION, false)) {
+                    VibratorUtil.Vibrate(ReadMangaActivity.this,30);
+                }
+                if (!SharedPreferencesUtils.getBooleanSharedPreferencesData
+                        (ReadMangaActivity.this, ShareKeys.CLOSE_SH_KEYBOARD_SOUND, false)) {
+                    text2Speech(res);
+                }
             }
 
             @Override
@@ -624,7 +632,7 @@ public class ReadMangaActivity extends TTSActivity implements OnClickListener {
     }
 
     private void showImgKeyBoardDialog(Bitmap bp) {
-        ImgKeyboardDialog dialog=new ImgKeyboardDialog(this);
+        ImgKeyboardDialog dialog = new ImgKeyboardDialog(this);
         dialog.setOnKeyboardChangeListener(new OnKeyboardChangeListener() {
             @Override
             public void onChange(String res) {

@@ -75,6 +75,7 @@
         <activity android:name=".business.tag.TagManagerActivity"></activity>
         <activity android:name=".business.tag.TagFilterActivity"></activity>
         <activity android:name=".business.other.AboutActivity"></activity>
+        <activity android:name=".business.other.KeyboardSettingActivity"></activity>
         <activity android:name=".business.other.FeedbackActivity"></activity>
         <activity android:name=".business.search.SearchActivity"></activity>
         <activity android:name=".business.ad.AdvertisingActivity"></activity>

@@ -210,7 +210,7 @@
                 android:visibility="visible"/>
 
             <RelativeLayout
-                android:id="@+id/close_sh_keyboard_rl"
+                android:id="@+id/keyboard_rl"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/user_item_h"
                 android:background="@color/white"
@@ -225,17 +225,17 @@
                     android:layout_centerVertical="true"
                     android:layout_gravity="center_vertical"
                     android:gravity="center_vertical"
-                    android:text="使用系统键盘"
+                    android:text="键盘设置"
                     android:textColor="@color/main_text_color"
                     android:textSize="@dimen/main_text_size"/>
 
 
-                <CheckBox
-                    android:id="@+id/close_sh_keyboard_cb"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                <ImageView
+                    android:layout_width="10dp"
+                    android:layout_height="10dp"
                     android:layout_alignParentRight="true"
-                    android:layout_centerVertical="true"/>
+                    android:layout_centerVertical="true"
+                    android:src="@drawable/forward"/>
             </RelativeLayout>
 
             <View

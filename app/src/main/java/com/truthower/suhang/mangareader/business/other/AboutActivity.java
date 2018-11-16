@@ -49,6 +49,7 @@ public class AboutActivity extends BaseActivity implements View.OnClickListener,
     private RelativeLayout checkUpdateRl;
     private RelativeLayout authorRl;
     private RelativeLayout feedbackRl;
+    private RelativeLayout keyboardRl;
     private TextView logoutTv;
 
     private String versionName, msg;
@@ -57,7 +58,7 @@ public class AboutActivity extends BaseActivity implements View.OnClickListener,
     private AVFile downloadFile;
     private MangaDialog versionDialog;
     private DownloadDialog downloadDialog;
-    private CheckBox closeTranslateCb, economyModeCb, closeTutorialCb, closeShKeyboardCb;
+    private CheckBox closeTranslateCb, economyModeCb, closeTutorialCb;
     private CheckBox closeTtsCb;
 
     @Override
@@ -120,15 +121,7 @@ public class AboutActivity extends BaseActivity implements View.OnClickListener,
                         (AboutActivity.this, ShareKeys.CLOSE_TTS, isChecked);
             }
         });
-        closeShKeyboardCb = (CheckBox) findViewById(R.id.close_sh_keyboard_cb);
-        closeShKeyboardCb.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                SharedPreferencesUtils.setSharedPreferencesData
-                        (AboutActivity.this, ShareKeys.CLOSE_SH_KEYBOARD, isChecked);
-            }
-        });
-
+        keyboardRl= (RelativeLayout) findViewById(R.id.keyboard_rl);
         closeTranslateCb.setChecked
                 (SharedPreferencesUtils.getBooleanSharedPreferencesData(AboutActivity.this,
                         ShareKeys.CLOSE_TRANSLATE, false));
@@ -141,9 +134,7 @@ public class AboutActivity extends BaseActivity implements View.OnClickListener,
         closeTtsCb.setChecked
                 (SharedPreferencesUtils.getBooleanSharedPreferencesData(AboutActivity.this,
                         ShareKeys.CLOSE_TTS, false));
-        closeShKeyboardCb.setChecked
-                (SharedPreferencesUtils.getBooleanSharedPreferencesData(AboutActivity.this,
-                        ShareKeys.CLOSE_SH_KEYBOARD, false));
+        keyboardRl.setOnClickListener(this);
         appIconIv.setOnClickListener(this);
         checkUpdateRl.setOnClickListener(this);
         authorRl.setOnClickListener(this);
@@ -321,6 +312,10 @@ public class AboutActivity extends BaseActivity implements View.OnClickListener,
                 break;
             case R.id.logout_tv:
                 showLogoutDialog();
+                break;
+            case R.id.keyboard_rl:
+                Intent intent1 = new Intent(AboutActivity.this, KeyboardSettingActivity.class);
+                startActivity(intent1);
                 break;
         }
     }

@@ -3,6 +3,7 @@ package com.truthower.suhang.mangareader.widget.dialog;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.Display;
 import android.view.Gravity;
@@ -17,9 +18,11 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.truthower.suhang.mangareader.R;
+import com.truthower.suhang.mangareader.business.other.KeyboardSettingActivity;
 import com.truthower.suhang.mangareader.config.ShareKeys;
 import com.truthower.suhang.mangareader.listener.OnKeyboardChangeListener;
 import com.truthower.suhang.mangareader.utils.SharedPreferencesUtils;
+import com.truthower.suhang.mangareader.utils.VibratorUtil;
 import com.truthower.suhang.mangareader.widget.button.GestureButton;
 
 
@@ -95,9 +98,9 @@ public class KeyBoardDialog extends Dialog implements View.OnClickListener, Gest
         pqrsGb = (GestureButton) findViewById(R.id.pqrs_gb);
         tuvGb = (GestureButton) findViewById(R.id.tuv_gb);
         wxyzGb = (GestureButton) findViewById(R.id.wxyz_gb);
-        if (SharedPreferencesUtils.getBooleanSharedPreferencesData(context,ShareKeys.IS_OTHER_LETTER_ORDER,false)){
+        if (SharedPreferencesUtils.getBooleanSharedPreferencesData(context, ShareKeys.IS_OTHER_LETTER_ORDER, false)) {
             setupKeys();
-        }else {
+        } else {
             setupKeys1();
         }
         deleteBtn = (Button) findViewById(R.id.delete_btn);
@@ -156,13 +159,8 @@ public class KeyBoardDialog extends Dialog implements View.OnClickListener, Gest
         dialog.setOnPeanutDialogClickListener(new MangaDialog.OnPeanutDialogClickListener() {
             @Override
             public void onOkClick() {
-                if (SharedPreferencesUtils.getBooleanSharedPreferencesData(context,ShareKeys.IS_OTHER_LETTER_ORDER,false)){
-                    SharedPreferencesUtils.setSharedPreferencesData(context,ShareKeys.IS_OTHER_LETTER_ORDER,false);
-                    setupKeys1();
-                }else {
-                    SharedPreferencesUtils.setSharedPreferencesData(context,ShareKeys.IS_OTHER_LETTER_ORDER,true);
-                    setupKeys();
-                }
+                Intent intent = new Intent(context, KeyboardSettingActivity.class);
+                context.startActivity(intent);
             }
 
             @Override
@@ -176,7 +174,7 @@ public class KeyBoardDialog extends Dialog implements View.OnClickListener, Gest
                 "\n2,输入完成点击OK即可查单词" +
                 "\n3,不想使用这个键盘可在设置中关闭");
         dialog.setCancelText("知道了");
-        dialog.setOkText("切换字母顺序");
+        dialog.setOkText("键盘设置");
     }
 
     protected void onOkBtnClick() {
@@ -213,14 +211,14 @@ public class KeyBoardDialog extends Dialog implements View.OnClickListener, Gest
     public void onResult(String result) {
         resTv.setText("");
         finalResTv.setText(finalResTv.getText().toString() + result);
-        if (null != mOnKeyboardChangeListener) {
-            mOnKeyboardChangeListener.onChange(result);
-        }
     }
 
     @Override
     public void onChange(String result) {
         resTv.setText(result);
+        if (null != mOnKeyboardChangeListener) {
+            mOnKeyboardChangeListener.onChange(result);
+        }
     }
 
     public void setOnKeyboardChangeListener(OnKeyboardChangeListener onKeyboardChangeListener) {
