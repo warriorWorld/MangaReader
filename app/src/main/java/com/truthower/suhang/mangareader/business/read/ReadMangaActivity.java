@@ -595,11 +595,11 @@ public class ReadMangaActivity extends TTSActivity implements OnClickListener {
             public void onChange(String res) {
                 if (!SharedPreferencesUtils.getBooleanSharedPreferencesData
                         (ReadMangaActivity.this, ShareKeys.CLOSE_SH_KEYBOARD_VIBRATION, false)) {
-                    VibratorUtil.Vibrate(ReadMangaActivity.this,30);
+                    VibratorUtil.Vibrate(ReadMangaActivity.this,20);
                 }
                 if (!SharedPreferencesUtils.getBooleanSharedPreferencesData
                         (ReadMangaActivity.this, ShareKeys.CLOSE_SH_KEYBOARD_SOUND, false)) {
-                    text2Speech(res);
+                    text2Speech(res,true);
                 }
             }
 

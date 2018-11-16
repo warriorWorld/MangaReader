@@ -29,6 +29,7 @@ public class KeyboardSettingActivity extends BaseActivity {
         closeShKeyboardCb.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                baseToast.showToast("关闭后可从设置中再次开启");
                 SharedPreferencesUtils.setSharedPreferencesData
                         (KeyboardSettingActivity.this, ShareKeys.CLOSE_SH_KEYBOARD, isChecked);
             }

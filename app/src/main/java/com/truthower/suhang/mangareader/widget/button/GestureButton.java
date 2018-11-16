@@ -63,7 +63,7 @@ public class GestureButton extends RelativeLayout {
 
     private int dx, dy;
     private VelocityTracker vTracker = null;
-    private String finalRes = "";
+    private String finalRes = "", lastFinalRes = "";
 
     @Override
     public boolean onTouchEvent(MotionEvent e) {
@@ -106,7 +106,8 @@ public class GestureButton extends RelativeLayout {
                         finalRes = gestureTv2.getText().toString();
                     }
                 }
-                if (null != mOnResultListener) {
+                if (null != mOnResultListener && !lastFinalRes.equals(finalRes)) {
+                    lastFinalRes = finalRes;
                     mOnResultListener.onChange(finalRes.toLowerCase());
                 }
                 break;
