@@ -14,20 +14,21 @@ import com.truthower.suhang.mangareader.widget.dialog.MangaDialog;
  */
 
 public class LeanCloundUtil {
+    public static boolean handleLeanResult(AVException e) {
+        return e == null;
+    }
 
     public static boolean handleLeanResult(Context context, AVException e) {
         if (e == null) {
             return true;
         } else {
             try {
-                if (Configure.isTest|| LoginBean.getInstance().isCreator()) {
-                    MangaDialog errorDialog = new MangaDialog(context);
-                    errorDialog.show();
-                    errorDialog.setTitle("出错了");
-                    errorDialog.setMessage(e.getMessage());
-                }
+                MangaDialog errorDialog = new MangaDialog(context);
+                errorDialog.show();
+                errorDialog.setTitle("出错了");
+                errorDialog.setMessage(e.getMessage());
             } catch (WindowManager.BadTokenException exception) {
-
+                exception.printStackTrace();
             }
             return false;
         }

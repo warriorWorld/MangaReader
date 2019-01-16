@@ -64,7 +64,7 @@ public class LunchActivity extends BaseActivity implements View.OnClickListener,
         query.findInBackground(new FindCallback<AVObject>() {
             @Override
             public void done(List<AVObject> list, AVException e) {
-                if (LeanCloundUtil.handleLeanResult(LunchActivity.this, e)) {
+                if (LeanCloundUtil.handleLeanResult(e)) {
                     if (null != list && list.size() > 0) {
                         versionName = list.get(0).getString("versionName");
                         versionCode = list.get(0).getInt("versionCode");
@@ -81,6 +81,24 @@ public class LunchActivity extends BaseActivity implements View.OnClickListener,
                             showVersionDialog();
                         }
                     }
+                } else {
+                    MangaDialog errorDialog = new MangaDialog(LunchActivity.this);
+                    errorDialog.setOnPeanutDialogClickListener(new MangaDialog.OnPeanutDialogClickListener() {
+                        @Override
+                        public void onOkClick() {
+                            doGetVersionInfo();
+                        }
+
+                        @Override
+                        public void onCancelClick() {
+                            toNext();
+                        }
+                    });
+                    errorDialog.show();
+                    errorDialog.setTitle("出错了");
+                    errorDialog.setMessage(e.getMessage());
+                    errorDialog.setOkText("重试");
+                    errorDialog.setCancelText("离线进入");
                 }
             }
         });
