@@ -17,6 +17,12 @@ public class ImgKeyboardDialog extends KeyBoardDialog {
     }
 
     @Override
+    protected void windowSet() {
+        super.windowSet();
+        getWindow().setDimAmount(0.75f);//去掉蒙层
+    }
+
+    @Override
     protected int getLayoutId() {
         return R.layout.dialog_image_keyboard;
     }
