@@ -22,17 +22,22 @@ public class Test {
 
     public static void main(String[] args) {
         try {
-            doc = Jsoup.connect("https://www.mangareader.net/one-piece/32/1")
+            doc = Jsoup.connect("http://jandan.net/duan")
                     .timeout(10000).get();
         } catch (IOException e) {
             e.printStackTrace();
         }
 
         if (null != doc) {
-            Elements mangaListElements = doc.select("div.imgholder a");
-//            String name = mangaListElements.get(0).getElementsByTag("img").last().attr("src");
-
-            System.out.println(mangaListElements.text());
+            Element mangaListElements = doc.body().getElementById("wrapper").getElementById("body")
+                    .getElementById("content").getElementById("comments");
+            Elements eles=mangaListElements.getElementsByClass("commentlist").last().
+                    getElementsByTag("li");
+//            System.out.println(mangaListElements.text());
+            for (Element ele : eles) {
+                System.out.println(ele.select("div.text").text());
+            }
+//            System.out.println(mangaListElements.text());
         }
     }
 }
