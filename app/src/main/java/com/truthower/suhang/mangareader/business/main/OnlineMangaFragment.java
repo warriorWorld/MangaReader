@@ -29,6 +29,7 @@ import com.truthower.suhang.mangareader.listener.JsoupCallBack;
 import com.truthower.suhang.mangareader.listener.OnEditResultListener;
 import com.truthower.suhang.mangareader.listener.OnSevenFourteenListDialogListener;
 import com.truthower.suhang.mangareader.spider.SpiderBase;
+import com.truthower.suhang.mangareader.test.TestActivity;
 import com.truthower.suhang.mangareader.utils.BaseParameterUtil;
 import com.truthower.suhang.mangareader.utils.MatchStringUtil;
 import com.truthower.suhang.mangareader.utils.ShareObjUtil;
@@ -85,7 +86,7 @@ public class OnlineMangaFragment extends BaseFragment implements PullToRefreshBa
                     currentMangaList = (ArrayList<MangaBean>) ShareObjUtil.getObject(getActivity(), ShareKeys.MAIN_PAGE_CHCHE);
                     initListView();
                     refreshTopBarTitle();
-                }catch (Exception e){
+                } catch (Exception e) {
                     doGetData();
                 }
             } else {
@@ -129,6 +130,25 @@ public class OnlineMangaFragment extends BaseFragment implements PullToRefreshBa
                     ComponentName cn = new ComponentName("com.hangsu.xiaoxiaodaiduo.peanutrich",
                             "com.hangsu.xiaoxiaodaiduo.peanutrich.launch.LunchActivity");
                     intent.setComponent(cn);
+                    startActivity(intent);
+                }
+            }
+        });
+        topBar.setTopBarLongClickLister(new TopBar.OnTopBarLongClickListener() {
+            @Override
+            public void onLeftLongClick() {
+
+            }
+
+            @Override
+            public void onRightLongClick() {
+
+            }
+
+            @Override
+            public void onTitleLongClick() {
+                if (Configure.isTest) {
+                    Intent intent = new Intent(getActivity(), TestActivity.class);
                     startActivity(intent);
                 }
             }

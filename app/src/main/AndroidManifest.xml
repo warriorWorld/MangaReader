@@ -82,6 +82,7 @@
         <activity android:name=".business.wordsbook.WordsBookActivity"></activity>
         <activity android:name=".business.statistics.StatisticsActivity"></activity>
         <activity android:name=".business.user.UserCenterActivity"></activity>
+        <activity android:name="com.truthower.suhang.mangareader.test.TestActivity"></activity>
         <activity
             android:name=".business.comment.CommentActivity"
             android:windowSoftInputMode="adjustResize"></activity>
