@@ -216,8 +216,8 @@ public class KaKaLotSpider extends SpiderBase {
                     jsoupCallBack.loadFailed(e.toString());
                 }
                 if (null != doc) {
-                    Elements mangaListElements = doc.select("span.item-name");
-                    Elements mangaListHrefs = doc.select("span.item-name a");
+                    Elements mangaListElements = doc.select("div.story_item_right h3");
+                    Elements mangaListHrefs = mangaListElements.select("a");
                     MangaBean item;
                     ArrayList<MangaBean> mangaList = new ArrayList<MangaBean>();
                     for (int i = 0; i < mangaListElements.size(); i++) {
