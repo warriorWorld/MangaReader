@@ -247,7 +247,7 @@ public class LocalMangaFragment extends BaseFragment implements
     private void sortAndRenameFile(String manganame) {
         String oldPath = storagePath + "/" + "download";
         String newPath = storagePath + "/" + manganame;
-        String gifPath = storagePath + "/" + "GIFs";
+//        String gifPath = storagePath + "/" + "GIFs";
 
         File f = new File(oldPath);
         File[] files = f.listFiles();
@@ -265,23 +265,28 @@ public class LocalMangaFragment extends BaseFragment implements
             baseToast.showToast("该文件夹已存在,请重新命名!");
             return;
         }
-        File gifFolder = new File(gifPath);
-        if (!gifFolder.exists()) {
-            gifFolder.mkdirs();
-        }
+//        File gifFolder = new File(gifPath);
+//        if (!gifFolder.exists()) {
+//            gifFolder.mkdirs();
+//        }
         for (int i = 0; i < fileArrayList.size(); i++) {
             if (!fileArrayList.get(i).toString().contains("gif")) {
                 File to = new File(newPath, manganame + "(" + i + ")" + ".jpg");
 
                 fileArrayList.get(i).renameTo(to);
             } else {
-                Long time = new Date().getTime();
-                String timeString = time + "";
-                timeString = timeString.substring(5);
-                File to = new File(gifPath, "gif" + timeString + i + ".gif");
+                File to = new File(newPath, manganame + "(" + i + ")" + ".gif");
 
                 fileArrayList.get(i).renameTo(to);
             }
+//            else {
+//                Long time = new Date().getTime();
+//                String timeString = time + "";
+//                timeString = timeString.substring(5);
+//                File to = new File(gifPath, "gif" + timeString + i + ".gif");
+//
+//                fileArrayList.get(i).renameTo(to);
+//            }
         }
         baseToast.showToast("完成");
     }
