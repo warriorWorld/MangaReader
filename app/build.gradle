@@ -68,4 +68,6 @@ dependencies {
     //有道OCR 查词用的不是这个
     implementation files('libs/YoudaoBase.jar')
     implementation files('libs/YoudaoOCROnline.jar')
+    //gif
+    implementation 'com.roger.gifloadinglibrary:gifloadinglibrary:1.0.0'
 }
