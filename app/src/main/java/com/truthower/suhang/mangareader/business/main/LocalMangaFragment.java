@@ -80,7 +80,7 @@ public class LocalMangaFragment extends BaseFragment implements
     }
 
     private WheelSelectorDialog optionsSelector;
-    private final String INDEPENDENT_PATH = "1Independent", STORY_PATH = "1Story";
+    private final String INDEPENDENT_PATH = "1Independent", STORY_PATH = "2Story";
     private Handler handler2 = new Handler() {
         public void handleMessage(Message msg) {
             switch (Integer.valueOf(msg.obj.toString())) {
