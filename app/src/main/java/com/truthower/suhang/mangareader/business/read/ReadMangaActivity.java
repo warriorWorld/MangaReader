@@ -556,7 +556,7 @@ public class ReadMangaActivity extends TTSActivity implements OnClickListener {
                 @Override
                 public void done(AVException e) {
                     isRequesting = false;
-                    if (LeanCloundUtil.handleLeanResult(ReadMangaActivity.this, e)) {
+                    if (LeanCloundUtil.handleLeanResult(e)) {
                         SharedPreferencesUtils.setSharedPreferencesData
                                 (ReadMangaActivity.this, ShareKeys.STATISTICS_UPDATE_KEY + realMangaName, date);
                         db.deleteStatiscticsByBookName(realMangaName);
@@ -595,11 +595,11 @@ public class ReadMangaActivity extends TTSActivity implements OnClickListener {
             public void onChange(String res) {
                 if (!SharedPreferencesUtils.getBooleanSharedPreferencesData
                         (ReadMangaActivity.this, ShareKeys.CLOSE_SH_KEYBOARD_VIBRATION, false)) {
-                    VibratorUtil.Vibrate(ReadMangaActivity.this,20);
+                    VibratorUtil.Vibrate(ReadMangaActivity.this, 20);
                 }
                 if (!SharedPreferencesUtils.getBooleanSharedPreferencesData
                         (ReadMangaActivity.this, ShareKeys.CLOSE_SH_KEYBOARD_SOUND, false)) {
-                    text2Speech(res,true);
+                    text2Speech(res, true);
                 }
             }
 
@@ -638,11 +638,11 @@ public class ReadMangaActivity extends TTSActivity implements OnClickListener {
             public void onChange(String res) {
                 if (!SharedPreferencesUtils.getBooleanSharedPreferencesData
                         (ReadMangaActivity.this, ShareKeys.CLOSE_SH_KEYBOARD_VIBRATION, false)) {
-                    VibratorUtil.Vibrate(ReadMangaActivity.this,20);
+                    VibratorUtil.Vibrate(ReadMangaActivity.this, 20);
                 }
                 if (!SharedPreferencesUtils.getBooleanSharedPreferencesData
                         (ReadMangaActivity.this, ShareKeys.CLOSE_SH_KEYBOARD_SOUND, false)) {
-                    text2Speech(res,true);
+                    text2Speech(res, true);
                 }
             }
 
