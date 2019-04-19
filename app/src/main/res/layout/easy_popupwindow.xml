@@ -10,7 +10,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/triangle_iv"
         android:layout_centerHorizontal="true"
-        android:background="@drawable/easy_popup_bg"
+        android:background="@drawable/main_round_solid"
         android:orientation="vertical"
         android:paddingBottom="17dp"
         android:paddingLeft="17dp"

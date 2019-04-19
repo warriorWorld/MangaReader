@@ -30,11 +30,8 @@ import com.avos.avoscloud.AVObject;
 import com.avos.avoscloud.SaveCallback;
 import com.truthower.suhang.mangareader.R;
 import com.truthower.suhang.mangareader.adapter.ReadMangaAdapter;
-import com.truthower.suhang.mangareader.base.BaseActivity;
 import com.truthower.suhang.mangareader.base.TTSActivity;
 import com.truthower.suhang.mangareader.bean.LoginBean;
-import com.truthower.suhang.mangareader.bean.MangaBean;
-import com.truthower.suhang.mangareader.bean.MangaListBean;
 import com.truthower.suhang.mangareader.bean.StatisticsBean;
 import com.truthower.suhang.mangareader.bean.YoudaoResponse;
 import com.truthower.suhang.mangareader.business.detail.WebMangaDetailsActivity;
@@ -49,7 +46,6 @@ import com.truthower.suhang.mangareader.listener.OnKeyboardChangeListener;
 import com.truthower.suhang.mangareader.listener.OnSpeakClickListener;
 import com.truthower.suhang.mangareader.spider.FileSpider;
 import com.truthower.suhang.mangareader.spider.SpiderBase;
-import com.truthower.suhang.mangareader.utils.Base64BitmapUtil;
 import com.truthower.suhang.mangareader.utils.BaseParameterUtil;
 import com.truthower.suhang.mangareader.utils.ImageUtil;
 import com.truthower.suhang.mangareader.utils.LeanCloundUtil;
@@ -82,11 +78,8 @@ import com.youdao.sdk.app.EncryptHelper;
 
 import org.adw.library.widgets.discreteseekbar.DiscreteSeekBar;
 import org.greenrobot.eventbus.Subscribe;
-import org.jsoup.Jsoup;
-import org.jsoup.select.Elements;
 
 import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -134,6 +127,7 @@ public class ReadMangaActivity extends TTSActivity implements OnClickListener {
     //OCR识别
     final public static OCRParameters tps = new OCRParameters.Builder().source("youdaoocr").timeout(100000)
             .type(OCRParameters.TYPE_LINE).lanType(RecognizeLanguage.LINE_CHINESE_ENGLISH.getCode()).build();//
+    private View screenDv;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -196,7 +190,7 @@ public class ReadMangaActivity extends TTSActivity implements OnClickListener {
             dialog.show();
             dialog.setTitle("教程");
             dialog.setMessage("1,点击漫画标题或右上角图标可调出查单词弹窗" +
-                    "\n2,点击左上角方块图标可调出截屏查单词弹窗(可用手指划出指定区域翻译,可以避免输入法遮挡)" +
+                    "\n2,点击左下角图标可调出截屏查单词弹窗(可用手指划出指定区域翻译,可以避免输入法遮挡)" +
                     "\n3,双击漫画图片可放大" +
                     "\n4,点击屏幕中间稍微靠下位置可调出进度条,可以跳转到指定位置" +
                     "\n5,长按屏幕中间稍微靠下位置可保存或删除当前图片");
@@ -345,8 +339,10 @@ public class ReadMangaActivity extends TTSActivity implements OnClickListener {
         ocrBtn = (Button) findViewById(R.id.ocr_btn);
         readProgressTv = (TextView) findViewById(R.id.read_progress_tv);
         test_iv = (ImageView) findViewById(R.id.test_iv);
-        readProgressTv.setOnClickListener(this);
+        screenDv = findViewById(R.id.screenshoot_dv);
 
+        readProgressTv.setOnClickListener(this);
+        screenDv.setOnClickListener(this);
         showSeekBar.setOnClickListener(this);
         showSeekBar.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
@@ -389,50 +385,7 @@ public class ReadMangaActivity extends TTSActivity implements OnClickListener {
 
             @Override
             public void onLeftClick() {
-                MobclickAgent.onEvent(ReadMangaActivity.this, "shot_translate");
-                try {
-                    baseToast.showToast("开始划词翻译");
-
-                    if (shotView == null) {
-                        shotView = (ShotView) findViewById(R.id.shot_view);
-                        shotView.setL(new ShotView.FinishShotListener() {
-                            @Override
-                            public void finishShot(Bitmap bp) {
-                                if (SharedPreferencesUtils.getBooleanSharedPreferencesData
-                                        (ReadMangaActivity.this, ShareKeys.CLOSE_SH_KEYBOARD, false)) {
-                                    showImgEditDialog(bp);
-                                } else {
-                                    showImgKeyBoardDialog(bp);
-                                }
-                            }
-                        });
-                    } else {
-                        shotView.setIsRunning(true);
-                    }
-
-                    Bitmap bgBitmap = shotView.getBitmap();
-                    if (bgBitmap != null) {
-                        bgBitmap.recycle();
-                    }
-                    bgBitmap = ScreenShot.takeScreenShot(ReadMangaActivity.this);
-                    /**
-                     * getDecorView这个方法是获取缓存的屏幕 显然PhotoView这个控件放大缩小并没有触发新的缓存 所以截屏后再放大缩小就会有问题了
-                     * 而我通过viewpager翻页的方法强行触发新的缓存解决这个问题
-                     */
-                    if (historyPosition + 1 == pathList.size()) {
-                        int temp = historyPosition;
-                        mangaPager.setCurrentItem(temp - 1);
-                        mangaPager.setCurrentItem(temp);
-                    } else {
-                        int temp = historyPosition;
-                        mangaPager.setCurrentItem(temp + 1);
-                        mangaPager.setCurrentItem(temp);
-                    }
-                    shotView.setBitmap(bgBitmap);
-                    shotView.setVisibility(View.VISIBLE);
-                } catch (Exception e) {
-
-                }
+                finish();
             }
         });
         topBar.setTopBarLongClickLister(new TopBar.OnTopBarLongClickListener() {
@@ -899,6 +852,52 @@ public class ReadMangaActivity extends TTSActivity implements OnClickListener {
                 break;
             case R.id.read_progress_tv:
 
+                break;
+            case R.id.screenshoot_dv:
+                MobclickAgent.onEvent(ReadMangaActivity.this, "shot_translate");
+                try {
+                    baseToast.showToast("手指划过区域然后松手截屏");
+
+                    if (shotView == null) {
+                        shotView = (ShotView) findViewById(R.id.shot_view);
+                        shotView.setL(new ShotView.FinishShotListener() {
+                            @Override
+                            public void finishShot(Bitmap bp) {
+                                if (SharedPreferencesUtils.getBooleanSharedPreferencesData
+                                        (ReadMangaActivity.this, ShareKeys.CLOSE_SH_KEYBOARD, false)) {
+                                    showImgEditDialog(bp);
+                                } else {
+                                    showImgKeyBoardDialog(bp);
+                                }
+                            }
+                        });
+                    } else {
+                        shotView.setIsRunning(true);
+                    }
+
+                    Bitmap bgBitmap = shotView.getBitmap();
+                    if (bgBitmap != null) {
+                        bgBitmap.recycle();
+                    }
+                    bgBitmap = ScreenShot.takeScreenShot(ReadMangaActivity.this);
+                    /**
+                     * getDecorView这个方法是获取缓存的屏幕 显然PhotoView这个控件放大缩小并没有触发新的缓存 所以截屏后再放大缩小就会有问题了
+                     * 而我通过viewpager翻页的方法强行触发新的缓存解决这个问题
+                     */
+                    if (historyPosition + 1 == pathList.size()) {
+                        int temp = historyPosition;
+                        mangaPager.setCurrentItem(temp - 1);
+                        mangaPager.setCurrentItem(temp);
+                    } else {
+                        int temp = historyPosition;
+                        mangaPager.setCurrentItem(temp + 1);
+                        mangaPager.setCurrentItem(temp);
+                    }
+                    shotView.setBitmap(bgBitmap);
+                    shotView.setVisibility(View.VISIBLE);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
                 break;
             case R.id.ocr_btn:
                 if (LoginBean.getInstance().isCreator()) {

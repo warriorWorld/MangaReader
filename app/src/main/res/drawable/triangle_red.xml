@@ -7,10 +7,10 @@
             android:pivotY="87%"
             android:toDegrees="45">
             <shape android:shape="rectangle">
-                <solid android:color="#f55246" />
+                <solid android:color="@color/manga_reader" />
                 <stroke
                     android:width="0.5dp"
-                    android:color="#f55246" />
+                    android:color="@color/manga_reader" />
             </shape>
         </rotate>
     </item>
