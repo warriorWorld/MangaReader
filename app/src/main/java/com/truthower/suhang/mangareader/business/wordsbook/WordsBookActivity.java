@@ -89,8 +89,8 @@ public class WordsBookActivity extends TTSActivity implements OnClickListener {
         killBtn =  findViewById(R.id.kill_btn);
         topBarLeft = (TextView) findViewById(R.id.top_bar_left);
         topBarRight = (TextView) findViewById(R.id.top_bar_right);
-        hideBaseTopBar();
         killBtn.setOnClickListener(this);
+        baseTopBar.setTitle("生词本");
     }
 
     @Override
