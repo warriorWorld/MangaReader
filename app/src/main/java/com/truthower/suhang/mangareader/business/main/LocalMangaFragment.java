@@ -40,7 +40,6 @@ import com.truthower.suhang.mangareader.widget.dialog.ListDialog;
 import com.truthower.suhang.mangareader.widget.dialog.MangaDialog;
 import com.truthower.suhang.mangareader.widget.dialog.MangaEditDialog;
 import com.truthower.suhang.mangareader.widget.recyclerview.RecyclerGridDecoration;
-import com.truthower.suhang.mangareader.widget.wheelview.wheelselector.WheelSelectorDialog;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -68,7 +67,6 @@ public class LocalMangaFragment extends BaseFragment implements
         Story
     }
 
-    private WheelSelectorDialog optionsSelector;
     private String independentPath = "1Independent", storyPath = "2Story";
     private Handler handler2 = new Handler() {
         public void handleMessage(Message msg) {
@@ -224,7 +222,7 @@ public class LocalMangaFragment extends BaseFragment implements
 
             @Override
             public void onTitleClick() {
-                if (LoginBean.getInstance().isMaster()||LoginBean.getInstance().isCreator()) {
+                if (LoginBean.getInstance().isMaster() || LoginBean.getInstance().isCreator()) {
 //                    showOptionsSelector();
                     showOptionsSelectorDialog();
                 }
@@ -280,50 +278,6 @@ public class LocalMangaFragment extends BaseFragment implements
         baseToast.showToast("完成");
     }
 
-    private void showOptionsSelector() {
-        if (null == fileNameOptions || fileNameOptions.length == 0) {
-            baseToast.showToast("没有筛选条件");
-            return;
-        }
-        if (null == optionsSelector) {
-            optionsSelector = new WheelSelectorDialog(getActivity());
-            optionsSelector.setCancelable(true);
-        }
-        optionsSelector.setOnSingleSelectedListener(new WheelSelectorDialog.OnSingleSelectedListener() {
-
-            @Override
-            public void onOkBtnClick(String selectedRes, String selectedCodeRes) {
-            }
-
-            @Override
-            public void onOkBtnClick(String selectedRes, String selectedCodeRes, String selectedTypeRes) {
-            }
-
-            @Override
-            public void onOkBtnClick(int position) {
-                String fileName;
-                switch (position) {
-                    case 0:
-                        fileName = getFileName(FileTypeEnum.Independent);
-                        sortAndRenameFile(fileName);
-                        moveFolder(independentPath, fileName);
-                        break;
-                    case 1:
-                        fileName = getFileName(FileTypeEnum.Story);
-                        sortAndRenameFile(fileName);
-                        moveFolder(storyPath, fileName);
-                        break;
-                    case 2:
-                        showSortAndRenameFilesDialog();
-                        break;
-                }
-            }
-        });
-        optionsSelector.show();
-
-        optionsSelector.initOptionsData(fileNameOptions);
-    }
-
     private void showOptionsSelectorDialog() {
         ListDialog listDialog = new ListDialog(getActivity());
         listDialog.setOnSevenFourteenListDialogListener(new OnSevenFourteenListDialogListener() {
@@ -371,7 +325,7 @@ public class LocalMangaFragment extends BaseFragment implements
                         showEditDialog("文件夹名", "填写文件夹名", new OnEditResultListener() {
                             @Override
                             public void onResult(String text) {
-                                baseToast.showToast("已修改为:"+text);
+                                baseToast.showToast("已修改为:" + text);
                                 SharedPreferencesUtils.setSharedPreferencesData(getActivity(), ShareKeys.INDEPENDENT_FOLDER_NAME, text);
                             }
 
@@ -385,7 +339,7 @@ public class LocalMangaFragment extends BaseFragment implements
                         showEditDialog("文件夹名", "填写文件夹名", new OnEditResultListener() {
                             @Override
                             public void onResult(String text) {
-                                baseToast.showToast("已修改为:"+text);
+                                baseToast.showToast("已修改为:" + text);
                                 SharedPreferencesUtils.setSharedPreferencesData(getActivity(), ShareKeys.STORY_FOLDER_NAME, text);
                             }
 

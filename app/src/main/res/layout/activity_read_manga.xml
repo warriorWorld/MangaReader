@@ -18,7 +18,7 @@
             android:background="@color/white"
             app:left_background="@drawable/nav_back_icon"
             app:titleTextSize="14sp"
-            app:right_background="@drawable/search_word"
+            app:right_background="@drawable/dictionary"
             app:titleTextColor="@color/main_text_color"
             app:title_textColor="@color/main_text_color">
 

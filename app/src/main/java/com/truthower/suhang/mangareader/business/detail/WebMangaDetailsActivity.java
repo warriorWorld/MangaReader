@@ -5,7 +5,6 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.AdapterView;
@@ -27,7 +26,6 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import com.truthower.suhang.mangareader.R;
 import com.truthower.suhang.mangareader.adapter.OneShotDetailsAdapter;
 import com.truthower.suhang.mangareader.adapter.OnlineMangaDetailAdapter;
-import com.truthower.suhang.mangareader.base.BaseActivity;
 import com.truthower.suhang.mangareader.base.TTSActivity;
 import com.truthower.suhang.mangareader.bean.ChapterBean;
 import com.truthower.suhang.mangareader.bean.DownloadBean;
@@ -40,7 +38,6 @@ import com.truthower.suhang.mangareader.business.download.DownloadMangaManager;
 import com.truthower.suhang.mangareader.business.main.MainActivity;
 import com.truthower.suhang.mangareader.business.read.ReadMangaActivity;
 import com.truthower.suhang.mangareader.business.search.SearchActivity;
-import com.truthower.suhang.mangareader.business.user.CollectedActivity;
 import com.truthower.suhang.mangareader.config.Configure;
 import com.truthower.suhang.mangareader.config.ShareKeys;
 import com.truthower.suhang.mangareader.eventbus.EventBusEvent;
@@ -66,7 +63,7 @@ import com.truthower.suhang.mangareader.widget.layout.StarLinearlayout;
 import com.truthower.suhang.mangareader.widget.popupwindow.EasyPopupWindow;
 import com.truthower.suhang.mangareader.widget.pulltorefresh.PullToRefreshBase;
 import com.truthower.suhang.mangareader.widget.pulltorefresh.PullToRefreshGridView;
-import com.truthower.suhang.mangareader.widget.wheelview.wheelselector.WheelSelectorDialog;
+import com.truthower.suhang.mangareader.widget.wheelview.wheelselector.SingleSelectorDialog;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -94,12 +91,12 @@ public class WebMangaDetailsActivity extends TTSActivity implements AdapterView.
     private TextView mangaNameTv, mangaAuthorTv, mangaTypeTv, lastUpdateTv, downloadTagTv;
     private String[] optionsList = {"下载全部", "选择起始点下载", "加入正在追更", "加入我已看完"};
     private ProgressDialog loadBar;
-    private WheelSelectorDialog optionsSelector;
+    private SingleSelectorDialog optionsSelector;
     private String mangaUrl;
     private MangaDialog downloadDialog;
     private boolean isCollected = false;
     private String collectedId = "";
-    private WheelSelectorDialog tagSelector, authorSelector;
+    private SingleSelectorDialog tagSelector, authorSelector;
     //one shot 直接获取到了所有图片的地址
     private ArrayList<String> oneShotPathList = new ArrayList<String>();
     //因为我不知道当期收藏的漫画是哪个网站的 所以就一个个试
@@ -403,10 +400,10 @@ public class WebMangaDetailsActivity extends TTSActivity implements AdapterView.
 
     private void showTagsSelector() {
         if (null == tagSelector) {
-            tagSelector = new WheelSelectorDialog(this);
+            tagSelector = new SingleSelectorDialog(this);
             tagSelector.setCancelable(true);
         }
-        tagSelector.setOnSingleSelectedListener(new WheelSelectorDialog.OnSingleSelectedListener() {
+        tagSelector.setOnSingleSelectedListener(new SingleSelectorDialog.OnSingleSelectedListener() {
 
             @Override
             public void onOkBtnClick(String selectedRes, String selectedCodeRes) {
@@ -425,14 +422,12 @@ public class WebMangaDetailsActivity extends TTSActivity implements AdapterView.
             }
 
             @Override
-            public void onOkBtnClick(String selectedRes, String selectedCodeRes, String selectedTypeRes) {
-            }
-
-            @Override
             public void onOkBtnClick(int position) {
+
             }
         });
         tagSelector.show();
+        tagSelector.setWheelViewTitle("选择标签");
         if (null != currentManga.getTypeCodes() && currentManga.getTypeCodes().length > 0) {
             tagSelector.initOptionsData(currentManga.getTypes(), currentManga.getTypeCodes());
         } else {
@@ -442,10 +437,10 @@ public class WebMangaDetailsActivity extends TTSActivity implements AdapterView.
 
     private void showAuthorSelector() {
         if (null == authorSelector) {
-            authorSelector = new WheelSelectorDialog(this);
+            authorSelector = new SingleSelectorDialog(this);
             authorSelector.setCancelable(true);
         }
-        authorSelector.setOnSingleSelectedListener(new WheelSelectorDialog.OnSingleSelectedListener() {
+        authorSelector.setOnSingleSelectedListener(new SingleSelectorDialog.OnSingleSelectedListener() {
 
             @Override
             public void onOkBtnClick(String selectedRes, String selectedCodeRes) {
@@ -458,14 +453,12 @@ public class WebMangaDetailsActivity extends TTSActivity implements AdapterView.
             }
 
             @Override
-            public void onOkBtnClick(String selectedRes, String selectedCodeRes, String selectedTypeRes) {
-            }
-
-            @Override
             public void onOkBtnClick(int position) {
+
             }
         });
         authorSelector.show();
+        authorSelector.setWheelViewTitle("选择作者");
         authorSelector.initOptionsData(authorOptions);
     }
 
@@ -795,40 +788,6 @@ public class WebMangaDetailsActivity extends TTSActivity implements AdapterView.
         object.put("owner", userName);
         object.put("mangaName", ThreeDESUtil.encode(Configure.key, currentManga.getName()));
         object.saveInBackground();
-    }
-
-    private void showOptionsSelector() {
-        if (null == optionsSelector) {
-            optionsSelector = new WheelSelectorDialog(this);
-            optionsSelector.setCancelable(true);
-        }
-        optionsSelector.setOnSingleSelectedListener(new WheelSelectorDialog.OnSingleSelectedListener() {
-
-            @Override
-            public void onOkBtnClick(String selectedRes, String selectedCodeRes) {
-            }
-
-            @Override
-            public void onOkBtnClick(String selectedRes, String selectedCodeRes, String selectedTypeRes) {
-            }
-
-            @Override
-            public void onOkBtnClick(int position) {
-                switch (position) {
-                    case 0:
-                        downloadAll();
-                        break;
-                    case 1:
-                        chooseing = true;
-                        firstChoose = true;
-                        baseToast.showToast("请先点击起始话然后点击结束话!");
-                        break;
-                }
-            }
-        });
-        optionsSelector.show();
-
-        optionsSelector.initOptionsData(optionsList);
     }
 
     private void showOptionsSelectorDialog() {

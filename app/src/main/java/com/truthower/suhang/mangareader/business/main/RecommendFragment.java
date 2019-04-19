@@ -1,17 +1,12 @@
 package com.truthower.suhang.mangareader.business.main;
 
-import android.Manifest;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-import android.os.Environment;
-import android.os.Handler;
-import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -33,39 +28,22 @@ import com.truthower.suhang.mangareader.base.BaseFragment;
 import com.truthower.suhang.mangareader.base.BaseFragmentActivity;
 import com.truthower.suhang.mangareader.bean.LoginBean;
 import com.truthower.suhang.mangareader.bean.MangaBean;
-import com.truthower.suhang.mangareader.business.detail.LocalMangaDetailsActivity;
 import com.truthower.suhang.mangareader.business.detail.WebMangaDetailsActivity;
-import com.truthower.suhang.mangareader.business.user.CollectedActivity;
 import com.truthower.suhang.mangareader.config.Configure;
-import com.truthower.suhang.mangareader.config.ShareKeys;
 import com.truthower.suhang.mangareader.listener.JsoupCallBack;
-import com.truthower.suhang.mangareader.listener.OnEditResultListener;
 import com.truthower.suhang.mangareader.listener.OnRecycleItemClickListener;
-import com.truthower.suhang.mangareader.listener.OnRecycleItemLongClickListener;
-import com.truthower.suhang.mangareader.listener.OnSevenFourteenListDialogListener;
 import com.truthower.suhang.mangareader.service.BaseObserver;
-import com.truthower.suhang.mangareader.sort.FileComparatorByTime;
-import com.truthower.suhang.mangareader.spider.FileSpider;
 import com.truthower.suhang.mangareader.spider.SpiderBase;
 import com.truthower.suhang.mangareader.utils.BaseParameterUtil;
 import com.truthower.suhang.mangareader.utils.DisplayUtil;
 import com.truthower.suhang.mangareader.utils.LeanCloundUtil;
 import com.truthower.suhang.mangareader.utils.Logger;
-import com.truthower.suhang.mangareader.utils.SharedPreferencesUtils;
 import com.truthower.suhang.mangareader.widget.bar.TopBar;
 import com.truthower.suhang.mangareader.widget.dialog.KeyBoardDialog;
-import com.truthower.suhang.mangareader.widget.dialog.ListDialog;
-import com.truthower.suhang.mangareader.widget.dialog.MangaDialog;
-import com.truthower.suhang.mangareader.widget.dialog.MangaEditDialog;
 import com.truthower.suhang.mangareader.widget.dialog.SingleLoadBarUtil;
 import com.truthower.suhang.mangareader.widget.recyclerview.RecyclerGridDecoration;
-import com.truthower.suhang.mangareader.widget.wheelview.wheelselector.WheelSelectorDialog;
 
-import java.io.File;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 
 import io.reactivex.Observable;
@@ -76,8 +54,6 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.functions.Function;
 import io.reactivex.functions.Predicate;
 import io.reactivex.schedulers.Schedulers;
-import pub.devrel.easypermissions.AfterPermissionGranted;
-import pub.devrel.easypermissions.EasyPermissions;
 
 public class RecommendFragment extends BaseFragment implements
         OnRefreshListener, OnLoadMoreListener {

@@ -36,11 +36,10 @@ import com.truthower.suhang.mangareader.utils.ShareObjUtil;
 import com.truthower.suhang.mangareader.utils.SharedPreferencesUtils;
 import com.truthower.suhang.mangareader.widget.bar.TopBar;
 import com.truthower.suhang.mangareader.widget.dialog.ListDialog;
-import com.truthower.suhang.mangareader.widget.dialog.MangaDialog;
 import com.truthower.suhang.mangareader.widget.dialog.MangaEditDialog;
 import com.truthower.suhang.mangareader.widget.pulltorefresh.PullToRefreshBase;
 import com.truthower.suhang.mangareader.widget.pulltorefresh.PullToRefreshListView;
-import com.truthower.suhang.mangareader.widget.wheelview.wheelselector.WheelSelectorDialog;
+import com.truthower.suhang.mangareader.widget.wheelview.wheelselector.SingleSelectorDialog;
 import com.umeng.analytics.MobclickAgent;
 
 import java.util.ArrayList;
@@ -61,7 +60,7 @@ public class OnlineMangaFragment extends BaseFragment implements PullToRefreshBa
     private TopBar topBar;
     private int gradientMagicNum = 500;
     private String[] optionsList = {"切换站点", "搜索", "分类", "跳转"};
-    private WheelSelectorDialog optionsSelector, typesSelector, webSelector;
+    private SingleSelectorDialog optionsSelector, typesSelector, webSelector;
     private MangaEditDialog searchDialog, toPageDialog;
     private int startPage = 1;
     private boolean onLoadingMore = false;
@@ -286,62 +285,6 @@ public class OnlineMangaFragment extends BaseFragment implements PullToRefreshBa
         return -top + firstVisibleItem * gradientMagicNum;
     }
 
-
-    private void showOptionsSelector() {
-        if (null == optionsList || optionsList.length == 0) {
-            baseToast.showToast("没有筛选条件");
-            return;
-        }
-        if (null == optionsSelector) {
-            optionsSelector = new WheelSelectorDialog(getActivity());
-            optionsSelector.setCancelable(true);
-        }
-        optionsSelector.setOnSingleSelectedListener(new WheelSelectorDialog.OnSingleSelectedListener() {
-
-            @Override
-            public void onOkBtnClick(String selectedRes, String selectedCodeRes) {
-            }
-
-            @Override
-            public void onOkBtnClick(String selectedRes, String selectedCodeRes, String selectedTypeRes) {
-            }
-
-            @Override
-            public void onOkBtnClick(int position) {
-                switch (position) {
-                    case 0:
-                        //切换站点
-                        showWebsSelector();
-                        break;
-                    case 1:
-                        //搜索
-//                        showSearchDialog("搜索漫画");
-//                        if (!SharedPreferencesUtils.getBooleanSharedPreferencesData(getActivity(), ShareKeys.CLOSE_TUTORIAL, false)) {
-//                            MangaDialog dialog = new MangaDialog(getActivity());
-//                            dialog.show();
-//                            dialog.setTitle("教程");
-//                            dialog.setMessage("这个搜索只支持精确搜索,必须输入漫画全名(单词间空格分隔)" +
-//                                    "才能搜索\nPS:kakalot这个站点的搜索只能输入网址搜索");
-//                        }
-                        Intent intent = new Intent(getActivity(), SearchActivity.class);
-                        startActivity(intent);
-                        break;
-                    case 2:
-                        //分类
-                        showTypesSelector();
-                        break;
-                    case 3:
-                        //跳转
-                        showToPageDialog("跳转");
-                        break;
-                }
-            }
-        });
-        optionsSelector.show();
-
-        optionsSelector.initOptionsData(optionsList);
-    }
-
     private void showOptionsSelectorDialog() {
         ListDialog listDialog = new ListDialog(getActivity());
         listDialog.setOnSevenFourteenListDialogListener(new OnSevenFourteenListDialogListener() {
@@ -398,10 +341,10 @@ public class OnlineMangaFragment extends BaseFragment implements PullToRefreshBa
 
     private void showTypesSelector() {
         if (null == typesSelector) {
-            typesSelector = new WheelSelectorDialog(getActivity());
+            typesSelector = new SingleSelectorDialog(getActivity());
             typesSelector.setCancelable(true);
         }
-        typesSelector.setOnSingleSelectedListener(new WheelSelectorDialog.OnSingleSelectedListener() {
+        typesSelector.setOnSingleSelectedListener(new SingleSelectorDialog.OnSingleSelectedListener() {
 
             @Override
             public void onOkBtnClick(String selectedRes, String selectedCodeRes) {
@@ -413,14 +356,11 @@ public class OnlineMangaFragment extends BaseFragment implements PullToRefreshBa
             }
 
             @Override
-            public void onOkBtnClick(String selectedRes, String selectedCodeRes, String selectedTypeRes) {
-            }
-
-            @Override
             public void onOkBtnClick(int position) {
             }
         });
         typesSelector.show();
+        typesSelector.setWheelViewTitle("切换标签");
         if (spider.getMangaTypeCodes().length > 0) {
             typesSelector.initOptionsData(spider.getMangaTypes(), spider.getMangaTypeCodes());
         } else {
@@ -481,10 +421,10 @@ public class OnlineMangaFragment extends BaseFragment implements PullToRefreshBa
 
     private void showWebsSelector() {
         if (null == webSelector) {
-            webSelector = new WheelSelectorDialog(getActivity());
+            webSelector = new SingleSelectorDialog(getActivity());
             webSelector.setCancelable(true);
         }
-        webSelector.setOnSingleSelectedListener(new WheelSelectorDialog.OnSingleSelectedListener() {
+        webSelector.setOnSingleSelectedListener(new SingleSelectorDialog.OnSingleSelectedListener() {
 
             @Override
             public void onOkBtnClick(String selectedRes, String selectedCodeRes) {
@@ -500,14 +440,11 @@ public class OnlineMangaFragment extends BaseFragment implements PullToRefreshBa
             }
 
             @Override
-            public void onOkBtnClick(String selectedRes, String selectedCodeRes, String selectedTypeRes) {
-            }
-
-            @Override
             public void onOkBtnClick(int position) {
             }
         });
         webSelector.show();
+        webSelector.setWheelViewTitle("选择站点");
         if (LoginBean.getInstance().isMaster()) {
             webSelector.initOptionsData(Configure.masterWebsList);
         } else {

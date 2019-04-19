@@ -729,7 +729,7 @@ public class WheelView extends View {
     private void drawCenterRect(Canvas canvas) {
         int center = getHeight() / 2;
         // int offset = (int) (getItemHeight() / 2 * 1.2);
-        int offset = DisplayUtil.dip2px(getContext(), 22);
+        int offset = DisplayUtil.dip2px(getContext(), 26);
         rectHeight = offset * 2;
 		/*
 		 * / Remarked by wulianghuan 2014-11-27 娴ｈ法鏁ら懛顏勭箒閻ㄥ嫮鏁剧痪鍖＄礉閼板奔绗夐弰顖涘伎鏉堬拷 Rect rect =

@@ -26,7 +26,7 @@ import com.truthower.suhang.mangareader.utils.ThreeDESUtil;
 import com.truthower.suhang.mangareader.widget.bar.TopBar;
 import com.truthower.suhang.mangareader.widget.pulltorefresh.PullToRefreshBase;
 import com.truthower.suhang.mangareader.widget.pulltorefresh.PullToRefreshGridView;
-import com.truthower.suhang.mangareader.widget.wheelview.wheelselector.WheelSelectorDialog;
+import com.truthower.suhang.mangareader.widget.wheelview.wheelselector.SingleSelectorDialog;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -47,7 +47,7 @@ public class TagFilterActivity extends BaseActivity implements AdapterView.OnIte
     private LocalMangaListAdapter adapter;
     private TopBar topBar;
     private ArrayList<String> pathList;
-    private WheelSelectorDialog tagsSelector;
+    private SingleSelectorDialog tagsSelector;
     private String[] tags;
 
     @Override
@@ -194,18 +194,14 @@ public class TagFilterActivity extends BaseActivity implements AdapterView.OnIte
             return;
         }
         if (null == tagsSelector) {
-            tagsSelector = new WheelSelectorDialog(TagFilterActivity.this);
+            tagsSelector = new SingleSelectorDialog(TagFilterActivity.this);
             tagsSelector.setCancelable(true);
         }
-        tagsSelector.setOnSingleSelectedListener(new WheelSelectorDialog.OnSingleSelectedListener() {
+        tagsSelector.setOnSingleSelectedListener(new SingleSelectorDialog.OnSingleSelectedListener() {
 
             @Override
             public void onOkBtnClick(String selectedRes, String selectedCodeRes) {
                 doGetImagesByTag(selectedRes);
-            }
-
-            @Override
-            public void onOkBtnClick(String selectedRes, String selectedCodeRes, String selectedTypeRes) {
             }
 
             @Override

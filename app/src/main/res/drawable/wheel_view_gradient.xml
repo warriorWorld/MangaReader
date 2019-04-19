@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- 渐变色
+    angle表示角度：0度是水平，从左到右；90度是从下向上。
+    type表示类型，radial是圆,默认是直线。
+    startcolor,centercolor,endcolor不同位置的颜色
+    gradientRadius半径
+
+
+
+     -->
+    <gradient
+        android:angle="90"
+        android:centerX="0.5"
+        android:centerY="0.5"
+        android:endColor="#00ffffff"
+        android:gradientRadius="0"
+        android:startColor="#ffffff"
+        android:type="linear" />
+</shape>
