@@ -32,11 +32,16 @@ import com.truthower.suhang.mangareader.config.Configure;
 import com.truthower.suhang.mangareader.config.ShareKeys;
 import com.truthower.suhang.mangareader.listener.OnShareAppClickListener;
 import com.truthower.suhang.mangareader.utils.LeanCloundUtil;
+import com.truthower.suhang.mangareader.utils.NumberUtil;
 import com.truthower.suhang.mangareader.utils.SharedPreferencesUtils;
 import com.truthower.suhang.mangareader.widget.dialog.MangaDialog;
 import com.truthower.suhang.mangareader.widget.dialog.QrDialog;
 import com.truthower.suhang.mangareader.widget.imageview.CircleImage;
 import com.umeng.analytics.MobclickAgent;
+
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 
 public class UserFragment extends BaseFragment implements View.OnClickListener {
     private RelativeLayout collectRl;
@@ -55,11 +60,22 @@ public class UserFragment extends BaseFragment implements View.OnClickListener {
     private TextView user_center_explain;
     private TextView user_msg_tip_tv;
     private int msgCount = 0;
+    private TextView dayTv;
+    private TextView monthTv;
+    private TextView dayOfWeekTv;
+    private int currentMonth, currentDay;
+    private String currentDayOfWeek;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
         View v = inflater.inflate(R.layout.fragment_user, container, false);
+        Date date = new Date(System.currentTimeMillis());
+        SimpleDateFormat format = new SimpleDateFormat("EEEE");
+
+        currentMonth = Calendar.getInstance().get(Calendar.MONTH) + 1;
+        currentDay = Calendar.getInstance().get(Calendar.DAY_OF_MONTH);
+        currentDayOfWeek = format.format(date);
         initUI(v);
         refreshUI();
         toggleLoginStateUI();
@@ -115,6 +131,9 @@ public class UserFragment extends BaseFragment implements View.OnClickListener {
         finishedMangaRl = (RelativeLayout) v.findViewById(R.id.finished_manga_rl);
         userNameTv = (TextView) v.findViewById(R.id.user_name_tv);
         user_msg_tip_tv = (TextView) v.findViewById(R.id.user_msg_tip_tv);
+        dayTv = (TextView) v.findViewById(R.id.day_tv);
+        monthTv = (TextView) v.findViewById(R.id.month_tv);
+        dayOfWeekTv = (TextView) v.findViewById(R.id.day_of_week_tv);
 
         adRl.setOnClickListener(this);
         collectRl.setOnClickListener(this);
@@ -129,6 +148,9 @@ public class UserFragment extends BaseFragment implements View.OnClickListener {
     }
 
     private void refreshUI() {
+        dayTv.setText(NumberUtil.toDoubleNum(currentDay));
+        monthTv.setText(currentMonth + "月");
+        dayOfWeekTv.setText(currentDayOfWeek);
     }
 
     private void toggleLoginStateUI() {
@@ -200,7 +222,7 @@ public class UserFragment extends BaseFragment implements View.OnClickListener {
                 break;
             case R.id.user_top_bar_rl:
                 intent = new Intent(getActivity(), UserCenterActivity.class);
-                SharedPreferencesUtils.setSharedPreferencesData(getActivity(),ShareKeys.READ_COMMENT_COUNT_KEY,msgCount);
+                SharedPreferencesUtils.setSharedPreferencesData(getActivity(), ShareKeys.READ_COMMENT_COUNT_KEY, msgCount);
                 intent.putExtra("owner", LoginBean.getInstance().getUserName(getActivity()));
                 break;
             case R.id.about_rl:

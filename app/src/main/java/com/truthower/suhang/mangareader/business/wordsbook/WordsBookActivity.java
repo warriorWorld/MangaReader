@@ -41,7 +41,7 @@ public class WordsBookActivity extends TTSActivity implements OnClickListener {
     private ArrayList<WordsBookBean> wordsList = new ArrayList<WordsBookBean>();
     private int nowPosition = 0;
     private ClipboardManager clip;//复制文本用
-    private Button killBtn;
+    private View killBtn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,7 +86,7 @@ public class WordsBookActivity extends TTSActivity implements OnClickListener {
     private void initUI() {
         vp = (ViewPager) findViewById(R.id.words_viewpager);
         emptyView = findViewById(R.id.empty_view);
-        killBtn = (Button) findViewById(R.id.kill_btn);
+        killBtn =  findViewById(R.id.kill_btn);
         topBarLeft = (TextView) findViewById(R.id.top_bar_left);
         topBarRight = (TextView) findViewById(R.id.top_bar_right);
         hideBaseTopBar();
@@ -237,7 +237,7 @@ public class WordsBookActivity extends TTSActivity implements OnClickListener {
                 //太吵
 //                TipVoiceManager.getInstance().voiceTip(0);
                 try {
-                    VibratorUtil.Vibrate(WordsBookActivity.this, 10);
+                    VibratorUtil.Vibrate(WordsBookActivity.this, 50);
                     WordsBookBean item = wordsList.get(nowPosition);
                     db.deleteWordByWord(item.getWord());
                     wordsList.remove(nowPosition);
