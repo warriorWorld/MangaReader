@@ -13,28 +13,34 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.avos.avoscloud.AVCloudQueryResult;
 import com.avos.avoscloud.AVException;
 import com.avos.avoscloud.AVFile;
 import com.avos.avoscloud.AVObject;
 import com.avos.avoscloud.AVQuery;
 import com.avos.avoscloud.AVUser;
+import com.avos.avoscloud.CloudQueryCallback;
 import com.avos.avoscloud.FindCallback;
+import com.avos.avoscloud.GetCallback;
 import com.avos.avoscloud.GetDataCallback;
+import com.avos.avoscloud.LogInCallback;
 import com.avos.avoscloud.ProgressCallback;
 import com.truthower.suhang.mangareader.R;
 import com.truthower.suhang.mangareader.base.BaseActivity;
 import com.truthower.suhang.mangareader.bean.LoginBean;
-import com.truthower.suhang.mangareader.business.main.MainActivity;
+import com.truthower.suhang.mangareader.business.gesture.SetGestureActivity;
 import com.truthower.suhang.mangareader.config.Configure;
 import com.truthower.suhang.mangareader.config.ShareKeys;
+import com.truthower.suhang.mangareader.listener.OnEditResultListener;
+import com.truthower.suhang.mangareader.listener.OnResultListener;
 import com.truthower.suhang.mangareader.spider.FileSpider;
-import com.truthower.suhang.mangareader.utils.ActivityPoor;
 import com.truthower.suhang.mangareader.utils.BaseParameterUtil;
 import com.truthower.suhang.mangareader.utils.LeanCloundUtil;
 import com.truthower.suhang.mangareader.utils.SharedPreferencesUtils;
 import com.truthower.suhang.mangareader.widget.dialog.DownloadDialog;
 import com.truthower.suhang.mangareader.widget.dialog.MangaDialog;
-import com.truthower.suhang.mangareader.widget.popupwindow.EasyPopupWindow;
+import com.truthower.suhang.mangareader.widget.dialog.MangaEditDialog;
+import com.truthower.suhang.mangareader.widget.dialog.SingleLoadBarUtil;
 
 import java.io.File;
 import java.util.List;
@@ -60,6 +66,7 @@ public class AboutActivity extends BaseActivity implements View.OnClickListener,
     private DownloadDialog downloadDialog;
     private CheckBox closeTranslateCb, economyModeCb, closeTutorialCb;
     private CheckBox closeTtsCb;
+    private View gestureRl, deleteGestureRl;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,6 +95,8 @@ public class AboutActivity extends BaseActivity implements View.OnClickListener,
         checkUpdateRl = (RelativeLayout) findViewById(R.id.check_update_rl);
         authorRl = (RelativeLayout) findViewById(R.id.author_rl);
         feedbackRl = (RelativeLayout) findViewById(R.id.feedback_rl);
+        gestureRl = findViewById(R.id.gesture_rl);
+        deleteGestureRl = findViewById(R.id.delete_gesture_rl);
         logoutTv = (TextView) findViewById(R.id.logout_tv);
         economyModeCb = (CheckBox) findViewById(R.id.economy_mode_cb);
         economyModeCb.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -121,7 +130,7 @@ public class AboutActivity extends BaseActivity implements View.OnClickListener,
                         (AboutActivity.this, ShareKeys.CLOSE_TTS, isChecked);
             }
         });
-        keyboardRl= (RelativeLayout) findViewById(R.id.keyboard_rl);
+        keyboardRl = (RelativeLayout) findViewById(R.id.keyboard_rl);
         closeTranslateCb.setChecked
                 (SharedPreferencesUtils.getBooleanSharedPreferencesData(AboutActivity.this,
                         ShareKeys.CLOSE_TRANSLATE, false));
@@ -134,6 +143,9 @@ public class AboutActivity extends BaseActivity implements View.OnClickListener,
         closeTtsCb.setChecked
                 (SharedPreferencesUtils.getBooleanSharedPreferencesData(AboutActivity.this,
                         ShareKeys.CLOSE_TTS, false));
+
+        deleteGestureRl.setOnClickListener(this);
+        gestureRl.setOnClickListener(this);
         keyboardRl.setOnClickListener(this);
         appIconIv.setOnClickListener(this);
         checkUpdateRl.setOnClickListener(this);
@@ -291,6 +303,70 @@ public class AboutActivity extends BaseActivity implements View.OnClickListener,
         authorDialog.setMessage("作者:  苏航\n邮箱:  772192594@qq.com");
     }
 
+    private void doDeleteGesture() {
+        String userName = LoginBean.getInstance().getUserName(this);
+        if (TextUtils.isEmpty(userName)) {
+            return;
+        }
+        SingleLoadBarUtil.getInstance().showLoadBar(this);
+
+        AVQuery<AVObject> query = new AVQuery<>("Gesture");
+        query.whereEqualTo("owner", userName);
+        query.getFirstInBackground(new GetCallback<AVObject>() {
+            @Override
+            public void done(final AVObject account, AVException e) {
+                if (null != account) {
+                    AVQuery.doCloudQueryInBackground(
+                            "delete from Gesture where objectId='" + account.getObjectId() + "'"
+                            , new CloudQueryCallback<AVCloudQueryResult>() {
+                                @Override
+                                public void done(AVCloudQueryResult avCloudQueryResult, AVException e) {
+                                    SingleLoadBarUtil.getInstance().dismissLoadBar();
+                                    if (LeanCloundUtil.handleLeanResult(AboutActivity.this, e)) {
+                                        baseToast.showToast("删除成功");
+                                    }
+                                }
+                            });
+                }
+            }
+        });
+    }
+
+    private void doVerifyPassword(String text, final OnResultListener onResultListener) {
+        SingleLoadBarUtil.getInstance().showLoadBar(this);
+        AVUser.logInInBackground(LoginBean.getInstance().getUserName(), text,
+                new LogInCallback<AVUser>() {
+                    @Override
+                    public void done(AVUser avUser, AVException e) {
+                        SingleLoadBarUtil.getInstance().dismissLoadBar();
+                        if (LeanCloundUtil.handleLeanResult(AboutActivity.this, e)) {
+                            onResultListener.onFinish();
+                        } else {
+                            onResultListener.onFailed();
+                        }
+                    }
+                });
+    }
+
+    private void showVerifyPasswordDialog(final OnResultListener onResultListener) {
+        MangaEditDialog editDialog = new MangaEditDialog(this);
+        editDialog.setOnEditResultListener(new OnEditResultListener() {
+            @Override
+            public void onResult(String text) {
+                doVerifyPassword(text, onResultListener);
+            }
+
+            @Override
+            public void onCancelClick() {
+
+            }
+        });
+        editDialog.show();
+        editDialog.setTitle("确认登录密码");
+        editDialog.setHint("请输入登录密码");
+        editDialog.setPasswordMode();
+    }
+
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
@@ -316,6 +392,37 @@ public class AboutActivity extends BaseActivity implements View.OnClickListener,
             case R.id.keyboard_rl:
                 Intent intent1 = new Intent(AboutActivity.this, KeyboardSettingActivity.class);
                 startActivity(intent1);
+                break;
+            case R.id.gesture_rl:
+                if (!TextUtils.isEmpty(LoginBean.getInstance().getUserName(this))) {
+                    showVerifyPasswordDialog(new OnResultListener() {
+                        @Override
+                        public void onFinish() {
+                            Intent intent2 = new Intent(AboutActivity.this, SetGestureActivity.class);
+                            startActivity(intent2);
+                        }
+
+                        @Override
+                        public void onFailed() {
+
+                        }
+                    });
+                }
+                break;
+            case R.id.delete_gesture_rl:
+                if (!TextUtils.isEmpty(LoginBean.getInstance().getUserName(this))) {
+                    showVerifyPasswordDialog(new OnResultListener() {
+                        @Override
+                        public void onFinish() {
+                            doDeleteGesture();
+                        }
+
+                        @Override
+                        public void onFailed() {
+
+                        }
+                    });
+                }
                 break;
         }
     }

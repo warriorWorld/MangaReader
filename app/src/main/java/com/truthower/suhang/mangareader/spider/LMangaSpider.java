@@ -178,6 +178,11 @@ public class LMangaSpider extends SpiderBase {
     }
 
     @Override
+    public String[] getAdultTypes() {
+        return new String[0];
+    }
+
+    @Override
     public <ResultObj> void getMangaChapterPics(final Context context, final String chapterUrl, final JsoupCallBack<ResultObj> jsoupCallBack) {
     }
 

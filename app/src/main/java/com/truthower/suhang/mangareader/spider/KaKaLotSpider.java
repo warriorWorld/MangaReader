@@ -169,6 +169,12 @@ public class KaKaLotSpider extends SpiderBase {
     }
 
     @Override
+    public String[] getAdultTypes() {
+        String[] mangaTypeCodes = {"ecchi", "harem"};
+        return mangaTypeCodes;
+    }
+
+    @Override
     public <ResultObj> void getMangaChapterPics(final Context context, final String chapterUrl, final JsoupCallBack<ResultObj> jsoupCallBack) {
         new Thread() {
             @Override

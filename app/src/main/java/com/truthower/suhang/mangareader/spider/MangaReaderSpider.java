@@ -213,6 +213,12 @@ public class MangaReaderSpider extends SpiderBase {
         return new String[0];
     }
 
+    @Override
+    public String[] getAdultTypes() {
+        String[] mangaTypeCodes = {"ecchi"};
+        return mangaTypeCodes;
+    }
+
     /**
      * 阅读页是一页一页翻得 只能这么爬...
      *

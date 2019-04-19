@@ -147,6 +147,10 @@ public class MangaEditDialog extends Dialog implements View.OnClickListener {
         }
     }
 
+    public void setPasswordMode() {
+        editTextV.setInputType(InputType.TYPE_TEXT_VARIATION_PASSWORD);
+    }
+
     public void setOkText(String text) {
         okTv.setText(text);
     }

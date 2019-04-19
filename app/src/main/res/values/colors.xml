@@ -13,6 +13,9 @@
     <color name="main_text_color">#12274D</color>
     <color name="main_text_color_gray">#8912274d</color>
     <color name="clickable_text_color">#98c2f5</color>
+    <color name="main_text_color_blue">#2497FF</color>
+    <color name="main_text_color_blue1">#3582DB</color>
+    <color name="main_text_color_blue2">#332497FF</color>
     <color name="divide">#f6f6f6</color>
     <color name="divide_line">#e1e1e1</color>
     <color name="master">#beec26</color>

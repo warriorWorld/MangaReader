@@ -19,7 +19,7 @@ public class GestureLockView extends View {
      * GestureLockView的三种状态
      */
     enum Mode {
-        STATUS_NO_FINGER, STATUS_FINGER_ON, STATUS_FINGER_UP;
+        STATUS_NO_FINGER, STATUS_FINGER_ON, STATUS_FINGER_ERROR;
     }
 
     /**
@@ -66,21 +66,21 @@ public class GestureLockView extends View {
      * 四个颜色，可由用户自定义，初始化时由GestureLockViewGroup传入
      */
     private int mColorNoFingerInner;
-    private int mColorNoFingerOutter;
+    private int mColorErrorOutter;
     private int mColorFingerOn;
-    private int mColorFingerUp;
+    private int mColorFingerError;
     /**
      * 为了盖住线的○的颜色
      */
     private int coverColor = 0xFFFFFFFF;
 
-    public GestureLockView(Context context, int colorNoFingerInner, int colorNoFingerOutter, int colorFingerOn, int colorFingerUp) {
+    public GestureLockView(Context context, int colorNoFingerInner, int colorErrorOutter, int colorFingerOn, int colorFingerError) {
         super(context);
         this.context = context;
         this.mColorNoFingerInner = colorNoFingerInner;
-        this.mColorNoFingerOutter = colorNoFingerOutter;
+        this.mColorErrorOutter = colorErrorOutter;
         this.mColorFingerOn = colorFingerOn;
-        this.mColorFingerUp = colorFingerUp;
+        this.mColorFingerError = colorFingerError;
         mPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         mArrowPath = new Path();
 
@@ -117,47 +117,46 @@ public class GestureLockView extends View {
             case STATUS_FINGER_ON:
                 VibratorUtil.Vibrate(context, 80);
                 // 绘制外圆
-                mPaint.setStyle(Style.STROKE);
-                mPaint.setColor(mColorFingerOn);
-                mPaint.setStrokeWidth(2);
+                mPaint.setStyle(Style.FILL);
+                mPaint.setColor(mColorNoFingerInner);
+//                mPaint.setStrokeWidth(2);
                 canvas.drawCircle(mCenterX, mCenterY, mRadius, mPaint);
                 //绘制覆盖线的隐形圈
-                mPaint.setColor(coverColor);
-                canvas.drawCircle(mCenterX, mCenterY, mRadius - 2, mPaint);
+//                mPaint.setColor(coverColor);
+//                canvas.drawCircle(mCenterX, mCenterY, mRadius - 2, mPaint);
                 // 绘制内圆
                 mPaint.setStyle(Style.FILL);
                 mPaint.setColor(mColorFingerOn);
                 canvas.drawCircle(mCenterX, mCenterY, mRadius
                         * mInnerCircleRadiusRate, mPaint);
                 break;
-            case STATUS_FINGER_UP:
+            case STATUS_FINGER_ERROR:
                 // 绘制外圆
-                mPaint.setColor(mColorFingerUp);
-                mPaint.setStyle(Style.STROKE);
-                mPaint.setStrokeWidth(2);
+                mPaint.setColor(mColorErrorOutter);
+                mPaint.setStyle(Style.FILL);
+//                mPaint.setStrokeWidth(2);
                 canvas.drawCircle(mCenterX, mCenterY, mRadius, mPaint);
                 //绘制覆盖线的隐形圈
-                mPaint.setColor(coverColor);
-                canvas.drawCircle(mCenterX, mCenterY, mRadius - 2, mPaint);
+//                mPaint.setColor(coverColor);
+//                canvas.drawCircle(mCenterX, mCenterY, mRadius - 2, mPaint);
                 // 绘制内圆
                 mPaint.setStyle(Style.FILL);
-                mPaint.setColor(mColorFingerUp);
+                mPaint.setColor(mColorFingerError);
                 canvas.drawCircle(mCenterX, mCenterY, mRadius
                         * mInnerCircleRadiusRate, mPaint);
 
                 drawArrow(canvas);
-
                 break;
-
             case STATUS_NO_FINGER:
 
                 // 绘制外圆
 //                mPaint.setStyle(Style.FILL);
-                mPaint.setStyle(Style.STROKE);
-                mPaint.setStrokeWidth(2);
-                mPaint.setColor(mColorNoFingerOutter);
-                canvas.drawCircle(mCenterX, mCenterY, mRadius, mPaint);
+//                mPaint.setStyle(Style.STROKE);
+//                mPaint.setStrokeWidth(2);
+//                mPaint.setColor(mColorNoFingerOutter);
+//                canvas.drawCircle(mCenterX, mCenterY, mRadius, mPaint);
                 // 绘制内圆
+                mPaint.setStyle(Style.FILL);
                 mPaint.setColor(mColorNoFingerInner);
                 canvas.drawCircle(mCenterX, mCenterY, mRadius
                         * mInnerCircleRadiusRate, mPaint);

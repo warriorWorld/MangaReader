@@ -62,19 +62,19 @@ public class GestureLockViewGroup extends RelativeLayout {
     /**
      * GestureLockView无手指触摸的状态下内圆的颜色
      */
-    private int mNoFingerInnerCircleColor = 0x00939090;
+    private int mNoFingerInnerCircleColor = 0x332497FF;
     /**
-     * GestureLockView无手指触摸的状态下外圆的颜色
+     * GestureLockView错误状态下外圆的颜色
      */
-    private int mNoFingerOuterCircleColor = 0xff98c2f5;
+    private int colorErrorOutter = 0x33FE4E4E;
     /**
      * GestureLockView手指触摸的状态下内圆和外圆的颜色
      */
-    private int mFingerOnColor = 0xFF378FC9;
+    private int mFingerOnColor = 0xFF2497FF;
     /**
-     * GestureLockView手指抬起的状态下内圆和外圆的颜色
+     * GestureLockView错误状态下内圆的颜色
      */
-    private int mFingerUpColor = 0xFFFF0000;
+    private int mFingerErrorColor = 0xFFFE4E4E;
 
     /**
      * 宽度
@@ -107,6 +107,13 @@ public class GestureLockViewGroup extends RelativeLayout {
      * 回调接口
      */
     private OnGestureLockViewListener mOnGestureLockViewListener;
+    private MotionType lastMotionType = MotionType.DOWN;
+
+    public enum MotionType {
+        DOWN,
+        MOVE,
+        UP
+    }
 
     public GestureLockViewGroup(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
@@ -131,14 +138,14 @@ public class GestureLockViewGroup extends RelativeLayout {
                             mNoFingerInnerCircleColor);
                     break;
                 case R.styleable.GestureLockViewGroup_color_no_finger_outer_circle:
-                    mNoFingerOuterCircleColor = a.getColor(attr,
-                            mNoFingerOuterCircleColor);
+                    colorErrorOutter = a.getColor(attr,
+                            colorErrorOutter);
                     break;
                 case R.styleable.GestureLockViewGroup_color_finger_on:
                     mFingerOnColor = a.getColor(attr, mFingerOnColor);
                     break;
                 case R.styleable.GestureLockViewGroup_color_finger_up:
-                    mFingerUpColor = a.getColor(attr, mFingerUpColor);
+                    mFingerErrorColor = a.getColor(attr, mFingerErrorColor);
                     break;
                 case R.styleable.GestureLockViewGroup_count:
                     mCount = a.getInt(attr, 3);
@@ -194,8 +201,8 @@ public class GestureLockViewGroup extends RelativeLayout {
             for (int i = 0; i < mGestureLockViews.length; i++) {
                 //初始化每个GestureLockView
                 mGestureLockViews[i] = new GestureLockView(getContext(),
-                        mNoFingerInnerCircleColor, mNoFingerOuterCircleColor,
-                        mFingerOnColor, mFingerUpColor);
+                        mNoFingerInnerCircleColor, colorErrorOutter,
+                        mFingerOnColor, mFingerErrorColor);
                 mGestureLockViews[i].setId(i + 1);
                 //设置参数，主要是定位GestureLockView间的位置
                 LayoutParams lockerParams = new LayoutParams(
@@ -249,10 +256,12 @@ public class GestureLockViewGroup extends RelativeLayout {
 
         switch (action) {
             case MotionEvent.ACTION_DOWN:
+                lastMotionType = MotionType.DOWN;
                 // 重置
                 reset();
                 break;
             case MotionEvent.ACTION_MOVE:
+                lastMotionType = MotionType.MOVE;
                 mPaint.setColor(mFingerOnColor);
 //                mPaint.setAlpha(50);
                 GestureLockView child = getChildIdByPos(x, y);
@@ -282,19 +291,14 @@ public class GestureLockViewGroup extends RelativeLayout {
                 mTmpTarget.y = y;
                 break;
             case MotionEvent.ACTION_UP:
-
-                mPaint.setColor(mFingerUpColor);
+                lastMotionType = MotionType.UP;
+//                mPaint.setColor(mFingerErrorColor);
 //                mPaint.setAlpha(50);
                 this.mTryTimes--;
 
                 // 回调是否成功
                 if (mOnGestureLockViewListener != null && mChoose.size() > 0) {
                     mOnGestureLockViewListener.onGestureEvent(checkAnswer());
-//                    String s = mChoose.toString();
-//                    s = s.replaceAll(" ", "");
-//                    s = s.replaceAll(",", "");
-//                    s = s.replaceAll("\\[", "");
-//                    s = s.replaceAll("\\]", "");
                     mOnGestureLockViewListener.onGestureEvent(getChooseAnswer());
                     if (this.mTryTimes == 0) {
                         mOnGestureLockViewListener.onUnmatchedExceedBoundary();
@@ -308,7 +312,7 @@ public class GestureLockViewGroup extends RelativeLayout {
                 mTmpTarget.y = mLastPathY;
 
                 // 改变子元素的状态为UP
-                changeItemMode();
+//                changeItemMode();
 
                 // 计算每个元素中箭头需要旋转的角度
                 for (int i = 0; i + 1 < mChoose.size(); i++) {
@@ -331,6 +335,10 @@ public class GestureLockViewGroup extends RelativeLayout {
         return true;
     }
 
+    public MotionType getLastMotionType() {
+        return lastMotionType;
+    }
+
     private String getChooseAnswer() {
         String res = "";
         for (int i = 0; i < mChoose.size(); i++) {
@@ -350,10 +358,20 @@ public class GestureLockViewGroup extends RelativeLayout {
 //        invalidate();
 //    }
 
-    private void changeItemMode() {
+    private void drawErrorLine() {
+        mPaint.setColor(mFingerErrorColor);
+        // 将终点设置位置为起点，即取消指引线
+        mTmpTarget.x = mLastPathX;
+        mTmpTarget.y = mLastPathY;
+
+        invalidate();
+    }
+
+    public void setErrorMode() {
+        drawErrorLine();
         for (GestureLockView gestureLockView : mGestureLockViews) {
             if (mChoose.contains(gestureLockView.getId())) {
-                gestureLockView.setMode(GestureLockView.Mode.STATUS_FINGER_UP);
+                gestureLockView.setMode(GestureLockView.Mode.STATUS_FINGER_ERROR);
             }
         }
     }
@@ -368,6 +386,7 @@ public class GestureLockViewGroup extends RelativeLayout {
             gestureLockView.setMode(GestureLockView.Mode.STATUS_NO_FINGER);
             gestureLockView.setArrowDegree(-1);
         }
+        invalidate();
     }
 
     /**
