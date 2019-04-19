@@ -38,7 +38,7 @@ import io.reactivex.disposables.CompositeDisposable;
 public abstract class BaseActivity extends Activity {
     protected TopBar baseTopBar;
     protected EasyToast baseToast;
-    public CompositeDisposable mDisposable=new CompositeDisposable();
+    public CompositeDisposable mDisposable = new CompositeDisposable();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,6 +59,13 @@ public abstract class BaseActivity extends Activity {
 
 //        PushAgent.getInstance(this).onAppStart();
         MobclickAgent.onEvent(this, getLocalClassName().toString());
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);//设置状态栏黑色字体
+            this.getWindow().setStatusBarColor(getResources().getColor(R.color.white));
+            setFitSystemWindow(true);
+        } else {
+            getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_VISIBLE);//恢复状态栏白色字体
+        }
     }
 
     private void initUI() {
@@ -86,6 +93,18 @@ public abstract class BaseActivity extends Activity {
         });
     }
 
+    /**
+     * 如果需要内容紧贴着StatusBar
+     * 应该在对应的xml布局文件中，设置根布局fitsSystemWindows=true。
+     */
+    private View contentViewGroup;
+
+    protected void setFitSystemWindow(boolean fitSystemWindow) {
+        if (contentViewGroup == null) {
+            contentViewGroup = ((ViewGroup) findViewById(android.R.id.content)).getChildAt(0);
+        }
+        contentViewGroup.setFitsSystemWindows(fitSystemWindow);
+    }
 
     protected abstract int getLayoutId();
 
@@ -174,7 +193,7 @@ public abstract class BaseActivity extends Activity {
         // 每次必须取消订阅
         EventBus.getDefault().unregister(this);
         ActivityPoor.finishSingleActivity(this);
-        if(!mDisposable.isDisposed())
+        if (!mDisposable.isDisposed())
             mDisposable.clear();
     }
 }

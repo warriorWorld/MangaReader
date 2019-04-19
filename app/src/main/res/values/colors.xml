@@ -9,8 +9,8 @@
     <color name="manga_reader_deep">#e9193b</color>
     <color name="manga_reader_blue">#456ec1</color>
     <color name="white">#ffffff</color>
-    <color name="main_text_color">#444444</color>
-    <color name="main_text_color_gray">#c2c2c2</color>
+    <color name="main_text_color">#12274D</color>
+    <color name="main_text_color_gray">#8912274d</color>
     <color name="clickable_text_color">#98c2f5</color>
     <color name="divide">#f6f6f6</color>
     <color name="divide_line">#e1e1e1</color>
