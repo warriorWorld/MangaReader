@@ -17,6 +17,7 @@ import android.widget.TextView;
 
 import com.truthower.suhang.mangareader.R;
 import com.truthower.suhang.mangareader.adapter.OnlyTextListAdapter;
+import com.truthower.suhang.mangareader.listener.OnRecycleItemLongClickListener;
 import com.truthower.suhang.mangareader.listener.OnSevenFourteenListDialogListener;
 
 
@@ -24,7 +25,7 @@ import com.truthower.suhang.mangareader.listener.OnSevenFourteenListDialogListen
  * 作者：苏航 on 2016/11/4 11:08
  * 邮箱：772192594@qq.com
  */
-public class ListDialog extends Dialog implements View.OnClickListener{
+public class ListDialog extends Dialog implements View.OnClickListener {
     private Context context;
     private ListView optionsLv;
     private TextView cancelTv;
@@ -32,6 +33,7 @@ public class ListDialog extends Dialog implements View.OnClickListener{
     private String[] list;
     private String[] codeList;
     private OnSevenFourteenListDialogListener onSevenFourteenListDialogListener;
+    private OnRecycleItemLongClickListener mOnRecycleItemLongClickListener;
 
     public ListDialog(Context context) {
         super(context);
@@ -121,6 +123,20 @@ public class ListDialog extends Dialog implements View.OnClickListener{
                     }
                 }
             });
+            optionsLv.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+                @Override
+                public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                    if (null != mOnRecycleItemLongClickListener) {
+                        if (null != list && list.length > 0) {
+                            mOnRecycleItemLongClickListener.onItemLongClick(position);
+                            dismiss();
+                        }
+                        return true;
+                    } else {
+                        return false;
+                    }
+                }
+            });
         } else {
             onlyTextListAdapter.setList(list);
             onlyTextListAdapter.notifyDataSetChanged();
@@ -137,5 +153,9 @@ public class ListDialog extends Dialog implements View.OnClickListener{
 
     public void setOnSevenFourteenListDialogListener(OnSevenFourteenListDialogListener onSevenFourteenListDialogListener) {
         this.onSevenFourteenListDialogListener = onSevenFourteenListDialogListener;
+    }
+
+    public void setOnRecycleItemLongClickListener(OnRecycleItemLongClickListener onRecycleItemLongClickListener) {
+        mOnRecycleItemLongClickListener = onRecycleItemLongClickListener;
     }
 }

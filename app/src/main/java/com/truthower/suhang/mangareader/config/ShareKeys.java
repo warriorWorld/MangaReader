@@ -37,4 +37,6 @@ public class ShareKeys {
     public static final String THIS_USER_IS_NOT_AN_IDIOT = "this_user_is_not_an_idiot";
     public static final String MAIN_PAGE_CHCHE = "main_page_chche";
     public static final String IS_OTHER_LETTER_ORDER = "is_other_letter_order";
+    public static final String STORY_FOLDER_NAME = "story_folder_name";
+    public static final String INDEPENDENT_FOLDER_NAME = "independent_folder_name";
 }

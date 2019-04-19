@@ -10,28 +10,20 @@ import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
-import android.view.Gravity;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.GridView;
-import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.aspsine.swipetoloadlayout.OnLoadMoreListener;
 import com.aspsine.swipetoloadlayout.OnRefreshListener;
 import com.aspsine.swipetoloadlayout.SwipeToLoadLayout;
 import com.truthower.suhang.mangareader.R;
-import com.truthower.suhang.mangareader.adapter.LocalMangaListAdapter;
 import com.truthower.suhang.mangareader.adapter.OnlineMangaRecyclerListAdapter;
 import com.truthower.suhang.mangareader.base.BaseFragment;
 import com.truthower.suhang.mangareader.bean.LoginBean;
 import com.truthower.suhang.mangareader.bean.MangaBean;
 import com.truthower.suhang.mangareader.business.detail.LocalMangaDetailsActivity;
-import com.truthower.suhang.mangareader.business.detail.WebMangaDetailsActivity;
-import com.truthower.suhang.mangareader.business.search.SearchActivity;
-import com.truthower.suhang.mangareader.business.user.CollectedActivity;
 import com.truthower.suhang.mangareader.config.Configure;
 import com.truthower.suhang.mangareader.config.ShareKeys;
 import com.truthower.suhang.mangareader.listener.OnEditResultListener;
@@ -47,15 +39,12 @@ import com.truthower.suhang.mangareader.widget.bar.TopBar;
 import com.truthower.suhang.mangareader.widget.dialog.ListDialog;
 import com.truthower.suhang.mangareader.widget.dialog.MangaDialog;
 import com.truthower.suhang.mangareader.widget.dialog.MangaEditDialog;
-import com.truthower.suhang.mangareader.widget.pulltorefresh.PullToRefreshBase;
-import com.truthower.suhang.mangareader.widget.pulltorefresh.PullToRefreshGridView;
 import com.truthower.suhang.mangareader.widget.recyclerview.RecyclerGridDecoration;
 import com.truthower.suhang.mangareader.widget.wheelview.wheelselector.WheelSelectorDialog;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 
 import pub.devrel.easypermissions.AfterPermissionGranted;
@@ -80,7 +69,7 @@ public class LocalMangaFragment extends BaseFragment implements
     }
 
     private WheelSelectorDialog optionsSelector;
-    private final String INDEPENDENT_PATH = "1Independent", STORY_PATH = "2Story";
+    private String independentPath = "1Independent", storyPath = "2Story";
     private Handler handler2 = new Handler() {
         public void handleMessage(Message msg) {
             switch (Integer.valueOf(msg.obj.toString())) {
@@ -235,7 +224,7 @@ public class LocalMangaFragment extends BaseFragment implements
 
             @Override
             public void onTitleClick() {
-                if (LoginBean.getInstance().isMaster()) {
+                if (LoginBean.getInstance().isMaster()||LoginBean.getInstance().isCreator()) {
 //                    showOptionsSelector();
                     showOptionsSelectorDialog();
                 }
@@ -317,12 +306,12 @@ public class LocalMangaFragment extends BaseFragment implements
                     case 0:
                         fileName = getFileName(FileTypeEnum.Independent);
                         sortAndRenameFile(fileName);
-                        moveFolder(INDEPENDENT_PATH, fileName);
+                        moveFolder(independentPath, fileName);
                         break;
                     case 1:
                         fileName = getFileName(FileTypeEnum.Story);
                         sortAndRenameFile(fileName);
-                        moveFolder(STORY_PATH, fileName);
+                        moveFolder(storyPath, fileName);
                         break;
                     case 2:
                         showSortAndRenameFilesDialog();
@@ -353,14 +342,20 @@ public class LocalMangaFragment extends BaseFragment implements
                 String fileName;
                 switch (position) {
                     case 0:
+                        if (!TextUtils.isEmpty(SharedPreferencesUtils.getSharedPreferencesData(getActivity(), ShareKeys.INDEPENDENT_FOLDER_NAME))) {
+                            independentPath = SharedPreferencesUtils.getSharedPreferencesData(getActivity(), ShareKeys.INDEPENDENT_FOLDER_NAME);
+                        }
                         fileName = getFileName(FileTypeEnum.Independent);
                         sortAndRenameFile(fileName);
-                        moveFolder(INDEPENDENT_PATH, fileName);
+                        moveFolder(independentPath, fileName);
                         break;
                     case 1:
+                        if (!TextUtils.isEmpty(SharedPreferencesUtils.getSharedPreferencesData(getActivity(), ShareKeys.STORY_FOLDER_NAME))) {
+                            storyPath = SharedPreferencesUtils.getSharedPreferencesData(getActivity(), ShareKeys.STORY_FOLDER_NAME);
+                        }
                         fileName = getFileName(FileTypeEnum.Story);
                         sortAndRenameFile(fileName);
-                        moveFolder(STORY_PATH, fileName);
+                        moveFolder(storyPath, fileName);
                         break;
                     case 2:
                         showSortAndRenameFilesDialog();
@@ -368,8 +363,54 @@ public class LocalMangaFragment extends BaseFragment implements
                 }
             }
         });
+        listDialog.setOnRecycleItemLongClickListener(new OnRecycleItemLongClickListener() {
+            @Override
+            public void onItemLongClick(int position) {
+                switch (position) {
+                    case 0:
+                        showEditDialog("文件夹名", "填写文件夹名", new OnEditResultListener() {
+                            @Override
+                            public void onResult(String text) {
+                                baseToast.showToast("已修改为:"+text);
+                                SharedPreferencesUtils.setSharedPreferencesData(getActivity(), ShareKeys.INDEPENDENT_FOLDER_NAME, text);
+                            }
+
+                            @Override
+                            public void onCancelClick() {
+
+                            }
+                        });
+                        break;
+                    case 1:
+                        showEditDialog("文件夹名", "填写文件夹名", new OnEditResultListener() {
+                            @Override
+                            public void onResult(String text) {
+                                baseToast.showToast("已修改为:"+text);
+                                SharedPreferencesUtils.setSharedPreferencesData(getActivity(), ShareKeys.STORY_FOLDER_NAME, text);
+                            }
+
+                            @Override
+                            public void onCancelClick() {
+
+                            }
+                        });
+                        break;
+                    case 2:
+                        baseToast.showToast("不支持");
+                        break;
+                }
+            }
+        });
         listDialog.show();
         listDialog.setOptionsList(fileNameOptions);
+    }
+
+    private void showEditDialog(String title, String hint, OnEditResultListener listener) {
+        MangaEditDialog editDialog = new MangaEditDialog(getActivity());
+        editDialog.setOnEditResultListener(listener);
+        editDialog.show();
+        editDialog.setTitle(title);
+        editDialog.setHint(hint);
     }
 
     private void moveFolder(final String folderName, final String fileName) {
@@ -391,10 +432,10 @@ public class LocalMangaFragment extends BaseFragment implements
             String filePath = "";
             switch (fileType) {
                 case Independent:
-                    filePath = storagePath + "/" + INDEPENDENT_PATH;
+                    filePath = storagePath + "/" + independentPath;
                     break;
                 case Story:
-                    filePath = storagePath + "/" + STORY_PATH;
+                    filePath = storagePath + "/" + storyPath;
                     break;
                 default:
                     break;
@@ -407,9 +448,9 @@ public class LocalMangaFragment extends BaseFragment implements
             if (null == files || files.length == 0) {
                 switch (fileType) {
                     case Independent:
-                        return INDEPENDENT_PATH + "0";
+                        return independentPath + "0";
                     case Story:
-                        return STORY_PATH + "0";
+                        return storyPath + "0";
                     default:
                         return "";
                 }
@@ -418,10 +459,10 @@ public class LocalMangaFragment extends BaseFragment implements
                 String replaceString = "";
                 switch (fileType) {
                     case Independent:
-                        replaceString = INDEPENDENT_PATH;
+                        replaceString = independentPath;
                         break;
                     case Story:
-                        replaceString = STORY_PATH;
+                        replaceString = storyPath;
                         break;
                 }
                 for (int i = 0; i < files.length; i++) {
