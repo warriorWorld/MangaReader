@@ -12,7 +12,7 @@
         android:layout_alignParentRight="true"
         android:layout_marginRight="24dp"
         android:layout_marginTop="25dp"
-        android:src="@drawable/cross_red"/>
+        android:src="@drawable/cross_icon"/>
 
     <ImageView
         android:id="@+id/xhh_icon_iv"
