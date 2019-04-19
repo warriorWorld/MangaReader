@@ -21,6 +21,7 @@ import com.avos.avoscloud.AVQuery;
 import com.avos.avoscloud.CloudQueryCallback;
 import com.avos.avoscloud.CountCallback;
 import com.avos.avoscloud.FindCallback;
+import com.avos.avoscloud.GetCallback;
 import com.avos.avoscloud.SaveCallback;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.truthower.suhang.mangareader.R;
@@ -35,6 +36,7 @@ import com.truthower.suhang.mangareader.bean.MangaBean;
 import com.truthower.suhang.mangareader.business.comment.CommentActivity;
 import com.truthower.suhang.mangareader.business.download.DownloadActivity;
 import com.truthower.suhang.mangareader.business.download.DownloadMangaManager;
+import com.truthower.suhang.mangareader.business.gesture.SetGestureActivity;
 import com.truthower.suhang.mangareader.business.main.MainActivity;
 import com.truthower.suhang.mangareader.business.read.ReadMangaActivity;
 import com.truthower.suhang.mangareader.business.search.SearchActivity;
@@ -45,6 +47,7 @@ import com.truthower.suhang.mangareader.eventbus.JumpEvent;
 import com.truthower.suhang.mangareader.eventbus.TagClickEvent;
 import com.truthower.suhang.mangareader.listener.JsoupCallBack;
 import com.truthower.suhang.mangareader.listener.OnGradeDialogSelectedListener;
+import com.truthower.suhang.mangareader.listener.OnResultListener;
 import com.truthower.suhang.mangareader.listener.OnSevenFourteenListDialogListener;
 import com.truthower.suhang.mangareader.spider.SpiderBase;
 import com.truthower.suhang.mangareader.utils.ActivityPoor;
@@ -55,6 +58,7 @@ import com.truthower.suhang.mangareader.utils.SharedPreferencesUtils;
 import com.truthower.suhang.mangareader.utils.ThreeDESUtil;
 import com.truthower.suhang.mangareader.utils.UltimateTextSizeUtil;
 import com.truthower.suhang.mangareader.widget.bar.TopBar;
+import com.truthower.suhang.mangareader.widget.dialog.GestureDialog;
 import com.truthower.suhang.mangareader.widget.dialog.GradeDialog;
 import com.truthower.suhang.mangareader.widget.dialog.ListDialog;
 import com.truthower.suhang.mangareader.widget.dialog.MangaDialog;
@@ -373,28 +377,87 @@ public class WebMangaDetailsActivity extends TTSActivity implements AdapterView.
                 doDownload(downloadStartPoint, position);
             }
         } else {
-            Intent intent = new Intent(WebMangaDetailsActivity.this, ReadMangaActivity.class);
-            if (spider.isOneShot() && null != oneShotPathList && oneShotPathList.size() > 0) {
-                //one shot
-                currentMangaName = currentManga.getName();
-                Bundle pathListBundle = new Bundle();
-                pathListBundle.putSerializable("pathList", oneShotPathList);
-                intent.putExtras(pathListBundle);
-                intent.putExtra("img_position", position);
+            boolean isForAdult = false;
+            if (null != spider.getAdultTypes() && spider.getAdultTypes().length > 0) {
+                for (String item : spider.getAdultTypes()) {
+                    if (mangaTypeTv.getText().toString().toLowerCase().contains(item.toLowerCase())) {
+                        isForAdult = true;
+                        break;
+                    }
+                }
+            }
+            if (isForAdult) {
+                doGetGesture(position);
             } else {
-                currentMangaName = currentManga.getName() + "(" + currentManga.getChapters().
-                        get(position).getChapterPosition() + ")";
-                SharedPreferencesUtils.setSharedPreferencesData(WebMangaDetailsActivity.this,
-                        ShareKeys.ONLINE_MANGA_READ_CHAPTER_POSITION + currentManga.getName(), position);
-                adapter.setLastReadPosition(SharedPreferencesUtils.getIntSharedPreferencesData
-                        (WebMangaDetailsActivity.this,
-                                ShareKeys.ONLINE_MANGA_READ_CHAPTER_POSITION + currentManga.getName()));
-                intent.putExtra("chapterUrl", currentManga.getChapters().get(position).getChapterUrl());
+                toReadActivity(position);
             }
-            intent.putExtra("currentMangaName", currentMangaName);
-            if (null != intent) {
-                startActivity(intent);
+        }
+    }
+
+    private void doGetGesture(final int position) {
+        String userName = LoginBean.getInstance().getUserName(this);
+        if (TextUtils.isEmpty(userName)) {
+            return;
+        }
+        SingleLoadBarUtil.getInstance().showLoadBar(this);
+
+        AVQuery<AVObject> query = new AVQuery<>("Gesture");
+        query.whereEqualTo("owner", userName);
+        query.getFirstInBackground(new GetCallback<AVObject>() {
+            @Override
+            public void done(final AVObject account, AVException e) {
+                SingleLoadBarUtil.getInstance().dismissLoadBar();
+                if (null == account) {
+                    toReadActivity(position);
+                } else {
+                    if (LeanCloundUtil.handleLeanResult(WebMangaDetailsActivity.this, e)) {
+                        String password = account.getString("password");
+                        showGestureDialog(position, password);
+                    }
+                }
             }
+        });
+    }
+
+    private void showGestureDialog(final int position, String answer) {
+        GestureDialog gestureDialog = new GestureDialog(this);
+        gestureDialog.setOnResultListener(new OnResultListener() {
+            @Override
+            public void onFinish() {
+                toReadActivity(position);
+            }
+
+            @Override
+            public void onFailed() {
+
+            }
+        });
+        gestureDialog.show();
+        gestureDialog.setAnswer(answer);
+    }
+
+    private void toReadActivity(int position) {
+        Intent intent = new Intent(WebMangaDetailsActivity.this, ReadMangaActivity.class);
+        if (spider.isOneShot() && null != oneShotPathList && oneShotPathList.size() > 0) {
+            //one shot
+            currentMangaName = currentManga.getName();
+            Bundle pathListBundle = new Bundle();
+            pathListBundle.putSerializable("pathList", oneShotPathList);
+            intent.putExtras(pathListBundle);
+            intent.putExtra("img_position", position);
+        } else {
+            currentMangaName = currentManga.getName() + "(" + currentManga.getChapters().
+                    get(position).getChapterPosition() + ")";
+            SharedPreferencesUtils.setSharedPreferencesData(WebMangaDetailsActivity.this,
+                    ShareKeys.ONLINE_MANGA_READ_CHAPTER_POSITION + currentManga.getName(), position);
+            adapter.setLastReadPosition(SharedPreferencesUtils.getIntSharedPreferencesData
+                    (WebMangaDetailsActivity.this,
+                            ShareKeys.ONLINE_MANGA_READ_CHAPTER_POSITION + currentManga.getName()));
+            intent.putExtra("chapterUrl", currentManga.getChapters().get(position).getChapterUrl());
+        }
+        intent.putExtra("currentMangaName", currentMangaName);
+        if (null != intent) {
+            startActivity(intent);
         }
     }
 

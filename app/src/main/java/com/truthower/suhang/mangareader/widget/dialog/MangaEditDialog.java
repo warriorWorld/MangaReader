@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.InputType;
 import android.text.TextUtils;
+import android.text.method.PasswordTransformationMethod;
 import android.view.Display;
 import android.view.Gravity;
 import android.view.KeyEvent;
@@ -148,7 +149,7 @@ public class MangaEditDialog extends Dialog implements View.OnClickListener {
     }
 
     public void setPasswordMode() {
-        editTextV.setInputType(InputType.TYPE_TEXT_VARIATION_PASSWORD);
+        editTextV.setTransformationMethod(PasswordTransformationMethod.getInstance());
     }
 
     public void setOkText(String text) {

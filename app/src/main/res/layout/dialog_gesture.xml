@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:orientation="vertical">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="17dp"
+        android:paddingLeft="17dp">
+
+        <TextView
+            android:id="@+id/title_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:text="请绘制手势密码"
+            android:textColor="@color/main_text_color"
+            android:textSize="17sp"
+            android:visibility="visible"/>
+
+        <ImageView
+            android:id="@+id/cross_iv"
+            android:layout_width="15dp"
+            android:layout_height="15dp"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:src="@drawable/cross_rect_gray"/>
+    </RelativeLayout>
+
+    <com.truthower.suhang.mangareader.widget.gesture.GestureLockViewGroup
+        android:id="@+id/id_gestureLockViewGroup"
+        android:layout_width="match_parent"
+        android:layout_height="380dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:gravity="center_vertical"
+        app:count="3"
+        app:tryTimes="5"/>
+</LinearLayout>
