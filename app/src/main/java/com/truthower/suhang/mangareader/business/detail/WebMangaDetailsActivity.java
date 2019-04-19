@@ -113,6 +113,7 @@ public class WebMangaDetailsActivity extends TTSActivity implements AdapterView.
     private LinearLayout commentMsgLl;
     private RelativeLayout gradeRl;
     private ArrayList<GradeBean> gradeList = new ArrayList<>();
+    private int wrongNum = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -424,12 +425,17 @@ public class WebMangaDetailsActivity extends TTSActivity implements AdapterView.
         gestureDialog.setOnResultListener(new OnResultListener() {
             @Override
             public void onFinish() {
+                wrongNum = 0;
                 toReadActivity(position);
             }
 
             @Override
             public void onFailed() {
-
+                wrongNum++;
+                if (wrongNum > 4) {
+                    baseToast.showToast("输入错误次数过多");
+                    finish();
+                }
             }
         });
         gestureDialog.show();
