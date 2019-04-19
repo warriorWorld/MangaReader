@@ -1,8 +1,8 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
-    android:background="@color/divide">
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:background="@color/divide">
 
 
     <com.truthower.suhang.mangareader.widget.pulltorefresh.PullToRefreshListView
@@ -15,9 +15,10 @@
         android:id="@+id/gradient_bar"
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:background="@color/manga_reader"
+        android:background="@color/white"
         app:left_text=""
         app:right_background="@drawable/more"
+        app:title_textColor="@color/main_text_color"
         app:title_text="漫画"></com.truthower.suhang.mangareader.widget.bar.TopBar>
 
 
@@ -25,12 +26,12 @@
         android:id="@+id/current_page_tv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
-        android:layout_marginBottom="12dp"
+        android:layout_alignParentBottom="true"
         android:layout_marginRight="8dp"
+        android:layout_marginBottom="12dp"
         android:textColor="@color/main_text_color"
-        android:textSize="12sp" />
+        android:textSize="12sp"/>
 
     <include
         android:id="@+id/empty_view"
@@ -39,5 +40,5 @@
         android:layout_height="match_parent"
         android:layout_below="@+id/gradient_bar"
         android:layout_centerInParent="true"
-        android:visibility="gone" />
+        android:visibility="gone"/>
 </RelativeLayout>

@@ -17,7 +17,7 @@
 
     <dimen name="top_bar_text">22sp</dimen>
 
-    <dimen name="user_item_h">50dp</dimen>
+    <dimen name="user_item_h">60dp</dimen>
     <dimen name="item_padding_horizontal">17dp</dimen>
     <dimen name="item_padding_vertical">10dp</dimen>
     <dimen name="item_margin_top">10dp</dimen>

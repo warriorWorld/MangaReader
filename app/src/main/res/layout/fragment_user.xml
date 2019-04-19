@@ -326,7 +326,7 @@
         android:layout_width="match_parent"
         android:layout_height="114dp"
         android:layout_alignParentTop="true"
-        android:background="@color/manga_reader"
+        android:background="@color/white"
         android:paddingLeft="31dp">
 
         <RelativeLayout
@@ -356,7 +356,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="点击登录"
-                    android:textColor="@color/white"
+                    android:textColor="@color/main_text_color"
                     android:textSize="@dimen/main_text_size" />
 
                 <TextView
