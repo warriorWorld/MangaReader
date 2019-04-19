@@ -56,14 +56,14 @@ public class TopBar extends GradientBar {
         String rightText = ta.getString(R.styleable.home_top_bar_right_text);
         String leftText = ta.getString(R.styleable.home_top_bar_left_text);
         int rightTextColor = ta.getColor(R.styleable.home_top_bar_right_textColor,
-                Color.WHITE);
+                context.getResources().getColor(R.color.main_text_color));
         int leftTextColor = ta.getColor(R.styleable.home_top_bar_left_textColor,
-                Color.WHITE);
+                context.getResources().getColor(R.color.main_text_color));
         float titleTextSize = ta.getDimension(
                 R.styleable.home_top_bar_title_textSize, 22);
         String titleText = ta.getString(R.styleable.home_top_bar_title_text);
         int titleTextColor = ta.getColor(R.styleable.home_top_bar_title_textColor,
-                Color.WHITE);
+                context.getResources().getColor(R.color.main_text_color));
         ta.recycle();
         if (null != leftBg)
             leftIV.setImageDrawable(leftBg);

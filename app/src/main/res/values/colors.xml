@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="transparency">#00000000</color>
-    <color name="colorPrimary">#3F51B5</color>
-    <color name="colorPrimaryDark">#303F9F</color>
-    <color name="colorAccent">#e66c25</color>
+    <color name="colorPrimary">@color/manga_reader</color>
+    <color name="colorPrimaryDark">@color/manga_reader_deep</color>
+    <color name="colorAccent">@color/manga_reader</color>
     <!--主流的几个颜色-->
-    <color name="manga_reader">#e66c25</color>
-    <color name="manga_reader_deep">#e9193b</color>
+    <color name="manga_reader">#019EB9</color>
+    <color name="manga_reader_deep">#006374</color>
     <color name="manga_reader_blue">#456ec1</color>
     <color name="white">#ffffff</color>
     <color name="main_text_color">#12274D</color>

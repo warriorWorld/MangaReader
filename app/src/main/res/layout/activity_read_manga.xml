@@ -15,10 +15,11 @@
             android:id="@+id/read_manga_top_bar"
             android:layout_width="match_parent"
             android:layout_height="40dp"
-            android:background="@color/manga_reader"
+            android:background="@color/white"
+            app:titleTextColor="@color/main_text_color"
             app:left_background="@drawable/search_word_screenshot"
             app:right_background="@drawable/search_word"
-            app:title_textColor="#ffffff">
+            app:title_textColor="@color/main_text_color">
 
         </com.truthower.suhang.mangareader.widget.bar.TopBar>
 

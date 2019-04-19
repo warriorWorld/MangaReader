@@ -140,7 +140,7 @@ public class UserFragment extends BaseFragment implements View.OnClickListener {
             if (LoginBean.getInstance().isMaster()) {
                 userNameTv.setTextColor(getResources().getColor(R.color.master));
             } else {
-                userNameTv.setTextColor(getResources().getColor(R.color.white));
+                userNameTv.setTextColor(getResources().getColor(R.color.main_text_color));
             }
             user_center_explain.setVisibility(View.VISIBLE);
             userNameTv.setText(LoginBean.getInstance().getUserName());

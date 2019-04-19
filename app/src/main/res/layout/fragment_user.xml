@@ -1,7 +1,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
-    android:background="@color/divide">
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:background="@color/divide">
 
     <ScrollView
         android:id="@+id/user_scrollview"
@@ -33,7 +33,7 @@
                     android:gravity="center_vertical"
                     android:text="我的收藏"
                     android:textColor="@color/main_text_color"
-                    android:textSize="@dimen/main_text_size" />
+                    android:textSize="@dimen/main_text_size"/>
 
 
                 <ImageView
@@ -41,13 +41,13 @@
                     android:layout_height="10dp"
                     android:layout_alignParentRight="true"
                     android:layout_centerVertical="true"
-                    android:src="@drawable/forward" />
+                    android:src="@drawable/forward"/>
             </RelativeLayout>
 
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1px"
-                android:background="@color/divide_line" />
+                android:background="@color/divide_line"/>
 
             <RelativeLayout
                 android:id="@+id/waiting_for_update_rl"
@@ -66,7 +66,7 @@
                     android:gravity="center_vertical"
                     android:text="正在追更"
                     android:textColor="@color/main_text_color"
-                    android:textSize="@dimen/main_text_size" />
+                    android:textSize="@dimen/main_text_size"/>
 
 
                 <ImageView
@@ -74,13 +74,13 @@
                     android:layout_height="10dp"
                     android:layout_alignParentRight="true"
                     android:layout_centerVertical="true"
-                    android:src="@drawable/forward" />
+                    android:src="@drawable/forward"/>
             </RelativeLayout>
 
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1px"
-                android:background="@color/divide_line" />
+                android:background="@color/divide_line"/>
 
             <RelativeLayout
                 android:id="@+id/finished_manga_rl"
@@ -99,7 +99,7 @@
                     android:gravity="center_vertical"
                     android:text="我看完的"
                     android:textColor="@color/main_text_color"
-                    android:textSize="@dimen/main_text_size" />
+                    android:textSize="@dimen/main_text_size"/>
 
 
                 <ImageView
@@ -107,14 +107,14 @@
                     android:layout_height="10dp"
                     android:layout_alignParentRight="true"
                     android:layout_centerVertical="true"
-                    android:src="@drawable/forward" />
+                    android:src="@drawable/forward"/>
             </RelativeLayout>
 
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1px"
                 android:background="@color/divide_line"
-                android:visibility="visible" />
+                android:visibility="visible"/>
 
             <RelativeLayout
                 android:id="@+id/statistics_rl"
@@ -134,7 +134,7 @@
                     android:gravity="center_vertical"
                     android:text="数据统计"
                     android:textColor="@color/main_text_color"
-                    android:textSize="@dimen/main_text_size" />
+                    android:textSize="@dimen/main_text_size"/>
 
 
                 <ImageView
@@ -142,14 +142,14 @@
                     android:layout_height="10dp"
                     android:layout_alignParentRight="true"
                     android:layout_centerVertical="true"
-                    android:src="@drawable/forward" />
+                    android:src="@drawable/forward"/>
             </RelativeLayout>
 
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1px"
                 android:background="@color/divide_line"
-                android:visibility="visible" />
+                android:visibility="visible"/>
 
             <RelativeLayout
                 android:id="@+id/new_word_book_rl"
@@ -169,7 +169,7 @@
                     android:gravity="center_vertical"
                     android:text="生  词  本"
                     android:textColor="@color/main_text_color"
-                    android:textSize="@dimen/main_text_size" />
+                    android:textSize="@dimen/main_text_size"/>
 
 
                 <ImageView
@@ -177,14 +177,14 @@
                     android:layout_height="10dp"
                     android:layout_alignParentRight="true"
                     android:layout_centerVertical="true"
-                    android:src="@drawable/forward" />
+                    android:src="@drawable/forward"/>
             </RelativeLayout>
 
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1px"
                 android:background="@color/divide_line"
-                android:visibility="visible" />
+                android:visibility="visible"/>
 
             <RelativeLayout
                 android:id="@+id/download_rl"
@@ -204,7 +204,7 @@
                     android:gravity="center_vertical"
                     android:text="下        载"
                     android:textColor="@color/main_text_color"
-                    android:textSize="@dimen/main_text_size" />
+                    android:textSize="@dimen/main_text_size"/>
 
 
                 <ImageView
@@ -212,14 +212,14 @@
                     android:layout_height="10dp"
                     android:layout_alignParentRight="true"
                     android:layout_centerVertical="true"
-                    android:src="@drawable/forward" />
+                    android:src="@drawable/forward"/>
             </RelativeLayout>
 
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1px"
                 android:background="@color/divide_line"
-                android:visibility="visible" />
+                android:visibility="visible"/>
 
             <RelativeLayout
                 android:id="@+id/share_rl"
@@ -239,7 +239,7 @@
                     android:gravity="center_vertical"
                     android:text="分享App"
                     android:textColor="@color/main_text_color"
-                    android:textSize="@dimen/main_text_size" />
+                    android:textSize="@dimen/main_text_size"/>
 
 
                 <ImageView
@@ -247,14 +247,14 @@
                     android:layout_height="10dp"
                     android:layout_alignParentRight="true"
                     android:layout_centerVertical="true"
-                    android:src="@drawable/forward" />
+                    android:src="@drawable/forward"/>
             </RelativeLayout>
 
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1px"
                 android:background="@color/divide_line"
-                android:visibility="visible" />
+                android:visibility="visible"/>
 
             <RelativeLayout
                 android:id="@+id/ad_rl"
@@ -274,7 +274,7 @@
                     android:gravity="center_vertical"
                     android:text="更多英语学习App"
                     android:textColor="@color/main_text_color"
-                    android:textSize="@dimen/main_text_size" />
+                    android:textSize="@dimen/main_text_size"/>
 
 
                 <ImageView
@@ -282,13 +282,13 @@
                     android:layout_height="10dp"
                     android:layout_alignParentRight="true"
                     android:layout_centerVertical="true"
-                    android:src="@drawable/forward" />
+                    android:src="@drawable/forward"/>
             </RelativeLayout>
 
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1px"
-                android:background="@color/divide_line" />
+                android:background="@color/divide_line"/>
 
             <RelativeLayout
                 android:id="@+id/about_rl"
@@ -308,7 +308,7 @@
                     android:gravity="center_vertical"
                     android:text="设        置"
                     android:textColor="@color/main_text_color"
-                    android:textSize="@dimen/main_text_size" />
+                    android:textSize="@dimen/main_text_size"/>
 
 
                 <ImageView
@@ -316,7 +316,7 @@
                     android:layout_height="10dp"
                     android:layout_alignParentRight="true"
                     android:layout_centerVertical="true"
-                    android:src="@drawable/forward" />
+                    android:src="@drawable/forward"/>
             </RelativeLayout>
         </LinearLayout>
     </ScrollView>
@@ -340,7 +340,7 @@
                 android:id="@+id/user_head_civ"
                 android:layout_width="52dp"
                 android:layout_height="match_parent"
-                android:src="@drawable/spider_hat_gray" />
+                android:src="@drawable/spider_hat_color"/>
 
             <LinearLayout
                 android:layout_width="wrap_content"
@@ -357,7 +357,7 @@
                     android:layout_height="wrap_content"
                     android:text="点击登录"
                     android:textColor="@color/main_text_color"
-                    android:textSize="@dimen/main_text_size" />
+                    android:textSize="@dimen/main_text_size"/>
 
                 <TextView
                     android:id="@+id/user_center_explain"
@@ -366,7 +366,7 @@
                     android:layout_marginTop="3dp"
                     android:text="个人中心"
                     android:textColor="@color/main_text_color_gray"
-                    android:textSize="10sp" />
+                    android:textSize="10sp"/>
             </LinearLayout>
 
             <TextView
@@ -382,7 +382,7 @@
                 android:singleLine="true"
                 android:textColor="@color/manga_reader_deep"
                 android:textSize="11sp"
-                android:visibility="gone" />
+                android:visibility="gone"/>
         </RelativeLayout>
 
     </RelativeLayout>

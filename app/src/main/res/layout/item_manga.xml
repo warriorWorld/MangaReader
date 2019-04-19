@@ -1,17 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="wrap_content"
-    android:layout_height="300dp"
-    android:gravity="center"
-    android:orientation="vertical"
-    android:padding="2dp">
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:layout_width="wrap_content"
+              android:layout_height="300dp"
+              android:gravity="center"
+              android:orientation="vertical"
+              android:padding="2dp">
 
     <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="0dp"
-        android:layout_weight="4">
+        android:layout_margin="10dp"
+        android:layout_weight="4"
+        android:background="@drawable/peanut_btn_bg_white_round1"
+        android:elevation="5dp">
 
         <ImageView
             android:id="@+id/manga_view"
@@ -23,17 +26,17 @@
             android:id="@+id/edit_mode_iv"
             android:layout_width="30dp"
             android:layout_height="30dp"
-            android:visibility="gone"
             android:layout_centerInParent="true"
-            android:src="@drawable/check_box_icon" />
+            android:src="@drawable/check_box_icon"
+            android:visibility="gone"/>
 
         <ImageView
             android:id="@+id/checked_iv"
-            android:visibility="gone"
             android:layout_width="30dp"
             android:layout_height="30dp"
             android:layout_centerInParent="true"
-            android:src="@drawable/check_mark_icon" />
+            android:src="@drawable/check_mark_icon"
+            android:visibility="gone"/>
     </RelativeLayout>
 
 
@@ -49,6 +52,6 @@
         android:singleLine="true"
         android:text="XXX"
         android:textColor="@color/main_text_color"
-        android:textSize="22sp" />
+        android:textSize="22sp"/>
 
 </LinearLayout>
