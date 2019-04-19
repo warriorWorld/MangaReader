@@ -8,7 +8,7 @@
     <RelativeLayout
         android:id="@+id/website_rl"
         android:layout_width="match_parent"
-        android:layout_height="40dp"
+        android:layout_height="@dimen/user_item_h"
         android:layout_marginTop="10dp"
         android:background="@color/white"
         android:paddingLeft="@dimen/activity_horizontal_margin"
@@ -50,7 +50,7 @@
     <RelativeLayout
         android:id="@+id/search_type_rl"
         android:layout_width="match_parent"
-        android:layout_height="40dp"
+        android:layout_height="@dimen/user_item_h"
         android:background="@color/white"
         android:paddingLeft="@dimen/activity_horizontal_margin"
         android:paddingRight="@dimen/activity_horizontal_margin">
@@ -90,7 +90,7 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="50dp"
+        android:layout_height="@dimen/user_item_h"
         android:background="@color/white"
         android:paddingLeft="@dimen/activity_horizontal_margin"
         android:paddingRight="@dimen/activity_horizontal_margin">

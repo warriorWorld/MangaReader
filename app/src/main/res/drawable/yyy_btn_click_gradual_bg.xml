@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <corners android:radius="5dp"/>
+    <gradient
+        android:angle="0"
+        android:endColor="@color/manga_reader"
+        android:startColor="@color/manga_reader_shllow"
+        android:type="linear"/>
+</shape>
