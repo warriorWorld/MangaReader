@@ -39,4 +39,5 @@ public class ShareKeys {
     public static final String IS_OTHER_LETTER_ORDER = "is_other_letter_order";
     public static final String STORY_FOLDER_NAME = "story_folder_name";
     public static final String INDEPENDENT_FOLDER_NAME = "independent_folder_name";
+    public static final String LAST_DRAGVIEW_POSITION = "last_dragview_position";
 }

@@ -1,6 +1,8 @@
 package com.truthower.suhang.mangareader.business.other;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 
@@ -9,11 +11,12 @@ import com.truthower.suhang.mangareader.base.BaseActivity;
 import com.truthower.suhang.mangareader.config.ShareKeys;
 import com.truthower.suhang.mangareader.utils.SharedPreferencesUtils;
 
-public class KeyboardSettingActivity extends BaseActivity {
+public class KeyboardSettingActivity extends BaseActivity implements View.OnClickListener {
     private CheckBox closeShKeyboardCb;
     private CheckBox closeKeyboardSoundCb;
     private CheckBox closeKeyboardVibrationCb;
     private CheckBox toggleKeyboardOrderCb;
+    private View otherSeettingRl;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,6 +29,7 @@ public class KeyboardSettingActivity extends BaseActivity {
         closeKeyboardSoundCb = (CheckBox) findViewById(R.id.close_keyboard_sound_cb);
         closeKeyboardVibrationCb = (CheckBox) findViewById(R.id.close_keyboard_vibration_cb);
         toggleKeyboardOrderCb = (CheckBox) findViewById(R.id.toggle_keyboard_order_cb);
+        otherSeettingRl=findViewById(R.id.other_seetting_rl);
         closeShKeyboardCb.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -71,11 +75,22 @@ public class KeyboardSettingActivity extends BaseActivity {
                 (SharedPreferencesUtils.getBooleanSharedPreferencesData(KeyboardSettingActivity.this,
                         ShareKeys.IS_OTHER_LETTER_ORDER, false));
         baseTopBar.setTitle("键盘设置");
+        otherSeettingRl.setOnClickListener(this);
     }
 
 
     @Override
     protected int getLayoutId() {
         return R.layout.activity_keyboard_setting;
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()){
+            case R.id.other_seetting_rl:
+                Intent intent=new Intent(KeyboardSettingActivity.this,AboutActivity.class);
+                startActivity(intent);
+                break;
+        }
     }
 }

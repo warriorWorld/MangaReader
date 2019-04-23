@@ -3,10 +3,13 @@ package com.truthower.suhang.mangareader.widget.dragview;
 import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 
+import com.truthower.suhang.mangareader.config.ShareKeys;
 import com.truthower.suhang.mangareader.utils.DisplayUtil;
+import com.truthower.suhang.mangareader.utils.SharedPreferencesUtils;
 import com.truthower.suhang.mangareader.utils.VibratorUtil;
 
 
@@ -75,19 +78,36 @@ public class DragView extends android.support.v7.widget.AppCompatImageView {
             float center = (lastLeft + lastRight) / 2f;
             if (center > screenWidth / 2f) {
                 float curTranslationX = getTranslationX();
-                ObjectAnimator animator = ObjectAnimator.ofFloat(this, "translationX", curTranslationX, screenWidth-lastLeft-width);
+                ObjectAnimator animator = ObjectAnimator.ofFloat(this, "translationX", curTranslationX, screenWidth - lastLeft - width);
                 animator.setDuration(250);
                 animator.start();
 //                this.layout(screenWidth - width, lastTop, screenWidth, lastBottom);
+                String save = (screenWidth - width) + ";" + lastTop + ";" + screenWidth + ";" + lastBottom;
+                SharedPreferencesUtils.setSharedPreferencesData(mContext, ShareKeys.LAST_DRAGVIEW_POSITION, save);
             } else {
                 float curTranslationX = getTranslationX();
                 ObjectAnimator animator = ObjectAnimator.ofFloat(this, "translationX", curTranslationX, -lastLeft);
                 animator.setDuration(250);
                 animator.start();
 //                this.layout(0, lastTop, width, lastBottom);
+                String save = 0 + ";" + lastTop + ";" + width + ";" + lastBottom;
+                SharedPreferencesUtils.setSharedPreferencesData(mContext, ShareKeys.LAST_DRAGVIEW_POSITION, save);
             }
         }
         edged = true;
+    }
+
+    public void toLastPosition() {
+        String s = SharedPreferencesUtils.getSharedPreferencesData(mContext, ShareKeys.LAST_DRAGVIEW_POSITION);
+        if (TextUtils.isEmpty(s)) {
+            return;
+        }
+        String[] ss = s.split(";");
+        if (ss.length <= 0) {
+            return;
+        }
+
+        this.layout(Integer.valueOf(ss[0]), Integer.valueOf(ss[1]), Integer.valueOf(ss[2]), Integer.valueOf(ss[3]));
     }
 
     @Override
@@ -99,11 +119,11 @@ public class DragView extends android.support.v7.widget.AppCompatImageView {
             lastMotion = event.getAction();
             switch (event.getAction()) {
                 case MotionEvent.ACTION_DOWN:
-                    VibratorUtil.Vibrate(mContext,30);
+                    VibratorUtil.Vibrate(mContext, 30);
                     downX = event.getX();
                     downY = event.getY();
-                    xDistance=0;
-                    yDistance=0;
+                    xDistance = 0;
+                    yDistance = 0;
                     break;
                 case MotionEvent.ACTION_MOVE:
                     xDistance = event.getX() - downX;
@@ -133,7 +153,7 @@ public class DragView extends android.support.v7.widget.AppCompatImageView {
                     }
                     break;
                 case MotionEvent.ACTION_UP:
-                    if (Math.abs(xDistance) <=clickThreshold && Math.abs(yDistance) <= clickThreshold && null != mOnClickListener) {
+                    if (Math.abs(xDistance) <= clickThreshold && Math.abs(yDistance) <= clickThreshold && null != mOnClickListener) {
                         mOnClickListener.onClick(this);
                     }
                     setPressed(false);

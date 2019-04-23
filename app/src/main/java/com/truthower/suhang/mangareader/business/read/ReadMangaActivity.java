@@ -60,6 +60,7 @@ import com.truthower.suhang.mangareader.widget.dialog.MangaDialog;
 import com.truthower.suhang.mangareader.widget.dialog.MangaImgEditDialog;
 import com.truthower.suhang.mangareader.widget.dialog.OnlyEditDialog;
 import com.truthower.suhang.mangareader.widget.dialog.TranslateDialog;
+import com.truthower.suhang.mangareader.widget.dragview.DragView;
 import com.truthower.suhang.mangareader.widget.shotview.ScreenShot;
 import com.truthower.suhang.mangareader.widget.shotview.ShotView;
 import com.umeng.analytics.MobclickAgent;
@@ -127,7 +128,7 @@ public class ReadMangaActivity extends TTSActivity implements OnClickListener {
     //OCR识别
     final public static OCRParameters tps = new OCRParameters.Builder().source("youdaoocr").timeout(100000)
             .type(OCRParameters.TYPE_LINE).lanType(RecognizeLanguage.LINE_CHINESE_ENGLISH.getCode()).build();//
-    private View screenDv;
+    private DragView screenDv;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -255,7 +256,6 @@ public class ReadMangaActivity extends TTSActivity implements OnClickListener {
         loadBar = new ProgressDialog(ReadMangaActivity.this);
         loadBar.setCancelable(false);
         loadBar.setMessage("稍等...");
-
     }
 
     /**
@@ -339,8 +339,23 @@ public class ReadMangaActivity extends TTSActivity implements OnClickListener {
         ocrBtn = (Button) findViewById(R.id.ocr_btn);
         readProgressTv = (TextView) findViewById(R.id.read_progress_tv);
         test_iv = (ImageView) findViewById(R.id.test_iv);
-        screenDv = findViewById(R.id.screenshoot_dv);
-
+        screenDv = (DragView) findViewById(R.id.screenshoot_dv);
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    Thread.sleep(500);
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            screenDv.toLastPosition();
+                        }
+                    });
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
         readProgressTv.setOnClickListener(this);
         screenDv.setOnClickListener(this);
         showSeekBar.setOnClickListener(this);
