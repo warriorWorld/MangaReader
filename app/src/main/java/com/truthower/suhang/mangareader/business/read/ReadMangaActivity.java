@@ -783,6 +783,7 @@ public class ReadMangaActivity extends TTSActivity implements OnClickListener {
                 public void onPageSelected(int position) {
                     historyPosition = position;
                     readProgressTv.setText(position + 1 + "/" + pathList.size());
+                    seekBar.setProgress(historyPosition);
                     updateStatisctics();
                 }
 

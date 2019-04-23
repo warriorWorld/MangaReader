@@ -77,20 +77,24 @@ public class DragView extends android.support.v7.widget.AppCompatImageView {
             int width = lastRight - lastLeft;
             float center = (lastLeft + lastRight) / 2f;
             if (center > screenWidth / 2f) {
+                //向右
                 float curTranslationX = getTranslationX();
                 ObjectAnimator animator = ObjectAnimator.ofFloat(this, "translationX", curTranslationX, screenWidth - lastLeft - width);
                 animator.setDuration(250);
                 animator.start();
 //                this.layout(screenWidth - width, lastTop, screenWidth, lastBottom);
-                String save = (screenWidth - width) + ";" + lastTop + ";" + screenWidth + ";" + lastBottom;
+//                String save = (int)(screenWidth - width) + ";" + (int)getY();
+                String save = (int) (screenWidth - width) + ";" + (int) lastTop + ";" + (int) screenWidth + ";" + (int) lastBottom;
                 SharedPreferencesUtils.setSharedPreferencesData(mContext, ShareKeys.LAST_DRAGVIEW_POSITION, save);
             } else {
+                //向左
                 float curTranslationX = getTranslationX();
                 ObjectAnimator animator = ObjectAnimator.ofFloat(this, "translationX", curTranslationX, -lastLeft);
                 animator.setDuration(250);
                 animator.start();
 //                this.layout(0, lastTop, width, lastBottom);
-                String save = 0 + ";" + lastTop + ";" + width + ";" + lastBottom;
+//                String save = 0 + ";" + (int)getY();
+                String save = 0 + ";" + (int) lastTop + ";" + (int) width + ";" + (int) lastBottom;
                 SharedPreferencesUtils.setSharedPreferencesData(mContext, ShareKeys.LAST_DRAGVIEW_POSITION, save);
             }
         }
@@ -107,7 +111,23 @@ public class DragView extends android.support.v7.widget.AppCompatImageView {
             return;
         }
 
-        this.layout(Integer.valueOf(ss[0]), Integer.valueOf(ss[1]), Integer.valueOf(ss[2]), Integer.valueOf(ss[3]));
+        try {
+            this.layout(Integer.valueOf(ss[0]), Integer.valueOf(ss[1]), Integer.valueOf(ss[2]), Integer.valueOf(ss[3]));
+            lastMotion=MotionEvent.ACTION_UP;
+            edged=true;
+
+//            setX(Float.valueOf(ss[0]));
+//            setY(Float.valueOf(ss[1]));
+
+//            ObjectAnimator animator = ObjectAnimator.ofFloat(this, "translationX", getTranslationX(), Integer.valueOf(ss[0]));
+//            animator.setDuration(250);
+//            animator.start();
+//            ObjectAnimator animator1 = ObjectAnimator.ofFloat(this, "translationY", getTranslationY(), Integer.valueOf(ss[1]) - getY());
+//            animator1.setDuration(250);
+//            animator1.start();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
