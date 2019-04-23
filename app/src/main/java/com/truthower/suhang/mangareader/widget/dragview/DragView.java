@@ -113,6 +113,7 @@ public class DragView extends android.support.v7.widget.AppCompatImageView {
 
         try {
             this.layout(Integer.valueOf(ss[0]), Integer.valueOf(ss[1]), Integer.valueOf(ss[2]), Integer.valueOf(ss[3]));
+            //阻止onlayout后被重置位置
             lastMotion=MotionEvent.ACTION_UP;
             edged=true;
 
