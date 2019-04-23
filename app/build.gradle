@@ -70,4 +70,6 @@ dependencies {
     implementation files('libs/YoudaoOCROnline.jar')
     //gif
     implementation 'com.roger.gifloadinglibrary:gifloadinglibrary:1.0.0'
+    //圆角
+    implementation 'com.makeramen:roundedimageview:2.3.0'
 }

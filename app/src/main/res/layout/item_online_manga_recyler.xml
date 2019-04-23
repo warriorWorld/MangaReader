@@ -8,14 +8,15 @@
                 android:background="@color/divide"
                 android:padding="2dp">
 
-    <ImageView
+    <com.makeramen.roundedimageview.RoundedImageView
         android:id="@+id/manga_thumbnail_iv"
         android:layout_width="match_parent"
         android:layout_height="260dp"
         android:layout_margin="10dp"
         android:background="@drawable/peanut_btn_bg_white_round1"
+        app:riv_corner_radius="5dp"
         android:elevation="5dp"
-        android:scaleType="centerCrop"></ImageView>
+        android:scaleType="centerCrop"></com.makeramen.roundedimageview.RoundedImageView>
 
 
     <TextView
