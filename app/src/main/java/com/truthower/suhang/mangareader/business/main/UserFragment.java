@@ -89,6 +89,7 @@ public class UserFragment extends BaseFragment implements View.OnClickListener {
                     "\n4,设置页可以关闭本教程" +
                     "\n5,点击用户名称位置可以进入个人中心页");
         }
+        doGetMsgCount();
         return v;
     }
 
@@ -177,16 +178,20 @@ public class UserFragment extends BaseFragment implements View.OnClickListener {
             public void done(int i, AVException e) {
                 if (LeanCloundUtil.handleLeanResult(getActivity(), e)) {
                     msgCount = i;
-                    int newMsgCount = i - SharedPreferencesUtils.getIntSharedPreferencesData(getActivity(), ShareKeys.READ_COMMENT_COUNT_KEY);
-                    if (newMsgCount > 0) {
-                        user_msg_tip_tv.setText(newMsgCount + "");
-                        user_msg_tip_tv.setVisibility(View.VISIBLE);
-                    } else {
-                        user_msg_tip_tv.setVisibility(View.GONE);
-                    }
+                    showMsgCount();
                 }
             }
         });
+    }
+
+    private void showMsgCount() {
+        int newMsgCount = msgCount - SharedPreferencesUtils.getIntSharedPreferencesData(getActivity(), ShareKeys.READ_COMMENT_COUNT_KEY);
+        if (newMsgCount > 0) {
+            user_msg_tip_tv.setText(newMsgCount + "");
+            user_msg_tip_tv.setVisibility(View.VISIBLE);
+        } else {
+            user_msg_tip_tv.setVisibility(View.GONE);
+        }
     }
 
     @Override
@@ -223,6 +228,7 @@ public class UserFragment extends BaseFragment implements View.OnClickListener {
             case R.id.user_top_bar_rl:
                 intent = new Intent(getActivity(), UserCenterActivity.class);
                 SharedPreferencesUtils.setSharedPreferencesData(getActivity(), ShareKeys.READ_COMMENT_COUNT_KEY, msgCount);
+                showMsgCount();
                 intent.putExtra("owner", LoginBean.getInstance().getUserName(getActivity()));
                 break;
             case R.id.about_rl:

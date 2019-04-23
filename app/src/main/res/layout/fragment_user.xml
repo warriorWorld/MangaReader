@@ -420,12 +420,12 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="-10dp"
                 android:layout_toRightOf="@+id/user_head_civ"
-                android:background="@drawable/tag_bg_white"
+                android:background="@drawable/tag_bg_red"
                 android:gravity="center"
                 android:paddingLeft="5dp"
                 android:paddingRight="5dp"
                 android:singleLine="true"
-                android:textColor="@color/manga_reader_deep"
+                android:textColor="@color/white"
                 android:textSize="11sp"
                 android:visibility="gone"/>
         </RelativeLayout>
