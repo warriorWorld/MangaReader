@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.text.ClipboardManager;
+import android.text.TextUtils;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -42,6 +43,7 @@ public class WordsBookActivity extends TTSActivity implements OnClickListener {
     private int nowPosition = 0;
     private ClipboardManager clip;//复制文本用
     private View killBtn;
+    private View exampleIv;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,10 +88,12 @@ public class WordsBookActivity extends TTSActivity implements OnClickListener {
     private void initUI() {
         vp = (ViewPager) findViewById(R.id.words_viewpager);
         emptyView = findViewById(R.id.empty_view);
-        killBtn =  findViewById(R.id.kill_btn);
+        killBtn = findViewById(R.id.kill_btn);
         topBarLeft = (TextView) findViewById(R.id.top_bar_left);
         topBarRight = (TextView) findViewById(R.id.top_bar_right);
+        exampleIv = findViewById(R.id.example_iv);
         killBtn.setOnClickListener(this);
+        exampleIv.setOnClickListener(this);
         baseTopBar.setTitle("生词本");
     }
 
@@ -136,6 +140,11 @@ public class WordsBookActivity extends TTSActivity implements OnClickListener {
                     topBarRight.setText("查询次数:" + item.getTime());
                     topBarLeft.setText("总计:" + wordsList.size() + "个生词,当前位置:" + (position + 1));
                     text2Speech(wordsList.get(position).getWord());
+                    if (TextUtils.isEmpty(wordsList.get(nowPosition).getExample_path())) {
+                        exampleIv.setVisibility(View.GONE);
+                    } else {
+                        exampleIv.setVisibility(View.VISIBLE);
+                    }
                 }
 
                 @Override
@@ -245,6 +254,8 @@ public class WordsBookActivity extends TTSActivity implements OnClickListener {
                 } catch (IndexOutOfBoundsException e) {
                     WordsBookActivity.this.finish();
                 }
+                break;
+            case R.id.example_iv:
                 break;
         }
     }

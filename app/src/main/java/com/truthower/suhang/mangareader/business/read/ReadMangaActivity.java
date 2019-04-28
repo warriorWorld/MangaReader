@@ -28,6 +28,7 @@ import com.android.volley.VolleyError;
 import com.avos.avoscloud.AVException;
 import com.avos.avoscloud.AVObject;
 import com.avos.avoscloud.SaveCallback;
+import com.nostra13.universalimageloader.core.ImageLoader;
 import com.truthower.suhang.mangareader.R;
 import com.truthower.suhang.mangareader.adapter.ReadMangaAdapter;
 import com.truthower.suhang.mangareader.base.TTSActivity;
@@ -81,6 +82,7 @@ import org.adw.library.widgets.discreteseekbar.DiscreteSeekBar;
 import org.greenrobot.eventbus.Subscribe;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -624,6 +626,7 @@ public class ReadMangaActivity extends TTSActivity implements OnClickListener {
     }
 
     private void translateWord(final String word) {
+        copyToWordsFolder(word);
         SharedPreferencesUtils.setSharedPreferencesData(this, ShareKeys.THIS_USER_IS_NOT_AN_IDIOT,
                 false);
         clip.setText(word);
@@ -633,7 +636,7 @@ public class ReadMangaActivity extends TTSActivity implements OnClickListener {
         }
         qureyWordCount++;
         //记录查过的单词
-        db.insertWordsBookTb(word);
+        db.insertWordsBookTb(word, Configure.WORDS_PATH + File.separator + word + ".png");
         if (SharedPreferencesUtils.getBooleanSharedPreferencesData(this, ShareKeys.CLOSE_TRANSLATE, false)) {
             //关闭自动翻译
             return;
@@ -676,6 +679,23 @@ public class ReadMangaActivity extends TTSActivity implements OnClickListener {
                 YoudaoResponse.class, callback);
     }
 
+    private void copyToWordsFolder(String imgName) {
+        if (isLocalManga) {
+            File thumbnailFile = new File(Configure.WORDS_PATH);
+            if (!thumbnailFile.exists()) {
+                thumbnailFile.mkdirs();
+            }
+            String wordExamplePath = Configure.WORDS_PATH + File.separator + imgName + ".png";
+            //如果有就删
+            FileSpider.getInstance().deleteFile(wordExamplePath);
+            FileSpider.getInstance().copyFile
+                    (pathList.get(historyPosition).replaceAll("file://", ""), wordExamplePath);
+            ImageLoader.getInstance().clearDiskCache();
+            ImageLoader.getInstance().clearMemoryCache();
+        } else {
+            downLoadPic(pathList.get(historyPosition), Configure.WORDS_FOLDER_NAME, File.separator + imgName + ".png");
+        }
+    }
 
     private void showTranslateResultDialog(final String title, String msg) {
         if (null == translateResultDialog) {
@@ -741,20 +761,20 @@ public class ReadMangaActivity extends TTSActivity implements OnClickListener {
         dialog.show();
     }
 
-    /**
-     *
-     */
     private void downLoadPic(final String path) {
+        Long time = new Date().getTime();
+        String timeString = time + "";
+        timeString = timeString.substring(5);
+        downLoadPic(path, "scattered", "/scattered(" + timeString + ").png");
+    }
+
+    private void downLoadPic(final String path, final String folderName, final String name) {
         // 将图片下载并保存
         new Thread() {
             public void run() {
-                Bitmap bp = null;
                 if (!TextUtils.isEmpty(path)) {
                     //从网络上获取到图片
-                    Long time = new Date().getTime();
-                    String timeString = time + "";
-                    timeString = timeString.substring(5);
-                    FileSpider.getInstance().loadImageFromNetwork(path, "scattered", "/scattered(" + timeString + ").png");
+                    FileSpider.getInstance().loadImageFromNetwork(path, folderName, name);
                 }
             }
         }.start();

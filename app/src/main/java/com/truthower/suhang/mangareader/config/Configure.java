@@ -17,7 +17,7 @@ import java.io.File;
 public class Configure {
     public final static boolean isTest = true;
     //数据库版本号
-    public static final int DB_VERSION = 1;
+    public static final int DB_VERSION = 3;
     public final static String[] websList = {"MangaReader", "KaKaLot"};
     public final static String[] masterWebsList = {"MangaReader", "NManga", "KaKaLot", "LManga"};
     public final static String[] VPN_MUST_LIST = {"NOTHING"};
@@ -25,6 +25,8 @@ public class Configure {
     final public static String storagePath = Environment
             .getExternalStorageDirectory().getAbsolutePath() + "/" + DST_FOLDER_NAME;
     final public static String thumnailPath = storagePath + File.separator + "thumbnail";
+    final public static String WORDS_FOLDER_NAME = "WORDS";
+    final public static String WORDS_PATH = storagePath + File.separator + WORDS_FOLDER_NAME;
     final public static String DOWNLOAD_PATH = Environment
             .getExternalStorageDirectory().getAbsolutePath() + "/" + "manga";
     final public static String WRONG_WEBSITE_EXCEPTION = "wrong_website_exception";

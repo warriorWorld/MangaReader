@@ -6,6 +6,7 @@ package com.truthower.suhang.mangareader.bean;
 public class WordsBookBean {
     private String word;
     private int time;
+    private String example_path;
 
     public String getWord() {
         return word;
@@ -21,5 +22,13 @@ public class WordsBookBean {
 
     public void setTime(int time) {
         this.time = time;
+    }
+
+    public String getExample_path() {
+        return example_path;
+    }
+
+    public void setExample_path(String example_path) {
+        this.example_path = example_path;
     }
 }

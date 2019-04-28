@@ -24,25 +24,27 @@ public class DbAdapter {
     /**
      * 插入一条生词信息
      */
-    public void insertWordsBookTb(String word) {
+    public void insertWordsBookTb(String word, String examplePath) {
         int time = queryQueryedTime(word);
         if (time > 0) {
             //如果查过这个单词 那就update 并且time+1
             time++;
-            updateTimeTOWordsBook(word, time);
+            updateTimeTOWordsBook(word, examplePath, time);
         } else {
             db.execSQL(
-                    "insert into WordsBook (word,time) values (?,?)",
-                    new Object[]{word, 1});
+                    "insert into WordsBook (word,example_path,time) values (?,?,?)",
+                    new Object[]{word, examplePath, 1});
         }
     }
 
     /**
      * 更新生词信息
      */
-    public void updateTimeTOWordsBook(String word, int time) {
+    public void updateTimeTOWordsBook(String word, String examplePath, int time) {
         db.execSQL("update WordsBook set time=? where word=?",
                 new Object[]{time, word});
+        db.execSQL("update WordsBook set example_path=? where word=?",
+                new Object[]{time, examplePath});
     }
 
     /**
@@ -59,9 +61,11 @@ public class DbAdapter {
             String word = cursor.getString(cursor.getColumnIndex("word"));
             int time = cursor
                     .getInt(cursor.getColumnIndex("time"));
+            String examplePath = cursor.getString(cursor.getColumnIndex("example_path"));
             WordsBookBean item = new WordsBookBean();
             item.setWord(word);
             item.setTime(time);
+            item.setExample_path(examplePath);
             resBeans.add(item);
         }
         cursor.close();
