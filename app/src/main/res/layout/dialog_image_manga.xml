@@ -7,7 +7,7 @@
                 android:orientation="vertical">
 
 
-    <ImageView
+    <uk.co.senab.photoview.PhotoView
         android:id="@+id/image_view"
         style="@style/TransparentDialog"
         android:layout_width="match_parent"
