@@ -24,7 +24,7 @@ import com.truthower.suhang.mangareader.config.Configure;
  */
 public class MangaImgDialog extends Dialog {
     protected Context context;
-    private ImageView crossIv, imgIv;
+    protected ImageView crossIv, imgIv;
     private OnImgDialogImgClickListener onImgDialogImgClickListener;
 
     public MangaImgDialog(Context context) {

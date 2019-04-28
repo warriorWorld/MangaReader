@@ -1,9 +1,13 @@
 package com.truthower.suhang.mangareader.widget.shotview;
 
 import android.app.Activity;
+import android.app.Dialog;
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Rect;
 import android.view.View;
+
+import com.truthower.suhang.mangareader.utils.DisplayUtil;
 
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -32,6 +36,32 @@ public class ScreenShot {
         Bitmap b = Bitmap.createBitmap(b1, 0, statusBarHeight, width, height - statusBarHeight);
         view.destroyDrawingCache();
         return b;
+    }
+
+    // 获取指定Activity的截屏，保存到png文件
+    public static Bitmap takeScreenShot(Dialog dialog,int width,int height) {
+        try {
+            //View是你需要截图的View
+            View view = dialog.getWindow().getDecorView().getRootView();
+            view.setDrawingCacheEnabled(true);
+            view.buildDrawingCache();
+            Bitmap b1 = view.getDrawingCache();
+
+            //获取状态栏高度
+            Rect frame = new Rect();
+            dialog.getWindow().getDecorView().getWindowVisibleDisplayFrame(frame);
+            int statusBarHeight = frame.top;
+            System.out.println(statusBarHeight);
+
+            //去掉标题栏
+            //Bitmap b = Bitmap.createBitmap(b1, 0, 25, 320, 455);
+            Bitmap b = Bitmap.createBitmap(b1, 0, 0, width, height);
+            view.destroyDrawingCache();
+            return b;
+        }catch (Exception e){
+            e.printStackTrace();
+            return null;
+        }
     }
 
     //保存到sdcard

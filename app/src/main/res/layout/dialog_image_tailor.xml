@@ -6,24 +6,40 @@
                 android:background="@color/transparency"
                 android:orientation="vertical">
 
-    <include
-        layout="@layout/dialog_image_manga"
+    <uk.co.senab.photoview.PhotoView
+        android:id="@+id/image_view"
+        style="@style/TransparentDialog"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true"></include>
+        android:layout_height="match_parent"
+        android:layout_gravity="center_horizontal"
+        android:adjustViewBounds="true"
+        android:background="@color/transparency"
+        android:scaleType="fitCenter"
+        android:src="@color/transparency"/>
+
+    <ImageView
+        android:id="@+id/cross_iv"
+        style="@style/TransparentDialog"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_alignParentRight="true"
+        android:layout_gravity="right"
+        android:background="@color/transparency"
+        android:src="@drawable/cross_rect_gray"/>
 
     <com.truthower.suhang.mangareader.widget.shotview.ShotView
         android:id="@+id/shot_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_centerInParent="true"
         android:visibility="invisible"/>
 
     <com.truthower.suhang.mangareader.widget.dragview.DragView
         android:id="@+id/screenshoot_dv"
         android:layout_width="30dp"
         android:layout_height="30dp"
-        android:layout_centerVertical="true"
         android:layout_alignParentBottom="true"
+        android:layout_centerVertical="true"
         android:layout_marginBottom="10dp"
         android:src="@drawable/search_word_screenshot"/>
 </RelativeLayout>

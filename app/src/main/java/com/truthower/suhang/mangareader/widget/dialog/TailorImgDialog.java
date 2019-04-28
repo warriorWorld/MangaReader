@@ -3,6 +3,7 @@ package com.truthower.suhang.mangareader.widget.dialog;/**
  */
 
 import android.app.Activity;
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.view.View;
 
@@ -23,7 +24,7 @@ public class TailorImgDialog extends MangaImgDialog implements View.OnClickListe
     private DragView screenshootDv;
     private EasyToast mEasyToast;
 
-    public TailorImgDialog(Activity context) {
+    public TailorImgDialog(Context context) {
         super(context);
         mEasyToast = new EasyToast(context);
     }
@@ -37,6 +38,13 @@ public class TailorImgDialog extends MangaImgDialog implements View.OnClickListe
     protected void init() {
         super.init();
         shotView = (ShotView) findViewById(R.id.shot_view);
+        shotView.setL(new ShotView.FinishShotListener() {
+            @Override
+            public void finishShot(Bitmap bp) {
+                showTailoredDialog(bp);
+            }
+        });
+        shotView.setIsRunning(true);
         screenshootDv = (DragView) findViewById(R.id.screenshoot_dv);
         screenshootDv.setScreenWidth((int) (DisplayUtil.getScreenWidth(context) * 0.9));
         screenshootDv.setOnClickListener(this);
@@ -46,6 +54,7 @@ public class TailorImgDialog extends MangaImgDialog implements View.OnClickListe
         MangaImgDialog imgDialog = new MangaImgDialog(context);
         imgDialog.show();
         imgDialog.setImgRes(bp);
+        dismiss();
     }
 
     @Override
@@ -55,23 +64,11 @@ public class TailorImgDialog extends MangaImgDialog implements View.OnClickListe
                 try {
                     mEasyToast.showToast("手指划过区域然后松手截屏");
 
-                    if (shotView == null) {
-                        shotView = (ShotView) findViewById(R.id.shot_view);
-                        shotView.setL(new ShotView.FinishShotListener() {
-                            @Override
-                            public void finishShot(Bitmap bp) {
-                                showTailoredDialog(bp);
-                            }
-                        });
-                    } else {
-                        shotView.setIsRunning(true);
-                    }
-
                     Bitmap bgBitmap = shotView.getBitmap();
                     if (bgBitmap != null) {
                         bgBitmap.recycle();
                     }
-                    bgBitmap = ScreenShot.takeScreenShot((Activity) context);
+                    bgBitmap = ScreenShot.takeScreenShot(this,imgIv.getWidth(),imgIv.getHeight());
                     shotView.setBitmap(bgBitmap);
                     shotView.setVisibility(View.VISIBLE);
                 } catch (Exception e) {
