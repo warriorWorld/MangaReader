@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                style="@style/TransparentDialog"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/transparency"
+                android:orientation="vertical">
+
+    <include
+        layout="@layout/dialog_image_manga"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"></include>
+
+    <com.truthower.suhang.mangareader.widget.shotview.ShotView
+        android:id="@+id/shot_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="invisible"/>
+
+    <com.truthower.suhang.mangareader.widget.dragview.DragView
+        android:id="@+id/screenshoot_dv"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_centerVertical="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="10dp"
+        android:src="@drawable/search_word_screenshot"/>
+</RelativeLayout>

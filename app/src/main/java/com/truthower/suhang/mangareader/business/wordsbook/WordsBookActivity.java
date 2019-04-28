@@ -26,6 +26,7 @@ import com.truthower.suhang.mangareader.utils.VibratorUtil;
 import com.truthower.suhang.mangareader.volley.VolleyCallBack;
 import com.truthower.suhang.mangareader.volley.VolleyTool;
 import com.truthower.suhang.mangareader.widget.dialog.MangaImgDialog;
+import com.truthower.suhang.mangareader.widget.dialog.TailorImgDialog;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -244,7 +245,7 @@ public class WordsBookActivity extends TTSActivity implements OnClickListener {
     }
 
     private void showExampleDialog() {
-        MangaImgDialog imgDialog=new MangaImgDialog(this);
+        TailorImgDialog imgDialog=new TailorImgDialog(this);
         imgDialog.show();
         imgDialog.setImgRes("file://"+wordsList.get(nowPosition).getExample_path());
     }

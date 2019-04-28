@@ -5,6 +5,7 @@ package com.truthower.suhang.mangareader.widget.dialog;/**
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.view.Display;
 import android.view.View;
@@ -22,7 +23,7 @@ import com.truthower.suhang.mangareader.config.Configure;
  * 邮箱：772192594@qq.com
  */
 public class MangaImgDialog extends Dialog {
-    private Context context;
+    protected Context context;
     private ImageView crossIv, imgIv;
     private OnImgDialogImgClickListener onImgDialogImgClickListener;
 
@@ -35,7 +36,7 @@ public class MangaImgDialog extends Dialog {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
-        setContentView(R.layout.dialog_image_manga);
+        setContentView(getLayoutId());
         init();
 
         Window window = this.getWindow();
@@ -47,8 +48,11 @@ public class MangaImgDialog extends Dialog {
         window.setAttributes(lp);
     }
 
+    protected int getLayoutId() {
+        return R.layout.dialog_image_manga;
+    }
 
-    private void init() {
+    protected void init() {
         crossIv = (ImageView) findViewById(R.id.cross_iv);
         crossIv.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -60,7 +64,7 @@ public class MangaImgDialog extends Dialog {
         imgIv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (null!=onImgDialogImgClickListener){
+                if (null != onImgDialogImgClickListener) {
                     dismiss();
                     onImgDialogImgClickListener.onClick();
                 }
@@ -71,6 +75,10 @@ public class MangaImgDialog extends Dialog {
     public void setImgRes(String uri) {
         ImageLoader.getInstance().displayImage(uri, imgIv, Configure.smallImageOptions);
 //        ImageLoader.getInstance().displayImage(uri, imgIv);
+    }
+
+    public void setImgRes(Bitmap bp) {
+        imgIv.setImageBitmap(bp);
     }
 
     public void setOnImgDialogImgClickListener(OnImgDialogImgClickListener onImgDialogImgClickListener) {

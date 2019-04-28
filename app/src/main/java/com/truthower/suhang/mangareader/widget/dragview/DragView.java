@@ -50,6 +50,10 @@ public class DragView extends android.support.v7.widget.AppCompatImageView {
         marginBottom = DisplayUtil.dip2px(mContext, 10);
     }
 
+    public void setScreenWidth(int screenWidth) {
+        this.screenWidth = screenWidth;
+    }
+
     @Override
     protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
         super.onLayout(changed, left, top, right, bottom);
