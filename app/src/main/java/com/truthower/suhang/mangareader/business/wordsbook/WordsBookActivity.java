@@ -7,7 +7,6 @@ import android.text.ClipboardManager;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.widget.Button;
 import android.widget.TextView;
 
 import com.android.volley.Request;
@@ -16,7 +15,6 @@ import com.truthower.suhang.mangareader.R;
 import com.truthower.suhang.mangareader.base.TTSActivity;
 import com.truthower.suhang.mangareader.bean.WordsBookBean;
 import com.truthower.suhang.mangareader.bean.YoudaoResponse;
-import com.truthower.suhang.mangareader.business.read.ReadMangaActivity;
 import com.truthower.suhang.mangareader.config.Configure;
 import com.truthower.suhang.mangareader.config.ShareKeys;
 import com.truthower.suhang.mangareader.db.DbAdapter;
@@ -25,10 +23,8 @@ import com.truthower.suhang.mangareader.utils.SharedPreferencesUtils;
 import com.truthower.suhang.mangareader.utils.VibratorUtil;
 import com.truthower.suhang.mangareader.volley.VolleyCallBack;
 import com.truthower.suhang.mangareader.volley.VolleyTool;
-import com.truthower.suhang.mangareader.widget.dialog.MangaImgDialog;
 import com.truthower.suhang.mangareader.widget.dialog.TailorImgDialog;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -247,6 +243,7 @@ public class WordsBookActivity extends TTSActivity implements OnClickListener {
     private void showExampleDialog() {
         TailorImgDialog imgDialog=new TailorImgDialog(this);
         imgDialog.show();
+        imgDialog.setWord(wordsList.get(nowPosition).getWord());
         imgDialog.setImgRes("file://"+wordsList.get(nowPosition).getExample_path());
     }
 

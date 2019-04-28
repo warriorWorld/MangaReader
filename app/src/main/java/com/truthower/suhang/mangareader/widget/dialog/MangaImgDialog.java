@@ -26,6 +26,7 @@ public class MangaImgDialog extends Dialog {
     protected Context context;
     protected ImageView crossIv, imgIv;
     private OnImgDialogImgClickListener onImgDialogImgClickListener;
+    protected Bitmap bpRescource;
 
     public MangaImgDialog(Context context) {
         super(context);
@@ -78,6 +79,7 @@ public class MangaImgDialog extends Dialog {
     }
 
     public void setImgRes(Bitmap bp) {
+        bpRescource = bp;
         imgIv.setImageBitmap(bp);
     }
 

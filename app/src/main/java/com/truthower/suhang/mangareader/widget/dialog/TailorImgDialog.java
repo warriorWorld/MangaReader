@@ -23,6 +23,7 @@ public class TailorImgDialog extends MangaImgDialog implements View.OnClickListe
     private ShotView shotView;
     private DragView screenshootDv;
     private EasyToast mEasyToast;
+    private String word;
 
     public TailorImgDialog(Context context) {
         super(context);
@@ -51,9 +52,10 @@ public class TailorImgDialog extends MangaImgDialog implements View.OnClickListe
     }
 
     private void showTailoredDialog(Bitmap bp) {
-        MangaImgDialog imgDialog = new MangaImgDialog(context);
+        MangaImgConfirmDialog imgDialog = new MangaImgConfirmDialog(context);
         imgDialog.show();
         imgDialog.setImgRes(bp);
+        imgDialog.setSaveName(word);
         dismiss();
     }
 
@@ -76,5 +78,9 @@ public class TailorImgDialog extends MangaImgDialog implements View.OnClickListe
                 }
                 break;
         }
+    }
+
+    public void setWord(String word) {
+        this.word = word;
     }
 }
