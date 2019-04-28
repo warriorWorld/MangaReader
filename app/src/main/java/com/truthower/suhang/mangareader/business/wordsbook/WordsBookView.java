@@ -58,7 +58,7 @@ public class WordsBookView extends RelativeLayout {
         });
     }
 
-    private void playWordTvAnimation() {
+    public void playWordTvAnimation() {
         rotationValue = rotationValue + 360f;
         ObjectAnimator wordTvAnimation = ObjectAnimator.ofFloat(wordTv, "rotationY", rotationValue);
         AnimatorSet set = new AnimatorSet();

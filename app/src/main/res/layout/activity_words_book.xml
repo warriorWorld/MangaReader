@@ -45,14 +45,22 @@
 
     <ImageView
         android:id="@+id/example_iv"
-        android:layout_width="80dp"
-        android:layout_height="80dp"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
         android:layout_alignParentBottom="true"
+        android:layout_marginLeft="30dp"
         android:layout_marginBottom="40dp"
-        android:src="@drawable/delete"
-        android:text="Kill"
-        android:textColor="@color/white"
-        android:textSize="24sp"/>
+        android:src="@drawable/example"/>
+
+    <ImageView
+        android:id="@+id/translate_iv"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_alignParentBottom="true"
+        android:layout_marginRight="30dp"
+        android:layout_alignParentRight="true"
+        android:layout_marginBottom="40dp"
+        android:src="@drawable/translate"/>
 
     <ImageView
         android:id="@+id/kill_btn"

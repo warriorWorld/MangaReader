@@ -20,11 +20,13 @@ import com.truthower.suhang.mangareader.business.read.ReadMangaActivity;
 import com.truthower.suhang.mangareader.config.Configure;
 import com.truthower.suhang.mangareader.config.ShareKeys;
 import com.truthower.suhang.mangareader.db.DbAdapter;
+import com.truthower.suhang.mangareader.spider.FileSpider;
 import com.truthower.suhang.mangareader.utils.SharedPreferencesUtils;
 import com.truthower.suhang.mangareader.utils.VibratorUtil;
 import com.truthower.suhang.mangareader.volley.VolleyCallBack;
 import com.truthower.suhang.mangareader.volley.VolleyTool;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -43,7 +45,7 @@ public class WordsBookActivity extends TTSActivity implements OnClickListener {
     private int nowPosition = 0;
     private ClipboardManager clip;//复制文本用
     private View killBtn;
-    private View exampleIv;
+    private View exampleIv, translateIv;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -92,6 +94,8 @@ public class WordsBookActivity extends TTSActivity implements OnClickListener {
         topBarLeft = (TextView) findViewById(R.id.top_bar_left);
         topBarRight = (TextView) findViewById(R.id.top_bar_right);
         exampleIv = findViewById(R.id.example_iv);
+        translateIv = findViewById(R.id.translate_iv);
+        translateIv.setOnClickListener(this);
         killBtn.setOnClickListener(this);
         exampleIv.setOnClickListener(this);
         baseTopBar.setTitle("生词本");
@@ -250,12 +254,20 @@ public class WordsBookActivity extends TTSActivity implements OnClickListener {
                     WordsBookBean item = wordsList.get(nowPosition);
                     db.deleteWordByWord(item.getWord());
                     wordsList.remove(nowPosition);
+                    FileSpider.getInstance().deleteFile(item.getExample_path());
                     initViewPager();
+                    if (wordsList.size() <= 0) {
+                        baseToast.showToast("PENTA KILL!!!");
+                        finish();
+                    }
                 } catch (IndexOutOfBoundsException e) {
                     WordsBookActivity.this.finish();
                 }
                 break;
             case R.id.example_iv:
+                break;
+            case R.id.translate_iv:
+                adapter.getNowView().playWordTvAnimation();
                 break;
         }
     }

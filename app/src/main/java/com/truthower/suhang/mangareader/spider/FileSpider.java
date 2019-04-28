@@ -109,7 +109,7 @@ public class FileSpider {
     }
 
 
-    public static void deleteFile(String file) {
+    public  void deleteFile(String file) {
         if (file.contains("file://")) {
             file = file.substring(7, file.length());
         }
