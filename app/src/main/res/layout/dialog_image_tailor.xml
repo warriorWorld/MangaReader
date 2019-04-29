@@ -20,11 +20,11 @@
     <ImageView
         android:id="@+id/cross_iv"
         style="@style/TransparentDialog"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
-        android:layout_alignParentRight="true"
-        android:layout_gravity="right"
-        android:background="@color/transparency"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@+id/image_view"
+        android:layout_marginTop="-50dp"
         android:src="@drawable/cross_rect_gray"/>
 
     <com.truthower.suhang.mangareader.widget.shotview.ShotView
