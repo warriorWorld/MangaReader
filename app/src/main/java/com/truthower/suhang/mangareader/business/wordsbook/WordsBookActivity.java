@@ -73,14 +73,14 @@ public class WordsBookActivity extends TTSActivity implements OnClickListener {
                 emptyView.setVisibility(View.GONE);
                 killBtn.setVisibility(View.VISIBLE);
             }
+            initViewPager();
             try {
                 WordsBookBean item = wordsList.get(nowPosition);
                 topBarRight.setText("查询次数:" + item.getTime());
                 topBarLeft.setText("总计:" + wordsList.size() + "个生词,当前位置:" + (nowPosition + 1));
             } catch (IndexOutOfBoundsException e) {
-
+                e.printStackTrace();
             }
-            initViewPager();
         } catch (Exception e) {
 
         }

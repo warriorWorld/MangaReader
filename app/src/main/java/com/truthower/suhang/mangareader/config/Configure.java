@@ -15,7 +15,7 @@ import java.io.File;
  */
 
 public class Configure {
-    public final static boolean isTest = true;
+    public final static boolean isTest = false;
     //数据库版本号
     public static final int DB_VERSION = 3;
     public final static String[] websList = {"MangaReader", "KaKaLot"};
