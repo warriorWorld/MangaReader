@@ -340,7 +340,15 @@ public class WebMangaDetailsActivity extends TTSActivity implements AdapterView.
 
             @Override
             public void onRightClick() {
-                showOptionsSelectorDialog();
+                if (TextUtils.isEmpty(LoginBean.getInstance().getUserName(WebMangaDetailsActivity.this))) {
+                    baseToast.showToast("请先登录");
+                    return;
+                }
+                if (isForAdult()) {
+                    doGetGesture();
+                } else {
+                    showOptionsSelectorDialog();
+                }
             }
 
             @Override
@@ -368,6 +376,19 @@ public class WebMangaDetailsActivity extends TTSActivity implements AdapterView.
         return R.layout.activity_manga_details_web;
     }
 
+    private boolean isForAdult() {
+        boolean isForAdult = false;
+        if (null != spider.getAdultTypes() && spider.getAdultTypes().length > 0) {
+            for (String item : spider.getAdultTypes()) {
+                if (mangaTypeTv.getText().toString().toLowerCase().contains(item.toLowerCase())) {
+                    isForAdult = true;
+                    break;
+                }
+            }
+        }
+        return isForAdult;
+    }
+
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         if (chooseing) {
@@ -378,16 +399,7 @@ public class WebMangaDetailsActivity extends TTSActivity implements AdapterView.
                 doDownload(downloadStartPoint, position);
             }
         } else {
-            boolean isForAdult = false;
-            if (null != spider.getAdultTypes() && spider.getAdultTypes().length > 0) {
-                for (String item : spider.getAdultTypes()) {
-                    if (mangaTypeTv.getText().toString().toLowerCase().contains(item.toLowerCase())) {
-                        isForAdult = true;
-                        break;
-                    }
-                }
-            }
-            if (isForAdult) {
+            if (isForAdult()) {
                 doGetGesture(position);
             } else {
                 toReadActivity(position);
@@ -420,6 +432,31 @@ public class WebMangaDetailsActivity extends TTSActivity implements AdapterView.
         });
     }
 
+    private void doGetGesture() {
+        String userName = LoginBean.getInstance().getUserName(this);
+        if (TextUtils.isEmpty(userName)) {
+            return;
+        }
+        SingleLoadBarUtil.getInstance().showLoadBar(this);
+
+        AVQuery<AVObject> query = new AVQuery<>("Gesture");
+        query.whereEqualTo("owner", userName);
+        query.getFirstInBackground(new GetCallback<AVObject>() {
+            @Override
+            public void done(final AVObject account, AVException e) {
+                SingleLoadBarUtil.getInstance().dismissLoadBar();
+                if (null == account) {
+                    showOptionsSelectorDialog();
+                } else {
+                    if (LeanCloundUtil.handleLeanResult(WebMangaDetailsActivity.this, e)) {
+                        String password = account.getString("password");
+                        showGestureDialog(password);
+                    }
+                }
+            }
+        });
+    }
+
     private void showGestureDialog(final int position, String answer) {
         GestureDialog gestureDialog = new GestureDialog(this);
         gestureDialog.setOnResultListener(new OnResultListener() {
@@ -427,6 +464,28 @@ public class WebMangaDetailsActivity extends TTSActivity implements AdapterView.
             public void onFinish() {
                 wrongNum = 0;
                 toReadActivity(position);
+            }
+
+            @Override
+            public void onFailed() {
+                wrongNum++;
+                if (wrongNum > 4) {
+                    baseToast.showToast("输入错误次数过多");
+                    finish();
+                }
+            }
+        });
+        gestureDialog.show();
+        gestureDialog.setAnswer(answer);
+    }
+
+    private void showGestureDialog(String answer) {
+        GestureDialog gestureDialog = new GestureDialog(this);
+        gestureDialog.setOnResultListener(new OnResultListener() {
+            @Override
+            public void onFinish() {
+                wrongNum = 0;
+                showOptionsSelectorDialog();
             }
 
             @Override
