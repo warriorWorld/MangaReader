@@ -24,6 +24,7 @@ public class DragView extends android.support.v7.widget.AppCompatImageView {
     private int marginBottom;
     private int clickThreshold = 0;
     private float xDistance, yDistance;
+    private boolean savePosition = false;
     private OnClickListener mOnClickListener;
 
     public DragView(Context context) {
@@ -88,8 +89,10 @@ public class DragView extends android.support.v7.widget.AppCompatImageView {
                 animator.start();
 //                this.layout(screenWidth - width, lastTop, screenWidth, lastBottom);
 //                String save = (int)(screenWidth - width) + ";" + (int)getY();
-                String save = (int) (screenWidth - width) + ";" + (int) lastTop + ";" + (int) screenWidth + ";" + (int) lastBottom;
-                SharedPreferencesUtils.setSharedPreferencesData(mContext, ShareKeys.LAST_DRAGVIEW_POSITION, save);
+                if (savePosition) {
+                    String save = (int) (screenWidth - width) + ";" + (int) lastTop + ";" + (int) screenWidth + ";" + (int) lastBottom;
+                    SharedPreferencesUtils.setSharedPreferencesData(mContext, ShareKeys.LAST_DRAGVIEW_POSITION, save);
+                }
             } else {
                 //向左
                 float curTranslationX = getTranslationX();
@@ -98,8 +101,10 @@ public class DragView extends android.support.v7.widget.AppCompatImageView {
                 animator.start();
 //                this.layout(0, lastTop, width, lastBottom);
 //                String save = 0 + ";" + (int)getY();
-                String save = 0 + ";" + (int) lastTop + ";" + (int) width + ";" + (int) lastBottom;
-                SharedPreferencesUtils.setSharedPreferencesData(mContext, ShareKeys.LAST_DRAGVIEW_POSITION, save);
+                if (savePosition) {
+                    String save = 0 + ";" + (int) lastTop + ";" + (int) width + ";" + (int) lastBottom;
+                    SharedPreferencesUtils.setSharedPreferencesData(mContext, ShareKeys.LAST_DRAGVIEW_POSITION, save);
+                }
             }
         }
         edged = true;
@@ -118,8 +123,8 @@ public class DragView extends android.support.v7.widget.AppCompatImageView {
         try {
             this.layout(Integer.valueOf(ss[0]), Integer.valueOf(ss[1]), Integer.valueOf(ss[2]), Integer.valueOf(ss[3]));
             //阻止onlayout后被重置位置
-            lastMotion=MotionEvent.ACTION_UP;
-            edged=true;
+            lastMotion = MotionEvent.ACTION_UP;
+            edged = true;
 
 //            setX(Float.valueOf(ss[0]));
 //            setY(Float.valueOf(ss[1]));
@@ -192,5 +197,13 @@ public class DragView extends android.support.v7.widget.AppCompatImageView {
             return true;
         }
         return false;
+    }
+
+    public boolean isSavePosition() {
+        return savePosition;
+    }
+
+    public void setSavePosition(boolean savePosition) {
+        this.savePosition = savePosition;
     }
 }

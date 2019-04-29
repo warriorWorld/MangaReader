@@ -342,6 +342,7 @@ public class ReadMangaActivity extends TTSActivity implements OnClickListener {
         readProgressTv = (TextView) findViewById(R.id.read_progress_tv);
         test_iv = (ImageView) findViewById(R.id.test_iv);
         screenDv = (DragView) findViewById(R.id.screenshoot_dv);
+        screenDv.setSavePosition(true);
         new Thread(new Runnable() {
             @Override
             public void run() {
