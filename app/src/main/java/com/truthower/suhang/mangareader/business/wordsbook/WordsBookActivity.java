@@ -1,6 +1,7 @@
 package com.truthower.suhang.mangareader.business.wordsbook;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.text.ClipboardManager;
@@ -19,6 +20,7 @@ import com.truthower.suhang.mangareader.config.Configure;
 import com.truthower.suhang.mangareader.config.ShareKeys;
 import com.truthower.suhang.mangareader.db.DbAdapter;
 import com.truthower.suhang.mangareader.spider.FileSpider;
+import com.truthower.suhang.mangareader.utils.ImageUtil;
 import com.truthower.suhang.mangareader.utils.SharedPreferencesUtils;
 import com.truthower.suhang.mangareader.utils.VibratorUtil;
 import com.truthower.suhang.mangareader.volley.VolleyCallBack;
@@ -244,7 +246,9 @@ public class WordsBookActivity extends TTSActivity implements OnClickListener {
         TailorImgDialog imgDialog=new TailorImgDialog(this);
         imgDialog.show();
         imgDialog.setWord(wordsList.get(nowPosition).getWord());
-        imgDialog.setImgRes("file://"+wordsList.get(nowPosition).getExample_path());
+        Bitmap bitmap = ImageUtil.getLoacalBitmap(wordsList.get(nowPosition).getExample_path()); //从本地取图片(在cdcard中获取)  //
+//        imgDialog.setImgRes("file://"+wordsList.get(nowPosition).getExample_path());
+        imgDialog.setImgRes(bitmap);
     }
 
     @Override
