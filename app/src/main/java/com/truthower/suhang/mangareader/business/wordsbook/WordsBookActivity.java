@@ -28,6 +28,7 @@ import com.truthower.suhang.mangareader.volley.VolleyTool;
 import com.truthower.suhang.mangareader.widget.dialog.TailorImgDialog;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 
 /**
@@ -46,12 +47,24 @@ public class WordsBookActivity extends TTSActivity implements OnClickListener {
     private ClipboardManager clip;//复制文本用
     private View killBtn;
     private View exampleIv, translateIv;
+    private OrderType mOrderType = OrderType.ORDER;
+
+    private enum OrderType {
+        ORDER,
+        RANDOM
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         db = new DbAdapter(this);
         clip = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+        String orderType = getIntent().getStringExtra("orderType");
+        if (orderType.equals("order")) {
+            mOrderType = OrderType.ORDER;
+        } else {
+            mOrderType = OrderType.RANDOM;
+        }
         initUI();
         refresh();
     }
@@ -70,6 +83,9 @@ public class WordsBookActivity extends TTSActivity implements OnClickListener {
                 emptyView.setVisibility(View.VISIBLE);
                 killBtn.setVisibility(View.GONE);
             } else {
+                if (mOrderType == OrderType.RANDOM) {
+                    Collections.shuffle(wordsList);
+                }
                 emptyView.setVisibility(View.GONE);
                 killBtn.setVisibility(View.VISIBLE);
             }
@@ -229,16 +245,20 @@ public class WordsBookActivity extends TTSActivity implements OnClickListener {
     }
 
     private void saveState() {
-        SharedPreferencesUtils.setSharedPreferencesData(this, ShareKeys.WORDS_BOOK_PROGRESS_KEY,
-                nowPosition);
+        if (mOrderType == OrderType.ORDER) {
+            SharedPreferencesUtils.setSharedPreferencesData(this, ShareKeys.WORDS_BOOK_PROGRESS_KEY,
+                    nowPosition);
+        }
     }
 
     private void recoverState() {
-        int p = SharedPreferencesUtils.getIntSharedPreferencesData(this,
-                ShareKeys.WORDS_BOOK_PROGRESS_KEY);
-        if (p >= 0) {
-            nowPosition = p;
-            vp.setCurrentItem(p);
+        if (mOrderType == OrderType.ORDER) {
+            int p = SharedPreferencesUtils.getIntSharedPreferencesData(this,
+                    ShareKeys.WORDS_BOOK_PROGRESS_KEY);
+            if (p >= 0) {
+                nowPosition = p;
+                vp.setCurrentItem(p);
+            }
         }
     }
 

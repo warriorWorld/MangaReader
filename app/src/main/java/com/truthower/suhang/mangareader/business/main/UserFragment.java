@@ -194,6 +194,29 @@ public class UserFragment extends BaseFragment implements View.OnClickListener {
         }
     }
 
+    private void showOrderSelectDialog() {
+        MangaDialog dialog = new MangaDialog(getActivity());
+        dialog.setOnPeanutDialogClickListener(new MangaDialog.OnPeanutDialogClickListener() {
+            @Override
+            public void onOkClick() {
+                Intent intent = new Intent(getActivity(), WordsBookActivity.class);
+                intent.putExtra("orderType", "random");
+                startActivity(intent);
+            }
+
+            @Override
+            public void onCancelClick() {
+                Intent intent = new Intent(getActivity(), WordsBookActivity.class);
+                intent.putExtra("orderType", "order");
+                startActivity(intent);
+            }
+        });
+        dialog.show();
+        dialog.setTitle("请选择生词展示顺序");
+        dialog.setOkText("随机");
+        dialog.setCancelText("顺序");
+    }
+
     @Override
     public void onClick(View v) {
         Intent intent = null;
@@ -218,8 +241,8 @@ public class UserFragment extends BaseFragment implements View.OnClickListener {
                 MobclickAgent.onEvent(getActivity(), "statistics");
                 break;
             case R.id.new_word_book_rl:
-                intent = new Intent(getActivity(), WordsBookActivity.class);
                 MobclickAgent.onEvent(getActivity(), "new_word_book");
+                showOrderSelectDialog();
                 break;
             case R.id.download_rl:
                 MobclickAgent.onEvent(getActivity(), "download");
