@@ -3,7 +3,8 @@
                 xmlns:app="http://schemas.android.com/apk/res-auto"
                 xmlns:tools="http://schemas.android.com/tools"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="match_parent"
+                android:clipChildren="false">
 
     <RelativeLayout
         android:id="@+id/top_bar"
@@ -38,9 +39,9 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@+id/top_bar"
-        android:layout_marginBottom="30dp"
-        android:padding="3dp">
-
+        android:layout_marginLeft="40dp"
+        android:layout_marginRight="40dp"
+        android:clipChildren="false">
     </android.support.v4.view.ViewPager>
 
     <ImageView
@@ -56,9 +57,9 @@
         android:id="@+id/translate_iv"
         android:layout_width="50dp"
         android:layout_height="50dp"
+        android:layout_alignParentRight="true"
         android:layout_alignParentBottom="true"
         android:layout_marginRight="30dp"
-        android:layout_alignParentRight="true"
         android:layout_marginBottom="40dp"
         android:src="@drawable/translate"/>
 

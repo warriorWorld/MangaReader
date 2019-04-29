@@ -20,6 +20,7 @@ import com.truthower.suhang.mangareader.config.Configure;
 import com.truthower.suhang.mangareader.config.ShareKeys;
 import com.truthower.suhang.mangareader.db.DbAdapter;
 import com.truthower.suhang.mangareader.spider.FileSpider;
+import com.truthower.suhang.mangareader.utils.DisplayUtil;
 import com.truthower.suhang.mangareader.utils.ImageUtil;
 import com.truthower.suhang.mangareader.utils.SharedPreferencesUtils;
 import com.truthower.suhang.mangareader.utils.VibratorUtil;
@@ -110,6 +111,7 @@ public class WordsBookActivity extends TTSActivity implements OnClickListener {
     private void initViewPager() {
         if (null == adapter) {
             adapter = new WordsBookAdapter(WordsBookActivity.this);
+            vp.setOffscreenPageLimit(3);
             adapter.setOnWordsBookViewListener(new WordsBookView.OnWordsBookViewListener() {
                 @Override
                 public void onWordClick(String word) {
@@ -130,7 +132,6 @@ public class WordsBookActivity extends TTSActivity implements OnClickListener {
             adapter.setList(wordsList);
             vp.setAdapter(adapter);
             recoverState();
-            vp.setPageTransformer(true, new DepthPageTransformer());
             vp.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
                 @Override
                 public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
@@ -243,7 +244,7 @@ public class WordsBookActivity extends TTSActivity implements OnClickListener {
     }
 
     private void showExampleDialog() {
-        TailorImgDialog imgDialog=new TailorImgDialog(this);
+        TailorImgDialog imgDialog = new TailorImgDialog(this);
         imgDialog.show();
         imgDialog.setWord(wordsList.get(nowPosition).getWord());
         Bitmap bitmap = ImageUtil.getLoacalBitmap(wordsList.get(nowPosition).getExample_path()); //从本地取图片(在cdcard中获取)  //
@@ -258,7 +259,7 @@ public class WordsBookActivity extends TTSActivity implements OnClickListener {
                 //太吵
 //                TipVoiceManager.getInstance().voiceTip(0);
                 try {
-                    VibratorUtil.Vibrate(WordsBookActivity.this, 50);
+                    VibratorUtil.Vibrate(WordsBookActivity.this, 100);
                     WordsBookBean item = wordsList.get(nowPosition);
                     db.deleteWordByWord(item.getWord());
                     wordsList.remove(nowPosition);
