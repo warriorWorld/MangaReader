@@ -105,6 +105,12 @@ public class App extends Application {
     }
 
     private void initLeanCloud() {
+        // 配置 SDK 储存
+        AVOSCloud.setServer(AVOSCloud.SERVER_TYPE.API, "https://avoscloud.com");
+        // 配置 SDK 云引擎
+        AVOSCloud.setServer(AVOSCloud.SERVER_TYPE.ENGINE, "https://avoscloud.com");
+        // 配置 SDK 推送
+        AVOSCloud.setServer(AVOSCloud.SERVER_TYPE.PUSH, "https://avoscloud.com");
         // 初始化参数依次为 this, AppId, AppKey
         AVOSCloud.initialize(this, "VeSumXxFMzSVf1kStNrOqGMS-gzGzoHsz", "djw94yHsBRwSUPxhrkAaMJPd");
         AVOSCloud.setDebugLogEnabled(true);
