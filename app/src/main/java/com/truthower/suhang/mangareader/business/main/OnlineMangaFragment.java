@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.text.ClipboardManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,11 +23,13 @@ import com.truthower.suhang.mangareader.bean.LoginBean;
 import com.truthower.suhang.mangareader.bean.MangaBean;
 import com.truthower.suhang.mangareader.bean.MangaListBean;
 import com.truthower.suhang.mangareader.business.detail.WebMangaDetailsActivity;
+import com.truthower.suhang.mangareader.business.read.ReadMangaActivity;
 import com.truthower.suhang.mangareader.business.search.SearchActivity;
 import com.truthower.suhang.mangareader.config.Configure;
 import com.truthower.suhang.mangareader.config.ShareKeys;
 import com.truthower.suhang.mangareader.listener.JsoupCallBack;
 import com.truthower.suhang.mangareader.listener.OnEditResultListener;
+import com.truthower.suhang.mangareader.listener.OnKeyboardChangeListener;
 import com.truthower.suhang.mangareader.listener.OnSevenFourteenListDialogListener;
 import com.truthower.suhang.mangareader.spider.SpiderBase;
 import com.truthower.suhang.mangareader.test.TestActivity;
@@ -34,7 +37,9 @@ import com.truthower.suhang.mangareader.utils.BaseParameterUtil;
 import com.truthower.suhang.mangareader.utils.MatchStringUtil;
 import com.truthower.suhang.mangareader.utils.ShareObjUtil;
 import com.truthower.suhang.mangareader.utils.SharedPreferencesUtils;
+import com.truthower.suhang.mangareader.utils.VibratorUtil;
 import com.truthower.suhang.mangareader.widget.bar.TopBar;
+import com.truthower.suhang.mangareader.widget.dialog.KeyBoardDialog;
 import com.truthower.suhang.mangareader.widget.dialog.ListDialog;
 import com.truthower.suhang.mangareader.widget.dialog.MangaEditDialog;
 import com.truthower.suhang.mangareader.widget.pulltorefresh.PullToRefreshBase;
@@ -64,10 +69,12 @@ public class OnlineMangaFragment extends BaseFragment implements PullToRefreshBa
     private MangaEditDialog searchDialog, toPageDialog;
     private int startPage = 1;
     private boolean onLoadingMore = false;
+    private ClipboardManager clip;//复制文本用
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
+        clip = (ClipboardManager) getActivity().getSystemService(Context.CLIPBOARD_SERVICE);
         View v = inflater.inflate(R.layout.fragment_online_manga_list, container, false);
         initUI(v);
         initPullListView();
@@ -123,14 +130,7 @@ public class OnlineMangaFragment extends BaseFragment implements PullToRefreshBa
 
             @Override
             public void onTitleClick() {
-                if (Configure.isTest) {
-                    Intent intent = new Intent(Intent.ACTION_MAIN);
-                    intent.addCategory(Intent.CATEGORY_LAUNCHER);
-                    ComponentName cn = new ComponentName("com.hangsu.xiaoxiaodaiduo.peanutrich",
-                            "com.hangsu.xiaoxiaodaiduo.peanutrich.launch.LunchActivity");
-                    intent.setComponent(cn);
-                    startActivity(intent);
-                }
+                showKeyboardDialog();
             }
         });
         topBar.setTopBarLongClickLister(new TopBar.OnTopBarLongClickListener() {
@@ -175,6 +175,20 @@ public class OnlineMangaFragment extends BaseFragment implements PullToRefreshBa
         super.onHiddenChanged(hidden);
     }
 
+    private void showKeyboardDialog() {
+        KeyBoardDialog dialog = new KeyBoardDialog(getActivity());
+        dialog.setOnKeyboardChangeListener(new OnKeyboardChangeListener() {
+            @Override
+            public void onChange(String res) {
+            }
+
+            @Override
+            public void onFinish(String res) {
+                clip.setText(res);
+            }
+        });
+        dialog.show();
+    }
 
     /**
      * make true current connect service is wifi

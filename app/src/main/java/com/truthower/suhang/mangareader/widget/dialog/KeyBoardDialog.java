@@ -7,14 +7,11 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.Display;
 import android.view.Gravity;
-import android.view.MotionEvent;
-import android.view.VelocityTracker;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.truthower.suhang.mangareader.R;
@@ -216,6 +213,10 @@ public class KeyBoardDialog extends Dialog implements View.OnClickListener, Gest
     @Override
     public void onChange(String result) {
         resTv.setText(result);
+        if (!SharedPreferencesUtils.getBooleanSharedPreferencesData
+                (context, ShareKeys.CLOSE_SH_KEYBOARD_VIBRATION, false)) {
+            VibratorUtil.Vibrate(context, 20);
+        }
         if (null != mOnKeyboardChangeListener) {
             mOnKeyboardChangeListener.onChange(result);
         }

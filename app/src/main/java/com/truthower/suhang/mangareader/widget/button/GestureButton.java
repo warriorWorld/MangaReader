@@ -114,6 +114,7 @@ public class GestureButton extends RelativeLayout {
                 break;
             case MotionEvent.ACTION_UP:
             case MotionEvent.ACTION_CANCEL:
+                lastFinalRes="";
                 setBackground(getResources().getDrawable(R.drawable.item_click_white));
                 if (null != mOnResultListener) {
                     mOnResultListener.onResult(finalRes.toLowerCase());
