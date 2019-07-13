@@ -16,7 +16,7 @@
 
     <ImageView
         android:id="@+id/options_iv"
-        android:layout_width="50dp"
+        android:layout_width="55dp"
         android:layout_height="78dp"
         android:layout_below="@+id/final_res_tv"
         android:layout_marginTop="25dp"
@@ -27,7 +27,7 @@
 
     <ImageView
         android:id="@+id/help_btn"
-        android:layout_width="50dp"
+        android:layout_width="55dp"
         android:layout_height="78dp"
         android:layout_below="@+id/options_iv"
         android:layout_marginTop="5dp"
@@ -38,7 +38,7 @@
 
     <ImageView
         android:id="@+id/delete_btn"
-        android:layout_width="50dp"
+        android:layout_width="55dp"
         android:layout_height="78dp"
         android:layout_below="@+id/final_res_tv"
         android:layout_alignParentRight="true"
@@ -50,7 +50,7 @@
 
     <ImageView
         android:id="@+id/space_btn"
-        android:layout_width="50dp"
+        android:layout_width="55dp"
         android:layout_height="78dp"
         android:layout_below="@+id/delete_btn"
         android:layout_alignParentRight="true"
