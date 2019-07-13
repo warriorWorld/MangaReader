@@ -67,7 +67,7 @@ public class GestureButton extends RelativeLayout {
                 vTracker.addMovement(e);
                 dx = (int) e.getX();
                 dy = (int) e.getY();
-                mKeyboardPopupWindow.showAsDropDown(this, DisplayUtil.dip2px(context, 0), DisplayUtil.dip2px(context, -75));
+                mKeyboardPopupWindow.showAsDropDown(this, DisplayUtil.dip2px(context, 0), DisplayUtil.dip2px(context, -68));
                 break;
             case MotionEvent.ACTION_MOVE:
                 int cx = (int) e.getX();
