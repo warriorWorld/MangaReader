@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="100dp"
+                android:layout_height="100dp">
+
+    <Button
+        android:id="@+id/left_btn"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_centerVertical="true"
+        android:background="@color/white"
+        android:text="A"
+        android:textColor="@color/colorPrimary"
+        android:textSize="14sp"/>
+
+    <Button
+        android:id="@+id/right_btn"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:background="@color/white"
+        android:text="C"
+        android:textColor="@color/colorPrimary"
+        android:textSize="14sp"/>
+
+    <Button
+        android:id="@+id/up_btn"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_centerHorizontal="true"
+        android:background="@color/white"
+        android:text="B"
+        android:textColor="@color/colorPrimary"
+        android:textSize="14sp"/>
+
+    <Button
+        android:id="@+id/down_btn"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:background="@color/white"
+        android:text="D"
+        android:textColor="@color/colorPrimary"
+        android:textSize="14sp"/>
+</RelativeLayout>

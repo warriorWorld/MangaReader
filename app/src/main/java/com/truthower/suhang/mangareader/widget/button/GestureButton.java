@@ -1,23 +1,16 @@
 package com.truthower.suhang.mangareader.widget.button;
 
 import android.content.Context;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.VelocityTracker;
-import android.view.View;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.truthower.suhang.mangareader.R;
-import com.truthower.suhang.mangareader.adapter.StarAdapter;
-import com.truthower.suhang.mangareader.listener.OnRecycleItemClickListener;
-import com.truthower.suhang.mangareader.widget.recyclerview.LinearLayoutMangerWithoutBug;
-
-import java.util.ArrayList;
+import com.truthower.suhang.mangareader.utils.DisplayUtil;
+import com.truthower.suhang.mangareader.widget.popupwindow.KeyboardPopupWindow;
 
 public class GestureButton extends RelativeLayout {
     private Context context;
@@ -27,6 +20,7 @@ public class GestureButton extends RelativeLayout {
     private TextView gestureTv4;
     private int threshold = 10;
     private OnResultListener mOnResultListener;
+    private KeyboardPopupWindow mKeyboardPopupWindow;
 
     public GestureButton(Context context) {
         this(context, null);
@@ -43,6 +37,7 @@ public class GestureButton extends RelativeLayout {
     }
 
     private void init() {
+        mKeyboardPopupWindow = new KeyboardPopupWindow(context);
         LayoutInflater.from(context).inflate(R.layout.btn_gesture, this);
         setBackground(getResources().getDrawable(R.drawable.item_click_white));
         gestureTv1 = (TextView) findViewById(R.id.gesture_tv1);
@@ -59,6 +54,7 @@ public class GestureButton extends RelativeLayout {
         if (keys.length == 4) {
             gestureTv4.setText(keys[3] + "");
         }
+        mKeyboardPopupWindow.setKeys(key);
     }
 
     private int dx, dy;
@@ -82,6 +78,7 @@ public class GestureButton extends RelativeLayout {
                 vTracker.addMovement(e);
                 dx = (int) e.getX();
                 dy = (int) e.getY();
+                mKeyboardPopupWindow.showAsDropDown(this,DisplayUtil.dip2px(context,10), DisplayUtil.dip2px(context,-80));
                 break;
             case MotionEvent.ACTION_MOVE:
                 int cx = (int) e.getX();
@@ -90,18 +87,22 @@ public class GestureButton extends RelativeLayout {
                 int moveY = cy - dy;
                 if (Math.abs(moveX) > Math.abs(moveY) && Math.abs(moveX) > threshold) {
                     if (moveX > 0) {
+                        mKeyboardPopupWindow.toogleState(2);
                         gestureTv3.setTextColor(context.getResources().getColor(R.color.manga_reader));
                         finalRes = gestureTv3.getText().toString();
                     } else {
+                        mKeyboardPopupWindow.toogleState(0);
                         gestureTv1.setTextColor(context.getResources().getColor(R.color.manga_reader));
                         finalRes = gestureTv1.getText().toString();
                     }
                 }
                 if (Math.abs(moveY) > Math.abs(moveX) && Math.abs(moveY) > threshold) {
                     if (moveY > 0) {
+                        mKeyboardPopupWindow.toogleState(3);
                         gestureTv4.setTextColor(context.getResources().getColor(R.color.manga_reader));
                         finalRes = gestureTv4.getText().toString();
                     } else {
+                        mKeyboardPopupWindow.toogleState(1);
                         gestureTv2.setTextColor(context.getResources().getColor(R.color.manga_reader));
                         finalRes = gestureTv2.getText().toString();
                     }
@@ -117,6 +118,7 @@ public class GestureButton extends RelativeLayout {
                 if (null != mOnResultListener) {
                     mOnResultListener.onResult(finalRes.toLowerCase());
                 }
+                mKeyboardPopupWindow.dismiss();
                 break;
             default:
                 break;
