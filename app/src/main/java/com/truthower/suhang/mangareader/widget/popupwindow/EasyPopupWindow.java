@@ -64,8 +64,12 @@ public class EasyPopupWindow extends PopupWindow {
     }
 
     public void adaptiveShowAsDropDown(View anchor, int xoff, int yoff) {
-        showAsDropDown(anchor, xoff, yoff);
-        triangleIv.setX(anchor.getX() + anchor.getWidth() / 2);
+        try {
+            showAsDropDown(anchor, xoff, yoff);
+            triangleIv.setX(anchor.getX() + anchor.getWidth() / 2);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
     public void setMessage(String msg) {

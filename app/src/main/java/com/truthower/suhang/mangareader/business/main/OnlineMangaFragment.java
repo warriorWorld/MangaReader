@@ -39,6 +39,7 @@ import com.truthower.suhang.mangareader.utils.ShareObjUtil;
 import com.truthower.suhang.mangareader.utils.SharedPreferencesUtils;
 import com.truthower.suhang.mangareader.utils.VibratorUtil;
 import com.truthower.suhang.mangareader.widget.bar.TopBar;
+import com.truthower.suhang.mangareader.widget.dialog.English9KeyboardDialog;
 import com.truthower.suhang.mangareader.widget.dialog.KeyBoardDialog;
 import com.truthower.suhang.mangareader.widget.dialog.ListDialog;
 import com.truthower.suhang.mangareader.widget.dialog.MangaEditDialog;
@@ -176,7 +177,7 @@ public class OnlineMangaFragment extends BaseFragment implements PullToRefreshBa
     }
 
     private void showKeyboardDialog() {
-        KeyBoardDialog dialog = new KeyBoardDialog(getActivity());
+        English9KeyboardDialog dialog = new English9KeyboardDialog(getActivity());
         dialog.setOnKeyboardChangeListener(new OnKeyboardChangeListener() {
             @Override
             public void onChange(String res) {

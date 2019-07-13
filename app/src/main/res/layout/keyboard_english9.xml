@@ -1,0 +1,170 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/transparency">
+
+    <TextView
+        android:id="@+id/final_res_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:gravity="center"
+        android:hint="点按然后滑动输入"
+        android:textColor="@color/manga_reader"
+        android:textColorHint="@color/manga_reader"
+        android:textSize="22sp"/>
+
+    <ImageView
+        android:id="@+id/options_iv"
+        android:layout_width="50dp"
+        android:layout_height="78dp"
+        android:layout_below="@+id/final_res_tv"
+        android:layout_marginTop="25dp"
+        android:background="@drawable/item_click"
+        android:padding="14dp"
+        android:scaleType="centerInside"
+        android:src="@drawable/ic_options"/>
+
+    <ImageView
+        android:id="@+id/space_btn"
+        android:layout_width="50dp"
+        android:layout_height="78dp"
+        android:layout_below="@+id/options_iv"
+        android:layout_marginTop="5dp"
+        android:background="@drawable/item_click"
+        android:padding="14dp"
+        android:scaleType="centerInside"
+        android:src="@drawable/ic_space"/>
+
+    <ImageView
+        android:id="@+id/delete_btn"
+        android:layout_width="50dp"
+        android:layout_height="78dp"
+        android:layout_below="@+id/final_res_tv"
+        android:layout_alignParentRight="true"
+        android:layout_marginTop="25dp"
+        android:background="@drawable/item_click"
+        android:padding="14dp"
+        android:scaleType="centerInside"
+        android:src="@drawable/icon_delete_32dp"/>
+
+    <Button
+        android:id="@+id/ok_btn"
+        style="?android:attr/borderlessButtonStyle"
+        android:layout_width="50dp"
+        android:layout_height="78dp"
+        android:layout_below="@+id/delete_btn"
+        android:layout_marginTop="5dp"
+        android:layout_alignParentRight="true"
+        android:background="@drawable/item_click"
+        android:text="OK"
+        android:textColor="@color/main_text_color"
+        android:textSize="14sp"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/final_res_tv"
+        android:layout_marginTop="20dp"
+        android:layout_toLeftOf="@id/delete_btn"
+        android:layout_toRightOf="@+id/options_iv"
+        android:orientation="vertical"
+        android:padding="5dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:id="@+id/help_btn"
+                style="?android:attr/borderlessButtonStyle"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@color/white"
+                android:gravity="center"
+                android:padding="40dp"
+                android:scaleType="centerCrop"
+                android:src="@drawable/ic_question"
+                android:textColor="@color/main_text_color"
+                android:textSize="14sp"/>
+
+            <com.truthower.suhang.mangareader.widget.button.GestureButton
+                android:id="@+id/abc_gb"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                android:layout_weight="1"
+                ></com.truthower.suhang.mangareader.widget.button.GestureButton>
+
+            <com.truthower.suhang.mangareader.widget.button.GestureButton
+                android:id="@+id/def_gb"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                ></com.truthower.suhang.mangareader.widget.button.GestureButton>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginTop="5dp"
+            android:orientation="horizontal">
+
+            <com.truthower.suhang.mangareader.widget.button.GestureButton
+                android:id="@+id/ghi_gb"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                ></com.truthower.suhang.mangareader.widget.button.GestureButton>
+
+            <com.truthower.suhang.mangareader.widget.button.GestureButton
+                android:id="@+id/jkl_gb"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                android:layout_weight="1"
+                ></com.truthower.suhang.mangareader.widget.button.GestureButton>
+
+            <com.truthower.suhang.mangareader.widget.button.GestureButton
+                android:id="@+id/mno_gb"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                ></com.truthower.suhang.mangareader.widget.button.GestureButton>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginTop="5dp"
+            android:orientation="horizontal">
+
+            <com.truthower.suhang.mangareader.widget.button.GestureButton
+                android:id="@+id/pqrs_gb"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                ></com.truthower.suhang.mangareader.widget.button.GestureButton>
+
+            <com.truthower.suhang.mangareader.widget.button.GestureButton
+                android:id="@+id/tuv_gb"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                android:layout_weight="1"
+                ></com.truthower.suhang.mangareader.widget.button.GestureButton>
+
+            <com.truthower.suhang.mangareader.widget.button.GestureButton
+                android:id="@+id/wxyz_gb"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                ></com.truthower.suhang.mangareader.widget.button.GestureButton>
+        </LinearLayout>
+    </LinearLayout>
+</RelativeLayout>

@@ -67,7 +67,7 @@ public class GestureButton extends RelativeLayout {
                 vTracker.addMovement(e);
                 dx = (int) e.getX();
                 dy = (int) e.getY();
-                mKeyboardPopupWindow.showAsDropDown(this, DisplayUtil.dip2px(context, 10), DisplayUtil.dip2px(context, -75));
+                mKeyboardPopupWindow.showAsDropDown(this, DisplayUtil.dip2px(context, 0), DisplayUtil.dip2px(context, -75));
                 break;
             case MotionEvent.ACTION_MOVE:
                 int cx = (int) e.getX();
@@ -85,8 +85,10 @@ public class GestureButton extends RelativeLayout {
                 }
                 if (Math.abs(moveY) > Math.abs(moveX) && Math.abs(moveY) > threshold) {
                     if (moveY > 0) {
-                        mKeyboardPopupWindow.toogleState(3);
-                        finalRes = keys[3]+"";
+                        if (keys.length==4) {
+                            mKeyboardPopupWindow.toogleState(3);
+                            finalRes = keys[3] + "";
+                        }
                     } else {
                         mKeyboardPopupWindow.toogleState(1);
                         finalRes = keys[1]+"";
