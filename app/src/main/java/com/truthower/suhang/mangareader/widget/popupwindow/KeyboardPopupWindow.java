@@ -90,7 +90,7 @@ public class KeyboardPopupWindow extends PopupWindow {
                 rightBtn.setBackgroundColor(context.getResources().getColor(R.color.colorPrimary));
                 rightBtn.setTextColor(context.getResources().getColor(R.color.white));
                 break;
-            case 4:
+            case 3:
                 downBtn.setBackgroundColor(context.getResources().getColor(R.color.colorPrimary));
                 downBtn.setTextColor(context.getResources().getColor(R.color.white));
                 break;
