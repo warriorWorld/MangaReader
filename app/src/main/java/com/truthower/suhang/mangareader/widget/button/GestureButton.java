@@ -9,18 +9,19 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.truthower.suhang.mangareader.R;
+import com.truthower.suhang.mangareader.config.ShareKeys;
 import com.truthower.suhang.mangareader.utils.DisplayUtil;
+import com.truthower.suhang.mangareader.utils.SharedPreferencesUtils;
+import com.truthower.suhang.mangareader.utils.VibratorUtil;
 import com.truthower.suhang.mangareader.widget.popupwindow.KeyboardPopupWindow;
 
 public class GestureButton extends RelativeLayout {
     private Context context;
-    private TextView gestureTv1;
-    private TextView gestureTv2;
-    private TextView gestureTv3;
-    private TextView gestureTv4;
+    private TextView gestureTv;
     private int threshold = 10;
     private OnResultListener mOnResultListener;
     private KeyboardPopupWindow mKeyboardPopupWindow;
+    private char[] keys;
 
     public GestureButton(Context context) {
         this(context, null);
@@ -40,20 +41,12 @@ public class GestureButton extends RelativeLayout {
         mKeyboardPopupWindow = new KeyboardPopupWindow(context);
         LayoutInflater.from(context).inflate(R.layout.btn_gesture, this);
         setBackground(getResources().getDrawable(R.drawable.item_click_white));
-        gestureTv1 = (TextView) findViewById(R.id.gesture_tv1);
-        gestureTv2 = (TextView) findViewById(R.id.gesture_tv2);
-        gestureTv3 = (TextView) findViewById(R.id.gesture_tv3);
-        gestureTv4 = (TextView) findViewById(R.id.gesture_tv4);
+        gestureTv = (TextView) findViewById(R.id.gesture_tv);
     }
 
     public void setKeys(String key) {
-        char[] keys = key.toCharArray();
-        gestureTv1.setText(keys[0] + "");
-        gestureTv2.setText(keys[1] + "");
-        gestureTv3.setText(keys[2] + "");
-        if (keys.length == 4) {
-            gestureTv4.setText(keys[3] + "");
-        }
+        keys = key.toCharArray();
+        gestureTv.setText(key);
         mKeyboardPopupWindow.setKeys(key);
     }
 
@@ -63,10 +56,6 @@ public class GestureButton extends RelativeLayout {
 
     @Override
     public boolean onTouchEvent(MotionEvent e) {
-        gestureTv1.setTextColor(context.getResources().getColor(R.color.main_text_color));
-        gestureTv2.setTextColor(context.getResources().getColor(R.color.main_text_color));
-        gestureTv3.setTextColor(context.getResources().getColor(R.color.main_text_color));
-        gestureTv4.setTextColor(context.getResources().getColor(R.color.main_text_color));
         switch (e.getAction()) {
             case MotionEvent.ACTION_DOWN:
                 setBackground(getResources().getDrawable(R.drawable.item_click_gray));
@@ -78,7 +67,7 @@ public class GestureButton extends RelativeLayout {
                 vTracker.addMovement(e);
                 dx = (int) e.getX();
                 dy = (int) e.getY();
-                mKeyboardPopupWindow.showAsDropDown(this,DisplayUtil.dip2px(context,10), DisplayUtil.dip2px(context,-75));
+                mKeyboardPopupWindow.showAsDropDown(this, DisplayUtil.dip2px(context, 10), DisplayUtil.dip2px(context, -75));
                 break;
             case MotionEvent.ACTION_MOVE:
                 int cx = (int) e.getX();
@@ -88,33 +77,33 @@ public class GestureButton extends RelativeLayout {
                 if (Math.abs(moveX) > Math.abs(moveY) && Math.abs(moveX) > threshold) {
                     if (moveX > 0) {
                         mKeyboardPopupWindow.toogleState(2);
-                        gestureTv3.setTextColor(context.getResources().getColor(R.color.manga_reader));
-                        finalRes = gestureTv3.getText().toString();
+                        finalRes = keys[2]+"";
                     } else {
                         mKeyboardPopupWindow.toogleState(0);
-                        gestureTv1.setTextColor(context.getResources().getColor(R.color.manga_reader));
-                        finalRes = gestureTv1.getText().toString();
+                        finalRes = keys[0]+"";
                     }
                 }
                 if (Math.abs(moveY) > Math.abs(moveX) && Math.abs(moveY) > threshold) {
                     if (moveY > 0) {
                         mKeyboardPopupWindow.toogleState(3);
-                        gestureTv4.setTextColor(context.getResources().getColor(R.color.manga_reader));
-                        finalRes = gestureTv4.getText().toString();
+                        finalRes = keys[3]+"";
                     } else {
                         mKeyboardPopupWindow.toogleState(1);
-                        gestureTv2.setTextColor(context.getResources().getColor(R.color.manga_reader));
-                        finalRes = gestureTv2.getText().toString();
+                        finalRes = keys[1]+"";
                     }
                 }
                 if (null != mOnResultListener && !lastFinalRes.equals(finalRes)) {
                     lastFinalRes = finalRes;
                     mOnResultListener.onChange(finalRes.toLowerCase());
+                    if (!SharedPreferencesUtils.getBooleanSharedPreferencesData
+                            (context, ShareKeys.CLOSE_SH_KEYBOARD_VIBRATION, false)) {
+                        VibratorUtil.Vibrate(context, 30);
+                    }
                 }
                 break;
             case MotionEvent.ACTION_UP:
             case MotionEvent.ACTION_CANCEL:
-                lastFinalRes="";
+                lastFinalRes = "";
                 setBackground(getResources().getDrawable(R.drawable.item_click_white));
                 if (null != mOnResultListener) {
                     mOnResultListener.onResult(finalRes.toLowerCase());

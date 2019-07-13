@@ -213,10 +213,6 @@ public class KeyBoardDialog extends Dialog implements View.OnClickListener, Gest
     @Override
     public void onChange(String result) {
         resTv.setText(result);
-        if (!SharedPreferencesUtils.getBooleanSharedPreferencesData
-                (context, ShareKeys.CLOSE_SH_KEYBOARD_VIBRATION, false)) {
-            VibratorUtil.Vibrate(context, 20);
-        }
         if (null != mOnKeyboardChangeListener) {
             mOnKeyboardChangeListener.onChange(result);
         }
