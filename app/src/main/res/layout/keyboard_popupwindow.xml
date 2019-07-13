@@ -5,8 +5,8 @@
 
     <Button
         android:id="@+id/left_btn"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
+        android:layout_width="28dp"
+        android:layout_height="28dp"
         android:layout_centerVertical="true"
         android:background="@color/white"
         android:text="A"
@@ -15,8 +15,8 @@
 
     <Button
         android:id="@+id/right_btn"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
+        android:layout_width="28dp"
+        android:layout_height="28dp"
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
         android:background="@color/white"
@@ -26,8 +26,8 @@
 
     <Button
         android:id="@+id/up_btn"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
+        android:layout_width="28dp"
+        android:layout_height="28dp"
         android:layout_centerHorizontal="true"
         android:background="@color/white"
         android:text="B"
@@ -36,8 +36,8 @@
 
     <Button
         android:id="@+id/down_btn"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
+        android:layout_width="28dp"
+        android:layout_height="28dp"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:background="@color/white"
