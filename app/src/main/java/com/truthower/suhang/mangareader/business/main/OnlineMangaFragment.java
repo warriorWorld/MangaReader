@@ -1,6 +1,5 @@
 package com.truthower.suhang.mangareader.business.main;
 
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
@@ -23,7 +22,6 @@ import com.truthower.suhang.mangareader.bean.LoginBean;
 import com.truthower.suhang.mangareader.bean.MangaBean;
 import com.truthower.suhang.mangareader.bean.MangaListBean;
 import com.truthower.suhang.mangareader.business.detail.WebMangaDetailsActivity;
-import com.truthower.suhang.mangareader.business.read.ReadMangaActivity;
 import com.truthower.suhang.mangareader.business.search.SearchActivity;
 import com.truthower.suhang.mangareader.config.Configure;
 import com.truthower.suhang.mangareader.config.ShareKeys;
@@ -37,9 +35,7 @@ import com.truthower.suhang.mangareader.utils.BaseParameterUtil;
 import com.truthower.suhang.mangareader.utils.MatchStringUtil;
 import com.truthower.suhang.mangareader.utils.ShareObjUtil;
 import com.truthower.suhang.mangareader.utils.SharedPreferencesUtils;
-import com.truthower.suhang.mangareader.utils.VibratorUtil;
 import com.truthower.suhang.mangareader.widget.bar.TopBar;
-import com.truthower.suhang.mangareader.widget.dialog.English9KeyboardDialog;
 import com.truthower.suhang.mangareader.widget.dialog.KeyBoardDialog;
 import com.truthower.suhang.mangareader.widget.dialog.ListDialog;
 import com.truthower.suhang.mangareader.widget.dialog.MangaEditDialog;
@@ -177,7 +173,7 @@ public class OnlineMangaFragment extends BaseFragment implements PullToRefreshBa
     }
 
     private void showKeyboardDialog() {
-        English9KeyboardDialog dialog = new English9KeyboardDialog(getActivity());
+        KeyBoardDialog dialog = new KeyBoardDialog(getActivity());
         dialog.setOnKeyboardChangeListener(new OnKeyboardChangeListener() {
             @Override
             public void onChange(String res) {

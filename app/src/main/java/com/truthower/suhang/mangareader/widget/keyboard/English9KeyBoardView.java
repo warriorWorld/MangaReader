@@ -12,6 +12,7 @@ import com.truthower.suhang.mangareader.R;
 import com.truthower.suhang.mangareader.business.other.KeyboardSettingActivity;
 import com.truthower.suhang.mangareader.config.ShareKeys;
 import com.truthower.suhang.mangareader.listener.OnKeyboardChangeListener;
+import com.truthower.suhang.mangareader.listener.OnKeyboardListener;
 import com.truthower.suhang.mangareader.utils.SharedPreferencesUtils;
 import com.truthower.suhang.mangareader.widget.button.GestureButton;
 import com.truthower.suhang.mangareader.widget.dialog.MangaDialog;
@@ -32,7 +33,9 @@ public class English9KeyBoardView extends RelativeLayout implements View.OnClick
     private View spaceBtn;
     private View okBtn;
     private View helpBtn;
+    private View optionsBtn;
     protected OnKeyboardChangeListener mOnKeyboardChangeListener;
+    private OnKeyboardListener mOnKeyboardListener;
 
     public English9KeyBoardView(Context context) {
         this(context, null);
@@ -64,11 +67,13 @@ public class English9KeyBoardView extends RelativeLayout implements View.OnClick
         } else {
             setupKeys1();
         }
-        deleteBtn =  findViewById(R.id.delete_btn);
-        spaceBtn =  findViewById(R.id.space_btn);
-        okBtn =  findViewById(R.id.ok_btn);
-        helpBtn =  findViewById(R.id.help_btn);
+        deleteBtn = findViewById(R.id.delete_btn);
+        spaceBtn = findViewById(R.id.space_btn);
+        okBtn = findViewById(R.id.ok_btn);
+        helpBtn = findViewById(R.id.help_btn);
+        optionsBtn=findViewById(R.id.options_iv);
 
+        optionsBtn.setOnClickListener(this);
         helpBtn.setOnClickListener(this);
         abcGb.setOnResultListener(this);
         defGb.setOnResultListener(this);
@@ -112,29 +117,6 @@ public class English9KeyBoardView extends RelativeLayout implements View.OnClick
         wxyzGb.setKeys("wxyz");
     }
 
-    private void showHelpDialog() {
-        MangaDialog dialog = new MangaDialog(context);
-        dialog.setOnPeanutDialogClickListener(new MangaDialog.OnPeanutDialogClickListener() {
-            @Override
-            public void onOkClick() {
-                Intent intent = new Intent(context, KeyboardSettingActivity.class);
-                context.startActivity(intent);
-            }
-
-            @Override
-            public void onCancelClick() {
-
-            }
-        });
-        dialog.show();
-        dialog.setTitle("教程");
-        dialog.setMessage("1,按住键盘然后滑动到你想选择的字母然后松手即可输入" +
-                "\n2,输入完成点击OK即可查单词" +
-                "\n3,不想使用这个键盘可在设置中关闭");
-        dialog.setCancelText("知道了");
-        dialog.setOkText("键盘设置");
-    }
-
     protected void onOkBtnClick() {
         if (null != mOnKeyboardChangeListener) {
             mOnKeyboardChangeListener.onFinish(finalResTv.getText().toString());
@@ -157,7 +139,14 @@ public class English9KeyBoardView extends RelativeLayout implements View.OnClick
                 finalResTv.setText(finalResTv.getText().toString() + " ");
                 break;
             case R.id.help_btn:
-                showHelpDialog();
+                if (null!=mOnKeyboardListener){
+                    mOnKeyboardListener.onQuestionClick();
+                }
+                break;
+            case R.id.options_iv:
+                if (null!=mOnKeyboardListener){
+                    mOnKeyboardListener.onOptionsClick();
+                }
                 break;
         }
     }
@@ -176,5 +165,9 @@ public class English9KeyBoardView extends RelativeLayout implements View.OnClick
 
     public void setOnKeyboardChangeListener(OnKeyboardChangeListener onKeyboardChangeListener) {
         mOnKeyboardChangeListener = onKeyboardChangeListener;
+    }
+
+    public void setOnKeyboardListener(OnKeyboardListener onKeyboardListener) {
+        mOnKeyboardListener = onKeyboardListener;
     }
 }

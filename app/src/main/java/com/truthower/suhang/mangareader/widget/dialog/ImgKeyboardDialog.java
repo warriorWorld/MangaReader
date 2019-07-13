@@ -47,12 +47,4 @@ public class ImgKeyboardDialog extends KeyBoardDialog {
     public void setImgRes(Bitmap bitmap) {
         imgIv.setImageBitmap(bitmap);
     }
-
-    @Override
-    protected void onOkBtnClick() {
-        if (null != mOnKeyboardChangeListener) {
-            mOnKeyboardChangeListener.onFinish(finalResTv.getText().toString());
-        }
-        finalResTv.setText("");
-    }
 }

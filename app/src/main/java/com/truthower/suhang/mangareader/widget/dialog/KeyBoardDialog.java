@@ -7,40 +7,22 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.Display;
 import android.view.Gravity;
-import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.truthower.suhang.mangareader.R;
 import com.truthower.suhang.mangareader.business.other.KeyboardSettingActivity;
-import com.truthower.suhang.mangareader.config.ShareKeys;
 import com.truthower.suhang.mangareader.listener.OnKeyboardChangeListener;
-import com.truthower.suhang.mangareader.utils.SharedPreferencesUtils;
-import com.truthower.suhang.mangareader.utils.VibratorUtil;
-import com.truthower.suhang.mangareader.widget.button.GestureButton;
+import com.truthower.suhang.mangareader.listener.OnKeyboardListener;
+import com.truthower.suhang.mangareader.widget.keyboard.English9KeyBoardView;
 
 
-public class KeyBoardDialog extends Dialog implements View.OnClickListener, GestureButton.OnResultListener {
+public class KeyBoardDialog extends Dialog {
     private Context context;
-    private GestureButton abcGb;
-    private GestureButton defGb;
-    private GestureButton ghiGb;
-    private GestureButton jklGb;
-    private GestureButton mnoGb;
-    private GestureButton pqrsGb;
-    private GestureButton tuvGb;
-    private GestureButton wxyzGb;
-    protected TextView finalResTv;
-    private TextView resTv;
-    private Button deleteBtn;
-    private Button spaceBtn;
-    private Button okBtn;
-    private Button helpBtn;
-    private ImageView crossIv;
+    private English9KeyBoardView englishKeyboardView;
+
     protected OnKeyboardChangeListener mOnKeyboardChangeListener;
+
 
     public KeyBoardDialog(Context context) {
         super(context);
@@ -86,136 +68,44 @@ public class KeyBoardDialog extends Dialog implements View.OnClickListener, Gest
     }
 
     protected void init() {
-        finalResTv = (TextView) findViewById(R.id.final_res_tv);
-        abcGb = (GestureButton) findViewById(R.id.abc_gb);
-        defGb = (GestureButton) findViewById(R.id.def_gb);
-        ghiGb = (GestureButton) findViewById(R.id.ghi_gb);
-        jklGb = (GestureButton) findViewById(R.id.jkl_gb);
-        mnoGb = (GestureButton) findViewById(R.id.mno_gb);
-        pqrsGb = (GestureButton) findViewById(R.id.pqrs_gb);
-        tuvGb = (GestureButton) findViewById(R.id.tuv_gb);
-        wxyzGb = (GestureButton) findViewById(R.id.wxyz_gb);
-        if (SharedPreferencesUtils.getBooleanSharedPreferencesData(context, ShareKeys.IS_OTHER_LETTER_ORDER, false)) {
-            setupKeys();
-        } else {
-            setupKeys1();
-        }
-        deleteBtn = (Button) findViewById(R.id.delete_btn);
-        spaceBtn = (Button) findViewById(R.id.space_btn);
-        okBtn = (Button) findViewById(R.id.ok_btn);
-        resTv = (TextView) findViewById(R.id.res_tv);
-        helpBtn = (Button) findViewById(R.id.help_btn);
-        crossIv = (ImageView) findViewById(R.id.cross_iv);
-
-        helpBtn.setOnClickListener(this);
-        abcGb.setOnResultListener(this);
-        defGb.setOnResultListener(this);
-        ghiGb.setOnResultListener(this);
-        jklGb.setOnResultListener(this);
-        mnoGb.setOnResultListener(this);
-        pqrsGb.setOnResultListener(this);
-        tuvGb.setOnResultListener(this);
-        wxyzGb.setOnResultListener(this);
-        deleteBtn.setOnClickListener(this);
-        spaceBtn.setOnClickListener(this);
-        okBtn.setOnClickListener(this);
-        crossIv.setOnClickListener(this);
-        deleteBtn.setOnLongClickListener(new View.OnLongClickListener() {
+        englishKeyboardView = (English9KeyBoardView) findViewById(R.id.english_keyboard_view);
+        englishKeyboardView.setOnKeyboardChangeListener(new OnKeyboardChangeListener() {
             @Override
-            public boolean onLongClick(View v) {
-                finalResTv.setText("");
-                return true;
+            public void onChange(String res) {
+                if (null != mOnKeyboardChangeListener) {
+                    mOnKeyboardChangeListener.onChange(res);
+                }
+            }
+
+            @Override
+            public void onFinish(String res) {
+                if (null != mOnKeyboardChangeListener) {
+                    mOnKeyboardChangeListener.onFinish(res);
+                }
             }
         });
-    }
-
-    private void setupKeys() {
-        abcGb.setKeys("bac");
-        defGb.setKeys("edf");
-        ghiGb.setKeys("hgi");
-        jklGb.setKeys("kjl");
-        mnoGb.setKeys("nmo");
-        pqrsGb.setKeys("qprs");
-        tuvGb.setKeys("utv");
-        wxyzGb.setKeys("xwyz");
-    }
-
-    private void setupKeys1() {
-        abcGb.setKeys("abc");
-        defGb.setKeys("def");
-        ghiGb.setKeys("ghi");
-        jklGb.setKeys("jkl");
-        mnoGb.setKeys("mno");
-        pqrsGb.setKeys("pqrs");
-        tuvGb.setKeys("tuv");
-        wxyzGb.setKeys("wxyz");
-    }
-
-    private void showHelpDialog() {
-        MangaDialog dialog = new MangaDialog(context);
-        dialog.setOnPeanutDialogClickListener(new MangaDialog.OnPeanutDialogClickListener() {
+        englishKeyboardView.setOnKeyboardListener(new OnKeyboardListener() {
             @Override
-            public void onOkClick() {
+            public void onOptionsClick() {
                 Intent intent = new Intent(context, KeyboardSettingActivity.class);
                 context.startActivity(intent);
             }
 
             @Override
-            public void onCancelClick() {
-
+            public void onQuestionClick() {
+                showHelpDialog();
             }
         });
+    }
+
+    private void showHelpDialog() {
+        MangaDialog dialog = new MangaDialog(context);
         dialog.show();
         dialog.setTitle("教程");
         dialog.setMessage("1,按住键盘然后滑动到你想选择的字母然后松手即可输入" +
-                "\n2,输入完成点击OK即可查单词" +
+                "\n2,输入完成点击DONE即可查单词" +
                 "\n3,不想使用这个键盘可在设置中关闭");
-        dialog.setCancelText("知道了");
-        dialog.setOkText("键盘设置");
-    }
-
-    protected void onOkBtnClick() {
-        if (null != mOnKeyboardChangeListener) {
-            mOnKeyboardChangeListener.onFinish(finalResTv.getText().toString());
-        }
-        finalResTv.setText("");
-    }
-
-    @Override
-    public void onClick(View view) {
-        switch (view.getId()) {
-            case R.id.delete_btn:
-                if (finalResTv.getText().toString().length() > 0) {
-                    finalResTv.setText(finalResTv.getText().toString().substring(0, finalResTv.getText().length() - 1));
-                }
-                break;
-            case R.id.ok_btn:
-                onOkBtnClick();
-                break;
-            case R.id.space_btn:
-                finalResTv.setText(finalResTv.getText().toString() + " ");
-                break;
-            case R.id.help_btn:
-                showHelpDialog();
-                break;
-            case R.id.cross_iv:
-                dismiss();
-                break;
-        }
-    }
-
-    @Override
-    public void onResult(String result) {
-        resTv.setText("");
-        finalResTv.setText(finalResTv.getText().toString() + result);
-    }
-
-    @Override
-    public void onChange(String result) {
-        resTv.setText(result);
-        if (null != mOnKeyboardChangeListener) {
-            mOnKeyboardChangeListener.onChange(result);
-        }
+        dialog.setOkText("知道了");
     }
 
     public void setOnKeyboardChangeListener(OnKeyboardChangeListener onKeyboardChangeListener) {
