@@ -1,5 +1,6 @@
 package com.truthower.suhang.mangareader.business.main;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
@@ -41,6 +42,7 @@ import com.truthower.suhang.mangareader.utils.SharedPreferencesUtils;
 import com.truthower.suhang.mangareader.widget.bar.TopBar;
 import com.truthower.suhang.mangareader.widget.dialog.ListDialog;
 import com.truthower.suhang.mangareader.widget.dialog.MangaEditDialog;
+import com.truthower.suhang.mangareader.widget.dialog.SingleLoadBarUtil;
 import com.truthower.suhang.mangareader.widget.pulltorefresh.PullToRefreshBase;
 import com.truthower.suhang.mangareader.widget.pulltorefresh.PullToRefreshListView;
 import com.truthower.suhang.mangareader.widget.wheelview.wheelselector.SingleSelectorDialog;
@@ -219,6 +221,7 @@ public class OnlineMangaFragment extends BaseFragment implements PullToRefreshBa
     }
 
     private void doGetData() {
+        SingleLoadBarUtil.getInstance().showLoadBar(getActivity());
         spider.getMangaList(BaseParameterUtil.getInstance().getCurrentType(getActivity()),
                 BaseParameterUtil.getInstance().getCurrentPage(getActivity()) + "", new JsoupCallBack<MangaListBean>() {
                     @Override
@@ -226,6 +229,7 @@ public class OnlineMangaFragment extends BaseFragment implements PullToRefreshBa
                         getActivity().runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
+                                SingleLoadBarUtil.getInstance().dismissLoadBar();
                                 currentMangaList = result.getMangaList();
                                 ShareObjUtil.saveObject(getActivity(), currentMangaList, ShareKeys.MAIN_PAGE_CHCHE);
                                 initListView();
@@ -539,7 +543,7 @@ public class OnlineMangaFragment extends BaseFragment implements PullToRefreshBa
 
     private void initPullListView() {
         // 上拉加载更多
-        pullListView.setPullLoadEnabled(true);
+        pullListView.setPullLoadEnabled(false);
         // 滚到底部自动加载
         pullListView.setScrollLoadEnabled(false);
         pullListView.setOnRefreshListener(this);

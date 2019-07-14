@@ -252,7 +252,7 @@ public class LocalMangaDetailsActivity extends BaseActivity implements AdapterVi
 
     private void initPullGridView() {
         // 上拉加载更多
-        pullToRefreshGridView.setPullLoadEnabled(true);
+        pullToRefreshGridView.setPullLoadEnabled(false);
         // 滚到底部自动加载
         pullToRefreshGridView.setScrollLoadEnabled(false);
         pullToRefreshGridView.setOnRefreshListener(this);

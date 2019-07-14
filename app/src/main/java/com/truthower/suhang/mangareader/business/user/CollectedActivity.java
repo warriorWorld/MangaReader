@@ -89,6 +89,7 @@ public class CollectedActivity extends BaseActivity implements OnRefreshListener
         swipeToLoadLayout = (SwipeToLoadLayout) findViewById(R.id.swipeToLoadLayout);
         swipeToLoadLayout.setOnRefreshListener(this);
         swipeToLoadLayout.setOnLoadMoreListener(this);
+        swipeToLoadLayout.setLoadMoreEnabled(false);
         mangaRcv = (RecyclerView) findViewById(R.id.swipe_target);
         mangaRcv.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
         mangaRcv.setFocusableInTouchMode(false);
