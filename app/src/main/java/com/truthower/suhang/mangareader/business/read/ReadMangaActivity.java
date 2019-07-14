@@ -574,7 +574,6 @@ public class ReadMangaActivity extends TTSActivity implements OnClickListener {
 
             @Override
             public void onFinish(String res) {
-                dialog.dismiss();
                 translateWord(res);
             }
         });
