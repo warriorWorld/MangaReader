@@ -15,7 +15,9 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.insightsurfface.stylelibrary.keyboard.KeyBoardDialog;
 import com.insightsurfface.stylelibrary.listener.OnKeyboardChangeListener;
+import com.insightsurfface.stylelibrary.listener.OnKeyboardListener;
 import com.truthower.suhang.mangareader.R;
 import com.truthower.suhang.mangareader.adapter.OnlineMangaListAdapter;
 import com.truthower.suhang.mangareader.base.BaseFragment;
@@ -23,6 +25,7 @@ import com.truthower.suhang.mangareader.bean.LoginBean;
 import com.truthower.suhang.mangareader.bean.MangaBean;
 import com.truthower.suhang.mangareader.bean.MangaListBean;
 import com.truthower.suhang.mangareader.business.detail.WebMangaDetailsActivity;
+import com.truthower.suhang.mangareader.business.other.KeyboardSettingActivity;
 import com.truthower.suhang.mangareader.business.search.SearchActivity;
 import com.truthower.suhang.mangareader.config.Configure;
 import com.truthower.suhang.mangareader.config.ShareKeys;
@@ -36,7 +39,6 @@ import com.truthower.suhang.mangareader.utils.MatchStringUtil;
 import com.truthower.suhang.mangareader.utils.ShareObjUtil;
 import com.truthower.suhang.mangareader.utils.SharedPreferencesUtils;
 import com.truthower.suhang.mangareader.widget.bar.TopBar;
-import com.truthower.suhang.mangareader.widget.dialog.KeyBoardDialog;
 import com.truthower.suhang.mangareader.widget.dialog.ListDialog;
 import com.truthower.suhang.mangareader.widget.dialog.MangaEditDialog;
 import com.truthower.suhang.mangareader.widget.pulltorefresh.PullToRefreshBase;
@@ -182,6 +184,18 @@ public class OnlineMangaFragment extends BaseFragment implements PullToRefreshBa
             @Override
             public void onFinish(String res) {
                 clip.setText(res);
+            }
+        });
+        dialog.setOnKeyboardListener(new OnKeyboardListener() {
+            @Override
+            public void onOptionsClick() {
+                Intent intent = new Intent(getActivity(), KeyboardSettingActivity.class);
+                startActivity(intent);
+            }
+
+            @Override
+            public void onQuestionClick() {
+                baseToast.showToast("点按后滑动输入");
             }
         });
         dialog.show();

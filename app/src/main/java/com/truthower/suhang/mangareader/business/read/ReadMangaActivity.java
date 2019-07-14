@@ -28,7 +28,9 @@ import com.android.volley.VolleyError;
 import com.avos.avoscloud.AVException;
 import com.avos.avoscloud.AVObject;
 import com.avos.avoscloud.SaveCallback;
+import com.insightsurfface.stylelibrary.keyboard.KeyBoardDialog;
 import com.insightsurfface.stylelibrary.listener.OnKeyboardChangeListener;
+import com.insightsurfface.stylelibrary.listener.OnKeyboardListener;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.truthower.suhang.mangareader.R;
 import com.truthower.suhang.mangareader.adapter.ReadMangaAdapter;
@@ -37,6 +39,7 @@ import com.truthower.suhang.mangareader.bean.LoginBean;
 import com.truthower.suhang.mangareader.bean.StatisticsBean;
 import com.truthower.suhang.mangareader.bean.YoudaoResponse;
 import com.truthower.suhang.mangareader.business.detail.WebMangaDetailsActivity;
+import com.truthower.suhang.mangareader.business.other.KeyboardSettingActivity;
 import com.truthower.suhang.mangareader.business.tag.TagManagerActivity;
 import com.truthower.suhang.mangareader.config.Configure;
 import com.truthower.suhang.mangareader.config.ShareKeys;
@@ -56,7 +59,6 @@ import com.truthower.suhang.mangareader.volley.VolleyCallBack;
 import com.truthower.suhang.mangareader.volley.VolleyTool;
 import com.truthower.suhang.mangareader.widget.bar.TopBar;
 import com.truthower.suhang.mangareader.widget.dialog.ImgKeyboardDialog;
-import com.truthower.suhang.mangareader.widget.dialog.KeyBoardDialog;
 import com.truthower.suhang.mangareader.widget.dialog.MangaDialog;
 import com.truthower.suhang.mangareader.widget.dialog.MangaImgEditDialog;
 import com.truthower.suhang.mangareader.widget.dialog.OnlyEditDialog;
@@ -560,7 +562,7 @@ public class ReadMangaActivity extends TTSActivity implements OnClickListener {
     }
 
     private void showKeyboardDialog() {
-        KeyBoardDialog dialog = new KeyBoardDialog(this);
+        final KeyBoardDialog dialog = new KeyBoardDialog(this);
         dialog.setOnKeyboardChangeListener(new OnKeyboardChangeListener() {
             @Override
             public void onChange(String res) {
@@ -572,10 +574,33 @@ public class ReadMangaActivity extends TTSActivity implements OnClickListener {
 
             @Override
             public void onFinish(String res) {
+                dialog.dismiss();
                 translateWord(res);
             }
         });
+        dialog.setOnKeyboardListener(new OnKeyboardListener() {
+            @Override
+            public void onOptionsClick() {
+                Intent intent = new Intent(ReadMangaActivity.this, KeyboardSettingActivity.class);
+                startActivity(intent);
+            }
+
+            @Override
+            public void onQuestionClick() {
+                showHelpDialog();
+            }
+        });
         dialog.show();
+    }
+
+    private void showHelpDialog() {
+        MangaDialog dialog = new MangaDialog(this);
+        dialog.show();
+        dialog.setTitle("教程");
+        dialog.setMessage("1,按住键盘然后滑动到你想选择的字母然后松手即可输入" +
+                "\n2,输入完成点击DONE即可查单词" +
+                "\n3,不想使用这个键盘可在设置中关闭");
+        dialog.setOkText("知道了");
     }
 
     private void showImgEditDialog(Bitmap bp) {
