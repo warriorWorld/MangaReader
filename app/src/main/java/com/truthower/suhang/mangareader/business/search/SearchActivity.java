@@ -14,6 +14,9 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.insightsurfface.stylelibrary.keyboard.English9KeyBoardView;
+import com.insightsurfface.stylelibrary.listener.OnKeyboardChangeListener;
+import com.insightsurfface.stylelibrary.listener.OnKeyboardListener;
 import com.truthower.suhang.mangareader.R;
 import com.truthower.suhang.mangareader.adapter.SearchMangaRecyclerAdapter;
 import com.truthower.suhang.mangareader.base.BaseActivity;
@@ -21,11 +24,15 @@ import com.truthower.suhang.mangareader.bean.LoginBean;
 import com.truthower.suhang.mangareader.bean.MangaBean;
 import com.truthower.suhang.mangareader.bean.MangaListBean;
 import com.truthower.suhang.mangareader.business.detail.WebMangaDetailsActivity;
+import com.truthower.suhang.mangareader.business.other.KeyboardSettingActivity;
+import com.truthower.suhang.mangareader.business.read.ReadMangaActivity;
 import com.truthower.suhang.mangareader.config.Configure;
+import com.truthower.suhang.mangareader.config.ShareKeys;
 import com.truthower.suhang.mangareader.listener.JsoupCallBack;
 import com.truthower.suhang.mangareader.listener.OnRecycleItemClickListener;
 import com.truthower.suhang.mangareader.listener.OnSevenFourteenListDialogListener;
 import com.truthower.suhang.mangareader.spider.SpiderBase;
+import com.truthower.suhang.mangareader.utils.SharedPreferencesUtils;
 import com.truthower.suhang.mangareader.widget.dialog.ListDialog;
 import com.truthower.suhang.mangareader.widget.dialog.MangaDialog;
 import com.truthower.suhang.mangareader.widget.recyclerview.LinearLayoutMangerWithoutBug;
@@ -48,6 +55,7 @@ public class SearchActivity extends BaseActivity implements View.OnClickListener
     private String[] searchTypeOptions = {"按漫画名称搜索", "按漫画作者搜索"};
     private SpiderBase.SearchType selectedSearchType = SpiderBase.SearchType.BY_MANGA_NAME;
     private boolean immediateSearch = false;
+    private English9KeyBoardView mKeyBoardView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -95,6 +103,31 @@ public class SearchActivity extends BaseActivity implements View.OnClickListener
         selectedWebsiteTv = (TextView) findViewById(R.id.selected_website_tv);
         searchTypeRl = (RelativeLayout) findViewById(R.id.search_type_rl);
         selectedSearchTypeTv = (TextView) findViewById(R.id.selected_search_type_tv);
+        mKeyBoardView = (English9KeyBoardView) findViewById(R.id.keyboard_v);
+        mKeyBoardView.setOnKeyboardChangeListener(new OnKeyboardChangeListener() {
+            @Override
+            public void onChange(String res) {
+
+            }
+
+            @Override
+            public void onFinish(String res) {
+                doSearch();
+                mKeyBoardView.hide();
+            }
+        });
+        mKeyBoardView.setOnKeyboardListener(new OnKeyboardListener() {
+            @Override
+            public void onOptionsClick() {
+                Intent intent = new Intent(SearchActivity.this, KeyboardSettingActivity.class);
+                startActivity(intent);
+            }
+
+            @Override
+            public void onQuestionClick() {
+                baseToast.showToast("点按后滑动输入");
+            }
+        });
         mangaSearchEt = (EditText) findViewById(R.id.manga_search_et);
         mangaSearchEt.setOnKeyListener(new View.OnKeyListener() {
             @Override
@@ -110,6 +143,16 @@ public class SearchActivity extends BaseActivity implements View.OnClickListener
                 return false;
             }
         });
+        if (!SharedPreferencesUtils.getBooleanSharedPreferencesData
+                (this, ShareKeys.CLOSE_SH_KEYBOARD, false)) {
+            mKeyBoardView.attachTo(mangaSearchEt);
+            mangaSearchEt.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mKeyBoardView.show();
+                }
+            });
+        }
         searchIv = (ImageView) findViewById(R.id.search_iv);
         searchResultRcv = (RecyclerView) findViewById(R.id.search_result_rcv);
         searchResultRcv.setLayoutManager
@@ -176,6 +219,15 @@ public class SearchActivity extends BaseActivity implements View.OnClickListener
         dialog.show();
         dialog.setTitle("没有搜索结果!");
         dialog.setOkText("知道了");
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (mKeyBoardView.isShown()) {
+            mKeyBoardView.hide();
+        } else {
+            super.onBackPressed();
+        }
     }
 
     private void initSearchResultRv() {

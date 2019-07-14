@@ -3,8 +3,8 @@
                 android:layout_height="wrap_content"
                 android:background="@color/transparency">
 
-    <com.truthower.suhang.mangareader.widget.keyboard.English9KeyBoardView
+    <com.insightsurfface.stylelibrary.keyboard.English9KeyBoardView
         android:id="@+id/english_keyboard_view"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"></com.truthower.suhang.mangareader.widget.keyboard.English9KeyBoardView>
+        android:layout_height="wrap_content"></com.insightsurfface.stylelibrary.keyboard.English9KeyBoardView>
 </RelativeLayout>

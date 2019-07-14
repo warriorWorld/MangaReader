@@ -10,11 +10,11 @@ import android.view.Gravity;
 import android.view.Window;
 import android.view.WindowManager;
 
+import com.insightsurfface.stylelibrary.keyboard.English9KeyBoardView;
+import com.insightsurfface.stylelibrary.listener.OnKeyboardChangeListener;
+import com.insightsurfface.stylelibrary.listener.OnKeyboardListener;
 import com.truthower.suhang.mangareader.R;
 import com.truthower.suhang.mangareader.business.other.KeyboardSettingActivity;
-import com.truthower.suhang.mangareader.listener.OnKeyboardChangeListener;
-import com.truthower.suhang.mangareader.listener.OnKeyboardListener;
-import com.truthower.suhang.mangareader.widget.keyboard.English9KeyBoardView;
 
 
 public class KeyBoardDialog extends Dialog {
