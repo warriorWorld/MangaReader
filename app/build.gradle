@@ -72,5 +72,5 @@ dependencies {
     implementation 'com.roger.gifloadinglibrary:gifloadinglibrary:1.0.0'
     //圆角
     implementation 'com.makeramen:roundedimageview:2.3.0'
-    implementation 'com.github.warriorWorld:StyleLibrary:1.0.5'
+    implementation 'com.github.warriorWorld:StyleLibrary:1.0.6'
 }
