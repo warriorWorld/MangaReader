@@ -1,7 +1,6 @@
 package com.truthower.suhang.mangareader.base;
 
 import android.content.Context;
-import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,6 +13,8 @@ import com.truthower.suhang.mangareader.R;
 import com.truthower.suhang.mangareader.listener.OnBaseAdapterClickListener;
 
 import java.util.ArrayList;
+
+import androidx.recyclerview.widget.RecyclerView;
 
 /**
  * Created by Administrator on 2017/11/15.

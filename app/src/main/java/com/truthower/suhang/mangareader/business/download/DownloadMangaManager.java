@@ -6,7 +6,6 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-import android.support.v7.app.NotificationCompat;
 import android.widget.RemoteViews;
 
 import com.truthower.suhang.mangareader.R;
@@ -25,6 +24,8 @@ import com.truthower.suhang.mangareader.utils.ShareObjUtil;
 import org.greenrobot.eventbus.EventBus;
 
 import java.util.ArrayList;
+
+import androidx.core.app.NotificationCompat;
 
 /**
  * userInfo管理类

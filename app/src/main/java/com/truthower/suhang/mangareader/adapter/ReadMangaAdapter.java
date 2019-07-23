@@ -3,7 +3,6 @@ package com.truthower.suhang.mangareader.adapter;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.net.Uri;
-import android.support.v4.view.PagerAdapter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +14,7 @@ import com.truthower.suhang.mangareader.config.Configure;
 
 import java.util.ArrayList;
 
+import androidx.viewpager.widget.PagerAdapter;
 import pl.droidsonroids.gif.GifImageView;
 import uk.co.senab.photoview.PhotoView;
 

@@ -16,11 +16,11 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"></com.truthower.suhang.mangareader.widget.swipetoloadlayout.RefreshHeaderLayout>
 
-        <android.support.v7.widget.RecyclerView
+        <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/swipe_target"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_margin="3dp"></android.support.v7.widget.RecyclerView>
+            android:layout_margin="3dp"></androidx.recyclerview.widget.RecyclerView>
 
         <com.truthower.suhang.mangareader.widget.swipetoloadlayout.LoadMoreFooterView
             android:id="@id/swipe_load_more_footer"

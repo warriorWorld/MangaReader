@@ -1,12 +1,9 @@
 package com.truthower.suhang.mangareader.widget.layout;
 
 import android.content.Context;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.widget.LinearLayout;
-
 
 import com.truthower.suhang.mangareader.R;
 import com.truthower.suhang.mangareader.adapter.CalendarAdapter;
@@ -17,6 +14,9 @@ import com.truthower.suhang.mangareader.utils.WeekUtil;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Locale;
+
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 public class CalendarView extends LinearLayout {
     private Context context;

@@ -1,10 +1,11 @@
 package com.truthower.suhang.mangareader.base;
 
 import android.os.Bundle;
-import android.support.v4.app.FragmentTransaction;
 import android.view.View;
 
 import com.truthower.suhang.mangareader.R;
+
+import androidx.fragment.app.FragmentTransaction;
 
 
 /**

@@ -1,8 +1,9 @@
 package com.truthower.suhang.mangareader.business.read;
 
 import android.annotation.SuppressLint;
-import android.support.v4.view.ViewPager;
 import android.view.View;
+
+import androidx.viewpager.widget.ViewPager;
 
 /**
  * Created by Administrator on 2016/4/9.

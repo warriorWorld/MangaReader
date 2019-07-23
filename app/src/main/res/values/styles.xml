@@ -70,7 +70,6 @@
         　　
         <item name="android:textColor">@color/manga_reader_deep</item>
         　　
-        <item name="textColorError">@color/manga_reader_deep</item>
     </style>
 
     <style name="TextErrorAppearance" parent="TextAppearance.AppCompat">
@@ -79,7 +78,6 @@
         　　
         <item name="android:textColor">@color/manga_reader_deep</item>
         　　
-        <item name="textColorError">@color/manga_reader_deep</item>
     </style>
 
     <style name="MyEditText" parent="Theme.AppCompat.Light">

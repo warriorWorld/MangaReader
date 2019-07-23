@@ -3,15 +3,15 @@ package com.truthower.suhang.mangareader.utils;/**
  */
 
 import android.Manifest;
-import android.app.Activity;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.provider.Settings;
-import android.support.v4.app.ActivityCompat;
 import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 
 import java.util.UUID;
+
+import androidx.core.app.ActivityCompat;
 
 /**
  * 作者：苏航 on 2016/10/18 14:21

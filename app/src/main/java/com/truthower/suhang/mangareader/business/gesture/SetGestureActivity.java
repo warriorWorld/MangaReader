@@ -1,8 +1,6 @@
 package com.truthower.suhang.mangareader.business.gesture;
 
 import android.os.Bundle;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.TextView;
@@ -20,10 +18,12 @@ import com.truthower.suhang.mangareader.config.Configure;
 import com.truthower.suhang.mangareader.utils.LeanCloundUtil;
 import com.truthower.suhang.mangareader.utils.ThreeDESUtil;
 import com.truthower.suhang.mangareader.widget.dialog.SingleLoadBarUtil;
-import com.truthower.suhang.mangareader.widget.gesture.GestureLockView;
 import com.truthower.suhang.mangareader.widget.gesture.GestureLockViewGroup;
 
 import java.util.ArrayList;
+
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 /**
  * 个人信息页

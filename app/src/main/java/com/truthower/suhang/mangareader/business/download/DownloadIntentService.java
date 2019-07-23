@@ -4,22 +4,15 @@ import android.app.IntentService;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.support.annotation.Nullable;
-import android.text.TextUtils;
 
-import com.truthower.suhang.mangareader.bean.DownloadChapterBean;
-import com.truthower.suhang.mangareader.bean.DownloadPageBean;
-import com.truthower.suhang.mangareader.bean.MangaBean;
-import com.truthower.suhang.mangareader.eventbus.EventBusEvent;
-import com.truthower.suhang.mangareader.listener.JsoupCallBack;
 import com.truthower.suhang.mangareader.spider.FileSpider;
 
 import java.io.BufferedInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.ArrayList;
+
+import androidx.annotation.Nullable;
 
 /**
  * Created by Administrator on 2017/12/18.

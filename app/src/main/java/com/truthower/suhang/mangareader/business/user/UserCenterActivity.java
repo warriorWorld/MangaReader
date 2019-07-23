@@ -1,48 +1,14 @@
 package com.truthower.suhang.mangareader.business.user;
 
 import android.content.Intent;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-import android.support.design.widget.TabLayout;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.view.ViewPager;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.text.TextUtils;
-import android.view.View;
-import android.widget.TextView;
 
-import com.aspsine.swipetoloadlayout.OnLoadMoreListener;
-import com.aspsine.swipetoloadlayout.OnRefreshListener;
-import com.aspsine.swipetoloadlayout.SwipeToLoadLayout;
-import com.avos.avoscloud.AVException;
-import com.avos.avoscloud.AVObject;
-import com.avos.avoscloud.AVQuery;
-import com.avos.avoscloud.FindCallback;
-import com.truthower.suhang.mangareader.R;
-import com.truthower.suhang.mangareader.adapter.OnlineMangaRecyclerListAdapter;
-import com.truthower.suhang.mangareader.base.BaseActivity;
-import com.truthower.suhang.mangareader.base.BaseFragmentActivity;
 import com.truthower.suhang.mangareader.base.BaseMultiTabActivity;
 import com.truthower.suhang.mangareader.bean.LoginBean;
-import com.truthower.suhang.mangareader.bean.MangaBean;
-import com.truthower.suhang.mangareader.business.detail.WebMangaDetailsActivity;
-import com.truthower.suhang.mangareader.business.statistics.BookStatisticsFragment;
-import com.truthower.suhang.mangareader.business.statistics.CalendarStatisticsFragment;
-import com.truthower.suhang.mangareader.business.statistics.StatisticsActivity;
-import com.truthower.suhang.mangareader.config.Configure;
-import com.truthower.suhang.mangareader.listener.OnRecycleItemClickListener;
-import com.truthower.suhang.mangareader.utils.DisplayUtil;
-import com.truthower.suhang.mangareader.utils.LeanCloundUtil;
-import com.truthower.suhang.mangareader.widget.bar.TopBar;
-import com.truthower.suhang.mangareader.widget.dialog.SingleLoadBarUtil;
-import com.truthower.suhang.mangareader.widget.recyclerview.RecyclerGridDecoration;
 import com.umeng.analytics.MobclickAgent;
 
-import java.util.ArrayList;
-import java.util.List;
+import androidx.fragment.app.Fragment;
 
 /**
  * Created by Administrator on 2017/7/29.

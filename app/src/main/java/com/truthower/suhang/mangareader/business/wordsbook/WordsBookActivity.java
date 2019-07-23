@@ -3,7 +3,6 @@ package com.truthower.suhang.mangareader.business.wordsbook;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.Bundle;
-import android.support.v4.view.ViewPager;
 import android.text.ClipboardManager;
 import android.text.TextUtils;
 import android.view.View;
@@ -30,6 +29,8 @@ import com.truthower.suhang.mangareader.widget.dialog.TailorImgDialog;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+
+import androidx.viewpager.widget.ViewPager;
 
 /**
  * /storage/sdcard0/reptile/one-piece

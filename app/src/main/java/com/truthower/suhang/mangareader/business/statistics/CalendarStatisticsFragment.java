@@ -1,9 +1,6 @@
 package com.truthower.suhang.mangareader.business.statistics;
 
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.view.View;
-
 
 import com.truthower.suhang.mangareader.R;
 import com.truthower.suhang.mangareader.adapter.CalendarStatisticsListAdapter;
@@ -13,6 +10,9 @@ import com.truthower.suhang.mangareader.utils.WeekUtil;
 import com.truthower.suhang.mangareader.widget.layout.CalendarViewLayout;
 
 import java.util.ArrayList;
+
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 /**
  * 个人信息页

@@ -1,13 +1,9 @@
 package com.truthower.suhang.mangareader.widget.layout;
 
 import android.content.Context;
-import android.graphics.drawable.ColorDrawable;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.widget.LinearLayout;
-
 
 import com.truthower.suhang.mangareader.R;
 import com.truthower.suhang.mangareader.adapter.StarAdapter;
@@ -15,6 +11,9 @@ import com.truthower.suhang.mangareader.listener.OnRecycleItemClickListener;
 import com.truthower.suhang.mangareader.widget.recyclerview.LinearLayoutMangerWithoutBug;
 
 import java.util.ArrayList;
+
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 public class StarLinearlayout extends LinearLayout {
     private Context context;

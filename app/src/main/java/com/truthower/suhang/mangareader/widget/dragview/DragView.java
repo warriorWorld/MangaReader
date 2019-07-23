@@ -1,19 +1,23 @@
 package com.truthower.suhang.mangareader.widget.dragview;
 
 import android.animation.ObjectAnimator;
+import android.annotation.SuppressLint;
 import android.content.Context;
-import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
+import android.widget.ImageView;
 
 import com.truthower.suhang.mangareader.config.ShareKeys;
 import com.truthower.suhang.mangareader.utils.DisplayUtil;
 import com.truthower.suhang.mangareader.utils.SharedPreferencesUtils;
 import com.truthower.suhang.mangareader.utils.VibratorUtil;
 
+import androidx.annotation.Nullable;
 
-public class DragView extends android.support.v7.widget.AppCompatImageView {
+
+@SuppressLint("AppCompatCustomView")
+public class DragView extends ImageView {
     private String TAG = "DragImageView";
     private Context mContext;
     private float downX;

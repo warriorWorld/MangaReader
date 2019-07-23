@@ -1,7 +1,6 @@
 package com.truthower.suhang.mangareader.widget.edittext;
 
 import android.content.Context;
-import android.support.design.widget.TextInputLayout;
 import android.text.Editable;
 import android.text.InputFilter;
 import android.text.TextUtils;
@@ -14,8 +13,8 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 
+import com.google.android.material.textfield.TextInputLayout;
 import com.truthower.suhang.mangareader.R;
 
 

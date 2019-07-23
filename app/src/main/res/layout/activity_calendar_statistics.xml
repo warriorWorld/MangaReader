@@ -11,11 +11,11 @@
         android:layout_height="wrap_content"></com.truthower.suhang.mangareader.widget.layout.CalendarViewLayout>
 
 
-    <android.support.v7.widget.RecyclerView
+    <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/calendar_statistics_rcv"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/calendar_cvl"></android.support.v7.widget.RecyclerView>
+        android:layout_below="@+id/calendar_cvl"></androidx.recyclerview.widget.RecyclerView>
 
     <include
         android:id="@+id/empty_view"

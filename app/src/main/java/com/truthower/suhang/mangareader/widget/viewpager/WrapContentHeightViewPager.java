@@ -3,9 +3,10 @@ package com.truthower.suhang.mangareader.widget.viewpager;/**
  */
 
 import android.content.Context;
-import android.support.v4.view.ViewPager;
 import android.util.AttributeSet;
 import android.view.View;
+
+import androidx.viewpager.widget.ViewPager;
 
 /**
  * 作者：苏航 on 2017/5/3 14:27

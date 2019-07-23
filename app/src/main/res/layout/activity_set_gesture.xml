@@ -17,12 +17,12 @@
         app:count="3"
         app:tryTimes="5"/>
 
-    <android.support.v7.widget.RecyclerView
+    <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/gesture_rv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="45dp"></android.support.v7.widget.RecyclerView>
+        android:layout_marginTop="45dp"></androidx.recyclerview.widget.RecyclerView>
 
     <TextView
         android:id="@+id/gesture_explain"

@@ -1,13 +1,14 @@
 package com.truthower.suhang.mangareader.business.wordsbook;
 
 import android.content.Context;
-import android.support.v4.view.PagerAdapter;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.truthower.suhang.mangareader.bean.WordsBookBean;
 
 import java.util.ArrayList;
+
+import androidx.viewpager.widget.PagerAdapter;
 
 public class WordsBookAdapter extends PagerAdapter {
     private ArrayList<WordsBookBean> wordsList = new ArrayList<WordsBookBean>();

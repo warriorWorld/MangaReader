@@ -1,11 +1,10 @@
 package com.truthower.suhang.mangareader.business.statistics;
 
-import android.support.design.widget.TabLayout;
-import android.support.v4.app.Fragment;
-import android.support.v4.view.ViewPager;
-
-import com.truthower.suhang.mangareader.R;
+import com.google.android.material.tabs.TabLayout;
 import com.truthower.suhang.mangareader.base.BaseMultiTabActivity;
+
+import androidx.fragment.app.Fragment;
+import androidx.viewpager.widget.ViewPager;
 
 
 /**
