@@ -2,10 +2,12 @@
 package com.truthower.suhang.mangareader.business.download;
 
 import android.app.Notification;
+import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.widget.RemoteViews;
 
 import com.truthower.suhang.mangareader.R;
@@ -68,9 +70,13 @@ public class DownloadMangaManager {
             notificationBuilder.setSmallIcon(R.drawable.spider_128);
             notificationBuilder.setContent(remoteViews);
             notificationBuilder.setDefaults(Notification.DEFAULT_SOUND);
-
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                NotificationChannel mChannel = new NotificationChannel("manga_channel", "manga", NotificationManager.IMPORTANCE_LOW);
+                notificationManager.createNotificationChannel(mChannel);
+                notificationBuilder.setChannelId("manga_channel");
+            }
 //        remoteViews.setImageViewResource(R.id.image, R.mipmap.timg);
-            remoteViews.setTextViewText(R.id.notification_title_tv, DownloadBean.getInstance().getCurrentManga().getName()+"下载中...");
+            remoteViews.setTextViewText(R.id.notification_title_tv, DownloadBean.getInstance().getCurrentManga().getName() + "下载中...");
             if (DownloadBean.getInstance().isOne_shot()) {
                 remoteViews.setProgressBar(R.id.notification_download_progress_bar, oneShotListTotalSize, 0, false);
             } else {
@@ -271,7 +277,7 @@ public class DownloadMangaManager {
 
     public void reset(Context context) {
         stopDownload(context);
-        if (null!=notificationManager){
+        if (null != notificationManager) {
             notificationManager.cancelAll();
         }
         DownloadBean.getInstance().clean(context);
