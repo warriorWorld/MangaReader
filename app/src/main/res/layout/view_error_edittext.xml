@@ -4,7 +4,7 @@
                 android:layout_height="wrap_content"
     >
 
-    <android.support.design.widget.TextInputLayout
+    <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/md_til"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -20,7 +20,7 @@
             android:singleLine="true"
             android:textColor="@color/main_text_color"
             android:textColorHint="@color/main_text_color_gray"/>
-    </android.support.design.widget.TextInputLayout>
+    </com.google.android.material.textfield.TextInputLayout>
 
     <LinearLayout
         android:layout_width="wrap_content"
