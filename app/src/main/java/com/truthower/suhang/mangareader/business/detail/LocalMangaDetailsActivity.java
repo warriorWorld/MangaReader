@@ -56,7 +56,11 @@ public class LocalMangaDetailsActivity extends BaseActivity implements AdapterVi
     private ArrayList<String> pathList;
     private String currentMangaName;
     private String[] selectOptions = {"设为封面", "删除该图片"};
+    private String[] deleteOptions = {"选择删除", "区间删除"};
     private boolean isInEditMode = false;
+    private boolean isInSectionDeleteMode = false;
+    private boolean firstChoose = true;
+    private int deleteStartPoint = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -208,7 +212,7 @@ public class LocalMangaDetailsActivity extends BaseActivity implements AdapterVi
         });
         emptyTV = (TextView) findViewById(R.id.empty_text);
         emptyTV.setText("没有内容~");
-        baseTopBar.setRightText("编辑");
+        baseTopBar.setRightText("更多");
         baseTopBar.setOnTopBarClickListener(new TopBar.OnTopBarClickListener() {
             @Override
             public void onLeftClick() {
@@ -225,8 +229,7 @@ public class LocalMangaDetailsActivity extends BaseActivity implements AdapterVi
                 if (isInEditMode) {
                     showDeleteAllThisDialog();
                 } else {
-                    isInEditMode = true;
-                    resetEditMode();
+                    showDeleteOptionsDialog();
                 }
             }
 
@@ -246,7 +249,7 @@ public class LocalMangaDetailsActivity extends BaseActivity implements AdapterVi
         } else {
             baseTopBar.setLeftText("");
             baseTopBar.setLeftBackground(R.drawable.back);
-            baseTopBar.setRightText("编辑");
+            baseTopBar.setRightText("更多");
         }
     }
 
@@ -262,8 +265,23 @@ public class LocalMangaDetailsActivity extends BaseActivity implements AdapterVi
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 //        baseToast.showToast(mangaList.get(position).getUrl());
         if (isInEditMode) {
-            mangaList.get(position).setChecked(!mangaList.get(position).isChecked());
-            adapter.notifyDataSetChanged();
+            if (isInSectionDeleteMode) {
+                if (firstChoose) {
+                    baseToast.showToast("请点击删除终点!");
+                    deleteStartPoint = position;
+                    firstChoose = false;
+                    mangaList.get(deleteStartPoint).setChecked(true);
+                    adapter.notifyDataSetChanged();
+                } else {
+                    for (int i = 0; i < position - deleteStartPoint + 1; i++) {
+                        mangaList.get(deleteStartPoint + i).setChecked(true);
+                    }
+                    adapter.notifyDataSetChanged();
+                }
+            } else {
+                mangaList.get(position).setChecked(!mangaList.get(position).isChecked());
+                adapter.notifyDataSetChanged();
+            }
         } else {
             Intent intent = null;
             if (isNextDirectory(mangaList.get(position).getUrl())) {
@@ -355,6 +373,40 @@ public class LocalMangaDetailsActivity extends BaseActivity implements AdapterVi
         listDialog.setOptionsList(selectOptions);
     }
 
+    private void showDeleteOptionsDialog() {
+        ListDialog listDialog = new ListDialog(this);
+        listDialog.setOnSevenFourteenListDialogListener(new OnSevenFourteenListDialogListener() {
+            @Override
+            public void onItemClick(String selectedRes, String selectedCodeRes) {
+
+            }
+
+            @Override
+            public void onItemClick(String selectedRes) {
+
+            }
+
+            @Override
+            public void onItemClick(int position) {
+                switch (position) {
+                    case 0:
+                        isInEditMode = true;
+                        resetEditMode();
+                        break;
+                    case 1:
+                        baseToast.showToast("请点击删除起点!");
+                        isInSectionDeleteMode = true;
+                        firstChoose = true;
+                        isInEditMode = true;
+                        resetEditMode();
+                        break;
+                }
+            }
+        });
+        listDialog.show();
+        listDialog.setOptionsList(deleteOptions);
+    }
+
     private void showDeleteAllThisDialog() {
         MangaDialog deleteDialog = new MangaDialog(this);
         deleteDialog.setOnPeanutDialogClickListener(new MangaDialog.OnPeanutDialogClickListener() {
@@ -370,7 +422,8 @@ public class LocalMangaDetailsActivity extends BaseActivity implements AdapterVi
                         }
                     }
                 }
-                isInEditMode=false;
+                isInEditMode = false;
+                isInSectionDeleteMode=false;
                 resetEditMode();
                 initFile();
             }

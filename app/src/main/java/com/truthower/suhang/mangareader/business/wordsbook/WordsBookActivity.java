@@ -80,6 +80,17 @@ public class WordsBookActivity extends TTSActivity implements OnClickListener {
     private void refresh() {
         try {
             wordsList = db.queryAllWordsBook();
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        Thread.sleep(500);
+                        text2Speech(wordsList.get(0).getWord());
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }).start();
             if (null == wordsList || wordsList.size() == 0) {
                 emptyView.setVisibility(View.VISIBLE);
                 killBtn.setVisibility(View.GONE);
