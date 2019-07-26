@@ -6,10 +6,12 @@ import android.os.Handler;
 import android.os.Message;
 import android.util.AttributeSet;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.truthower.suhang.mangareader.R;
+import com.truthower.suhang.mangareader.utils.ImageUtil;
 
 import uk.co.senab.photoview.PhotoView;
 
@@ -26,26 +28,18 @@ public class WrapPhotoView extends PhotoView {
                     post(new Runnable() {
                         @Override
                         public void run() {
-                            ViewGroup.LayoutParams vgl = getLayoutParams();
                             if (mBitmap == null) {
-                                setImageResource(R.drawable.spider_hat_color512);
+                                setImageResource(R.drawable.spider_hat_gray512);
                                 return;
                             }
                             //获取bitmap的宽度
                             float bitWidth = mBitmap.getWidth();
                             //获取bitmap的宽度
                             float bithight = mBitmap.getHeight();
-
-                            //计算出图片的宽高比，然后按照图片的比列去缩放图片
-                            float bitScalew = bitWidth / bithight;
                             // 高按照比例计算
-                            vgl.width = (int) getMeasuredWidth();
-                            vgl.height = (int) (getMeasuredWidth() / bitScalew);
-                            //设置图片充满ImageView控件
-                            setScaleType(ScaleType.FIT_XY);
-                            //等比例缩放
-                            setAdjustViewBounds(true);
-                            setLayoutParams(vgl);
+                            if (bitWidth > bithight) {
+                                mBitmap = ImageUtil.getRotateBitmap(mBitmap, 90);
+                            }
                             setImageBitmap(mBitmap);
                         }
                     });
@@ -74,6 +68,7 @@ public class WrapPhotoView extends PhotoView {
     }
 
     public void setImgUrl(final String url, final DisplayImageOptions options) {
+        setImageResource(R.drawable.spider_hat_color512);
         new Thread(new Runnable() {
             @Override
             public void run() {

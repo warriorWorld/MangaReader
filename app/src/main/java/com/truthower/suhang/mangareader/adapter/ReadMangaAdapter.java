@@ -70,12 +70,10 @@ public class ReadMangaAdapter extends PagerAdapter {
             container.addView(gv);
             return gv;
         } else {
-            WrapPhotoView v0;
-            v0 = new WrapPhotoView(context);
-//            ImageLoader.getInstance().displayImage(pathList.get(position), v0, Configure.smallImageOptions);
-            v0.setImgUrl(pathList.get(position),Configure.smallImageOptions);
-            container.addView(v0);
-            return v0;
+            WrapPhotoView wrapPhotoView = (WrapPhotoView) LayoutInflater.from(context).inflate(R.layout.item_wrapphotoview, container, false);
+            wrapPhotoView.setImgUrl(pathList.get(position),Configure.smallImageOptions);
+            container.addView(wrapPhotoView);
+            return wrapPhotoView;
         }
     }
 //根据源码 这个方法可以解决缓存至少是2的问题 但是这个方法不太好 所以我改成用六个缓存view

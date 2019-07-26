@@ -6,6 +6,7 @@ import android.graphics.Bitmap;
 import android.graphics.Bitmap.CompressFormat;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
+import android.media.ExifInterface;
 import android.os.Build;
 import android.text.TextUtils;
 import android.util.Base64;
@@ -31,6 +32,43 @@ public class ImageUtil {
         Bitmap rotaBitmap = Bitmap.createBitmap(b, 0, 0, b.getWidth(),
                 b.getHeight(), matrix, false);
         return rotaBitmap;
+    }
+
+    /**
+     * 读取图片旋转的角度
+     *
+     * @param filename
+     * @return
+     */
+    public static void setPictureDegree(String filename, int degree) {
+        try {
+            if (degree == 0) {
+                return;
+            }
+
+            int rotate = ExifInterface.ORIENTATION_UNDEFINED;
+            switch (degree) {
+                case 90:
+                    rotate = ExifInterface.ORIENTATION_ROTATE_90;
+                    break;
+                case 180:
+                    rotate = ExifInterface.ORIENTATION_ROTATE_180;
+                    break;
+                case 270:
+                    rotate = ExifInterface.ORIENTATION_ROTATE_270;
+                    break;
+                default:
+                    break;
+            }
+
+            ExifInterface exifInterface = new ExifInterface(filename);
+            exifInterface.setAttribute(ExifInterface.TAG_ORIENTATION,
+                    String.valueOf(rotate));
+            exifInterface.saveAttributes();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     /**
