@@ -93,7 +93,7 @@ public class WebMangaDetailsActivity extends TTSActivity implements AdapterView.
     private OneShotDetailsAdapter oneShotAdapter;
     private ImageView thumbnailIV, downloadIv;
     private TextView mangaNameTv, mangaAuthorTv, mangaTypeTv, lastUpdateTv, downloadTagTv;
-    private String[] optionsList = {"下载全部", "选择起始点下载", "加入正在追更", "加入我已看完"};
+    private String[] optionsList = {"下载全部", "区间下载", "加入正在追更", "加入我已看完"};
     private ProgressDialog loadBar;
     private SingleSelectorDialog optionsSelector;
     private String mangaUrl;
@@ -393,6 +393,7 @@ public class WebMangaDetailsActivity extends TTSActivity implements AdapterView.
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         if (chooseing) {
             if (firstChoose) {
+                baseToast.showToast("请点击下载终点!");
                 downloadStartPoint = position;
                 firstChoose = false;
             } else {
@@ -940,7 +941,7 @@ public class WebMangaDetailsActivity extends TTSActivity implements AdapterView.
                     case 1:
                         chooseing = true;
                         firstChoose = true;
-                        baseToast.showToast("请先点击起始话然后点击结束话!");
+                        baseToast.showToast("请点击下载起点!");
                         break;
                     case 2:
                         if (isCollected) {

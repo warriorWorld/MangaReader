@@ -643,6 +643,18 @@ public class ReadMangaActivity extends TTSActivity implements OnClickListener {
                 translateWord(res);
             }
         });
+        dialog.setOnKeyboardListener(new OnKeyboardListener() {
+            @Override
+            public void onOptionsClick() {
+                Intent intent = new Intent(ReadMangaActivity.this, KeyboardSettingActivity.class);
+                startActivity(intent);
+            }
+
+            @Override
+            public void onQuestionClick() {
+                showHelpDialog();
+            }
+        });
         dialog.show();
         dialog.setImgRes(bp);
     }
