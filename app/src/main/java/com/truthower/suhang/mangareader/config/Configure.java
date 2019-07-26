@@ -39,7 +39,7 @@ public class Configure {
             .cacheInMemory(true)
             .cacheOnDisk(true)
             .considerExifParams(true)
-            .bitmapConfig(Bitmap.Config.ARGB_8888)
+            .bitmapConfig(Bitmap.Config.RGB_565)
             .showImageOnLoading(R.drawable.empty_list)
             .showImageOnFail(R.drawable.empty_list)
             .build();
@@ -47,7 +47,7 @@ public class Configure {
             .cacheInMemory(true)
             .cacheOnDisk(true)
             .considerExifParams(true)
-            .bitmapConfig(Bitmap.Config.ARGB_8888)
+            .bitmapConfig(Bitmap.Config.RGB_565)
             .showImageOnLoading(R.drawable.spider_hat_color512)
             .showImageOnFail(R.drawable.spider_hat_gray512)
             .build();

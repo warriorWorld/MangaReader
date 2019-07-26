@@ -30,8 +30,8 @@ import java.util.regex.Pattern;
  * http://www.mangareader.net/
  */
 public class KaKaLotSpider extends SpiderBase {
-    private String webUrl = "http://mangakakalot.com/";
-    private String webUrlNoLastLine = "http://mangakakalot.com";
+    private String webUrl = "https://mangakakalot.com/";
+    private String webUrlNoLastLine = "https://mangakakalot.com";
 
     @Override
     public <ResultObj> void getMangaList(final String type, final String page, final JsoupCallBack<ResultObj> jsoupCallBack) {
@@ -111,7 +111,7 @@ public class KaKaLotSpider extends SpiderBase {
                             for (int i = 0; i < mangaTagDetailElements.size(); i++) {
                                 String typeCode = mangaTagDetailElements.get(i).attr("href");
                                 //加个\\转义字符
-                                typeCode = typeCode.replaceAll("http://mangakakalot.com/manga_list\\?type=newest&category=", "");
+                                typeCode = typeCode.replaceAll("https://mangakakalot.com/manga_list\\?type=newest&category=", "");
                                 typeCode = typeCode.replaceAll("&alpha=all&page=1&state=all", "");
                                 typeCodes[i] = typeCode;
                                 types[i] = mangaTagDetailElements.get(i).text();

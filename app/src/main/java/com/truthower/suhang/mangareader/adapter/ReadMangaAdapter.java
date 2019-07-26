@@ -11,6 +11,7 @@ import android.widget.ImageView;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.truthower.suhang.mangareader.R;
 import com.truthower.suhang.mangareader.config.Configure;
+import com.truthower.suhang.mangareader.widget.imageview.WrapPhotoView;
 
 import java.util.ArrayList;
 
@@ -69,9 +70,10 @@ public class ReadMangaAdapter extends PagerAdapter {
             container.addView(gv);
             return gv;
         } else {
-            PhotoView v0;
-            v0 = new PhotoView(context);
-            ImageLoader.getInstance().displayImage(pathList.get(position), v0, Configure.smallImageOptions);
+            WrapPhotoView v0;
+            v0 = new WrapPhotoView(context);
+//            ImageLoader.getInstance().displayImage(pathList.get(position), v0, Configure.smallImageOptions);
+            v0.setImgUrl(pathList.get(position),Configure.smallImageOptions);
             container.addView(v0);
             return v0;
         }
