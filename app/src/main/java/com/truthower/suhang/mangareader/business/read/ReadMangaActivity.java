@@ -7,6 +7,10 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.ClipboardManager;
@@ -97,7 +101,7 @@ import androidx.viewpager.widget.ViewPager;
  * <p/>
  * Created by Administrator on 2016/4/4.
  */
-public class ReadMangaActivity extends TTSActivity implements OnClickListener {
+public class ReadMangaActivity extends TTSActivity implements OnClickListener, SensorEventListener {
     private HackyViewPager mangaPager;
     private SpiderBase spider;
     private DiscreteSeekBar seekBar;
@@ -201,8 +205,14 @@ public class ReadMangaActivity extends TTSActivity implements OnClickListener {
                     "\n4,点击屏幕中间稍微靠下位置可调出进度条,可以跳转到指定位置" +
                     "\n5,长按屏幕中间稍微靠下位置可保存或删除当前图片");
         }
+        initSensorManager();
     }
 
+    private void initSensorManager() {
+        SensorManager sManager = (SensorManager) getSystemService(SENSOR_SERVICE);
+        Sensor mSensorAccelerometer = sManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+        sManager.registerListener(this, mSensorAccelerometer, SensorManager.SENSOR_DELAY_UI);
+    }
 
     @Override
     protected int getLayoutId() {
@@ -1036,5 +1046,32 @@ public class ReadMangaActivity extends TTSActivity implements OnClickListener {
                 }
                 break;
         }
+    }
+
+    private int lastOrientation = 90;
+
+    @Override
+    public void onSensorChanged(SensorEvent event) {
+        if (event.sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
+            try {
+                float gyroscope_x = event.values[0];
+
+//                readProgressTv.setText(gyroscope_x + "\n" + gyroscope_y + "\n" + gyroscope_z);
+                if (gyroscope_x >= 8 && Configure.currentOrientation != 90) {
+                    Configure.currentOrientation = 90;
+                    adapter.notifyDataSetChanged();
+                } else if (gyroscope_x <= -8 && Configure.currentOrientation != 270) {
+                    Configure.currentOrientation = 270;
+                    adapter.notifyDataSetChanged();
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    @Override
+    public void onAccuracyChanged(Sensor sensor, int accuracy) {
+
     }
 }

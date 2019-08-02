@@ -369,19 +369,10 @@ public class MangaReaderSpider extends SpiderBase {
                         jsoupCallBack.loadFailed(e.toString());
                     }
                     if (null != doc) {
-                        Logger.d(doc.toString());
-
-                        // 得到包含某正则表达式的字符串
-                        Pattern p;
-                        p = Pattern.compile("https:[^\f\n\r\t]*?(jpg|png|gif|jpeg)");
-                        Matcher m;
-                        m = p.matcher(doc.toString());
-                        // String xxx;
-                        String urlResult = "";
-                        while (m.find()) {
-                            urlResult = m.group();
-                        }
-                        pathList.add(urlResult);
+                        Element mangaPicDetailElement = doc.getElementsByClass("episode-table").first();
+                        Element element = mangaPicDetailElement.tagName("img");
+                        String url = element.getElementsByTag("img").last().attr("src");
+                        pathList.add(url);
                     }
                 }
                 if (null != pathList && pathList.size() > 0) {

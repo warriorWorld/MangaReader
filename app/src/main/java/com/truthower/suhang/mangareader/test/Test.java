@@ -22,22 +22,17 @@ public class Test {
 
     public static void main(String[] args) {
         try {
-            doc = Jsoup.connect("http://jandan.net/duan")
+            doc = Jsoup.connect("https://www.mangareader.net/one-piece/950")
                     .timeout(10000).get();
         } catch (IOException e) {
             e.printStackTrace();
         }
 
         if (null != doc) {
-            Element mangaListElements = doc.body().getElementById("wrapper").getElementById("body")
-                    .getElementById("content").getElementById("comments");
-            Elements eles=mangaListElements.getElementsByClass("commentlist").last().
-                    getElementsByTag("li");
-//            System.out.println(mangaListElements.text());
-            for (Element ele : eles) {
-                System.out.println(ele.select("div.text").text());
-            }
-//            System.out.println(mangaListElements.text());
+//            Element mangaPicDetailElement = doc.getElementsByClass("episode-table").first();
+            Element element = doc.select("div.imgholder").first();
+            String url = element.getElementsByTag("img").last().attr("src");
+            System.out.println(url);
         }
     }
 }

@@ -11,6 +11,7 @@ import android.widget.ImageView;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.truthower.suhang.mangareader.R;
+import com.truthower.suhang.mangareader.config.Configure;
 import com.truthower.suhang.mangareader.utils.ImageUtil;
 
 import uk.co.senab.photoview.PhotoView;
@@ -38,7 +39,7 @@ public class WrapPhotoView extends PhotoView {
                             float bithight = mBitmap.getHeight();
                             // 高按照比例计算
                             if (bitWidth > bithight) {
-                                mBitmap = ImageUtil.getRotateBitmap(mBitmap, 90);
+                                mBitmap = ImageUtil.getRotateBitmap(mBitmap, Configure.currentOrientation);
                             }
                             setImageBitmap(mBitmap);
                         }

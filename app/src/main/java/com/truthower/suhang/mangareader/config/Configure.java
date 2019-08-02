@@ -16,6 +16,7 @@ import java.io.File;
 
 public class Configure {
     public final static boolean isTest = false;
+    public static int currentOrientation=90;
     //数据库版本号
     public static final int DB_VERSION = 3;
     public final static String[] websList = {"KaKaLot", "MangaReader"};
