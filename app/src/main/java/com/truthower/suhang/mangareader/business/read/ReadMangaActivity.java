@@ -1048,8 +1048,6 @@ public class ReadMangaActivity extends TTSActivity implements OnClickListener, S
         }
     }
 
-    private int lastOrientation = 90;
-
     @Override
     public void onSensorChanged(SensorEvent event) {
         if (event.sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
