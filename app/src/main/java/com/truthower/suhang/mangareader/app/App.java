@@ -1,15 +1,11 @@
 package com.truthower.suhang.mangareader.app;
 
 import android.app.Application;
-import android.app.DownloadManager;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.StrictMode;
 
-import com.avos.avoscloud.AVOSCloud;
 import com.nostra13.universalimageloader.cache.disc.naming.Md5FileNameGenerator;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
@@ -18,7 +14,6 @@ import com.truthower.suhang.mangareader.bean.DownloadBean;
 import com.truthower.suhang.mangareader.bean.LoginBean;
 import com.truthower.suhang.mangareader.business.detail.WebMangaDetailsActivity;
 import com.truthower.suhang.mangareader.business.download.DownloadMangaManager;
-import com.truthower.suhang.mangareader.config.Configure;
 import com.truthower.suhang.mangareader.crash.CrashHandler;
 import com.umeng.commonsdk.UMConfigure;
 import com.umeng.message.IUmengRegisterCallback;
@@ -26,6 +21,8 @@ import com.umeng.message.PushAgent;
 import com.umeng.message.UmengNotificationClickHandler;
 import com.umeng.message.entity.UMessage;
 import com.youdao.sdk.app.YouDaoApplication;
+
+import cn.bmob.v3.Bmob;
 
 /**
  * Created by Administrator on 2017/7/19.
@@ -105,15 +102,7 @@ public class App extends Application {
     }
 
     private void initLeanCloud() {
-        // 配置 SDK 储存
-        AVOSCloud.setServer(AVOSCloud.SERVER_TYPE.API, "https://avoscloud.com");
-        // 配置 SDK 云引擎
-        AVOSCloud.setServer(AVOSCloud.SERVER_TYPE.ENGINE, "https://avoscloud.com");
-        // 配置 SDK 推送
-        AVOSCloud.setServer(AVOSCloud.SERVER_TYPE.PUSH, "https://avoscloud.com");
-        // 初始化参数依次为 this, AppId, AppKey
-        AVOSCloud.initialize(this, "VeSumXxFMzSVf1kStNrOqGMS-gzGzoHsz", "djw94yHsBRwSUPxhrkAaMJPd");
-        AVOSCloud.setDebugLogEnabled(true);
+        Bmob.initialize(this, "9b27154f153934aec0a7479eef643f7e");
     }
 
     private void initImageLoader(Context context) {

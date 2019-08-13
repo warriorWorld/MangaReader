@@ -7,8 +7,8 @@ android {
         applicationId "com.truthower.suhang.mangareader"
         minSdkVersion 17
         targetSdkVersion 28
-        versionCode 42
-        versionName "3.3.1"
+        versionCode 43
+        versionName "4.0.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
@@ -17,17 +17,9 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
-    //lean cloud为了解决部分第三方库重复打包了META-INF的问题
-    packagingOptions {
-        exclude 'META-INF/LICENSE.txt'
-        exclude 'META-INF/NOTICE.txt'
-    }
-    //lean cloud
-    lintOptions {
-        checkReleaseBuilds false
-        abortOnError false
-    }
     sourceSets.main.jniLibs.srcDirs = ['libs']//YOUDAO OCR
+    //bmob
+    useLibrary 'org.apache.http.legacy'
 }
 
 dependencies {
@@ -51,8 +43,6 @@ dependencies {
     implementation 'org.adw.library:discrete-seekbar:1.0.1'
     implementation files('libs/Volley.jar')
     implementation files('libs/gson-2.1.jar')
-    // LeanCloud 基础包
-    implementation 'cn.leancloud.android:avoscloud-sdk:v4.4.3'
     //google的flexbox
     implementation 'com.google.android:flexbox:0.3.0'
     //上下拉刷新
@@ -73,4 +63,12 @@ dependencies {
     //圆角
     implementation 'com.makeramen:roundedimageview:2.3.0'
     implementation 'com.github.warriorWorld:StyleLibrary:1.0.7'
+    //bmob
+    implementation 'cn.bmob.android:bmob-sdk:3.7.3-rc1'
+    implementation "io.reactivex.rxjava2:rxjava:2.2.2"
+    implementation 'io.reactivex.rxjava2:rxandroid:2.1.0'
+    implementation 'com.squareup.okio:okio:2.1.0'
+    implementation 'com.google.code.gson:gson:2.8.5'
+    implementation 'com.squareup.okhttp3:okhttp:3.12.0'
+    //bmob
 }
