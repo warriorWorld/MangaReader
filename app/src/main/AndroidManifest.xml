@@ -75,7 +75,7 @@
         <activity
             android:name=".business.user.RegisterActivity"
             android:launchMode="singleTask"></activity>
-        <activity android:name=".business.user.CollectedActivity"></activity>
+        <activity android:name=".business.collect.CollectedActivity"></activity>
         <activity android:name=".business.tag.TagManagerActivity"></activity>
         <activity android:name=".business.tag.TagFilterActivity"></activity>
         <activity android:name=".business.other.AboutActivity"></activity>
