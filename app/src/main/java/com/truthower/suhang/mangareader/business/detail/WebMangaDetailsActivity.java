@@ -10,8 +10,6 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -25,6 +23,7 @@ import com.truthower.suhang.mangareader.bean.MangaBean;
 import com.truthower.suhang.mangareader.business.download.DownloadActivity;
 import com.truthower.suhang.mangareader.business.download.DownloadMangaManager;
 import com.truthower.suhang.mangareader.business.main.MainActivity;
+import com.truthower.suhang.mangareader.business.other.AboutActivity;
 import com.truthower.suhang.mangareader.business.read.ReadMangaActivity;
 import com.truthower.suhang.mangareader.business.search.SearchActivity;
 import com.truthower.suhang.mangareader.config.Configure;
@@ -45,6 +44,7 @@ import com.truthower.suhang.mangareader.widget.bar.TopBar;
 import com.truthower.suhang.mangareader.widget.dialog.GestureDialog;
 import com.truthower.suhang.mangareader.widget.dialog.ListDialog;
 import com.truthower.suhang.mangareader.widget.dialog.MangaDialog;
+import com.truthower.suhang.mangareader.widget.gesture.GestureLockViewGroup;
 import com.truthower.suhang.mangareader.widget.popupwindow.EasyPopupWindow;
 import com.truthower.suhang.mangareader.widget.pulltorefresh.PullToRefreshBase;
 import com.truthower.suhang.mangareader.widget.pulltorefresh.PullToRefreshGridView;
@@ -64,34 +64,24 @@ public class WebMangaDetailsActivity extends TTSActivity implements AdapterView.
     private SpiderBase spider;
     private PullToRefreshGridView pullToRefreshGridView;
     private GridView mangaGV;
-    private View collectV;
     private boolean chooseing = false;//判断是否在选择状态
     private boolean firstChoose = true;
     private int downloadStartPoint = 0;
     private MangaBean currentManga;
     private OnlineMangaDetailAdapter adapter;
     private OneShotDetailsAdapter oneShotAdapter;
-    private ImageView thumbnailIV, downloadIv;
-    private TextView mangaNameTv, mangaAuthorTv, mangaTypeTv, lastUpdateTv, downloadTagTv;
-    private String[] optionsList = {"下载全部", "区间下载", "加入正在追更", "加入我已看完"};
+    private ImageView thumbnailIV;
+    private TextView mangaNameTv, mangaAuthorTv, mangaTypeTv, lastUpdateTv;
+    private String[] optionsList = {"下载全部", "区间下载"};
     private ProgressDialog loadBar;
-    private SingleSelectorDialog optionsSelector;
     private String mangaUrl;
-    private MangaDialog downloadDialog;
-    private boolean isCollected = false;
-    private String collectedId = "";
     private SingleSelectorDialog tagSelector, authorSelector;
     //one shot 直接获取到了所有图片的地址
     private ArrayList<String> oneShotPathList = new ArrayList<String>();
     //因为我不知道当期收藏的漫画是哪个网站的 所以就一个个试
     private int trySpiderPosition = 0;
     private String currentMangaName;
-    private boolean isTopied, isFinished;
     private String[] authorOptions;
-    private TextView gradeTv, gradeCountTv, commentCountTv;
-    private LinearLayout commentMsgLl;
-    private RelativeLayout gradeRl;
-    private int wrongNum = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -118,13 +108,6 @@ public class WebMangaDetailsActivity extends TTSActivity implements AdapterView.
                     "\n5,点击漫画类型可以按漫画类型搜索漫画" +
                     "\n6,点击下方按钮给漫画评论和评分了");
         }
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        doGetIsCollected();
-        doGetCommentCount();
     }
 
     private void initSpider() {
@@ -168,15 +151,12 @@ public class WebMangaDetailsActivity extends TTSActivity implements AdapterView.
                                 refreshUI();
 //                                    toggleDownload();
                                 showDescription();
-                                doGetIsRead();
                                 if (spider.isOneShot() && null != result.getChapters() && result.getChapters().size() > 0
                                         && !TextUtils.isEmpty(result.getChapters().get(0).getImgUrl())) {
                                     for (int i = 0; i < result.getChapters().size(); i++) {
                                         oneShotPathList.add(result.getChapters().get(i).getImgUrl());
                                     }
                                 }
-
-                                doGetGrade();
                             }
                         });
                     }
@@ -238,7 +218,6 @@ public class WebMangaDetailsActivity extends TTSActivity implements AdapterView.
         } else {
             lastUpdateTv.setVisibility(View.GONE);
         }
-//        toggleCollect();
 
         if (spider.isOneShot()) {
             initOneShotGridView();
@@ -292,23 +271,9 @@ public class WebMangaDetailsActivity extends TTSActivity implements AdapterView.
         mangaAuthorTv = (TextView) findViewById(R.id.manga_author);
         mangaTypeTv = (TextView) findViewById(R.id.manga_type);
         lastUpdateTv = (TextView) findViewById(R.id.manga_update_date);
-        collectV = findViewById(R.id.collect_view);
-        downloadIv = (ImageView) findViewById(R.id.download_iv);
-        downloadTagTv = (TextView) findViewById(R.id.download_tag_tv);
-        gradeCountTv = (TextView) findViewById(R.id.grade_count_tv);
-        gradeTv = (TextView) findViewById(R.id.grade_tv);
-        commentCountTv = (TextView) findViewById(R.id.comment_count_tv);
-        commentMsgLl = (LinearLayout) findViewById(R.id.comment_msg_ll);
-        gradeRl = (RelativeLayout) findViewById(R.id.grade_rl);
-
-        gradeRl.setOnClickListener(this);
-        commentMsgLl.setOnClickListener(this);
-        collectV.setOnClickListener(this);
-        downloadIv.setOnClickListener(this);
         mangaTypeTv.setOnClickListener(this);
         thumbnailIV.setOnClickListener(this);
         thumbnailIV.setOnLongClickListener(this);
-        collectV.setOnLongClickListener(this);
         mangaAuthorTv.setOnClickListener(this);
         baseTopBar.setRightBackground(R.drawable.more);
         baseTopBar.setOnTopBarClickListener(new TopBar.OnTopBarClickListener() {
@@ -316,7 +281,17 @@ public class WebMangaDetailsActivity extends TTSActivity implements AdapterView.
             @Override
             public void onRightClick() {
                 if (isForAdult()) {
-                    doGetGesture();
+                    showGestureDialog(new OnResultListener() {
+                        @Override
+                        public void onFinish() {
+                            showOptionsSelectorDialog();
+                        }
+
+                        @Override
+                        public void onFailed() {
+
+                        }
+                    });
                 } else {
                     showOptionsSelectorDialog();
                 }
@@ -361,7 +336,7 @@ public class WebMangaDetailsActivity extends TTSActivity implements AdapterView.
     }
 
     @Override
-    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+    public void onItemClick(AdapterView<?> parent, View view, final int position, long id) {
         if (chooseing) {
             if (firstChoose) {
                 baseToast.showToast("请点击下载终点!");
@@ -372,105 +347,21 @@ public class WebMangaDetailsActivity extends TTSActivity implements AdapterView.
             }
         } else {
             if (isForAdult()) {
-                doGetGesture(position);
+                showGestureDialog(new OnResultListener() {
+                    @Override
+                    public void onFinish() {
+                        toReadActivity(position);
+                    }
+
+                    @Override
+                    public void onFailed() {
+
+                    }
+                });
             } else {
                 toReadActivity(position);
             }
         }
-    }
-
-    private void doGetGesture(final int position) {
-//        String userName = LoginBean.getInstance().getUserName(this);
-//        if (TextUtils.isEmpty(userName)) {
-//            return;
-//        }
-//        SingleLoadBarUtil.getInstance().showLoadBar(this);
-//
-//        AVQuery<AVObject> query = new AVQuery<>("Gesture");
-//        query.whereEqualTo("owner", userName);
-//        query.getFirstInBackground(new GetCallback<AVObject>() {
-//            @Override
-//            public void done(final AVObject account, AVException e) {
-//                SingleLoadBarUtil.getInstance().dismissLoadBar();
-//                if (null == account) {
-//                    toReadActivity(position);
-//                } else {
-//                    if (LeanCloundUtil.handleLeanResult(WebMangaDetailsActivity.this, e)) {
-//                        String password = account.getString("password");
-//                        showGestureDialog(position, password);
-//                    }
-//                }
-//            }
-//        });
-    }
-
-    private void doGetGesture() {
-//        String userName = LoginBean.getInstance().getUserName(this);
-//        if (TextUtils.isEmpty(userName)) {
-//            return;
-//        }
-//        SingleLoadBarUtil.getInstance().showLoadBar(this);
-//
-//        AVQuery<AVObject> query = new AVQuery<>("Gesture");
-//        query.whereEqualTo("owner", userName);
-//        query.getFirstInBackground(new GetCallback<AVObject>() {
-//            @Override
-//            public void done(final AVObject account, AVException e) {
-//                SingleLoadBarUtil.getInstance().dismissLoadBar();
-//                if (null == account) {
-//                    showOptionsSelectorDialog();
-//                } else {
-//                    if (LeanCloundUtil.handleLeanResult(WebMangaDetailsActivity.this, e)) {
-//                        String password = account.getString("password");
-//                        showGestureDialog(password);
-//                    }
-//                }
-//            }
-//        });
-    }
-
-    private void showGestureDialog(final int position, String answer) {
-        GestureDialog gestureDialog = new GestureDialog(this);
-        gestureDialog.setOnResultListener(new OnResultListener() {
-            @Override
-            public void onFinish() {
-                wrongNum = 0;
-                toReadActivity(position);
-            }
-
-            @Override
-            public void onFailed() {
-                wrongNum++;
-                if (wrongNum > 4) {
-                    baseToast.showToast("输入错误次数过多");
-                    finish();
-                }
-            }
-        });
-        gestureDialog.show();
-        gestureDialog.setAnswer(answer);
-    }
-
-    private void showGestureDialog(String answer) {
-        GestureDialog gestureDialog = new GestureDialog(this);
-        gestureDialog.setOnResultListener(new OnResultListener() {
-            @Override
-            public void onFinish() {
-                wrongNum = 0;
-                showOptionsSelectorDialog();
-            }
-
-            @Override
-            public void onFailed() {
-                wrongNum++;
-                if (wrongNum > 4) {
-                    baseToast.showToast("输入错误次数过多");
-                    finish();
-                }
-            }
-        });
-        gestureDialog.show();
-        gestureDialog.setAnswer(answer);
     }
 
     private void toReadActivity(int position) {
@@ -598,283 +489,6 @@ public class WebMangaDetailsActivity extends TTSActivity implements AdapterView.
         }
     }
 
-    /**
-     * 给已收藏的漫画置顶
-     */
-    private void doTopThisManga(final boolean isTop) {
-//        if (TextUtils.isEmpty(LoginBean.getInstance().getUserName(this))) {
-//            return;
-//        }
-//        SingleLoadBarUtil.getInstance().showLoadBar(WebMangaDetailsActivity.this);
-//        AVQuery<AVObject> query1 = new AVQuery<>("Collected");
-//        query1.whereEqualTo("mangaUrl", mangaUrl);
-//
-//        AVQuery<AVObject> query2 = new AVQuery<>("Collected");
-//        query2.whereEqualTo("owner", LoginBean.getInstance().getUserName());
-//        AVQuery<AVObject> query = AVQuery.and(Arrays.asList(query1, query2));
-//        query.findInBackground(new FindCallback<AVObject>() {
-//            @Override
-//            public void done(List<AVObject> list, AVException e) {
-//                SingleLoadBarUtil.getInstance().dismissLoadBar();
-//                if (LeanCloundUtil.handleLeanResult(WebMangaDetailsActivity.this, e)) {
-//                    if (null != list && list.size() > 0) {
-//                        //已存在的保存
-//                        AVObject object = AVObject.createWithoutData("Collected", list.get(0).getObjectId());
-//                        object.put("top", isTop);
-//                        object.saveInBackground(new SaveCallback() {
-//                            @Override
-//                            public void done(AVException e) {
-//                                if (LeanCloundUtil.handleLeanResult(WebMangaDetailsActivity.this, e)) {
-//                                    if (isTop) {
-//                                        baseToast.showToast("设置正在追更成功!");
-//                                    } else {
-//                                        baseToast.showToast("取消正在追更成功!");
-//                                    }
-//                                    isTopied = isTop;
-//                                }
-//                            }
-//                        });
-//                    } else {
-//                        //一定不会是新建的
-//                    }
-//                }
-//            }
-//        });
-    }
-
-    /**
-     * 给已收藏的漫画标记为已看完
-     */
-    private void doFinishedThisManga(final boolean isFinished) {
-//        if (TextUtils.isEmpty(LoginBean.getInstance().getUserName(this))) {
-//            return;
-//        }
-//        SingleLoadBarUtil.getInstance().showLoadBar(WebMangaDetailsActivity.this);
-//        AVQuery<AVObject> query1 = new AVQuery<>("Collected");
-//        query1.whereEqualTo("mangaUrl", mangaUrl);
-//
-//        AVQuery<AVObject> query2 = new AVQuery<>("Collected");
-//        query2.whereEqualTo("owner", LoginBean.getInstance().getUserName());
-//        AVQuery<AVObject> query = AVQuery.and(Arrays.asList(query1, query2));
-//        query.findInBackground(new FindCallback<AVObject>() {
-//            @Override
-//            public void done(List<AVObject> list, AVException e) {
-//                SingleLoadBarUtil.getInstance().dismissLoadBar();
-//                if (LeanCloundUtil.handleLeanResult(WebMangaDetailsActivity.this, e)) {
-//                    if (null != list && list.size() > 0) {
-//                        //已存在的保存
-//                        AVObject object = AVObject.createWithoutData("Collected", list.get(0).getObjectId());
-//                        object.put("finished", isFinished);
-//                        object.saveInBackground(new SaveCallback() {
-//                            @Override
-//                            public void done(AVException e) {
-//                                if (LeanCloundUtil.handleLeanResult(WebMangaDetailsActivity.this, e)) {
-//                                    if (isFinished) {
-//                                        baseToast.showToast("设置已经看完成功!");
-//                                    } else {
-//                                        baseToast.showToast("取消已经看完成功!");
-//                                    }
-//                                    WebMangaDetailsActivity.this.isFinished = isFinished;
-//                                }
-//                            }
-//                        });
-//                    } else {
-//                        //一定不会是新建的
-//                    }
-//                }
-//            }
-//        });
-    }
-
-    private void doGetIsCollected() {
-//        if (TextUtils.isEmpty(LoginBean.getInstance().getUserName())) {
-//            return;
-//        }
-//        SingleLoadBarUtil.getInstance().showLoadBar(WebMangaDetailsActivity.this);
-//        AVQuery<AVObject> query1 = new AVQuery<>("Collected");
-//        query1.whereEqualTo("mangaUrl", mangaUrl);
-//
-//        AVQuery<AVObject> query2 = new AVQuery<>("Collected");
-//        query2.whereEqualTo("owner", LoginBean.getInstance().getUserName());
-//        AVQuery<AVObject> query = AVQuery.and(Arrays.asList(query1, query2));
-//        query.findInBackground(new FindCallback<AVObject>() {
-//            @Override
-//            public void done(List<AVObject> list, AVException e) {
-//                SingleLoadBarUtil.getInstance().dismissLoadBar();
-//                if (LeanCloundUtil.handleLeanResult(WebMangaDetailsActivity.this, e)) {
-//                    if (null != list && list.size() > 0) {
-//                        collectedId = list.get(0).getObjectId();
-//                        isCollected = true;
-//                        isTopied = list.get(0).getBoolean("top");
-//                        isFinished = list.get(0).getBoolean("finished");
-//                    } else {
-//                        collectedId = "";
-//                        isCollected = false;
-//                        isTopied = false;
-//                        isFinished = false;
-//                    }
-//                    toggleCollect();
-//                }
-//            }
-//        });
-    }
-
-    private void doCollect() {
-//        String userName = LoginBean.getInstance().getUserName(this);
-//        if (TextUtils.isEmpty(userName)) {
-//            return;
-//        }
-//        SingleLoadBarUtil.getInstance().showLoadBar(WebMangaDetailsActivity.this);
-//        String webThumbnailUrl = currentManga.getWebThumbnailUrl();
-//        String mangaName = currentManga.getName();
-//
-//        AVObject object = new AVObject("Collected");
-//        object.put("owner", userName);
-//        object.put("webThumbnailUrl", webThumbnailUrl);
-//        object.put("mangaUrl", mangaUrl);
-//        object.put("mangaName", mangaName);
-//        object.saveInBackground(new SaveCallback() {
-//            @Override
-//            public void done(AVException e) {
-//                SingleLoadBarUtil.getInstance().dismissLoadBar();
-//                if (LeanCloundUtil.handleLeanResult(WebMangaDetailsActivity.this, e)) {
-//                    baseToast.showToast("收藏成功");
-//                    doGetIsCollected();
-//                }
-//            }
-//        });
-    }
-
-    private void doGetGrade() {
-//        SingleLoadBarUtil.getInstance().showLoadBar(WebMangaDetailsActivity.this);
-//        AVQuery<AVObject> query = new AVQuery<>("Grade");
-//        query.whereEqualTo("manga_name", currentManga.getName());
-//        query.limit(999);
-//        query.findInBackground(new FindCallback<AVObject>() {
-//            @Override
-//            public void done(List<AVObject> list, AVException e) {
-//                SingleLoadBarUtil.getInstance().dismissLoadBar();
-//                if (LeanCloundUtil.handleLeanResult(WebMangaDetailsActivity.this, e)) {
-//                    if (null != list && list.size() > 0) {
-//                        gradeList = new ArrayList<>();
-//                        GradeBean item;
-//                        for (int i = 0; i < list.size(); i++) {
-//                            item = new GradeBean();
-//                            item.setMangaName(list.get(i).getString("manga_name"));
-//                            item.setMangaUrl(list.get(i).getString("mangaUrl"));
-//                            item.setStar(list.get(i).getInt("star"));
-//                            item.setOwner(list.get(i).getString("owner"));
-//                            gradeList.add(item);
-//                        }
-//                    }
-//                    refreshGrade();
-//                }
-//            }
-//        });
-    }
-
-    private void doGetCommentCount() {
-//        AVQuery<AVObject> query = new AVQuery<>("Comment");
-//        query.whereEqualTo("mangaUrl", mangaUrl);
-//        query.countInBackground(new CountCallback() {
-//            @Override
-//            public void done(int i, AVException e) {
-//                if (LeanCloundUtil.handleLeanResult(WebMangaDetailsActivity.this, e)) {
-//                    commentCountTv.setText(i + "");
-//                }
-//            }
-//        });
-    }
-
-
-    private void doGrade(int star) {
-//        String userName = LoginBean.getInstance().getUserName(this);
-//        if (TextUtils.isEmpty(userName)) {
-//            return;
-//        }
-//        SingleLoadBarUtil.getInstance().showLoadBar(WebMangaDetailsActivity.this);
-//        String mangaName = currentManga.getName();
-//
-//        AVObject object = new AVObject("Grade");
-//        object.put("owner", userName);
-//        object.put("star", star);
-//        object.put("mangaUrl", mangaUrl);
-//        object.put("manga_name", mangaName);
-//        object.saveInBackground(new SaveCallback() {
-//            @Override
-//            public void done(AVException e) {
-//                SingleLoadBarUtil.getInstance().dismissLoadBar();
-//                if (LeanCloundUtil.handleLeanResult(WebMangaDetailsActivity.this, e)) {
-//                    baseToast.showToast("评分成功");
-//                    doGetGrade();
-//                }
-//            }
-//        });
-    }
-
-    private void deleteCollected() {
-//        if (TextUtils.isEmpty(collectedId)) {
-//            return;
-//        }
-//        SingleLoadBarUtil.getInstance().showLoadBar(WebMangaDetailsActivity.this);
-//        // 执行 CQL 语句实现删除一个  对象
-//        AVQuery.doCloudQueryInBackground(
-//                "delete from Collected where objectId='" + collectedId + "'"
-//                , new CloudQueryCallback<AVCloudQueryResult>() {
-//                    @Override
-//                    public void done(AVCloudQueryResult avCloudQueryResult, AVException e) {
-//                        SingleLoadBarUtil.getInstance().dismissLoadBar();
-//                        if (LeanCloundUtil.handleLeanResult(WebMangaDetailsActivity.this, e)) {
-//                            baseToast.showToast("取消收藏");
-//                            isCollected = false;
-//                            toggleCollect();
-//                        }
-//                    }
-//                });
-    }
-
-    private void doGetIsRead() {
-//        if (!spider.isOneShot()) {
-//            return;
-//        }
-//        if (TextUtils.isEmpty(LoginBean.getInstance().getUserName())) {
-//            return;
-//        }
-//        AVQuery<AVObject> query1 = new AVQuery<>("History");
-//        query1.whereEqualTo("mangaName", ThreeDESUtil.encode(Configure.key, currentManga.getName()));
-//
-//        AVQuery<AVObject> query2 = new AVQuery<>("History");
-//        query2.whereEqualTo("owner", LoginBean.getInstance().getUserName());
-//        AVQuery<AVObject> query = AVQuery.and(Arrays.asList(query1, query2));
-//        query.findInBackground(new FindCallback<AVObject>() {
-//            @Override
-//            public void done(List<AVObject> list, AVException e) {
-//                if (LeanCloundUtil.handleLeanResult(WebMangaDetailsActivity.this, e)) {
-//                    if (null != list && list.size() > 0) {
-//                        baseTopBar.setTitle("(阅)" + currentManga.getName());
-//                    } else {
-//                        baseTopBar.setTitle(currentManga.getName());
-//                        addToRead();
-//                    }
-//                }
-//            }
-//        });
-    }
-
-    private void addToRead() {
-//        if (!spider.isOneShot()) {
-//            return;
-//        }
-//        String userName = LoginBean.getInstance().getUserName(this);
-//        if (TextUtils.isEmpty(userName)) {
-//            return;
-//        }
-//        AVObject object = new AVObject("History");
-//        object.put("owner", userName);
-//        object.put("mangaName", ThreeDESUtil.encode(Configure.key, currentManga.getName()));
-//        object.saveInBackground();
-    }
-
     private void showOptionsSelectorDialog() {
         ListDialog listDialog = new ListDialog(this);
         listDialog.setOnSevenFourteenListDialogListener(new OnSevenFourteenListDialogListener() {
@@ -899,81 +513,42 @@ public class WebMangaDetailsActivity extends TTSActivity implements AdapterView.
                         firstChoose = true;
                         baseToast.showToast("请点击下载起点!");
                         break;
-                    case 2:
-                        if (isCollected) {
-                            showTopThisDialog();
-                        } else {
-                            baseToast.showToast("请先收藏漫画");
-                        }
-                        break;
-                    case 3:
-                        if (isCollected) {
-                            showFinishedThisDialog();
-                        } else {
-                            baseToast.showToast("请先收藏漫画");
-                        }
-                        break;
                 }
             }
         });
         listDialog.show();
-        if (isTopied) {
-            optionsList[2] = "取消正在追更";
-        } else {
-            optionsList[2] = "加入正在追更";
-        }
-        if (isFinished) {
-            optionsList[3] = "取消我已看完";
-        } else {
-            optionsList[3] = "加入我已看完";
-        }
         listDialog.setOptionsList(optionsList);
     }
 
-    private void showTopThisDialog() {
-        MangaDialog mangaDialog = new MangaDialog(this);
-        mangaDialog.setOnPeanutDialogClickListener(new MangaDialog.OnPeanutDialogClickListener() {
+    private void showGestureDialog(final OnResultListener listener) {
+        final GestureDialog gestureDialog = new GestureDialog(this);
+        gestureDialog.show();
+        gestureDialog.setOnGestureLockViewListener(new GestureLockViewGroup.OnGestureLockViewListener() {
             @Override
-            public void onOkClick() {
-                doTopThisManga(!isTopied);
+            public void onBlockSelected(int cId) {
+
+            }
+
+            @Override
+            public void onGestureEvent(boolean matched) {
+
             }
 
             @Override
-            public void onCancelClick() {
-
-            }
-        });
-        mangaDialog.show();
-        if (isTopied) {
-            mangaDialog.setTitle("取消正在追更?");
-        } else {
-            mangaDialog.setTitle("加入正在追更?");
-        }
-        mangaDialog.setOkText("确定");
-        mangaDialog.setCancelText("取消");
-    }
-
-    private void showFinishedThisDialog() {
-        MangaDialog mangaDialog = new MangaDialog(this);
-        mangaDialog.setOnPeanutDialogClickListener(new MangaDialog.OnPeanutDialogClickListener() {
-            @Override
-            public void onOkClick() {
-                doFinishedThisManga(!isFinished);
+            public void onGestureEvent(String choose) {
+                if (choose.equals("7485")) {
+                    listener.onFinish();
+                } else {
+                    listener.onFailed();
+                }
+                gestureDialog.dismiss();
             }
 
             @Override
-            public void onCancelClick() {
+            public void onUnmatchedExceedBoundary() {
 
             }
         });
-        mangaDialog.show();
-        if (isFinished) {
-            mangaDialog.setTitle("取消我已看完?");
-        } else {
-            mangaDialog.setTitle("加入我已看完?");
-        }
-        mangaDialog.setOkText("确定");
-        mangaDialog.setCancelText("取消");
     }
 
     private void showDescription() {
@@ -993,24 +568,9 @@ public class WebMangaDetailsActivity extends TTSActivity implements AdapterView.
         ppw.hideIKnowTv();
     }
 
-
-    private boolean isGraded() {
-        return false;
-    }
-
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.collect_view:
-                if (isCollected) {
-                    deleteCollected();
-                } else {
-                    doCollect();
-                }
-                break;
-            case R.id.download_iv:
-//                showDownloadDialog();
-                break;
             case R.id.manga_type:
                 showTagsSelector();
                 break;
@@ -1020,20 +580,6 @@ public class WebMangaDetailsActivity extends TTSActivity implements AdapterView.
             case R.id.manga_author:
                 showAuthorSelector();
                 break;
-            case R.id.comment_msg_ll:
-//                Intent intent = new Intent(WebMangaDetailsActivity.this, CommentActivity.class);
-//                intent.putExtra("mangaName", currentManga.getName());
-//                intent.putExtra("mangaUrl", mangaUrl);
-//                startActivity(intent);
-                break;
-        }
-    }
-
-    private void toggleCollect() {
-        if (isCollected) {
-            collectV.setBackgroundResource(R.drawable.collected);
-        } else {
-            collectV.setBackgroundResource(R.drawable.collect);
         }
     }
 

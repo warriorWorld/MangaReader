@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
 
 
     <RelativeLayout
@@ -16,7 +16,7 @@
             android:id="@+id/thumbnail"
             android:layout_width="122dp"
             android:layout_height="match_parent"
-            android:layout_alignParentLeft="true" />
+            android:layout_alignParentLeft="true"/>
 
         <TextView
             android:id="@+id/manga_name"
@@ -28,37 +28,7 @@
             android:layout_toLeftOf="@+id/collect_view"
             android:layout_toRightOf="@+id/thumbnail"
             android:textColor="@color/main_text_color"
-            android:textSize="@dimen/details_text_size" />
-
-
-        <LinearLayout
-            android:id="@+id/download_ll"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_below="@id/collect_view"
-            android:layout_marginRight="3dp"
-            android:layout_marginTop="12dp"
-            android:gravity="center_horizontal"
-            android:orientation="vertical">
-
-            <ImageView
-                android:id="@+id/download_iv"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:src="@drawable/download"
-                android:visibility="gone" />
-
-            <TextView
-                android:id="@+id/download_tag_tv"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
-                android:text="下载中..."
-                android:textColor="@color/manga_reader"
-                android:textSize="12sp"
-                android:visibility="gone" />
-        </LinearLayout>
+            android:textSize="@dimen/details_text_size"/>
 
         <TextView
             android:id="@+id/manga_author"
@@ -66,12 +36,11 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/manga_name"
             android:layout_marginLeft="10dp"
-            android:layout_marginRight="3dp"
             android:layout_marginTop="5dp"
-            android:layout_toLeftOf="@+id/download_ll"
+            android:layout_marginRight="3dp"
             android:layout_toRightOf="@+id/thumbnail"
             android:textColor="@color/main_text_color"
-            android:textSize="@dimen/details_text_size" />
+            android:textSize="@dimen/details_text_size"/>
 
         <TextView
             android:id="@+id/manga_type"
@@ -79,12 +48,11 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/manga_author"
             android:layout_marginLeft="10dp"
-            android:layout_marginRight="3dp"
             android:layout_marginTop="5dp"
-            android:layout_toLeftOf="@+id/download_ll"
+            android:layout_marginRight="3dp"
             android:layout_toRightOf="@+id/thumbnail"
             android:textColor="@color/main_text_color"
-            android:textSize="@dimen/details_text_size" />
+            android:textSize="@dimen/details_text_size"/>
 
         <TextView
             android:id="@+id/manga_update_date"
@@ -92,21 +60,11 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/manga_type"
             android:layout_marginLeft="10dp"
-            android:layout_marginRight="3dp"
             android:layout_marginTop="5dp"
-            android:layout_toLeftOf="@+id/download_ll"
+            android:layout_marginRight="3dp"
             android:layout_toRightOf="@+id/thumbnail"
             android:textColor="@color/main_text_color"
-            android:textSize="14sp" />
-
-        <View
-            android:id="@+id/collect_view"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:layout_alignParentRight="true"
-            android:layout_marginRight="3dp"
-            android:layout_marginTop="3dp"
-            android:background="@drawable/collect"></View>
+            android:textSize="14sp"/>
     </RelativeLayout>
 
     <View
@@ -121,86 +79,11 @@
         android:layout_height="match_parent"
         android:layout_above="@+id/comment_rl"
         android:layout_below="@+id/manga_info"
-        android:layout_marginBottom="8dp"
         android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
         android:columnWidth="50dp"
         android:horizontalSpacing="3dp"
         android:numColumns="5"
         android:padding="10dp"
         android:verticalSpacing="12dp"></com.truthower.suhang.mangareader.widget.pulltorefresh.PullToRefreshGridView>
-
-
-    <RelativeLayout
-        android:id="@+id/comment_rl"
-        android:layout_width="match_parent"
-        android:layout_height="40dp"
-        android:layout_alignParentBottom="true"
-        android:background="@color/white">
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1px"
-            android:background="@color/manga_reader"></View>
-
-
-
-        <RelativeLayout
-            android:id="@+id/grade_rl"
-            android:layout_width="75dp"
-            android:layout_height="match_parent"
-            android:layout_marginLeft="15dp"
-            android:background="@color/transparency"></RelativeLayout>
-
-        <LinearLayout
-            android:id="@+id/grade_ll"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_marginLeft="8dp"
-            android:layout_toRightOf="@+id/grade_rl"
-            android:gravity="center_vertical"
-            android:orientation="vertical">
-
-            <TextView
-                android:id="@+id/grade_tv"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:layout_toRightOf="@+id/grade_ll"
-                android:text="0.00"
-                android:textColor="@color/manga_reader"
-                android:textSize="@dimen/main_text_size" />
-
-            <TextView
-                android:id="@+id/grade_count_tv"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="0人评分"
-                android:textColor="@color/main_text_color_gray"
-                android:textSize="10sp" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/comment_msg_ll"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_alignParentRight="true"
-            android:layout_marginRight="15dp"
-            android:gravity="center"
-            android:orientation="horizontal">
-
-            <ImageView
-                android:layout_width="20dp"
-                android:layout_height="20dp"
-                android:src="@drawable/comment_icon" />
-
-            <TextView
-                android:id="@+id/comment_count_tv"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="5dp"
-                android:text="0"
-                android:textColor="@color/main_text_color_gray"
-                android:textSize="10sp" />
-        </LinearLayout>
-    </RelativeLayout>
 </RelativeLayout>

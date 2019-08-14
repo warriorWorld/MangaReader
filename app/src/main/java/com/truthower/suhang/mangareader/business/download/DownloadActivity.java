@@ -1,12 +1,9 @@
 package com.truthower.suhang.mangareader.business.download;
 
-import android.content.Intent;
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -19,7 +16,6 @@ import com.truthower.suhang.mangareader.adapter.OneShotDetailsAdapter;
 import com.truthower.suhang.mangareader.adapter.OnlineMangaDetailAdapter;
 import com.truthower.suhang.mangareader.base.BaseActivity;
 import com.truthower.suhang.mangareader.bean.DownloadBean;
-import com.truthower.suhang.mangareader.business.detail.WebMangaDetailsActivity;
 import com.truthower.suhang.mangareader.config.Configure;
 import com.truthower.suhang.mangareader.config.ShareKeys;
 import com.truthower.suhang.mangareader.eventbus.DownLoadEvent;
@@ -31,7 +27,6 @@ import com.truthower.suhang.mangareader.widget.dialog.MangaDialog;
 import com.truthower.suhang.mangareader.widget.pulltorefresh.PullToRefreshBase;
 import com.truthower.suhang.mangareader.widget.pulltorefresh.PullToRefreshGridView;
 
-import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
 /**

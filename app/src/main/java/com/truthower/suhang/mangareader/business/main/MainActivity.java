@@ -15,10 +15,8 @@ import com.truthower.suhang.mangareader.config.ShareKeys;
 import com.truthower.suhang.mangareader.eventbus.EventBusEvent;
 import com.truthower.suhang.mangareader.eventbus.JumpEvent;
 import com.truthower.suhang.mangareader.eventbus.TagClickEvent;
-import com.truthower.suhang.mangareader.listener.OnShareAppClickListener;
 import com.truthower.suhang.mangareader.utils.SharedPreferencesUtils;
 import com.truthower.suhang.mangareader.widget.dialog.MangaDialog;
-import com.truthower.suhang.mangareader.widget.dialog.QrDialog;
 
 import org.greenrobot.eventbus.Subscribe;
 
@@ -28,7 +26,6 @@ import java.util.Date;
 import java.util.List;
 
 import androidx.fragment.app.FragmentTransaction;
-import pub.devrel.easypermissions.AfterPermissionGranted;
 import pub.devrel.easypermissions.EasyPermissions;
 
 
@@ -39,7 +36,6 @@ public class MainActivity extends BaseFragmentActivity implements View.OnClickLi
      * Tab显示内容TextView
      */
     private TextView mTabOnlinePageTv, mTabLocalTv, mTabUserTv, mTabRecommendTv;
-    private ImageView mTabOnlinePageIv, mTabLocalIv, mTabUserIv;
     /**
      * Fragment
      */
@@ -53,8 +49,6 @@ public class MainActivity extends BaseFragmentActivity implements View.OnClickLi
     private BaseFragment curFragment;
 
     private MangaDialog logoutDialog;
-    private String versionName;
-    private String qrFilePaht;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,31 +59,7 @@ public class MainActivity extends BaseFragmentActivity implements View.OnClickLi
         hideBaseTopBar();
         initUI();
         initFragment();
-        doGetVersionInfo();
-        doGetAnnouncement();
     }
-
-    private void doGetAnnouncement() {
-//        AVQuery<AVObject> query = new AVQuery<>("Announcement");
-//        query.findInBackground(new FindCallback<AVObject>() {
-//            @Override
-//            public void done(List<AVObject> list, AVException e) {
-//                if (LeanCloundUtil.handleLeanResult(MainActivity.this, e)) {
-//                    if (null != list && list.size() > 0) {
-//                        String title = list.get(0).getString("title");
-//                        String message = list.get(0).getString("message");
-//                        DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
-//                        String date = df.format(new Date());
-//                        if (!date.equals(SharedPreferencesUtils.getSharedPreferencesData(
-//                                MainActivity.this, ShareKeys.ANNOUNCEMENT_READ_KEY))) {
-//                            showAnnouncementDialog(title, message);
-//                        }
-//                    }
-//                }
-//            }
-//        });
-    }
-
 
     @Override
     public void onResume() {
@@ -105,9 +75,6 @@ public class MainActivity extends BaseFragmentActivity implements View.OnClickLi
         mTabOnlinePageTv = (TextView) this.findViewById(R.id.online_bottom_tv);
         mTabUserTv = (TextView) this.findViewById(R.id.user_bottom_tv);
         mTabRecommendTv = (TextView) this.findViewById(R.id.recommend_bottom_tv);
-        mTabOnlinePageIv = (ImageView) findViewById(R.id.online_bottom_iv);
-        mTabLocalIv = (ImageView) findViewById(R.id.local_bottom_iv);
-        mTabUserIv = (ImageView) findViewById(R.id.user_bottom_iv);
         mTabOnlinePageLL = (LinearLayout) findViewById(R.id.online_bottom_ll);
         mTabLocalLL = (LinearLayout) findViewById(R.id.local_bottom_ll);
         mTabUserLL = (LinearLayout) findViewById(R.id.user_bottom_ll);
@@ -125,79 +92,9 @@ public class MainActivity extends BaseFragmentActivity implements View.OnClickLi
         return R.layout.activity_main;
     }
 
-    private void doGetVersionInfo() {
-//        AVQuery<AVObject> query = new AVQuery<>("VersionInfo");
-//        query.findInBackground(new FindCallback<AVObject>() {
-//            @Override
-//            public void done(List<AVObject> list, AVException e) {
-//                if (LeanCloundUtil.handleLeanResult(MainActivity.this, e)) {
-//                    if (null != list && list.size() > 0) {
-//                        versionName = list.get(0).getString("versionName");
-//                        downloadFile = list.get(0).getAVFile("QRcode");
-//                        if (null != downloadFile) {
-//                            doDownloadQRcode();
-//                        }
-//                    }
-//                }
-//            }
-//        });
-    }
-
-    @AfterPermissionGranted(Configure.PERMISSION_FILE_REQUST_CODE)
-    private void doDownloadQRcode() {
-//        String[] perms = {Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE};
-//        if (EasyPermissions.hasPermissions(this, perms)) {
-//            // Already have permission, do the thing
-//            // ...
-//            final String folderPath = Configure.DOWNLOAD_PATH;
-//            final File file = new File(folderPath);
-//            if (!file.exists()) {
-//                file.mkdirs();
-//            }
-//            final String qrFileName = "QR" + versionName + ".png";
-//            qrFilePaht = Configure.DOWNLOAD_PATH + "/" + qrFileName;
-//            final File qrFile = new File(qrFilePaht);
-//            if (qrFile.exists()) {
-//                //有就不下了
-//                return;
-//            }
-//            downloadFile.getDataInBackground(new GetDataCallback() {
-//                @Override
-//                public void done(byte[] bytes, AVException e) {
-//                    // bytes 就是文件的数据流
-//                    if (LeanCloundUtil.handleLeanResult(MainActivity.this, e)) {
-//                        File apkFile = FileSpider.getInstance().byte2File(bytes, folderPath, qrFileName);
-//                    }
-//                }
-//            }, new ProgressCallback() {
-//                @Override
-//                public void done(Integer integer) {
-//                    // 下载进度数据，integer 介于 0 和 100。
-//                }
-//            });
-//
-//        } else {
-//            // Do not have permissions, request them now
-//            EasyPermissions.requestPermissions(this, "我们需要写入/读取权限",
-//                    Configure.PERMISSION_FILE_REQUST_CODE, perms);
-//        }
-    }
-
-    private void showQrDialog() {
-        QrDialog qrDialog = new QrDialog(this);
-        qrDialog.show();
-        qrDialog.setImg("file://" + qrFilePaht);
-    }
-
     private void initFragment() {
         localFg = new LocalMangaFragment();
         userFg = new UserFragment();
-        userFg.setOnShareAppClickListener(new OnShareAppClickListener() {
-            @Override
-            public void onClick() {
-                showQrDialog();
-            }
-        });
         onlinePageFg = new OnlineMangaFragment();
         mRecommendFragment = new RecommendFragment();
 
@@ -295,32 +192,6 @@ public class MainActivity extends BaseFragmentActivity implements View.OnClickLi
         logoutDialog.setOkText("退出");
         logoutDialog.setCancelText("再逛逛");
         logoutDialog.setCancelable(true);
-    }
-
-    private void showAnnouncementDialog(String title, String msg) {
-        MangaDialog dialog = new MangaDialog(this);
-        dialog.setOnPeanutDialogClickListener(new MangaDialog.OnPeanutDialogClickListener() {
-            @Override
-            public void onOkClick() {
-                DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
-                String date = df.format(new Date());
-                SharedPreferencesUtils.setSharedPreferencesData
-                        (MainActivity.this, ShareKeys.ANNOUNCEMENT_READ_KEY, date);
-            }
-
-            @Override
-            public void onCancelClick() {
-
-            }
-        });
-        if (MainActivity.this.isFinishing()) {
-            return;
-        }
-        dialog.show();
-        dialog.setCancelable(false);
-        dialog.setTitle(title);
-        dialog.setMessage(msg);
-        dialog.setOkText("知道了");
     }
 
     private void toggleBottomBar(View v) {

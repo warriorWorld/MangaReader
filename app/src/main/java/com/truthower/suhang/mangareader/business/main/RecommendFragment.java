@@ -97,29 +97,6 @@ public class RecommendFragment extends BaseFragment implements
     }
 
     private void doGetData() {
-//        SingleLoadBarUtil.getInstance().showLoadBar(getActivity());
-//        AVQuery<AVObject> query = new AVQuery<>("Recommend");
-//        query.limit(999);
-//        query.findInBackground(new FindCallback<AVObject>() {
-//            @Override
-//            public void done(List<AVObject> list, AVException e) {
-//                SingleLoadBarUtil.getInstance().dismissLoadBar();
-//                if (LeanCloundUtil.handleLeanResult(getActivity(), e)) {
-//                    mangaList = new ArrayList<MangaBean>();
-//                    if (null != list && list.size() > 0) {
-//                        MangaBean item;
-//                        for (int i = 0; i < list.size(); i++) {
-//                            item = new MangaBean();
-//                            item.setName(list.get(i).getString("recommend"));
-//                            item.setWebThumbnailUrl(list.get(i).getString("thumbnailUrl"));
-//                            item.setUrl(list.get(i).getString("mangaUrl"));
-//                            mangaList.add(item);
-//                        }
-//                    }
-//                    initGridView();
-//                }
-//            }
-//        });
     }
 
     private void initGridView() {

@@ -17,141 +17,6 @@
             android:orientation="vertical">
 
             <RelativeLayout
-                android:id="@+id/collect_rl"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/user_item_h"
-                android:background="@color/white"
-                android:paddingLeft="@dimen/item_padding_horizontal"
-                android:paddingRight="@dimen/item_padding_horizontal">
-
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:layout_gravity="center_vertical"
-                    android:gravity="center_vertical"
-                    android:text="我的收藏"
-                    android:textColor="@color/main_text_color"
-                    android:textSize="@dimen/main_text_size"/>
-
-
-                <ImageView
-                    android:layout_width="10dp"
-                    android:layout_height="10dp"
-                    android:layout_alignParentRight="true"
-                    android:layout_centerVertical="true"
-                    android:src="@drawable/forward"/>
-            </RelativeLayout>
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1px"
-                android:background="@color/divide_line"/>
-
-            <RelativeLayout
-                android:id="@+id/waiting_for_update_rl"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/user_item_h"
-                android:background="@color/white"
-                android:paddingLeft="@dimen/item_padding_horizontal"
-                android:paddingRight="@dimen/item_padding_horizontal">
-
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:layout_gravity="center_vertical"
-                    android:gravity="center_vertical"
-                    android:text="正在追更"
-                    android:textColor="@color/main_text_color"
-                    android:textSize="@dimen/main_text_size"/>
-
-
-                <ImageView
-                    android:layout_width="10dp"
-                    android:layout_height="10dp"
-                    android:layout_alignParentRight="true"
-                    android:layout_centerVertical="true"
-                    android:src="@drawable/forward"/>
-            </RelativeLayout>
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1px"
-                android:background="@color/divide_line"/>
-
-            <RelativeLayout
-                android:id="@+id/finished_manga_rl"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/user_item_h"
-                android:background="@color/white"
-                android:paddingLeft="@dimen/item_padding_horizontal"
-                android:paddingRight="@dimen/item_padding_horizontal">
-
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:layout_gravity="center_vertical"
-                    android:gravity="center_vertical"
-                    android:text="我看完的"
-                    android:textColor="@color/main_text_color"
-                    android:textSize="@dimen/main_text_size"/>
-
-
-                <ImageView
-                    android:layout_width="10dp"
-                    android:layout_height="10dp"
-                    android:layout_alignParentRight="true"
-                    android:layout_centerVertical="true"
-                    android:src="@drawable/forward"/>
-            </RelativeLayout>
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1px"
-                android:background="@color/divide_line"
-                android:visibility="visible"/>
-
-            <RelativeLayout
-                android:id="@+id/statistics_rl"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/user_item_h"
-                android:background="@color/white"
-                android:paddingLeft="@dimen/item_padding_horizontal"
-                android:paddingRight="@dimen/item_padding_horizontal"
-                android:visibility="visible">
-
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:layout_gravity="center_vertical"
-                    android:gravity="center_vertical"
-                    android:text="数据统计"
-                    android:textColor="@color/main_text_color"
-                    android:textSize="@dimen/main_text_size"/>
-
-
-                <ImageView
-                    android:layout_width="10dp"
-                    android:layout_height="10dp"
-                    android:layout_alignParentRight="true"
-                    android:layout_centerVertical="true"
-                    android:src="@drawable/forward"/>
-            </RelativeLayout>
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1px"
-                android:background="@color/divide_line"
-                android:visibility="visible"/>
-
-            <RelativeLayout
                 android:id="@+id/new_word_book_rl"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/user_item_h"
@@ -220,70 +85,6 @@
                 android:layout_height="1px"
                 android:background="@color/divide_line"
                 android:visibility="visible"/>
-
-            <RelativeLayout
-                android:id="@+id/share_rl"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/user_item_h"
-                android:background="@color/white"
-                android:paddingLeft="@dimen/item_padding_horizontal"
-                android:paddingRight="@dimen/item_padding_horizontal"
-                android:visibility="visible">
-
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:layout_gravity="center_vertical"
-                    android:gravity="center_vertical"
-                    android:text="分享App"
-                    android:textColor="@color/main_text_color"
-                    android:textSize="@dimen/main_text_size"/>
-
-
-                <ImageView
-                    android:layout_width="10dp"
-                    android:layout_height="10dp"
-                    android:layout_alignParentRight="true"
-                    android:layout_centerVertical="true"
-                    android:src="@drawable/forward"/>
-            </RelativeLayout>
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1px"
-                android:background="@color/divide_line"
-                android:visibility="visible"/>
-
-            <RelativeLayout
-                android:id="@+id/ad_rl"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/user_item_h"
-                android:background="@color/white"
-                android:paddingLeft="@dimen/item_padding_horizontal"
-                android:paddingRight="@dimen/item_padding_horizontal"
-                android:visibility="visible">
-
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:layout_gravity="center_vertical"
-                    android:gravity="center_vertical"
-                    android:text="更多英语学习App"
-                    android:textColor="@color/main_text_color"
-                    android:textSize="@dimen/main_text_size"/>
-
-
-                <ImageView
-                    android:layout_width="10dp"
-                    android:layout_height="10dp"
-                    android:layout_alignParentRight="true"
-                    android:layout_centerVertical="true"
-                    android:src="@drawable/forward"/>
-            </RelativeLayout>
 
             <View
                 android:layout_width="match_parent"
@@ -393,14 +194,14 @@
                 android:layout_centerVertical="true"
                 android:layout_marginLeft="10dp"
                 android:layout_toRightOf="@id/user_head_civ"
-                android:gravity="center"
+                android:gravity="center_vertical"
                 android:orientation="vertical">
 
                 <TextView
                     android:id="@+id/user_name_tv"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="点击登录"
+                    android:text="漫画爬虫"
                     android:textColor="@color/main_text_color"
                     android:textSize="@dimen/main_text_size"/>
 
@@ -409,26 +210,10 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="3dp"
-                    android:text="个人中心"
+                    android:text="欢迎来到404之国"
                     android:textColor="@color/main_text_color_gray"
                     android:textSize="10sp"/>
             </LinearLayout>
-
-            <TextView
-                android:id="@+id/user_msg_tip_tv"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="-10dp"
-                android:layout_toRightOf="@+id/user_head_civ"
-                android:background="@drawable/tag_bg_red"
-                android:gravity="center"
-                android:paddingLeft="5dp"
-                android:paddingRight="5dp"
-                android:singleLine="true"
-                android:textColor="@color/white"
-                android:textSize="11sp"
-                android:visibility="gone"/>
         </RelativeLayout>
-
     </RelativeLayout>
 </RelativeLayout>

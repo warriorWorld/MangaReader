@@ -23,7 +23,6 @@ import android.text.style.UnderlineSpan;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.android.volley.Request;
@@ -71,7 +70,6 @@ import com.youdao.ocr.online.OCRListener;
 import com.youdao.ocr.online.OCRParameters;
 import com.youdao.ocr.online.OCRResult;
 import com.youdao.ocr.online.OcrErrorCode;
-import com.youdao.ocr.online.RecognizeLanguage;
 import com.youdao.ocr.online.Region;
 import com.youdao.ocr.online.Region_Line;
 import com.youdao.ocr.online.Word;
@@ -82,7 +80,6 @@ import org.greenrobot.eventbus.Subscribe;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -118,20 +115,9 @@ public class ReadMangaActivity extends TTSActivity implements OnClickListener, S
     private String chapterUrl;//线上漫画章节地址
     private String progressSaveKey = "";
     private int toPage = 0;
-    private ImageView test_iv;
     private DbAdapter db;//数据库
-    private int qureyWordCount = 0;
-    private String realMangaName;
-    /**
-     * 时间
-     */
-    private SimpleDateFormat sdf;
-    private Date curDate;
-    private String date;
-    //OCR识别
-    final public static OCRParameters tps = new OCRParameters.Builder().source("youdaoocr").timeout(100000)
-            .type(OCRParameters.TYPE_LINE).lanType(RecognizeLanguage.LINE_CHINESE_ENGLISH.getCode()).build();//
     private DragView screenDv;
+    private String realMangaName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -168,9 +154,6 @@ public class ReadMangaActivity extends TTSActivity implements OnClickListener, S
         }
         topBar.setTitle(currentMangaName);
 
-        sdf = new SimpleDateFormat("yyyy-MM-dd");
-        curDate = new Date(System.currentTimeMillis());//获取当前时间
-        date = sdf.format(curDate);
         db = new DbAdapter(this);
 
         if (!SharedPreferencesUtils.getBooleanSharedPreferencesData(this, ShareKeys.CLOSE_TTS, true)) {
@@ -285,8 +268,6 @@ public class ReadMangaActivity extends TTSActivity implements OnClickListener, S
                 MobclickAgent.onEvent(ReadMangaActivity.this, "seek_bar");
                 if (finalPosition >= 0) {
                     mangaPager.setCurrentItem(finalPosition - 1);
-//                    cutSeekBar();
-//                seekBar.setVisibility(View.GONE);
                 }
             }
         });
@@ -303,10 +284,6 @@ public class ReadMangaActivity extends TTSActivity implements OnClickListener, S
             return;
         Intent intent = null;
         switch (event.getEventType()) {
-//            case EventBusEvent.NEED_LOGIN:
-//                ToastUtil.tipShort(BaseActivity.this, "需要登录");
-//                intent = new Intent(BaseActivity.this, LoginActivity.class);
-//                break;
             case EventBusEvent.COPY_BOARD_EVENT:
                 showBaseDialog("检测到你复制了某漫画地址，是否跳转到详情页？", "", "是", "否",
                         new MangaDialog.OnPeanutDialogClickListener() {
@@ -342,7 +319,6 @@ public class ReadMangaActivity extends TTSActivity implements OnClickListener, S
         showSeekBar = findViewById(R.id.show_seek_bar);
         ocrBtn = (Button) findViewById(R.id.ocr_btn);
         readProgressTv = (TextView) findViewById(R.id.read_progress_tv);
-        test_iv = (ImageView) findViewById(R.id.test_iv);
         screenDv = (DragView) findViewById(R.id.screenshoot_dv);
         screenDv.setSavePosition(true);
         new Thread(new Runnable() {
@@ -421,11 +397,6 @@ public class ReadMangaActivity extends TTSActivity implements OnClickListener, S
 
             @Override
             public void onTitleLongClick() {
-//                if (LoginBean.getInstance().isMaster()) {
-//                    Intent intent = new Intent(ReadMangaActivity.this, TagManagerActivity.class);
-//                    intent.putExtra("imgUrl", pathList.get(historyPosition));
-//                    startActivity(intent);
-//                }
             }
         });
 
@@ -475,39 +446,6 @@ public class ReadMangaActivity extends TTSActivity implements OnClickListener, S
         dialog.setTitle("结果");
         dialog.setMessage(spannableString);
         dialog.setOkText("知道了");
-    }
-
-    boolean isRequesting = false;
-
-    private void doStatisctics() {
-//        if (TextUtils.isEmpty(LoginBean.getInstance().getUserName())) {
-//            return;
-//        }
-//        try {
-//            if (isRequesting) {
-//                return;
-//            }
-//            isRequesting = true;
-//            StatisticsBean item = db.queryStatisticsByBookName(realMangaName);
-//            AVObject object = new AVObject("Statistics");
-//            object.put("owner", LoginBean.getInstance().getUserName());
-//            object.put("query_word_c", item.getQuery_word_c());
-//            object.put("read_page", item.getRead_page());
-//            object.put("manga_name", realMangaName);
-//            object.saveInBackground(new SaveCallback() {
-//                @Override
-//                public void done(AVException e) {
-//                    isRequesting = false;
-//                    if (LeanCloundUtil.handleLeanResult(e)) {
-//                        SharedPreferencesUtils.setSharedPreferencesData
-//                                (ReadMangaActivity.this, ShareKeys.STATISTICS_UPDATE_KEY + realMangaName, date);
-//                        db.deleteStatiscticsByBookName(realMangaName);
-//                    }
-//                }
-//            });
-//        } catch (Exception e) {
-//            //有可能空指针 不处理 不能阻断看书进程
-//        }
     }
 
     private void showSearchDialog() {
@@ -636,7 +574,6 @@ public class ReadMangaActivity extends TTSActivity implements OnClickListener, S
                 (this, ShareKeys.CLOSE_TTS, false)) {
             text2Speech(word);
         }
-        qureyWordCount++;
         //记录查过的单词
         db.insertWordsBookTb(word, Configure.WORDS_PATH + File.separator + word + ".png");
         if (SharedPreferencesUtils.getBooleanSharedPreferencesData(this, ShareKeys.CLOSE_TRANSLATE, false)) {
@@ -813,7 +750,6 @@ public class ReadMangaActivity extends TTSActivity implements OnClickListener, S
 
                 }
             });
-//            mangaPager.setCurrentItem(2);
         } else {
             adapter.setPathList(pathList);
             adapter.notifyDataSetChanged();
