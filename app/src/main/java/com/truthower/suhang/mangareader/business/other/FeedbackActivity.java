@@ -6,14 +6,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
-import com.avos.avoscloud.AVException;
-import com.avos.avoscloud.AVObject;
-import com.avos.avoscloud.SaveCallback;
 import com.truthower.suhang.mangareader.R;
 import com.truthower.suhang.mangareader.base.BaseActivity;
-import com.truthower.suhang.mangareader.bean.LoginBean;
-import com.truthower.suhang.mangareader.utils.LeanCloundUtil;
-import com.truthower.suhang.mangareader.widget.dialog.MangaDialog;
 
 /**
  * 个人信息页
@@ -43,32 +37,32 @@ public class FeedbackActivity extends BaseActivity implements View.OnClickListen
     }
 
     private void doSubmitFeedback() {
-        AVObject object = new AVObject("Feedback");
-        object.put("owner", LoginBean.getInstance().getUserName());
-        object.put("feedback", feedbackEt.getText().toString().trim());
-        object.saveInBackground(new SaveCallback() {
-            @Override
-            public void done(AVException e) {
-                if (LeanCloundUtil.handleLeanResult(FeedbackActivity.this, e)) {
-                    MangaDialog dialog = new MangaDialog(FeedbackActivity.this);
-                    dialog.setOnPeanutDialogClickListener(new MangaDialog.OnPeanutDialogClickListener() {
-                        @Override
-                        public void onOkClick() {
-                            FeedbackActivity.this.finish();
-                        }
-
-                        @Override
-                        public void onCancelClick() {
-
-                        }
-                    });
-                    dialog.show();
-                    dialog.setTitle("谢谢支持");
-                    dialog.setMessage("反馈已提交");
-                    dialog.setOkText("确定");
-                }
-            }
-        });
+//        AVObject object = new AVObject("Feedback");
+//        object.put("owner", LoginBean.getInstance().getUserName());
+//        object.put("feedback", feedbackEt.getText().toString().trim());
+//        object.saveInBackground(new SaveCallback() {
+//            @Override
+//            public void done(AVException e) {
+//                if (LeanCloundUtil.handleLeanResult(FeedbackActivity.this, e)) {
+//                    MangaDialog dialog = new MangaDialog(FeedbackActivity.this);
+//                    dialog.setOnPeanutDialogClickListener(new MangaDialog.OnPeanutDialogClickListener() {
+//                        @Override
+//                        public void onOkClick() {
+//                            FeedbackActivity.this.finish();
+//                        }
+//
+//                        @Override
+//                        public void onCancelClick() {
+//
+//                        }
+//                    });
+//                    dialog.show();
+//                    dialog.setTitle("谢谢支持");
+//                    dialog.setMessage("反馈已提交");
+//                    dialog.setOkText("确定");
+//                }
+//            }
+//        });
     }
 
     private boolean checkData() {

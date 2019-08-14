@@ -1,6 +1,5 @@
 package com.truthower.suhang.mangareader.business.main;
 
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
@@ -22,7 +21,6 @@ import com.insightsurfface.stylelibrary.listener.OnKeyboardListener;
 import com.truthower.suhang.mangareader.R;
 import com.truthower.suhang.mangareader.adapter.OnlineMangaListAdapter;
 import com.truthower.suhang.mangareader.base.BaseFragment;
-import com.truthower.suhang.mangareader.bean.LoginBean;
 import com.truthower.suhang.mangareader.bean.MangaBean;
 import com.truthower.suhang.mangareader.bean.MangaListBean;
 import com.truthower.suhang.mangareader.business.detail.WebMangaDetailsActivity;
@@ -37,6 +35,7 @@ import com.truthower.suhang.mangareader.spider.SpiderBase;
 import com.truthower.suhang.mangareader.test.TestActivity;
 import com.truthower.suhang.mangareader.utils.BaseParameterUtil;
 import com.truthower.suhang.mangareader.utils.MatchStringUtil;
+import com.truthower.suhang.mangareader.utils.PermissionUtil;
 import com.truthower.suhang.mangareader.utils.ShareObjUtil;
 import com.truthower.suhang.mangareader.utils.SharedPreferencesUtils;
 import com.truthower.suhang.mangareader.widget.bar.TopBar;
@@ -474,7 +473,7 @@ public class OnlineMangaFragment extends BaseFragment implements PullToRefreshBa
         });
         webSelector.show();
         webSelector.setWheelViewTitle("选择站点");
-        if (LoginBean.getInstance().isMaster()) {
+        if (PermissionUtil.isMaster()) {
             webSelector.initOptionsData(Configure.masterWebsList);
         } else {
             webSelector.initOptionsData(Configure.websList);

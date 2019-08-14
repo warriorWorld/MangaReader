@@ -25,7 +25,6 @@ import com.truthower.suhang.mangareader.sort.FileComparatorAllNum;
 import com.truthower.suhang.mangareader.sort.FileComparatorDirectory;
 import com.truthower.suhang.mangareader.sort.FileComparatorWithBracket;
 import com.truthower.suhang.mangareader.spider.FileSpider;
-import com.truthower.suhang.mangareader.spider.SpiderBase;
 import com.truthower.suhang.mangareader.utils.ReplaceUtil;
 import com.truthower.suhang.mangareader.widget.bar.TopBar;
 import com.truthower.suhang.mangareader.widget.dialog.ListDialog;

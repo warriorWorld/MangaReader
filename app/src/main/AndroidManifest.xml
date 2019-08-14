@@ -107,11 +107,5 @@
         <meta-data
             android:name="UMENG_MESSAGE_SECRET"
             android:value="7f36f57339fc5c5549fd9ac474f2ff50"></meta-data>
-        <!--bmob-->
-        <provider
-            android:name="cn.bmob.v3.util.BmobContentProvider"
-            android:authorities="com.truthower.suhang.mangareader.BmobContentProvider">
-        </provider>
-        <!--bmob-->
     </application>
 </manifest>

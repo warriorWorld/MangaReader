@@ -10,6 +10,8 @@ android {
         versionCode 43
         versionName "4.0.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        //分包 65535
+        multiDexEnabled true
     }
     buildTypes {
         release {
@@ -18,8 +20,6 @@ android {
         }
     }
     sourceSets.main.jniLibs.srcDirs = ['libs']//YOUDAO OCR
-    //bmob
-    useLibrary 'org.apache.http.legacy'
 }
 
 dependencies {
@@ -42,7 +42,6 @@ dependencies {
     implementation 'com.commit451:PhotoView:1.2.5'
     implementation 'org.adw.library:discrete-seekbar:1.0.1'
     implementation files('libs/Volley.jar')
-    implementation files('libs/gson-2.1.jar')
     //google的flexbox
     implementation 'com.google.android:flexbox:0.3.0'
     //上下拉刷新
@@ -63,12 +62,7 @@ dependencies {
     //圆角
     implementation 'com.makeramen:roundedimageview:2.3.0'
     implementation 'com.github.warriorWorld:StyleLibrary:1.0.7'
-    //bmob
-    implementation 'cn.bmob.android:bmob-sdk:3.7.3-rc1'
-    implementation "io.reactivex.rxjava2:rxjava:2.2.2"
-    implementation 'io.reactivex.rxjava2:rxandroid:2.1.0'
-    implementation 'com.squareup.okio:okio:2.1.0'
     implementation 'com.google.code.gson:gson:2.8.5'
-    implementation 'com.squareup.okhttp3:okhttp:3.12.0'
-    //bmob
+    //分包 65535
+    implementation 'com.android.support:multidex:1.0.0'
 }

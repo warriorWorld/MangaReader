@@ -1,6 +1,5 @@
 package com.truthower.suhang.mangareader.business.main;
 
-import android.Manifest;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
@@ -8,13 +7,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.avos.avoscloud.AVException;
-import com.avos.avoscloud.AVFile;
-import com.avos.avoscloud.AVObject;
-import com.avos.avoscloud.AVQuery;
-import com.avos.avoscloud.FindCallback;
-import com.avos.avoscloud.GetDataCallback;
-import com.avos.avoscloud.ProgressCallback;
 import com.truthower.suhang.mangareader.R;
 import com.truthower.suhang.mangareader.base.BaseFragment;
 import com.truthower.suhang.mangareader.base.BaseFragmentActivity;
@@ -24,15 +16,12 @@ import com.truthower.suhang.mangareader.eventbus.EventBusEvent;
 import com.truthower.suhang.mangareader.eventbus.JumpEvent;
 import com.truthower.suhang.mangareader.eventbus.TagClickEvent;
 import com.truthower.suhang.mangareader.listener.OnShareAppClickListener;
-import com.truthower.suhang.mangareader.spider.FileSpider;
-import com.truthower.suhang.mangareader.utils.LeanCloundUtil;
 import com.truthower.suhang.mangareader.utils.SharedPreferencesUtils;
 import com.truthower.suhang.mangareader.widget.dialog.MangaDialog;
 import com.truthower.suhang.mangareader.widget.dialog.QrDialog;
 
 import org.greenrobot.eventbus.Subscribe;
 
-import java.io.File;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -64,7 +53,6 @@ public class MainActivity extends BaseFragmentActivity implements View.OnClickLi
     private BaseFragment curFragment;
 
     private MangaDialog logoutDialog;
-    private AVFile downloadFile;
     private String versionName;
     private String qrFilePaht;
 
@@ -82,24 +70,24 @@ public class MainActivity extends BaseFragmentActivity implements View.OnClickLi
     }
 
     private void doGetAnnouncement() {
-        AVQuery<AVObject> query = new AVQuery<>("Announcement");
-        query.findInBackground(new FindCallback<AVObject>() {
-            @Override
-            public void done(List<AVObject> list, AVException e) {
-                if (LeanCloundUtil.handleLeanResult(MainActivity.this, e)) {
-                    if (null != list && list.size() > 0) {
-                        String title = list.get(0).getString("title");
-                        String message = list.get(0).getString("message");
-                        DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
-                        String date = df.format(new Date());
-                        if (!date.equals(SharedPreferencesUtils.getSharedPreferencesData(
-                                MainActivity.this, ShareKeys.ANNOUNCEMENT_READ_KEY))) {
-                            showAnnouncementDialog(title, message);
-                        }
-                    }
-                }
-            }
-        });
+//        AVQuery<AVObject> query = new AVQuery<>("Announcement");
+//        query.findInBackground(new FindCallback<AVObject>() {
+//            @Override
+//            public void done(List<AVObject> list, AVException e) {
+//                if (LeanCloundUtil.handleLeanResult(MainActivity.this, e)) {
+//                    if (null != list && list.size() > 0) {
+//                        String title = list.get(0).getString("title");
+//                        String message = list.get(0).getString("message");
+//                        DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+//                        String date = df.format(new Date());
+//                        if (!date.equals(SharedPreferencesUtils.getSharedPreferencesData(
+//                                MainActivity.this, ShareKeys.ANNOUNCEMENT_READ_KEY))) {
+//                            showAnnouncementDialog(title, message);
+//                        }
+//                    }
+//                }
+//            }
+//        });
     }
 
 
@@ -138,61 +126,61 @@ public class MainActivity extends BaseFragmentActivity implements View.OnClickLi
     }
 
     private void doGetVersionInfo() {
-        AVQuery<AVObject> query = new AVQuery<>("VersionInfo");
-        query.findInBackground(new FindCallback<AVObject>() {
-            @Override
-            public void done(List<AVObject> list, AVException e) {
-                if (LeanCloundUtil.handleLeanResult(MainActivity.this, e)) {
-                    if (null != list && list.size() > 0) {
-                        versionName = list.get(0).getString("versionName");
-                        downloadFile = list.get(0).getAVFile("QRcode");
-                        if (null != downloadFile) {
-                            doDownloadQRcode();
-                        }
-                    }
-                }
-            }
-        });
+//        AVQuery<AVObject> query = new AVQuery<>("VersionInfo");
+//        query.findInBackground(new FindCallback<AVObject>() {
+//            @Override
+//            public void done(List<AVObject> list, AVException e) {
+//                if (LeanCloundUtil.handleLeanResult(MainActivity.this, e)) {
+//                    if (null != list && list.size() > 0) {
+//                        versionName = list.get(0).getString("versionName");
+//                        downloadFile = list.get(0).getAVFile("QRcode");
+//                        if (null != downloadFile) {
+//                            doDownloadQRcode();
+//                        }
+//                    }
+//                }
+//            }
+//        });
     }
 
     @AfterPermissionGranted(Configure.PERMISSION_FILE_REQUST_CODE)
     private void doDownloadQRcode() {
-        String[] perms = {Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE};
-        if (EasyPermissions.hasPermissions(this, perms)) {
-            // Already have permission, do the thing
-            // ...
-            final String folderPath = Configure.DOWNLOAD_PATH;
-            final File file = new File(folderPath);
-            if (!file.exists()) {
-                file.mkdirs();
-            }
-            final String qrFileName = "QR" + versionName + ".png";
-            qrFilePaht = Configure.DOWNLOAD_PATH + "/" + qrFileName;
-            final File qrFile = new File(qrFilePaht);
-            if (qrFile.exists()) {
-                //有就不下了
-                return;
-            }
-            downloadFile.getDataInBackground(new GetDataCallback() {
-                @Override
-                public void done(byte[] bytes, AVException e) {
-                    // bytes 就是文件的数据流
-                    if (LeanCloundUtil.handleLeanResult(MainActivity.this, e)) {
-                        File apkFile = FileSpider.getInstance().byte2File(bytes, folderPath, qrFileName);
-                    }
-                }
-            }, new ProgressCallback() {
-                @Override
-                public void done(Integer integer) {
-                    // 下载进度数据，integer 介于 0 和 100。
-                }
-            });
-
-        } else {
-            // Do not have permissions, request them now
-            EasyPermissions.requestPermissions(this, "我们需要写入/读取权限",
-                    Configure.PERMISSION_FILE_REQUST_CODE, perms);
-        }
+//        String[] perms = {Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE};
+//        if (EasyPermissions.hasPermissions(this, perms)) {
+//            // Already have permission, do the thing
+//            // ...
+//            final String folderPath = Configure.DOWNLOAD_PATH;
+//            final File file = new File(folderPath);
+//            if (!file.exists()) {
+//                file.mkdirs();
+//            }
+//            final String qrFileName = "QR" + versionName + ".png";
+//            qrFilePaht = Configure.DOWNLOAD_PATH + "/" + qrFileName;
+//            final File qrFile = new File(qrFilePaht);
+//            if (qrFile.exists()) {
+//                //有就不下了
+//                return;
+//            }
+//            downloadFile.getDataInBackground(new GetDataCallback() {
+//                @Override
+//                public void done(byte[] bytes, AVException e) {
+//                    // bytes 就是文件的数据流
+//                    if (LeanCloundUtil.handleLeanResult(MainActivity.this, e)) {
+//                        File apkFile = FileSpider.getInstance().byte2File(bytes, folderPath, qrFileName);
+//                    }
+//                }
+//            }, new ProgressCallback() {
+//                @Override
+//                public void done(Integer integer) {
+//                    // 下载进度数据，integer 介于 0 和 100。
+//                }
+//            });
+//
+//        } else {
+//            // Do not have permissions, request them now
+//            EasyPermissions.requestPermissions(this, "我们需要写入/读取权限",
+//                    Configure.PERMISSION_FILE_REQUST_CODE, perms);
+//        }
     }
 
     private void showQrDialog() {

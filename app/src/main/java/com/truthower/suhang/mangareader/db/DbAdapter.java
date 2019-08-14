@@ -4,7 +4,6 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
-import com.truthower.suhang.mangareader.bean.StatisticsBean;
 import com.truthower.suhang.mangareader.bean.WordsBookBean;
 import com.truthower.suhang.mangareader.config.Configure;
 
@@ -109,93 +108,6 @@ public class DbAdapter {
     public void deleteWordByWord(String word) {
         db.execSQL("delete from WordsBook where word=?",
                 new Object[]{word});
-    }
-
-
-    /**
-     * 插入一条统计信息
-     */
-    private void insertStatiscticsTb(int query_word_c, int read_page, String manga_name) {
-//        if (queryStatisticsed(book_name)) {
-//            updateStatistics(dateEnd, query_word_c, book_name);
-//        } else {
-        db.execSQL(
-                "insert into STATISTICS (query_word_c,read_page,manga_name) values (?,?,?)",
-                new Object[]{query_word_c, read_page, manga_name});
-//        }
-    }
-
-    /**
-     * 更新统计信息
-     */
-    public void updateStatistics(int query_word_c, int read_page, String manga_name) {
-        //初始记录
-        if (isStatisticsed(manga_name)) {
-            StatisticsBean item = queryStatisticsByBookName(manga_name);
-            int query = item.getQuery_word_c() + query_word_c;
-            int read = item.getRead_page() + read_page;
-            db.execSQL("update STATISTICS set query_word_c=?,read_page=? where manga_name=?",
-                    new Object[]{query, read, manga_name});
-        } else {
-            insertStatiscticsTb(query_word_c, read_page, manga_name);
-        }
-    }
-
-    /**
-     * 查询统计数据是否已经添加过
-     */
-    public boolean isStatisticsed(String manga_name) {
-        Cursor cursor = db.rawQuery(
-                "select * from STATISTICS where manga_name=?",
-                new String[]{manga_name});
-        int count = cursor.getCount();
-        cursor.close();
-        if (count > 0) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    public StatisticsBean queryStatisticsByBookName(String manga_name) {
-        Cursor cursor = db.rawQuery(
-                "select * from STATISTICS where manga_name=?",
-                new String[]{manga_name});
-        StatisticsBean item = new StatisticsBean();
-        int count = cursor.getCount();
-        if (count > 0) {
-            while (cursor.moveToNext()) {
-                int query_word_c = cursor.getInt(cursor.getColumnIndex("query_word_c"));
-                int read_page = cursor.getInt(cursor.getColumnIndex("read_page"));
-                item.setManga_name(manga_name);
-                item.setQuery_word_c(query_word_c);
-                item.setRead_page(read_page);
-            }
-        }
-        cursor.close();
-        return item;
-    }
-
-    /**
-     * 查询统计数据
-     */
-    public ArrayList<StatisticsBean> queryAllStatistic() {
-        ArrayList<StatisticsBean> list = new ArrayList<StatisticsBean>();
-        Cursor cursor = db
-                .query("STATISTICS", null, null, null, null, null, null);
-        while (cursor.moveToNext()) {
-            StatisticsBean item = new StatisticsBean();
-            String manga_name = cursor.getString(cursor
-                    .getColumnIndex("manga_name"));
-            int query_word_c = cursor.getInt(cursor.getColumnIndex("query_word_c"));
-            int read_page = cursor.getInt(cursor.getColumnIndex("read_page"));
-            item.setManga_name(manga_name);
-            item.setQuery_word_c(query_word_c);
-            item.setRead_page(read_page);
-            list.add(item);
-        }
-        cursor.close();
-        return list;
     }
 
     /**

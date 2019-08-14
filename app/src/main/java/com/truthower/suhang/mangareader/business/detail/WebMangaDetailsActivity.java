@@ -14,15 +14,6 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.avos.avoscloud.AVCloudQueryResult;
-import com.avos.avoscloud.AVException;
-import com.avos.avoscloud.AVObject;
-import com.avos.avoscloud.AVQuery;
-import com.avos.avoscloud.CloudQueryCallback;
-import com.avos.avoscloud.CountCallback;
-import com.avos.avoscloud.FindCallback;
-import com.avos.avoscloud.GetCallback;
-import com.avos.avoscloud.SaveCallback;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.truthower.suhang.mangareader.R;
 import com.truthower.suhang.mangareader.adapter.OneShotDetailsAdapter;
@@ -31,12 +22,9 @@ import com.truthower.suhang.mangareader.base.TTSActivity;
 import com.truthower.suhang.mangareader.bean.ChapterBean;
 import com.truthower.suhang.mangareader.bean.DownloadBean;
 import com.truthower.suhang.mangareader.bean.GradeBean;
-import com.truthower.suhang.mangareader.bean.LoginBean;
 import com.truthower.suhang.mangareader.bean.MangaBean;
-import com.truthower.suhang.mangareader.business.comment.CommentActivity;
 import com.truthower.suhang.mangareader.business.download.DownloadActivity;
 import com.truthower.suhang.mangareader.business.download.DownloadMangaManager;
-import com.truthower.suhang.mangareader.business.gesture.SetGestureActivity;
 import com.truthower.suhang.mangareader.business.main.MainActivity;
 import com.truthower.suhang.mangareader.business.read.ReadMangaActivity;
 import com.truthower.suhang.mangareader.business.search.SearchActivity;
@@ -52,17 +40,15 @@ import com.truthower.suhang.mangareader.listener.OnSevenFourteenListDialogListen
 import com.truthower.suhang.mangareader.spider.SpiderBase;
 import com.truthower.suhang.mangareader.utils.ActivityPoor;
 import com.truthower.suhang.mangareader.utils.BaseParameterUtil;
-import com.truthower.suhang.mangareader.utils.LeanCloundUtil;
 import com.truthower.suhang.mangareader.utils.NumberUtil;
+import com.truthower.suhang.mangareader.utils.PermissionUtil;
 import com.truthower.suhang.mangareader.utils.SharedPreferencesUtils;
-import com.truthower.suhang.mangareader.utils.ThreeDESUtil;
 import com.truthower.suhang.mangareader.utils.UltimateTextSizeUtil;
 import com.truthower.suhang.mangareader.widget.bar.TopBar;
 import com.truthower.suhang.mangareader.widget.dialog.GestureDialog;
 import com.truthower.suhang.mangareader.widget.dialog.GradeDialog;
 import com.truthower.suhang.mangareader.widget.dialog.ListDialog;
 import com.truthower.suhang.mangareader.widget.dialog.MangaDialog;
-import com.truthower.suhang.mangareader.widget.dialog.SingleLoadBarUtil;
 import com.truthower.suhang.mangareader.widget.layout.StarLinearlayout;
 import com.truthower.suhang.mangareader.widget.popupwindow.EasyPopupWindow;
 import com.truthower.suhang.mangareader.widget.pulltorefresh.PullToRefreshBase;
@@ -72,7 +58,6 @@ import com.truthower.suhang.mangareader.widget.wheelview.wheelselector.SingleSel
 import org.greenrobot.eventbus.EventBus;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import pub.devrel.easypermissions.AfterPermissionGranted;
@@ -208,7 +193,7 @@ public class WebMangaDetailsActivity extends TTSActivity implements AdapterView.
                         loadBar.dismiss();
                         if (error.equals(Configure.WRONG_WEBSITE_EXCEPTION)) {
                             try {
-                                if (LoginBean.getInstance().isMaster()) {
+                                if (PermissionUtil.isMaster()) {
                                     BaseParameterUtil.getInstance().saveCurrentWebSite(WebMangaDetailsActivity.this, Configure.masterWebsList[trySpiderPosition]);
                                 } else {
                                     BaseParameterUtil.getInstance().saveCurrentWebSite(WebMangaDetailsActivity.this, Configure.websList[trySpiderPosition]);
@@ -340,10 +325,6 @@ public class WebMangaDetailsActivity extends TTSActivity implements AdapterView.
 
             @Override
             public void onRightClick() {
-                if (TextUtils.isEmpty(LoginBean.getInstance().getUserName(WebMangaDetailsActivity.this))) {
-                    baseToast.showToast("请先登录");
-                    return;
-                }
                 if (isForAdult()) {
                     doGetGesture();
                 } else {
@@ -409,53 +390,53 @@ public class WebMangaDetailsActivity extends TTSActivity implements AdapterView.
     }
 
     private void doGetGesture(final int position) {
-        String userName = LoginBean.getInstance().getUserName(this);
-        if (TextUtils.isEmpty(userName)) {
-            return;
-        }
-        SingleLoadBarUtil.getInstance().showLoadBar(this);
-
-        AVQuery<AVObject> query = new AVQuery<>("Gesture");
-        query.whereEqualTo("owner", userName);
-        query.getFirstInBackground(new GetCallback<AVObject>() {
-            @Override
-            public void done(final AVObject account, AVException e) {
-                SingleLoadBarUtil.getInstance().dismissLoadBar();
-                if (null == account) {
-                    toReadActivity(position);
-                } else {
-                    if (LeanCloundUtil.handleLeanResult(WebMangaDetailsActivity.this, e)) {
-                        String password = account.getString("password");
-                        showGestureDialog(position, password);
-                    }
-                }
-            }
-        });
+//        String userName = LoginBean.getInstance().getUserName(this);
+//        if (TextUtils.isEmpty(userName)) {
+//            return;
+//        }
+//        SingleLoadBarUtil.getInstance().showLoadBar(this);
+//
+//        AVQuery<AVObject> query = new AVQuery<>("Gesture");
+//        query.whereEqualTo("owner", userName);
+//        query.getFirstInBackground(new GetCallback<AVObject>() {
+//            @Override
+//            public void done(final AVObject account, AVException e) {
+//                SingleLoadBarUtil.getInstance().dismissLoadBar();
+//                if (null == account) {
+//                    toReadActivity(position);
+//                } else {
+//                    if (LeanCloundUtil.handleLeanResult(WebMangaDetailsActivity.this, e)) {
+//                        String password = account.getString("password");
+//                        showGestureDialog(position, password);
+//                    }
+//                }
+//            }
+//        });
     }
 
     private void doGetGesture() {
-        String userName = LoginBean.getInstance().getUserName(this);
-        if (TextUtils.isEmpty(userName)) {
-            return;
-        }
-        SingleLoadBarUtil.getInstance().showLoadBar(this);
-
-        AVQuery<AVObject> query = new AVQuery<>("Gesture");
-        query.whereEqualTo("owner", userName);
-        query.getFirstInBackground(new GetCallback<AVObject>() {
-            @Override
-            public void done(final AVObject account, AVException e) {
-                SingleLoadBarUtil.getInstance().dismissLoadBar();
-                if (null == account) {
-                    showOptionsSelectorDialog();
-                } else {
-                    if (LeanCloundUtil.handleLeanResult(WebMangaDetailsActivity.this, e)) {
-                        String password = account.getString("password");
-                        showGestureDialog(password);
-                    }
-                }
-            }
-        });
+//        String userName = LoginBean.getInstance().getUserName(this);
+//        if (TextUtils.isEmpty(userName)) {
+//            return;
+//        }
+//        SingleLoadBarUtil.getInstance().showLoadBar(this);
+//
+//        AVQuery<AVObject> query = new AVQuery<>("Gesture");
+//        query.whereEqualTo("owner", userName);
+//        query.getFirstInBackground(new GetCallback<AVObject>() {
+//            @Override
+//            public void done(final AVObject account, AVException e) {
+//                SingleLoadBarUtil.getInstance().dismissLoadBar();
+//                if (null == account) {
+//                    showOptionsSelectorDialog();
+//                } else {
+//                    if (LeanCloundUtil.handleLeanResult(WebMangaDetailsActivity.this, e)) {
+//                        String password = account.getString("password");
+//                        showGestureDialog(password);
+//                    }
+//                }
+//            }
+//        });
     }
 
     private void showGestureDialog(final int position, String answer) {
@@ -631,188 +612,188 @@ public class WebMangaDetailsActivity extends TTSActivity implements AdapterView.
      * 给已收藏的漫画置顶
      */
     private void doTopThisManga(final boolean isTop) {
-        if (TextUtils.isEmpty(LoginBean.getInstance().getUserName(this))) {
-            return;
-        }
-        SingleLoadBarUtil.getInstance().showLoadBar(WebMangaDetailsActivity.this);
-        AVQuery<AVObject> query1 = new AVQuery<>("Collected");
-        query1.whereEqualTo("mangaUrl", mangaUrl);
-
-        AVQuery<AVObject> query2 = new AVQuery<>("Collected");
-        query2.whereEqualTo("owner", LoginBean.getInstance().getUserName());
-        AVQuery<AVObject> query = AVQuery.and(Arrays.asList(query1, query2));
-        query.findInBackground(new FindCallback<AVObject>() {
-            @Override
-            public void done(List<AVObject> list, AVException e) {
-                SingleLoadBarUtil.getInstance().dismissLoadBar();
-                if (LeanCloundUtil.handleLeanResult(WebMangaDetailsActivity.this, e)) {
-                    if (null != list && list.size() > 0) {
-                        //已存在的保存
-                        AVObject object = AVObject.createWithoutData("Collected", list.get(0).getObjectId());
-                        object.put("top", isTop);
-                        object.saveInBackground(new SaveCallback() {
-                            @Override
-                            public void done(AVException e) {
-                                if (LeanCloundUtil.handleLeanResult(WebMangaDetailsActivity.this, e)) {
-                                    if (isTop) {
-                                        baseToast.showToast("设置正在追更成功!");
-                                    } else {
-                                        baseToast.showToast("取消正在追更成功!");
-                                    }
-                                    isTopied = isTop;
-                                }
-                            }
-                        });
-                    } else {
-                        //一定不会是新建的
-                    }
-                }
-            }
-        });
+//        if (TextUtils.isEmpty(LoginBean.getInstance().getUserName(this))) {
+//            return;
+//        }
+//        SingleLoadBarUtil.getInstance().showLoadBar(WebMangaDetailsActivity.this);
+//        AVQuery<AVObject> query1 = new AVQuery<>("Collected");
+//        query1.whereEqualTo("mangaUrl", mangaUrl);
+//
+//        AVQuery<AVObject> query2 = new AVQuery<>("Collected");
+//        query2.whereEqualTo("owner", LoginBean.getInstance().getUserName());
+//        AVQuery<AVObject> query = AVQuery.and(Arrays.asList(query1, query2));
+//        query.findInBackground(new FindCallback<AVObject>() {
+//            @Override
+//            public void done(List<AVObject> list, AVException e) {
+//                SingleLoadBarUtil.getInstance().dismissLoadBar();
+//                if (LeanCloundUtil.handleLeanResult(WebMangaDetailsActivity.this, e)) {
+//                    if (null != list && list.size() > 0) {
+//                        //已存在的保存
+//                        AVObject object = AVObject.createWithoutData("Collected", list.get(0).getObjectId());
+//                        object.put("top", isTop);
+//                        object.saveInBackground(new SaveCallback() {
+//                            @Override
+//                            public void done(AVException e) {
+//                                if (LeanCloundUtil.handleLeanResult(WebMangaDetailsActivity.this, e)) {
+//                                    if (isTop) {
+//                                        baseToast.showToast("设置正在追更成功!");
+//                                    } else {
+//                                        baseToast.showToast("取消正在追更成功!");
+//                                    }
+//                                    isTopied = isTop;
+//                                }
+//                            }
+//                        });
+//                    } else {
+//                        //一定不会是新建的
+//                    }
+//                }
+//            }
+//        });
     }
 
     /**
      * 给已收藏的漫画标记为已看完
      */
     private void doFinishedThisManga(final boolean isFinished) {
-        if (TextUtils.isEmpty(LoginBean.getInstance().getUserName(this))) {
-            return;
-        }
-        SingleLoadBarUtil.getInstance().showLoadBar(WebMangaDetailsActivity.this);
-        AVQuery<AVObject> query1 = new AVQuery<>("Collected");
-        query1.whereEqualTo("mangaUrl", mangaUrl);
-
-        AVQuery<AVObject> query2 = new AVQuery<>("Collected");
-        query2.whereEqualTo("owner", LoginBean.getInstance().getUserName());
-        AVQuery<AVObject> query = AVQuery.and(Arrays.asList(query1, query2));
-        query.findInBackground(new FindCallback<AVObject>() {
-            @Override
-            public void done(List<AVObject> list, AVException e) {
-                SingleLoadBarUtil.getInstance().dismissLoadBar();
-                if (LeanCloundUtil.handleLeanResult(WebMangaDetailsActivity.this, e)) {
-                    if (null != list && list.size() > 0) {
-                        //已存在的保存
-                        AVObject object = AVObject.createWithoutData("Collected", list.get(0).getObjectId());
-                        object.put("finished", isFinished);
-                        object.saveInBackground(new SaveCallback() {
-                            @Override
-                            public void done(AVException e) {
-                                if (LeanCloundUtil.handleLeanResult(WebMangaDetailsActivity.this, e)) {
-                                    if (isFinished) {
-                                        baseToast.showToast("设置已经看完成功!");
-                                    } else {
-                                        baseToast.showToast("取消已经看完成功!");
-                                    }
-                                    WebMangaDetailsActivity.this.isFinished = isFinished;
-                                }
-                            }
-                        });
-                    } else {
-                        //一定不会是新建的
-                    }
-                }
-            }
-        });
+//        if (TextUtils.isEmpty(LoginBean.getInstance().getUserName(this))) {
+//            return;
+//        }
+//        SingleLoadBarUtil.getInstance().showLoadBar(WebMangaDetailsActivity.this);
+//        AVQuery<AVObject> query1 = new AVQuery<>("Collected");
+//        query1.whereEqualTo("mangaUrl", mangaUrl);
+//
+//        AVQuery<AVObject> query2 = new AVQuery<>("Collected");
+//        query2.whereEqualTo("owner", LoginBean.getInstance().getUserName());
+//        AVQuery<AVObject> query = AVQuery.and(Arrays.asList(query1, query2));
+//        query.findInBackground(new FindCallback<AVObject>() {
+//            @Override
+//            public void done(List<AVObject> list, AVException e) {
+//                SingleLoadBarUtil.getInstance().dismissLoadBar();
+//                if (LeanCloundUtil.handleLeanResult(WebMangaDetailsActivity.this, e)) {
+//                    if (null != list && list.size() > 0) {
+//                        //已存在的保存
+//                        AVObject object = AVObject.createWithoutData("Collected", list.get(0).getObjectId());
+//                        object.put("finished", isFinished);
+//                        object.saveInBackground(new SaveCallback() {
+//                            @Override
+//                            public void done(AVException e) {
+//                                if (LeanCloundUtil.handleLeanResult(WebMangaDetailsActivity.this, e)) {
+//                                    if (isFinished) {
+//                                        baseToast.showToast("设置已经看完成功!");
+//                                    } else {
+//                                        baseToast.showToast("取消已经看完成功!");
+//                                    }
+//                                    WebMangaDetailsActivity.this.isFinished = isFinished;
+//                                }
+//                            }
+//                        });
+//                    } else {
+//                        //一定不会是新建的
+//                    }
+//                }
+//            }
+//        });
     }
 
     private void doGetIsCollected() {
-        if (TextUtils.isEmpty(LoginBean.getInstance().getUserName())) {
-            return;
-        }
-        SingleLoadBarUtil.getInstance().showLoadBar(WebMangaDetailsActivity.this);
-        AVQuery<AVObject> query1 = new AVQuery<>("Collected");
-        query1.whereEqualTo("mangaUrl", mangaUrl);
-
-        AVQuery<AVObject> query2 = new AVQuery<>("Collected");
-        query2.whereEqualTo("owner", LoginBean.getInstance().getUserName());
-        AVQuery<AVObject> query = AVQuery.and(Arrays.asList(query1, query2));
-        query.findInBackground(new FindCallback<AVObject>() {
-            @Override
-            public void done(List<AVObject> list, AVException e) {
-                SingleLoadBarUtil.getInstance().dismissLoadBar();
-                if (LeanCloundUtil.handleLeanResult(WebMangaDetailsActivity.this, e)) {
-                    if (null != list && list.size() > 0) {
-                        collectedId = list.get(0).getObjectId();
-                        isCollected = true;
-                        isTopied = list.get(0).getBoolean("top");
-                        isFinished = list.get(0).getBoolean("finished");
-                    } else {
-                        collectedId = "";
-                        isCollected = false;
-                        isTopied = false;
-                        isFinished = false;
-                    }
-                    toggleCollect();
-                }
-            }
-        });
+//        if (TextUtils.isEmpty(LoginBean.getInstance().getUserName())) {
+//            return;
+//        }
+//        SingleLoadBarUtil.getInstance().showLoadBar(WebMangaDetailsActivity.this);
+//        AVQuery<AVObject> query1 = new AVQuery<>("Collected");
+//        query1.whereEqualTo("mangaUrl", mangaUrl);
+//
+//        AVQuery<AVObject> query2 = new AVQuery<>("Collected");
+//        query2.whereEqualTo("owner", LoginBean.getInstance().getUserName());
+//        AVQuery<AVObject> query = AVQuery.and(Arrays.asList(query1, query2));
+//        query.findInBackground(new FindCallback<AVObject>() {
+//            @Override
+//            public void done(List<AVObject> list, AVException e) {
+//                SingleLoadBarUtil.getInstance().dismissLoadBar();
+//                if (LeanCloundUtil.handleLeanResult(WebMangaDetailsActivity.this, e)) {
+//                    if (null != list && list.size() > 0) {
+//                        collectedId = list.get(0).getObjectId();
+//                        isCollected = true;
+//                        isTopied = list.get(0).getBoolean("top");
+//                        isFinished = list.get(0).getBoolean("finished");
+//                    } else {
+//                        collectedId = "";
+//                        isCollected = false;
+//                        isTopied = false;
+//                        isFinished = false;
+//                    }
+//                    toggleCollect();
+//                }
+//            }
+//        });
     }
 
     private void doCollect() {
-        String userName = LoginBean.getInstance().getUserName(this);
-        if (TextUtils.isEmpty(userName)) {
-            return;
-        }
-        SingleLoadBarUtil.getInstance().showLoadBar(WebMangaDetailsActivity.this);
-        String webThumbnailUrl = currentManga.getWebThumbnailUrl();
-        String mangaName = currentManga.getName();
-
-        AVObject object = new AVObject("Collected");
-        object.put("owner", userName);
-        object.put("webThumbnailUrl", webThumbnailUrl);
-        object.put("mangaUrl", mangaUrl);
-        object.put("mangaName", mangaName);
-        object.saveInBackground(new SaveCallback() {
-            @Override
-            public void done(AVException e) {
-                SingleLoadBarUtil.getInstance().dismissLoadBar();
-                if (LeanCloundUtil.handleLeanResult(WebMangaDetailsActivity.this, e)) {
-                    baseToast.showToast("收藏成功");
-                    doGetIsCollected();
-                }
-            }
-        });
+//        String userName = LoginBean.getInstance().getUserName(this);
+//        if (TextUtils.isEmpty(userName)) {
+//            return;
+//        }
+//        SingleLoadBarUtil.getInstance().showLoadBar(WebMangaDetailsActivity.this);
+//        String webThumbnailUrl = currentManga.getWebThumbnailUrl();
+//        String mangaName = currentManga.getName();
+//
+//        AVObject object = new AVObject("Collected");
+//        object.put("owner", userName);
+//        object.put("webThumbnailUrl", webThumbnailUrl);
+//        object.put("mangaUrl", mangaUrl);
+//        object.put("mangaName", mangaName);
+//        object.saveInBackground(new SaveCallback() {
+//            @Override
+//            public void done(AVException e) {
+//                SingleLoadBarUtil.getInstance().dismissLoadBar();
+//                if (LeanCloundUtil.handleLeanResult(WebMangaDetailsActivity.this, e)) {
+//                    baseToast.showToast("收藏成功");
+//                    doGetIsCollected();
+//                }
+//            }
+//        });
     }
 
     private void doGetGrade() {
-        SingleLoadBarUtil.getInstance().showLoadBar(WebMangaDetailsActivity.this);
-        AVQuery<AVObject> query = new AVQuery<>("Grade");
-        query.whereEqualTo("manga_name", currentManga.getName());
-        query.limit(999);
-        query.findInBackground(new FindCallback<AVObject>() {
-            @Override
-            public void done(List<AVObject> list, AVException e) {
-                SingleLoadBarUtil.getInstance().dismissLoadBar();
-                if (LeanCloundUtil.handleLeanResult(WebMangaDetailsActivity.this, e)) {
-                    if (null != list && list.size() > 0) {
-                        gradeList = new ArrayList<>();
-                        GradeBean item;
-                        for (int i = 0; i < list.size(); i++) {
-                            item = new GradeBean();
-                            item.setMangaName(list.get(i).getString("manga_name"));
-                            item.setMangaUrl(list.get(i).getString("mangaUrl"));
-                            item.setStar(list.get(i).getInt("star"));
-                            item.setOwner(list.get(i).getString("owner"));
-                            gradeList.add(item);
-                        }
-                    }
-                    refreshGrade();
-                }
-            }
-        });
+//        SingleLoadBarUtil.getInstance().showLoadBar(WebMangaDetailsActivity.this);
+//        AVQuery<AVObject> query = new AVQuery<>("Grade");
+//        query.whereEqualTo("manga_name", currentManga.getName());
+//        query.limit(999);
+//        query.findInBackground(new FindCallback<AVObject>() {
+//            @Override
+//            public void done(List<AVObject> list, AVException e) {
+//                SingleLoadBarUtil.getInstance().dismissLoadBar();
+//                if (LeanCloundUtil.handleLeanResult(WebMangaDetailsActivity.this, e)) {
+//                    if (null != list && list.size() > 0) {
+//                        gradeList = new ArrayList<>();
+//                        GradeBean item;
+//                        for (int i = 0; i < list.size(); i++) {
+//                            item = new GradeBean();
+//                            item.setMangaName(list.get(i).getString("manga_name"));
+//                            item.setMangaUrl(list.get(i).getString("mangaUrl"));
+//                            item.setStar(list.get(i).getInt("star"));
+//                            item.setOwner(list.get(i).getString("owner"));
+//                            gradeList.add(item);
+//                        }
+//                    }
+//                    refreshGrade();
+//                }
+//            }
+//        });
     }
 
     private void doGetCommentCount() {
-        AVQuery<AVObject> query = new AVQuery<>("Comment");
-        query.whereEqualTo("mangaUrl", mangaUrl);
-        query.countInBackground(new CountCallback() {
-            @Override
-            public void done(int i, AVException e) {
-                if (LeanCloundUtil.handleLeanResult(WebMangaDetailsActivity.this, e)) {
-                    commentCountTv.setText(i + "");
-                }
-            }
-        });
+//        AVQuery<AVObject> query = new AVQuery<>("Comment");
+//        query.whereEqualTo("mangaUrl", mangaUrl);
+//        query.countInBackground(new CountCallback() {
+//            @Override
+//            public void done(int i, AVException e) {
+//                if (LeanCloundUtil.handleLeanResult(WebMangaDetailsActivity.this, e)) {
+//                    commentCountTv.setText(i + "");
+//                }
+//            }
+//        });
     }
 
     private void refreshGrade() {
@@ -832,91 +813,91 @@ public class WebMangaDetailsActivity extends TTSActivity implements AdapterView.
 
 
     private void doGrade(int star) {
-        String userName = LoginBean.getInstance().getUserName(this);
-        if (TextUtils.isEmpty(userName)) {
-            return;
-        }
-        SingleLoadBarUtil.getInstance().showLoadBar(WebMangaDetailsActivity.this);
-        String mangaName = currentManga.getName();
-
-        AVObject object = new AVObject("Grade");
-        object.put("owner", userName);
-        object.put("star", star);
-        object.put("mangaUrl", mangaUrl);
-        object.put("manga_name", mangaName);
-        object.saveInBackground(new SaveCallback() {
-            @Override
-            public void done(AVException e) {
-                SingleLoadBarUtil.getInstance().dismissLoadBar();
-                if (LeanCloundUtil.handleLeanResult(WebMangaDetailsActivity.this, e)) {
-                    baseToast.showToast("评分成功");
-                    doGetGrade();
-                }
-            }
-        });
+//        String userName = LoginBean.getInstance().getUserName(this);
+//        if (TextUtils.isEmpty(userName)) {
+//            return;
+//        }
+//        SingleLoadBarUtil.getInstance().showLoadBar(WebMangaDetailsActivity.this);
+//        String mangaName = currentManga.getName();
+//
+//        AVObject object = new AVObject("Grade");
+//        object.put("owner", userName);
+//        object.put("star", star);
+//        object.put("mangaUrl", mangaUrl);
+//        object.put("manga_name", mangaName);
+//        object.saveInBackground(new SaveCallback() {
+//            @Override
+//            public void done(AVException e) {
+//                SingleLoadBarUtil.getInstance().dismissLoadBar();
+//                if (LeanCloundUtil.handleLeanResult(WebMangaDetailsActivity.this, e)) {
+//                    baseToast.showToast("评分成功");
+//                    doGetGrade();
+//                }
+//            }
+//        });
     }
 
     private void deleteCollected() {
-        if (TextUtils.isEmpty(collectedId)) {
-            return;
-        }
-        SingleLoadBarUtil.getInstance().showLoadBar(WebMangaDetailsActivity.this);
-        // 执行 CQL 语句实现删除一个  对象
-        AVQuery.doCloudQueryInBackground(
-                "delete from Collected where objectId='" + collectedId + "'"
-                , new CloudQueryCallback<AVCloudQueryResult>() {
-                    @Override
-                    public void done(AVCloudQueryResult avCloudQueryResult, AVException e) {
-                        SingleLoadBarUtil.getInstance().dismissLoadBar();
-                        if (LeanCloundUtil.handleLeanResult(WebMangaDetailsActivity.this, e)) {
-                            baseToast.showToast("取消收藏");
-                            isCollected = false;
-                            toggleCollect();
-                        }
-                    }
-                });
+//        if (TextUtils.isEmpty(collectedId)) {
+//            return;
+//        }
+//        SingleLoadBarUtil.getInstance().showLoadBar(WebMangaDetailsActivity.this);
+//        // 执行 CQL 语句实现删除一个  对象
+//        AVQuery.doCloudQueryInBackground(
+//                "delete from Collected where objectId='" + collectedId + "'"
+//                , new CloudQueryCallback<AVCloudQueryResult>() {
+//                    @Override
+//                    public void done(AVCloudQueryResult avCloudQueryResult, AVException e) {
+//                        SingleLoadBarUtil.getInstance().dismissLoadBar();
+//                        if (LeanCloundUtil.handleLeanResult(WebMangaDetailsActivity.this, e)) {
+//                            baseToast.showToast("取消收藏");
+//                            isCollected = false;
+//                            toggleCollect();
+//                        }
+//                    }
+//                });
     }
 
     private void doGetIsRead() {
-        if (!spider.isOneShot()) {
-            return;
-        }
-        if (TextUtils.isEmpty(LoginBean.getInstance().getUserName())) {
-            return;
-        }
-        AVQuery<AVObject> query1 = new AVQuery<>("History");
-        query1.whereEqualTo("mangaName", ThreeDESUtil.encode(Configure.key, currentManga.getName()));
-
-        AVQuery<AVObject> query2 = new AVQuery<>("History");
-        query2.whereEqualTo("owner", LoginBean.getInstance().getUserName());
-        AVQuery<AVObject> query = AVQuery.and(Arrays.asList(query1, query2));
-        query.findInBackground(new FindCallback<AVObject>() {
-            @Override
-            public void done(List<AVObject> list, AVException e) {
-                if (LeanCloundUtil.handleLeanResult(WebMangaDetailsActivity.this, e)) {
-                    if (null != list && list.size() > 0) {
-                        baseTopBar.setTitle("(阅)" + currentManga.getName());
-                    } else {
-                        baseTopBar.setTitle(currentManga.getName());
-                        addToRead();
-                    }
-                }
-            }
-        });
+//        if (!spider.isOneShot()) {
+//            return;
+//        }
+//        if (TextUtils.isEmpty(LoginBean.getInstance().getUserName())) {
+//            return;
+//        }
+//        AVQuery<AVObject> query1 = new AVQuery<>("History");
+//        query1.whereEqualTo("mangaName", ThreeDESUtil.encode(Configure.key, currentManga.getName()));
+//
+//        AVQuery<AVObject> query2 = new AVQuery<>("History");
+//        query2.whereEqualTo("owner", LoginBean.getInstance().getUserName());
+//        AVQuery<AVObject> query = AVQuery.and(Arrays.asList(query1, query2));
+//        query.findInBackground(new FindCallback<AVObject>() {
+//            @Override
+//            public void done(List<AVObject> list, AVException e) {
+//                if (LeanCloundUtil.handleLeanResult(WebMangaDetailsActivity.this, e)) {
+//                    if (null != list && list.size() > 0) {
+//                        baseTopBar.setTitle("(阅)" + currentManga.getName());
+//                    } else {
+//                        baseTopBar.setTitle(currentManga.getName());
+//                        addToRead();
+//                    }
+//                }
+//            }
+//        });
     }
 
     private void addToRead() {
-        if (!spider.isOneShot()) {
-            return;
-        }
-        String userName = LoginBean.getInstance().getUserName(this);
-        if (TextUtils.isEmpty(userName)) {
-            return;
-        }
-        AVObject object = new AVObject("History");
-        object.put("owner", userName);
-        object.put("mangaName", ThreeDESUtil.encode(Configure.key, currentManga.getName()));
-        object.saveInBackground();
+//        if (!spider.isOneShot()) {
+//            return;
+//        }
+//        String userName = LoginBean.getInstance().getUserName(this);
+//        if (TextUtils.isEmpty(userName)) {
+//            return;
+//        }
+//        AVObject object = new AVObject("History");
+//        object.put("owner", userName);
+//        object.put("mangaName", ThreeDESUtil.encode(Configure.key, currentManga.getName()));
+//        object.saveInBackground();
     }
 
     private void showOptionsSelectorDialog() {
@@ -1049,14 +1030,6 @@ public class WebMangaDetailsActivity extends TTSActivity implements AdapterView.
     }
 
     private boolean isGraded() {
-        if (null == gradeList || gradeList.size() == 0) {
-            return false;
-        }
-        for (int i = 0; i < gradeList.size(); i++) {
-            if (LoginBean.getInstance().getUserName().equals(gradeList.get(i).getOwner())) {
-                return true;
-            }
-        }
         return false;
     }
 
@@ -1090,10 +1063,10 @@ public class WebMangaDetailsActivity extends TTSActivity implements AdapterView.
                 showGradeDialog();
                 break;
             case R.id.comment_msg_ll:
-                Intent intent = new Intent(WebMangaDetailsActivity.this, CommentActivity.class);
-                intent.putExtra("mangaName", currentManga.getName());
-                intent.putExtra("mangaUrl", mangaUrl);
-                startActivity(intent);
+//                Intent intent = new Intent(WebMangaDetailsActivity.this, CommentActivity.class);
+//                intent.putExtra("mangaName", currentManga.getName());
+//                intent.putExtra("mangaUrl", mangaUrl);
+//                startActivity(intent);
                 break;
         }
     }

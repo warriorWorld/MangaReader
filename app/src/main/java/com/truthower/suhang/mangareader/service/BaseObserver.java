@@ -3,7 +3,6 @@ package com.truthower.suhang.mangareader.service;
 
 import com.truthower.suhang.mangareader.base.BaseActivity;
 import com.truthower.suhang.mangareader.base.BaseFragmentActivity;
-import com.truthower.suhang.mangareader.business.user.CollectedActivity;
 import com.truthower.suhang.mangareader.widget.dialog.SingleLoadBarUtil;
 
 import io.reactivex.Observer;

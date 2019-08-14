@@ -1,6 +1,5 @@
 package com.truthower.suhang.mangareader.app;
 
-import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
@@ -11,7 +10,6 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.nostra13.universalimageloader.core.assist.QueueProcessingType;
 import com.truthower.suhang.mangareader.bean.DownloadBean;
-import com.truthower.suhang.mangareader.bean.LoginBean;
 import com.truthower.suhang.mangareader.business.detail.WebMangaDetailsActivity;
 import com.truthower.suhang.mangareader.business.download.DownloadMangaManager;
 import com.truthower.suhang.mangareader.crash.CrashHandler;
@@ -22,19 +20,17 @@ import com.umeng.message.UmengNotificationClickHandler;
 import com.umeng.message.entity.UMessage;
 import com.youdao.sdk.app.YouDaoApplication;
 
-import cn.bmob.v3.Bmob;
+import androidx.multidex.MultiDexApplication;
 
 /**
  * Created by Administrator on 2017/7/19.
  */
 
-public class App extends Application {
+public class App extends MultiDexApplication {
     @Override
     public void onCreate() {
         super.onCreate();
         initImageLoader(getApplicationContext());
-        initLeanCloud();
-        initUserInfo();
 //        initCrashHandler();
         dealFileUriExposedException();
         initDownloadManger();
@@ -95,14 +91,6 @@ public class App extends Application {
     private void initCrashHandler() {
         CrashHandler crashHandler = CrashHandler.getInstance();
         crashHandler.init(getApplicationContext());
-    }
-
-    private void initUserInfo() {
-        LoginBean.getInstance().setLoginInfo(this, LoginBean.getLoginInfo(this));
-    }
-
-    private void initLeanCloud() {
-        Bmob.initialize(this, "9b27154f153934aec0a7479eef643f7e");
     }
 
     private void initImageLoader(Context context) {

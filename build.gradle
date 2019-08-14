@@ -16,10 +16,6 @@ buildscript {
 allprojects {
     repositories {
         jcenter()
-        maven {
-            //Bmob的maven仓库地址--必填
-            url "https://raw.github.com/bmob/bmob-android-sdk/master"
-        }
         maven { url "https://jitpack.io" }
         google()
     }

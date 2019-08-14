@@ -11,11 +11,6 @@ import android.view.ViewGroup;
 import com.aspsine.swipetoloadlayout.OnLoadMoreListener;
 import com.aspsine.swipetoloadlayout.OnRefreshListener;
 import com.aspsine.swipetoloadlayout.SwipeToLoadLayout;
-import com.avos.avoscloud.AVException;
-import com.avos.avoscloud.AVObject;
-import com.avos.avoscloud.AVQuery;
-import com.avos.avoscloud.FindCallback;
-import com.avos.avoscloud.SaveCallback;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.assist.FailReason;
 import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
@@ -23,7 +18,6 @@ import com.truthower.suhang.mangareader.R;
 import com.truthower.suhang.mangareader.adapter.OnlineMangaRecyclerListAdapter;
 import com.truthower.suhang.mangareader.base.BaseFragment;
 import com.truthower.suhang.mangareader.base.BaseFragmentActivity;
-import com.truthower.suhang.mangareader.bean.LoginBean;
 import com.truthower.suhang.mangareader.bean.MangaBean;
 import com.truthower.suhang.mangareader.business.detail.WebMangaDetailsActivity;
 import com.truthower.suhang.mangareader.config.Configure;
@@ -33,14 +27,12 @@ import com.truthower.suhang.mangareader.service.BaseObserver;
 import com.truthower.suhang.mangareader.spider.SpiderBase;
 import com.truthower.suhang.mangareader.utils.BaseParameterUtil;
 import com.truthower.suhang.mangareader.utils.DisplayUtil;
-import com.truthower.suhang.mangareader.utils.LeanCloundUtil;
 import com.truthower.suhang.mangareader.utils.Logger;
+import com.truthower.suhang.mangareader.utils.PermissionUtil;
 import com.truthower.suhang.mangareader.widget.bar.TopBar;
-import com.truthower.suhang.mangareader.widget.dialog.SingleLoadBarUtil;
 import com.truthower.suhang.mangareader.widget.recyclerview.RecyclerGridDecoration;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
@@ -105,29 +97,29 @@ public class RecommendFragment extends BaseFragment implements
     }
 
     private void doGetData() {
-        SingleLoadBarUtil.getInstance().showLoadBar(getActivity());
-        AVQuery<AVObject> query = new AVQuery<>("Recommend");
-        query.limit(999);
-        query.findInBackground(new FindCallback<AVObject>() {
-            @Override
-            public void done(List<AVObject> list, AVException e) {
-                SingleLoadBarUtil.getInstance().dismissLoadBar();
-                if (LeanCloundUtil.handleLeanResult(getActivity(), e)) {
-                    mangaList = new ArrayList<MangaBean>();
-                    if (null != list && list.size() > 0) {
-                        MangaBean item;
-                        for (int i = 0; i < list.size(); i++) {
-                            item = new MangaBean();
-                            item.setName(list.get(i).getString("recommend"));
-                            item.setWebThumbnailUrl(list.get(i).getString("thumbnailUrl"));
-                            item.setUrl(list.get(i).getString("mangaUrl"));
-                            mangaList.add(item);
-                        }
-                    }
-                    initGridView();
-                }
-            }
-        });
+//        SingleLoadBarUtil.getInstance().showLoadBar(getActivity());
+//        AVQuery<AVObject> query = new AVQuery<>("Recommend");
+//        query.limit(999);
+//        query.findInBackground(new FindCallback<AVObject>() {
+//            @Override
+//            public void done(List<AVObject> list, AVException e) {
+//                SingleLoadBarUtil.getInstance().dismissLoadBar();
+//                if (LeanCloundUtil.handleLeanResult(getActivity(), e)) {
+//                    mangaList = new ArrayList<MangaBean>();
+//                    if (null != list && list.size() > 0) {
+//                        MangaBean item;
+//                        for (int i = 0; i < list.size(); i++) {
+//                            item = new MangaBean();
+//                            item.setName(list.get(i).getString("recommend"));
+//                            item.setWebThumbnailUrl(list.get(i).getString("thumbnailUrl"));
+//                            item.setUrl(list.get(i).getString("mangaUrl"));
+//                            mangaList.add(item);
+//                        }
+//                    }
+//                    initGridView();
+//                }
+//            }
+//        });
     }
 
     private void initGridView() {
@@ -194,7 +186,7 @@ public class RecommendFragment extends BaseFragment implements
 
         topBar = (TopBar) v.findViewById(R.id.gradient_bar);
         topBar.setTitle("推荐");
-        if (LoginBean.getInstance().isCreator()) {
+        if (PermissionUtil.isCreator()) {
             topBar.setRightText("修复缩略图");
         } else {
             topBar.setRightText("");
@@ -207,7 +199,7 @@ public class RecommendFragment extends BaseFragment implements
 
             @Override
             public void onRightClick() {
-                if (LoginBean.getInstance().isCreator()) {
+                if (PermissionUtil.isCreator()) {
                     repairThumbnail();
                 }
             }
@@ -335,7 +327,7 @@ public class RecommendFragment extends BaseFragment implements
             public void loadFailed(String error) {
                 if (error.equals(Configure.WRONG_WEBSITE_EXCEPTION)) {
                     try {
-                        if (LoginBean.getInstance().isMaster()) {
+                        if (PermissionUtil.isMaster()) {
                             BaseParameterUtil.getInstance().saveCurrentWebSite(getActivity(), Configure.masterWebsList[trySpiderPosition]);
                         } else {
                             BaseParameterUtil.getInstance().saveCurrentWebSite(getActivity(), Configure.websList[trySpiderPosition]);
@@ -354,29 +346,29 @@ public class RecommendFragment extends BaseFragment implements
     }
 
     private void modifyThumbnailUrl(final MangaBean mangaBean) {
-        AVQuery<AVObject> query1 = new AVQuery<>("Recommend");
-        query1.whereEqualTo("mangaUrl", mangaBean.getUrl());
-
-        query1.findInBackground(new FindCallback<AVObject>() {
-            @Override
-            public void done(List<AVObject> list, AVException e) {
-                if (LeanCloundUtil.handleLeanResult(getActivity(), e)) {
-                    if (null != list && list.size() > 0) {
-                        //已存在的保存
-                        AVObject object = AVObject.createWithoutData("Recommend", list.get(0).getObjectId());
-                        object.put("thumbnailUrl", mangaBean.getWebThumbnailUrl());
-                        object.saveInBackground(new SaveCallback() {
-                            @Override
-                            public void done(AVException e) {
-                                if (LeanCloundUtil.handleLeanResult(getActivity(), e)) {
-                                    baseToast.showToast(mangaBean.getName() + "修复缩略图成功!");
-                                }
-                            }
-                        });
-                    }
-                }
-            }
-        });
+//        AVQuery<AVObject> query1 = new AVQuery<>("Recommend");
+//        query1.whereEqualTo("mangaUrl", mangaBean.getUrl());
+//
+//        query1.findInBackground(new FindCallback<AVObject>() {
+//            @Override
+//            public void done(List<AVObject> list, AVException e) {
+//                if (LeanCloundUtil.handleLeanResult(getActivity(), e)) {
+//                    if (null != list && list.size() > 0) {
+//                        //已存在的保存
+//                        AVObject object = AVObject.createWithoutData("Recommend", list.get(0).getObjectId());
+//                        object.put("thumbnailUrl", mangaBean.getWebThumbnailUrl());
+//                        object.saveInBackground(new SaveCallback() {
+//                            @Override
+//                            public void done(AVException e) {
+//                                if (LeanCloundUtil.handleLeanResult(getActivity(), e)) {
+//                                    baseToast.showToast(mangaBean.getName() + "修复缩略图成功!");
+//                                }
+//                            }
+//                        });
+//                    }
+//                }
+//            }
+//        });
     }
 
     @Override

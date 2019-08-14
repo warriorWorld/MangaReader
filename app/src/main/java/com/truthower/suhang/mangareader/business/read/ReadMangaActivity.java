@@ -28,9 +28,6 @@ import android.widget.TextView;
 
 import com.android.volley.Request;
 import com.android.volley.VolleyError;
-import com.avos.avoscloud.AVException;
-import com.avos.avoscloud.AVObject;
-import com.avos.avoscloud.SaveCallback;
 import com.insightsurfface.stylelibrary.keyboard.KeyBoardDialog;
 import com.insightsurfface.stylelibrary.listener.OnKeyboardChangeListener;
 import com.insightsurfface.stylelibrary.listener.OnKeyboardListener;
@@ -38,12 +35,9 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import com.truthower.suhang.mangareader.R;
 import com.truthower.suhang.mangareader.adapter.ReadMangaAdapter;
 import com.truthower.suhang.mangareader.base.TTSActivity;
-import com.truthower.suhang.mangareader.bean.LoginBean;
-import com.truthower.suhang.mangareader.bean.StatisticsBean;
 import com.truthower.suhang.mangareader.bean.YoudaoResponse;
 import com.truthower.suhang.mangareader.business.detail.WebMangaDetailsActivity;
 import com.truthower.suhang.mangareader.business.other.KeyboardSettingActivity;
-import com.truthower.suhang.mangareader.business.tag.TagManagerActivity;
 import com.truthower.suhang.mangareader.config.Configure;
 import com.truthower.suhang.mangareader.config.ShareKeys;
 import com.truthower.suhang.mangareader.db.DbAdapter;
@@ -55,7 +49,7 @@ import com.truthower.suhang.mangareader.spider.FileSpider;
 import com.truthower.suhang.mangareader.spider.SpiderBase;
 import com.truthower.suhang.mangareader.utils.BaseParameterUtil;
 import com.truthower.suhang.mangareader.utils.ImageUtil;
-import com.truthower.suhang.mangareader.utils.LeanCloundUtil;
+import com.truthower.suhang.mangareader.utils.PermissionUtil;
 import com.truthower.suhang.mangareader.utils.SharedPreferencesUtils;
 import com.truthower.suhang.mangareader.utils.VibratorUtil;
 import com.truthower.suhang.mangareader.volley.VolleyCallBack;
@@ -225,11 +219,6 @@ public class ReadMangaActivity extends TTSActivity implements OnClickListener, S
     }
 
     private void doGetWebPics() {
-        if (TextUtils.isEmpty(LoginBean.getInstance().getUserName(this))) {
-            //不登录不让用了
-            this.finish();
-            return;
-        }
         loadBar.show();
         spider.getMangaChapterPics(this, chapterUrl, new JsoupCallBack<ArrayList<String>>() {
             @Override
@@ -432,11 +421,11 @@ public class ReadMangaActivity extends TTSActivity implements OnClickListener, S
 
             @Override
             public void onTitleLongClick() {
-                if (LoginBean.getInstance().isMaster()) {
-                    Intent intent = new Intent(ReadMangaActivity.this, TagManagerActivity.class);
-                    intent.putExtra("imgUrl", pathList.get(historyPosition));
-                    startActivity(intent);
-                }
+//                if (LoginBean.getInstance().isMaster()) {
+//                    Intent intent = new Intent(ReadMangaActivity.this, TagManagerActivity.class);
+//                    intent.putExtra("imgUrl", pathList.get(historyPosition));
+//                    startActivity(intent);
+//                }
             }
         });
 
@@ -488,68 +477,37 @@ public class ReadMangaActivity extends TTSActivity implements OnClickListener, S
         dialog.setOkText("知道了");
     }
 
-    private void updateStatisctics() {
-        try {
-            new Thread() {
-                @Override
-                public void run() {
-                    try {
-                        db.updateStatistics(qureyWordCount, 1, realMangaName);
-                        qureyWordCount = 0;
-                    } catch (Exception e) {
-                        if (Configure.isTest) {
-                            MangaDialog dialog = new MangaDialog(ReadMangaActivity.this);
-                            dialog.show();
-                            dialog.setTitle(e + "");
-                        }
-                    }
-                }
-            }.start();
-            if (!date.equals(SharedPreferencesUtils.getSharedPreferencesData(
-                    ReadMangaActivity.this, ShareKeys.STATISTICS_UPDATE_KEY + realMangaName))) {
-                doStatisctics();
-            }
-        } catch (Exception e) {
-            //有可能空指针 不处理 不能阻断看书进程
-            if (Configure.isTest) {
-                MangaDialog dialog = new MangaDialog(this);
-                dialog.show();
-                dialog.setTitle(e + "");
-            }
-        }
-    }
-
     boolean isRequesting = false;
 
     private void doStatisctics() {
-        if (TextUtils.isEmpty(LoginBean.getInstance().getUserName())) {
-            return;
-        }
-        try {
-            if (isRequesting) {
-                return;
-            }
-            isRequesting = true;
-            StatisticsBean item = db.queryStatisticsByBookName(realMangaName);
-            AVObject object = new AVObject("Statistics");
-            object.put("owner", LoginBean.getInstance().getUserName());
-            object.put("query_word_c", item.getQuery_word_c());
-            object.put("read_page", item.getRead_page());
-            object.put("manga_name", realMangaName);
-            object.saveInBackground(new SaveCallback() {
-                @Override
-                public void done(AVException e) {
-                    isRequesting = false;
-                    if (LeanCloundUtil.handleLeanResult(e)) {
-                        SharedPreferencesUtils.setSharedPreferencesData
-                                (ReadMangaActivity.this, ShareKeys.STATISTICS_UPDATE_KEY + realMangaName, date);
-                        db.deleteStatiscticsByBookName(realMangaName);
-                    }
-                }
-            });
-        } catch (Exception e) {
-            //有可能空指针 不处理 不能阻断看书进程
-        }
+//        if (TextUtils.isEmpty(LoginBean.getInstance().getUserName())) {
+//            return;
+//        }
+//        try {
+//            if (isRequesting) {
+//                return;
+//            }
+//            isRequesting = true;
+//            StatisticsBean item = db.queryStatisticsByBookName(realMangaName);
+//            AVObject object = new AVObject("Statistics");
+//            object.put("owner", LoginBean.getInstance().getUserName());
+//            object.put("query_word_c", item.getQuery_word_c());
+//            object.put("read_page", item.getRead_page());
+//            object.put("manga_name", realMangaName);
+//            object.saveInBackground(new SaveCallback() {
+//                @Override
+//                public void done(AVException e) {
+//                    isRequesting = false;
+//                    if (LeanCloundUtil.handleLeanResult(e)) {
+//                        SharedPreferencesUtils.setSharedPreferencesData
+//                                (ReadMangaActivity.this, ShareKeys.STATISTICS_UPDATE_KEY + realMangaName, date);
+//                        db.deleteStatiscticsByBookName(realMangaName);
+//                    }
+//                }
+//            });
+//        } catch (Exception e) {
+//            //有可能空指针 不处理 不能阻断看书进程
+//        }
     }
 
     private void showSearchDialog() {
@@ -848,7 +806,6 @@ public class ReadMangaActivity extends TTSActivity implements OnClickListener, S
                     historyPosition = position;
                     readProgressTv.setText(position + 1 + "/" + pathList.size());
                     seekBar.setProgress(historyPosition);
-                    updateStatisctics();
                 }
 
                 @Override
@@ -980,7 +937,7 @@ public class ReadMangaActivity extends TTSActivity implements OnClickListener, S
                 }
                 break;
             case R.id.ocr_btn:
-                if (LoginBean.getInstance().isCreator()) {
+                if (PermissionUtil.isCreator()) {
                     Bitmap bitmap = ImageUtil.readBitmapFromFile(pathList.get(mangaPager.getCurrentItem()).replaceAll("file://", ""), 768);
                     ByteArrayOutputStream baos = new ByteArrayOutputStream();
                     int quality = 100;

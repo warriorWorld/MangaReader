@@ -18,7 +18,6 @@ import com.aspsine.swipetoloadlayout.SwipeToLoadLayout;
 import com.truthower.suhang.mangareader.R;
 import com.truthower.suhang.mangareader.adapter.OnlineMangaRecyclerListAdapter;
 import com.truthower.suhang.mangareader.base.BaseFragment;
-import com.truthower.suhang.mangareader.bean.LoginBean;
 import com.truthower.suhang.mangareader.bean.MangaBean;
 import com.truthower.suhang.mangareader.business.detail.LocalMangaDetailsActivity;
 import com.truthower.suhang.mangareader.config.Configure;
@@ -31,6 +30,7 @@ import com.truthower.suhang.mangareader.sort.FileComparatorByTime;
 import com.truthower.suhang.mangareader.spider.FileSpider;
 import com.truthower.suhang.mangareader.utils.DisplayUtil;
 import com.truthower.suhang.mangareader.utils.Logger;
+import com.truthower.suhang.mangareader.utils.PermissionUtil;
 import com.truthower.suhang.mangareader.utils.SharedPreferencesUtils;
 import com.truthower.suhang.mangareader.widget.bar.TopBar;
 import com.truthower.suhang.mangareader.widget.dialog.ListDialog;
@@ -223,7 +223,7 @@ public class LocalMangaFragment extends BaseFragment implements
 
             @Override
             public void onTitleClick() {
-                if (LoginBean.getInstance().isMaster() || LoginBean.getInstance().isCreator()) {
+                if (PermissionUtil.isMaster() || PermissionUtil.isCreator()) {
 //                    showOptionsSelector();
                     showOptionsSelectorDialog();
                 }

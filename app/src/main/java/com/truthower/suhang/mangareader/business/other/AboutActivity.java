@@ -1,10 +1,7 @@
 package com.truthower.suhang.mangareader.business.other;
 
-import android.Manifest;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.CheckBox;
@@ -13,36 +10,18 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.avos.avoscloud.AVCloudQueryResult;
-import com.avos.avoscloud.AVException;
-import com.avos.avoscloud.AVFile;
-import com.avos.avoscloud.AVObject;
-import com.avos.avoscloud.AVQuery;
-import com.avos.avoscloud.AVUser;
-import com.avos.avoscloud.CloudQueryCallback;
-import com.avos.avoscloud.FindCallback;
-import com.avos.avoscloud.GetCallback;
-import com.avos.avoscloud.GetDataCallback;
-import com.avos.avoscloud.LogInCallback;
-import com.avos.avoscloud.ProgressCallback;
 import com.truthower.suhang.mangareader.R;
 import com.truthower.suhang.mangareader.base.BaseActivity;
-import com.truthower.suhang.mangareader.bean.LoginBean;
-import com.truthower.suhang.mangareader.business.gesture.SetGestureActivity;
 import com.truthower.suhang.mangareader.config.Configure;
 import com.truthower.suhang.mangareader.config.ShareKeys;
 import com.truthower.suhang.mangareader.listener.OnEditResultListener;
 import com.truthower.suhang.mangareader.listener.OnResultListener;
-import com.truthower.suhang.mangareader.spider.FileSpider;
 import com.truthower.suhang.mangareader.utils.BaseParameterUtil;
-import com.truthower.suhang.mangareader.utils.LeanCloundUtil;
 import com.truthower.suhang.mangareader.utils.SharedPreferencesUtils;
 import com.truthower.suhang.mangareader.widget.dialog.DownloadDialog;
 import com.truthower.suhang.mangareader.widget.dialog.MangaDialog;
 import com.truthower.suhang.mangareader.widget.dialog.MangaEditDialog;
-import com.truthower.suhang.mangareader.widget.dialog.SingleLoadBarUtil;
 
-import java.io.File;
 import java.util.List;
 
 import pub.devrel.easypermissions.AfterPermissionGranted;
@@ -61,7 +40,6 @@ public class AboutActivity extends BaseActivity implements View.OnClickListener,
     private String versionName, msg;
     private int versionCode;
     private boolean forceUpdate;
-    private AVFile downloadFile;
     private MangaDialog versionDialog;
     private DownloadDialog downloadDialog;
     private CheckBox closeTranslateCb, economyModeCb, closeTutorialCb;
@@ -82,11 +60,6 @@ public class AboutActivity extends BaseActivity implements View.OnClickListener,
     }
 
     private void refreshUI() {
-        if (TextUtils.isEmpty(LoginBean.getInstance().getUserName())) {
-            logoutTv.setVisibility(View.GONE);
-        } else {
-            logoutTv.setVisibility(View.VISIBLE);
-        }
     }
 
     private void initUI() {
@@ -156,29 +129,29 @@ public class AboutActivity extends BaseActivity implements View.OnClickListener,
     }
 
     private void doGetVersionInfo() {
-        AVQuery<AVObject> query = new AVQuery<>("VersionInfo");
-        query.findInBackground(new FindCallback<AVObject>() {
-            @Override
-            public void done(List<AVObject> list, AVException e) {
-                if (LeanCloundUtil.handleLeanResult(AboutActivity.this, e)) {
-                    if (null != list && list.size() > 0) {
-                        versionName = list.get(0).getString("versionName");
-                        versionCode = list.get(0).getInt("versionCode");
-                        forceUpdate = list.get(0).getBoolean("forceUpdate");
-                        msg = list.get(0).getString("description");
-                        downloadFile = list.get(0).getAVFile("apk");
-                        if (versionCode <= BaseParameterUtil.getInstance().getAppVersionCode(AboutActivity.this)) {
-                            versionTv.setText(BaseParameterUtil.getInstance().getAppVersionName(AboutActivity.this)
-                                    + "(最新版本)");
-                        } else {
-                            versionTv.setText(BaseParameterUtil.getInstance().getAppVersionName(AboutActivity.this)
-                                    + "(有新版本啦~)");
-                            showVersionDialog();
-                        }
-                    }
-                }
-            }
-        });
+//        AVQuery<AVObject> query = new AVQuery<>("VersionInfo");
+//        query.findInBackground(new FindCallback<AVObject>() {
+//            @Override
+//            public void done(List<AVObject> list, AVException e) {
+//                if (LeanCloundUtil.handleLeanResult(AboutActivity.this, e)) {
+//                    if (null != list && list.size() > 0) {
+//                        versionName = list.get(0).getString("versionName");
+//                        versionCode = list.get(0).getInt("versionCode");
+//                        forceUpdate = list.get(0).getBoolean("forceUpdate");
+//                        msg = list.get(0).getString("description");
+//                        downloadFile = list.get(0).getAVFile("apk");
+//                        if (versionCode <= BaseParameterUtil.getInstance().getAppVersionCode(AboutActivity.this)) {
+//                            versionTv.setText(BaseParameterUtil.getInstance().getAppVersionName(AboutActivity.this)
+//                                    + "(最新版本)");
+//                        } else {
+//                            versionTv.setText(BaseParameterUtil.getInstance().getAppVersionName(AboutActivity.this)
+//                                    + "(有新版本啦~)");
+//                            showVersionDialog();
+//                        }
+//                    }
+//                }
+//            }
+//        });
     }
 
     private void showVersionDialog() {
@@ -218,47 +191,47 @@ public class AboutActivity extends BaseActivity implements View.OnClickListener,
 
     @AfterPermissionGranted(Configure.PERMISSION_FILE_REQUST_CODE)
     private void doDownload() {
-        String[] perms = {Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE};
-        if (EasyPermissions.hasPermissions(this, perms)) {
-            // Already have permission, do the thing
-            // ...
-            showDownLoadDialog();
-            final String filePath = Environment.getExternalStorageDirectory().getAbsolutePath() + "/manga/apk";
-            final File file = new File(filePath);
-            if (!file.exists()) {
-                file.mkdirs();
-            }
-            downloadFile.getDataInBackground(new GetDataCallback() {
-                @Override
-                public void done(byte[] bytes, AVException e) {
-                    // bytes 就是文件的数据流
-                    if (null != downloadDialog && downloadDialog.isShowing()) {
-                        downloadDialog.dismiss();
-                    }
-                    if (LeanCloundUtil.handleLeanResult(AboutActivity.this, e)) {
-                        File apkFile = FileSpider.getInstance().byte2File(bytes, filePath, "manga_reader.apk");
-
-                        Intent intent = new Intent();
-                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                        intent.setAction("android.intent.action.VIEW");
-                        intent.addCategory("android.intent.category.DEFAULT");
-                        intent.setDataAndType(Uri.fromFile(apkFile), "application/vnd.android.package-archive");
-                        startActivity(intent);
-                    }
-                }
-            }, new ProgressCallback() {
-                @Override
-                public void done(Integer integer) {
-                    // 下载进度数据，integer 介于 0 和 100。
-                    downloadDialog.setProgress(integer);
-                }
-            });
-
-        } else {
-            // Do not have permissions, request them now
-            EasyPermissions.requestPermissions(this, "我们需要写入/读取权限",
-                    Configure.PERMISSION_FILE_REQUST_CODE, perms);
-        }
+//        String[] perms = {Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE};
+//        if (EasyPermissions.hasPermissions(this, perms)) {
+//            // Already have permission, do the thing
+//            // ...
+//            showDownLoadDialog();
+//            final String filePath = Environment.getExternalStorageDirectory().getAbsolutePath() + "/manga/apk";
+//            final File file = new File(filePath);
+//            if (!file.exists()) {
+//                file.mkdirs();
+//            }
+//            downloadFile.getDataInBackground(new GetDataCallback() {
+//                @Override
+//                public void done(byte[] bytes, AVException e) {
+//                    // bytes 就是文件的数据流
+//                    if (null != downloadDialog && downloadDialog.isShowing()) {
+//                        downloadDialog.dismiss();
+//                    }
+//                    if (LeanCloundUtil.handleLeanResult(AboutActivity.this, e)) {
+//                        File apkFile = FileSpider.getInstance().byte2File(bytes, filePath, "manga_reader.apk");
+//
+//                        Intent intent = new Intent();
+//                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//                        intent.setAction("android.intent.action.VIEW");
+//                        intent.addCategory("android.intent.category.DEFAULT");
+//                        intent.setDataAndType(Uri.fromFile(apkFile), "application/vnd.android.package-archive");
+//                        startActivity(intent);
+//                    }
+//                }
+//            }, new ProgressCallback() {
+//                @Override
+//                public void done(Integer integer) {
+//                    // 下载进度数据，integer 介于 0 和 100。
+//                    downloadDialog.setProgress(integer);
+//                }
+//            });
+//
+//        } else {
+//            // Do not have permissions, request them now
+//            EasyPermissions.requestPermissions(this, "我们需要写入/读取权限",
+//                    Configure.PERMISSION_FILE_REQUST_CODE, perms);
+//        }
     }
 
     private void showDownLoadDialog() {
@@ -270,10 +243,10 @@ public class AboutActivity extends BaseActivity implements View.OnClickListener,
     }
 
     private void doLogout() {
-        AVUser.getCurrentUser().logOut();
-        LoginBean.getInstance().clean(this);
-        refreshUI();
-        baseToast.showToast("退出成功!");
+//        AVUser.getCurrentUser().logOut();
+//        LoginBean.getInstance().clean(this);
+//        refreshUI();
+//        baseToast.showToast("退出成功!");
     }
 
     private void showLogoutDialog() {
@@ -304,48 +277,48 @@ public class AboutActivity extends BaseActivity implements View.OnClickListener,
     }
 
     private void doDeleteGesture() {
-        String userName = LoginBean.getInstance().getUserName(this);
-        if (TextUtils.isEmpty(userName)) {
-            return;
-        }
-        SingleLoadBarUtil.getInstance().showLoadBar(this);
-
-        AVQuery<AVObject> query = new AVQuery<>("Gesture");
-        query.whereEqualTo("owner", userName);
-        query.getFirstInBackground(new GetCallback<AVObject>() {
-            @Override
-            public void done(final AVObject account, AVException e) {
-                if (null != account) {
-                    AVQuery.doCloudQueryInBackground(
-                            "delete from Gesture where objectId='" + account.getObjectId() + "'"
-                            , new CloudQueryCallback<AVCloudQueryResult>() {
-                                @Override
-                                public void done(AVCloudQueryResult avCloudQueryResult, AVException e) {
-                                    SingleLoadBarUtil.getInstance().dismissLoadBar();
-                                    if (LeanCloundUtil.handleLeanResult(AboutActivity.this, e)) {
-                                        baseToast.showToast("删除成功");
-                                    }
-                                }
-                            });
-                }
-            }
-        });
+//        String userName = LoginBean.getInstance().getUserName(this);
+//        if (TextUtils.isEmpty(userName)) {
+//            return;
+//        }
+//        SingleLoadBarUtil.getInstance().showLoadBar(this);
+//
+//        AVQuery<AVObject> query = new AVQuery<>("Gesture");
+//        query.whereEqualTo("owner", userName);
+//        query.getFirstInBackground(new GetCallback<AVObject>() {
+//            @Override
+//            public void done(final AVObject account, AVException e) {
+//                if (null != account) {
+//                    AVQuery.doCloudQueryInBackground(
+//                            "delete from Gesture where objectId='" + account.getObjectId() + "'"
+//                            , new CloudQueryCallback<AVCloudQueryResult>() {
+//                                @Override
+//                                public void done(AVCloudQueryResult avCloudQueryResult, AVException e) {
+//                                    SingleLoadBarUtil.getInstance().dismissLoadBar();
+//                                    if (LeanCloundUtil.handleLeanResult(AboutActivity.this, e)) {
+//                                        baseToast.showToast("删除成功");
+//                                    }
+//                                }
+//                            });
+//                }
+//            }
+//        });
     }
 
     private void doVerifyPassword(String text, final OnResultListener onResultListener) {
-        SingleLoadBarUtil.getInstance().showLoadBar(this);
-        AVUser.logInInBackground(LoginBean.getInstance().getUserName(), text,
-                new LogInCallback<AVUser>() {
-                    @Override
-                    public void done(AVUser avUser, AVException e) {
-                        SingleLoadBarUtil.getInstance().dismissLoadBar();
-                        if (LeanCloundUtil.handleLeanResult(AboutActivity.this, e)) {
-                            onResultListener.onFinish();
-                        } else {
-                            onResultListener.onFailed();
-                        }
-                    }
-                });
+//        SingleLoadBarUtil.getInstance().showLoadBar(this);
+//        AVUser.logInInBackground(LoginBean.getInstance().getUserName(), text,
+//                new LogInCallback<AVUser>() {
+//                    @Override
+//                    public void done(AVUser avUser, AVException e) {
+//                        SingleLoadBarUtil.getInstance().dismissLoadBar();
+//                        if (LeanCloundUtil.handleLeanResult(AboutActivity.this, e)) {
+//                            onResultListener.onFinish();
+//                        } else {
+//                            onResultListener.onFailed();
+//                        }
+//                    }
+//                });
     }
 
     private void showVerifyPasswordDialog(final OnResultListener onResultListener) {
@@ -394,35 +367,22 @@ public class AboutActivity extends BaseActivity implements View.OnClickListener,
                 startActivity(intent1);
                 break;
             case R.id.gesture_rl:
-                if (!TextUtils.isEmpty(LoginBean.getInstance().getUserName(this))) {
-                    showVerifyPasswordDialog(new OnResultListener() {
-                        @Override
-                        public void onFinish() {
-                            Intent intent2 = new Intent(AboutActivity.this, SetGestureActivity.class);
-                            startActivity(intent2);
-                        }
-
-                        @Override
-                        public void onFailed() {
-
-                        }
-                    });
-                }
+//                if (!TextUtils.isEmpty(LoginBean.getInstance().getUserName(this))) {
+//                    showVerifyPasswordDialog(new OnResultListener() {
+//                        @Override
+//                        public void onFinish() {
+//                            Intent intent2 = new Intent(AboutActivity.this, SetGestureActivity.class);
+//                            startActivity(intent2);
+//                        }
+//
+//                        @Override
+//                        public void onFailed() {
+//
+//                        }
+//                    });
+//                }
                 break;
             case R.id.delete_gesture_rl:
-                if (!TextUtils.isEmpty(LoginBean.getInstance().getUserName(this))) {
-                    showVerifyPasswordDialog(new OnResultListener() {
-                        @Override
-                        public void onFinish() {
-                            doDeleteGesture();
-                        }
-
-                        @Override
-                        public void onFailed() {
-
-                        }
-                    });
-                }
                 break;
         }
     }

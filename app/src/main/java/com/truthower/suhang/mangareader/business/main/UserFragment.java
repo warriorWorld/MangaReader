@@ -2,40 +2,22 @@ package com.truthower.suhang.mangareader.business.main;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.avos.avoscloud.AVException;
-import com.avos.avoscloud.AVObject;
-import com.avos.avoscloud.AVQuery;
-import com.avos.avoscloud.CountCallback;
 import com.truthower.suhang.mangareader.R;
 import com.truthower.suhang.mangareader.base.BaseFragment;
-import com.truthower.suhang.mangareader.bean.LoginBean;
-import com.truthower.suhang.mangareader.business.ad.AdvertisingActivity;
-import com.truthower.suhang.mangareader.business.detail.WebMangaDetailsActivity;
 import com.truthower.suhang.mangareader.business.download.DownloadActivity;
 import com.truthower.suhang.mangareader.business.other.AboutActivity;
-import com.truthower.suhang.mangareader.business.statistics.StatisticsActivity;
-import com.truthower.suhang.mangareader.business.tag.TagFilterActivity;
-import com.truthower.suhang.mangareader.business.user.CollectedActivity;
-import com.truthower.suhang.mangareader.business.user.LoginActivity;
-import com.truthower.suhang.mangareader.business.user.UserCenterActivity;
 import com.truthower.suhang.mangareader.business.wordsbook.WordsBookActivity;
-import com.truthower.suhang.mangareader.config.Configure;
 import com.truthower.suhang.mangareader.config.ShareKeys;
 import com.truthower.suhang.mangareader.listener.OnShareAppClickListener;
-import com.truthower.suhang.mangareader.utils.LeanCloundUtil;
 import com.truthower.suhang.mangareader.utils.NumberUtil;
 import com.truthower.suhang.mangareader.utils.SharedPreferencesUtils;
 import com.truthower.suhang.mangareader.widget.dialog.MangaDialog;
-import com.truthower.suhang.mangareader.widget.dialog.QrDialog;
 import com.truthower.suhang.mangareader.widget.imageview.CircleImage;
 import com.umeng.analytics.MobclickAgent;
 
@@ -118,10 +100,10 @@ public class UserFragment extends BaseFragment implements View.OnClickListener {
         userHeadCiv.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                if (LoginBean.getInstance().isMaster()) {
-                    Intent intent = new Intent(getActivity(), TagFilterActivity.class);
-                    startActivity(intent);
-                }
+//                if (LoginBean.getInstance().isMaster()) {
+//                    Intent intent = new Intent(getActivity(), TagFilterActivity.class);
+//                    startActivity(intent);
+//                }
                 return true;
             }
         });
@@ -155,33 +137,20 @@ public class UserFragment extends BaseFragment implements View.OnClickListener {
     }
 
     private void toggleLoginStateUI() {
-        if (TextUtils.isEmpty(LoginBean.getInstance().getUserName())) {
-            userNameTv.setText("点击登录");
-            user_center_explain.setVisibility(View.GONE);
-            user_msg_tip_tv.setVisibility(View.GONE);
-        } else {
-            if (LoginBean.getInstance().isMaster()) {
-                userNameTv.setTextColor(getResources().getColor(R.color.master));
-            } else {
-                userNameTv.setTextColor(getResources().getColor(R.color.main_text_color));
-            }
-            user_center_explain.setVisibility(View.VISIBLE);
-            userNameTv.setText(LoginBean.getInstance().getUserName());
-        }
     }
 
     private void doGetMsgCount() {
-        AVQuery<AVObject> query = new AVQuery<>("Comment");
-        query.whereEqualTo("reply_user", LoginBean.getInstance().getUserName());
-        query.countInBackground(new CountCallback() {
-            @Override
-            public void done(int i, AVException e) {
-                if (LeanCloundUtil.handleLeanResult(getActivity(), e)) {
-                    msgCount = i;
-                    showMsgCount();
-                }
-            }
-        });
+//        AVQuery<AVObject> query = new AVQuery<>("Comment");
+//        query.whereEqualTo("reply_user", LoginBean.getInstance().getUserName());
+//        query.countInBackground(new CountCallback() {
+//            @Override
+//            public void done(int i, AVException e) {
+//                if (LeanCloundUtil.handleLeanResult(getActivity(), e)) {
+//                    msgCount = i;
+//                    showMsgCount();
+//                }
+//            }
+//        });
     }
 
     private void showMsgCount() {
@@ -221,24 +190,9 @@ public class UserFragment extends BaseFragment implements View.OnClickListener {
     public void onClick(View v) {
         Intent intent = null;
         switch (v.getId()) {
-            case R.id.collect_rl:
-                MobclickAgent.onEvent(getActivity(), "collect_type_collect");
-                intent = new Intent(getActivity(), CollectedActivity.class);
-                intent.putExtra("collectType", Configure.COLLECT_TYPE_COLLECT);
-                break;
-            case R.id.waiting_for_update_rl:
-                MobclickAgent.onEvent(getActivity(), "collect_type_wait_for_update");
-                intent = new Intent(getActivity(), CollectedActivity.class);
-                intent.putExtra("collectType", Configure.COLLECT_TYPE_WAIT_FOR_UPDATE);
-                break;
-            case R.id.finished_manga_rl:
-                MobclickAgent.onEvent(getActivity(), "collect_type_finished");
-                intent = new Intent(getActivity(), CollectedActivity.class);
-                intent.putExtra("collectType", Configure.COLLECT_TYPE_FINISHED);
-                break;
             case R.id.statistics_rl:
-                intent = new Intent(getActivity(), StatisticsActivity.class);
-                MobclickAgent.onEvent(getActivity(), "statistics");
+//                intent = new Intent(getActivity(), StatisticsActivity.class);
+//                MobclickAgent.onEvent(getActivity(), "statistics");
                 break;
             case R.id.new_word_book_rl:
                 MobclickAgent.onEvent(getActivity(), "new_word_book");
@@ -249,17 +203,17 @@ public class UserFragment extends BaseFragment implements View.OnClickListener {
                 intent = new Intent(getActivity(), DownloadActivity.class);
                 break;
             case R.id.user_top_bar_rl:
-                intent = new Intent(getActivity(), UserCenterActivity.class);
-                SharedPreferencesUtils.setSharedPreferencesData(getActivity(), ShareKeys.READ_COMMENT_COUNT_KEY, msgCount);
-                showMsgCount();
-                intent.putExtra("owner", LoginBean.getInstance().getUserName(getActivity()));
+//                intent = new Intent(getActivity(), UserCenterActivity.class);
+//                SharedPreferencesUtils.setSharedPreferencesData(getActivity(), ShareKeys.READ_COMMENT_COUNT_KEY, msgCount);
+//                showMsgCount();
+//                intent.putExtra("owner", LoginBean.getInstance().getUserName(getActivity()));
                 break;
             case R.id.about_rl:
                 intent = new Intent(getActivity(), AboutActivity.class);
                 break;
             case R.id.ad_rl:
-                MobclickAgent.onEvent(getActivity(), "ad");
-                intent = new Intent(getActivity(), AdvertisingActivity.class);
+//                MobclickAgent.onEvent(getActivity(), "ad");
+//                intent = new Intent(getActivity(), AdvertisingActivity.class);
                 break;
             case R.id.share_rl:
                 MobclickAgent.onEvent(getActivity(), "share");

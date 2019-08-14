@@ -18,7 +18,6 @@ import com.insightsurfface.stylelibrary.listener.OnKeyboardListener;
 import com.truthower.suhang.mangareader.R;
 import com.truthower.suhang.mangareader.adapter.SearchMangaRecyclerAdapter;
 import com.truthower.suhang.mangareader.base.BaseActivity;
-import com.truthower.suhang.mangareader.bean.LoginBean;
 import com.truthower.suhang.mangareader.bean.MangaBean;
 import com.truthower.suhang.mangareader.bean.MangaListBean;
 import com.truthower.suhang.mangareader.business.detail.WebMangaDetailsActivity;
@@ -29,6 +28,7 @@ import com.truthower.suhang.mangareader.listener.JsoupCallBack;
 import com.truthower.suhang.mangareader.listener.OnRecycleItemClickListener;
 import com.truthower.suhang.mangareader.listener.OnSevenFourteenListDialogListener;
 import com.truthower.suhang.mangareader.spider.SpiderBase;
+import com.truthower.suhang.mangareader.utils.PermissionUtil;
 import com.truthower.suhang.mangareader.utils.SharedPreferencesUtils;
 import com.truthower.suhang.mangareader.widget.dialog.ListDialog;
 import com.truthower.suhang.mangareader.widget.dialog.MangaDialog;
@@ -308,7 +308,7 @@ public class SearchActivity extends BaseActivity implements View.OnClickListener
             }
         });
         listDialog.show();
-        if (LoginBean.getInstance().isMaster()) {
+        if (PermissionUtil.isMaster()) {
             listDialog.setOptionsList(Configure.masterWebsList);
         } else {
             listDialog.setOptionsList(Configure.websList);
