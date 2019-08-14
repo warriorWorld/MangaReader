@@ -31,13 +31,15 @@ public class ShareKeys {
     public static final String STATISTICS_UPDATE_KEY = "statistics_update_key";
     public static final String COMMENT_OOXX_KEY = "comment_ooxx_key";
     public static final String READ_COMMENT_COUNT_KEY = "read_comment_count_key";
-    public static final String CURRENT_WEBSITE="current_website_key";
-    public static final String CURRENT_TYPE="current_type_key";
-    public static final String CURRENT_PAGE="current_page_key";
+    public static final String CURRENT_WEBSITE = "current_website_key";
+    public static final String CURRENT_TYPE = "current_type_key";
+    public static final String CURRENT_PAGE = "current_page_key";
     public static final String THIS_USER_IS_NOT_AN_IDIOT = "this_user_is_not_an_idiot";
     public static final String MAIN_PAGE_CHCHE = "main_page_chche";
     public static final String IS_OTHER_LETTER_ORDER = "is_other_letter_order";
     public static final String STORY_FOLDER_NAME = "story_folder_name";
     public static final String INDEPENDENT_FOLDER_NAME = "independent_folder_name";
     public static final String LAST_DRAGVIEW_POSITION = "last_dragview_position";
+    public static final String IS_MASTER = "is_master";
+    public static final String IS_CREATOR = "is_creator";
 }

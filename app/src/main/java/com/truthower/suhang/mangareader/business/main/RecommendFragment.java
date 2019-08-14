@@ -186,7 +186,7 @@ public class RecommendFragment extends BaseFragment implements
 
         topBar = (TopBar) v.findViewById(R.id.gradient_bar);
         topBar.setTitle("推荐");
-        if (PermissionUtil.isCreator()) {
+        if (PermissionUtil.isCreator(getActivity())) {
             topBar.setRightText("修复缩略图");
         } else {
             topBar.setRightText("");
@@ -199,7 +199,7 @@ public class RecommendFragment extends BaseFragment implements
 
             @Override
             public void onRightClick() {
-                if (PermissionUtil.isCreator()) {
+                if (PermissionUtil.isCreator(getActivity())) {
                     repairThumbnail();
                 }
             }
@@ -327,7 +327,7 @@ public class RecommendFragment extends BaseFragment implements
             public void loadFailed(String error) {
                 if (error.equals(Configure.WRONG_WEBSITE_EXCEPTION)) {
                     try {
-                        if (PermissionUtil.isMaster()) {
+                        if (PermissionUtil.isMaster(getActivity())) {
                             BaseParameterUtil.getInstance().saveCurrentWebSite(getActivity(), Configure.masterWebsList[trySpiderPosition]);
                         } else {
                             BaseParameterUtil.getInstance().saveCurrentWebSite(getActivity(), Configure.websList[trySpiderPosition]);

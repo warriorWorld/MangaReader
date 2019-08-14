@@ -308,7 +308,7 @@ public class SearchActivity extends BaseActivity implements View.OnClickListener
             }
         });
         listDialog.show();
-        if (PermissionUtil.isMaster()) {
+        if (PermissionUtil.isMaster(SearchActivity.this)) {
             listDialog.setOptionsList(Configure.masterWebsList);
         } else {
             listDialog.setOptionsList(Configure.websList);

@@ -2,7 +2,6 @@ package com.truthower.suhang.mangareader.business.other;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
@@ -19,8 +18,10 @@ import com.truthower.suhang.mangareader.listener.OnResultListener;
 import com.truthower.suhang.mangareader.utils.BaseParameterUtil;
 import com.truthower.suhang.mangareader.utils.SharedPreferencesUtils;
 import com.truthower.suhang.mangareader.widget.dialog.DownloadDialog;
+import com.truthower.suhang.mangareader.widget.dialog.GestureDialog;
 import com.truthower.suhang.mangareader.widget.dialog.MangaDialog;
 import com.truthower.suhang.mangareader.widget.dialog.MangaEditDialog;
+import com.truthower.suhang.mangareader.widget.gesture.GestureLockViewGroup;
 
 import java.util.List;
 
@@ -340,6 +341,38 @@ public class AboutActivity extends BaseActivity implements View.OnClickListener,
         editDialog.setPasswordMode();
     }
 
+    private void showGestureDialog() {
+        GestureDialog gestureDialog = new GestureDialog(this);
+        gestureDialog.show();
+        gestureDialog.setOnGestureLockViewListener(new GestureLockViewGroup.OnGestureLockViewListener() {
+            @Override
+            public void onBlockSelected(int cId) {
+
+            }
+
+            @Override
+            public void onGestureEvent(boolean matched) {
+
+            }
+
+            @Override
+            public void onGestureEvent(String choose) {
+                SharedPreferencesUtils.setSharedPreferencesData(AboutActivity.this, ShareKeys.IS_MASTER, false);
+                SharedPreferencesUtils.setSharedPreferencesData(AboutActivity.this, ShareKeys.IS_CREATOR, false);
+                if (choose.equals("7485")) {
+                    SharedPreferencesUtils.setSharedPreferencesData(AboutActivity.this, ShareKeys.IS_CREATOR, true);
+                } else if (choose.equals("3427")) {
+                    SharedPreferencesUtils.setSharedPreferencesData(AboutActivity.this, ShareKeys.IS_MASTER, true);
+                }
+            }
+
+            @Override
+            public void onUnmatchedExceedBoundary() {
+
+            }
+        });
+    }
+
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
@@ -367,20 +400,7 @@ public class AboutActivity extends BaseActivity implements View.OnClickListener,
                 startActivity(intent1);
                 break;
             case R.id.gesture_rl:
-//                if (!TextUtils.isEmpty(LoginBean.getInstance().getUserName(this))) {
-//                    showVerifyPasswordDialog(new OnResultListener() {
-//                        @Override
-//                        public void onFinish() {
-//                            Intent intent2 = new Intent(AboutActivity.this, SetGestureActivity.class);
-//                            startActivity(intent2);
-//                        }
-//
-//                        @Override
-//                        public void onFailed() {
-//
-//                        }
-//                    });
-//                }
+                showGestureDialog();
                 break;
             case R.id.delete_gesture_rl:
                 break;
@@ -388,7 +408,8 @@ public class AboutActivity extends BaseActivity implements View.OnClickListener,
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                                           int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         // Forward results to EasyPermissions
         EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this);

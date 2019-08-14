@@ -143,12 +143,6 @@
             android:background="@color/manga_reader"></View>
 
 
-        <com.truthower.suhang.mangareader.widget.layout.StarLinearlayout
-            android:id="@+id/grade_star_sll"
-            android:layout_width="75dp"
-            android:layout_height="16dp"
-            android:layout_centerVertical="true"
-            android:layout_marginLeft="15dp"></com.truthower.suhang.mangareader.widget.layout.StarLinearlayout>
 
         <RelativeLayout
             android:id="@+id/grade_rl"

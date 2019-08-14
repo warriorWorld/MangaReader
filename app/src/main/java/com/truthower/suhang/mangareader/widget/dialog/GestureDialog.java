@@ -154,6 +154,10 @@ public class GestureDialog extends Dialog implements View.OnClickListener {
         this.answer = answer;
     }
 
+    public void setOnGestureLockViewListener(GestureLockViewGroup.OnGestureLockViewListener listener) {
+        mGestureLockViewGroup.setOnGestureLockViewListener(listener);
+    }
+
     public void setOnResultListener(OnResultListener onResultListener) {
         mOnResultListener = onResultListener;
     }

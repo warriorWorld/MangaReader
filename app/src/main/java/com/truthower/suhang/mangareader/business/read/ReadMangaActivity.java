@@ -937,7 +937,7 @@ public class ReadMangaActivity extends TTSActivity implements OnClickListener, S
                 }
                 break;
             case R.id.ocr_btn:
-                if (PermissionUtil.isCreator()) {
+                if (PermissionUtil.isCreator(ReadMangaActivity.this)) {
                     Bitmap bitmap = ImageUtil.readBitmapFromFile(pathList.get(mangaPager.getCurrentItem()).replaceAll("file://", ""), 768);
                     ByteArrayOutputStream baos = new ByteArrayOutputStream();
                     int quality = 100;

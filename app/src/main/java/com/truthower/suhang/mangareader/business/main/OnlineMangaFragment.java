@@ -473,7 +473,7 @@ public class OnlineMangaFragment extends BaseFragment implements PullToRefreshBa
         });
         webSelector.show();
         webSelector.setWheelViewTitle("选择站点");
-        if (PermissionUtil.isMaster()) {
+        if (PermissionUtil.isMaster(getActivity())) {
             webSelector.initOptionsData(Configure.masterWebsList);
         } else {
             webSelector.initOptionsData(Configure.websList);

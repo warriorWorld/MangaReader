@@ -21,7 +21,6 @@ import com.truthower.suhang.mangareader.adapter.OnlineMangaDetailAdapter;
 import com.truthower.suhang.mangareader.base.TTSActivity;
 import com.truthower.suhang.mangareader.bean.ChapterBean;
 import com.truthower.suhang.mangareader.bean.DownloadBean;
-import com.truthower.suhang.mangareader.bean.GradeBean;
 import com.truthower.suhang.mangareader.bean.MangaBean;
 import com.truthower.suhang.mangareader.business.download.DownloadActivity;
 import com.truthower.suhang.mangareader.business.download.DownloadMangaManager;
@@ -34,22 +33,18 @@ import com.truthower.suhang.mangareader.eventbus.EventBusEvent;
 import com.truthower.suhang.mangareader.eventbus.JumpEvent;
 import com.truthower.suhang.mangareader.eventbus.TagClickEvent;
 import com.truthower.suhang.mangareader.listener.JsoupCallBack;
-import com.truthower.suhang.mangareader.listener.OnGradeDialogSelectedListener;
 import com.truthower.suhang.mangareader.listener.OnResultListener;
 import com.truthower.suhang.mangareader.listener.OnSevenFourteenListDialogListener;
 import com.truthower.suhang.mangareader.spider.SpiderBase;
 import com.truthower.suhang.mangareader.utils.ActivityPoor;
 import com.truthower.suhang.mangareader.utils.BaseParameterUtil;
-import com.truthower.suhang.mangareader.utils.NumberUtil;
 import com.truthower.suhang.mangareader.utils.PermissionUtil;
 import com.truthower.suhang.mangareader.utils.SharedPreferencesUtils;
 import com.truthower.suhang.mangareader.utils.UltimateTextSizeUtil;
 import com.truthower.suhang.mangareader.widget.bar.TopBar;
 import com.truthower.suhang.mangareader.widget.dialog.GestureDialog;
-import com.truthower.suhang.mangareader.widget.dialog.GradeDialog;
 import com.truthower.suhang.mangareader.widget.dialog.ListDialog;
 import com.truthower.suhang.mangareader.widget.dialog.MangaDialog;
-import com.truthower.suhang.mangareader.widget.layout.StarLinearlayout;
 import com.truthower.suhang.mangareader.widget.popupwindow.EasyPopupWindow;
 import com.truthower.suhang.mangareader.widget.pulltorefresh.PullToRefreshBase;
 import com.truthower.suhang.mangareader.widget.pulltorefresh.PullToRefreshGridView;
@@ -93,11 +88,9 @@ public class WebMangaDetailsActivity extends TTSActivity implements AdapterView.
     private String currentMangaName;
     private boolean isTopied, isFinished;
     private String[] authorOptions;
-    private StarLinearlayout starLinearlayout;
     private TextView gradeTv, gradeCountTv, commentCountTv;
     private LinearLayout commentMsgLl;
     private RelativeLayout gradeRl;
-    private ArrayList<GradeBean> gradeList = new ArrayList<>();
     private int wrongNum = 0;
 
     @Override
@@ -160,7 +153,7 @@ public class WebMangaDetailsActivity extends TTSActivity implements AdapterView.
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                if (WebMangaDetailsActivity.this.isFinishing()){
+                if (WebMangaDetailsActivity.this.isFinishing()) {
                     return;
                 }
                 loadBar.show();
@@ -193,7 +186,7 @@ public class WebMangaDetailsActivity extends TTSActivity implements AdapterView.
                         loadBar.dismiss();
                         if (error.equals(Configure.WRONG_WEBSITE_EXCEPTION)) {
                             try {
-                                if (PermissionUtil.isMaster()) {
+                                if (PermissionUtil.isMaster(WebMangaDetailsActivity.this)) {
                                     BaseParameterUtil.getInstance().saveCurrentWebSite(WebMangaDetailsActivity.this, Configure.masterWebsList[trySpiderPosition]);
                                 } else {
                                     BaseParameterUtil.getInstance().saveCurrentWebSite(WebMangaDetailsActivity.this, Configure.websList[trySpiderPosition]);
@@ -302,9 +295,6 @@ public class WebMangaDetailsActivity extends TTSActivity implements AdapterView.
         collectV = findViewById(R.id.collect_view);
         downloadIv = (ImageView) findViewById(R.id.download_iv);
         downloadTagTv = (TextView) findViewById(R.id.download_tag_tv);
-        starLinearlayout = (StarLinearlayout) findViewById(R.id.grade_star_sll);
-        starLinearlayout.setMaxStar(5);
-        starLinearlayout.setStarNum(0f);
         gradeCountTv = (TextView) findViewById(R.id.grade_count_tv);
         gradeTv = (TextView) findViewById(R.id.grade_tv);
         commentCountTv = (TextView) findViewById(R.id.comment_count_tv);
@@ -796,21 +786,6 @@ public class WebMangaDetailsActivity extends TTSActivity implements AdapterView.
 //        });
     }
 
-    private void refreshGrade() {
-        if (null == gradeList || gradeList.size() == 0) {
-            return;
-        }
-        float gradeF = 0;
-        float total = 0;
-        for (int i = 0; i < gradeList.size(); i++) {
-            total += gradeList.get(i).getStar();
-        }
-        gradeF = total / gradeList.size();
-        starLinearlayout.setStarNum(gradeF);
-        gradeTv.setText(NumberUtil.doubleDecimals(gradeF) + "");
-        gradeCountTv.setText(gradeList.size() + "人评分");
-    }
-
 
     private void doGrade(int star) {
 //        String userName = LoginBean.getInstance().getUserName(this);
@@ -1018,16 +993,6 @@ public class WebMangaDetailsActivity extends TTSActivity implements AdapterView.
         ppw.hideIKnowTv();
     }
 
-    private void showGradeDialog() {
-        GradeDialog dialog = new GradeDialog(this);
-        dialog.setOnGradeDialogSelectedListener(new OnGradeDialogSelectedListener() {
-            @Override
-            public void onSelected(float grade) {
-                doGrade((int) grade);
-            }
-        });
-        dialog.show();
-    }
 
     private boolean isGraded() {
         return false;
@@ -1054,13 +1019,6 @@ public class WebMangaDetailsActivity extends TTSActivity implements AdapterView.
                 break;
             case R.id.manga_author:
                 showAuthorSelector();
-                break;
-            case R.id.grade_rl:
-                if (isGraded()) {
-                    baseToast.showToast("不可对同一漫画重复评分!");
-                    return;
-                }
-                showGradeDialog();
                 break;
             case R.id.comment_msg_ll:
 //                Intent intent = new Intent(WebMangaDetailsActivity.this, CommentActivity.class);
