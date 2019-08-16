@@ -31,7 +31,6 @@ import com.truthower.suhang.mangareader.utils.Logger;
 import com.truthower.suhang.mangareader.utils.PermissionUtil;
 import com.truthower.suhang.mangareader.widget.bar.TopBar;
 import com.truthower.suhang.mangareader.widget.dialog.ListDialog;
-import com.truthower.suhang.mangareader.widget.dialog.SingleLoadBarUtil;
 import com.truthower.suhang.mangareader.widget.recyclerview.RecyclerGridDecoration;
 
 import java.util.ArrayList;
@@ -351,35 +350,8 @@ public class CollectedActivity extends BaseActivity implements OnRefreshListener
     }
 
     private void modifyThumbilUrl(final MangaBean mangaBean) {
-//        if (TextUtils.isEmpty(LoginBean.getInstance().getUserName())) {
-//            return;
-//        }
-//        AVQuery<AVObject> query1 = new AVQuery<>("Collected");
-//        query1.whereEqualTo("mangaUrl", mangaBean.getUrl());
-//
-//        AVQuery<AVObject> query2 = new AVQuery<>("Collected");
-//        query2.whereEqualTo("owner", LoginBean.getInstance().getUserName());
-//        AVQuery<AVObject> query = AVQuery.and(Arrays.asList(query1, query2));
-//        query.findInBackground(new FindCallback<AVObject>() {
-//            @Override
-//            public void done(List<AVObject> list, AVException e) {
-//                if (LeanCloundUtil.handleLeanResult(CollectedActivity.this, e)) {
-//                    if (null != list && list.size() > 0) {
-//                        //已存在的保存
-//                        AVObject object = AVObject.createWithoutData("Collected", list.get(0).getObjectId());
-//                        object.put("webThumbnailUrl", mangaBean.getWebThumbnailUrl());
-//                        object.saveInBackground(new SaveCallback() {
-//                            @Override
-//                            public void done(AVException e) {
-//                                if (LeanCloundUtil.handleLeanResult(CollectedActivity.this, e)) {
-//                                    baseToast.showToast(mangaBean.getName() + "修复缩略图成功!");
-//                                }
-//                            }
-//                        });
-//                    }
-//                }
-//            }
-//        });
+        db.updateCollectWebThumbilUrl(mangaBean.getUrl(), mangaBean.getWebThumbnailUrl());
+        doGetData();
     }
 
     private void initListView() {

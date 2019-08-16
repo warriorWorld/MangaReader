@@ -55,6 +55,11 @@ public class DbAdapter {
                 new Object[]{time, examplePath});
     }
 
+    public void updateCollectWebThumbilUrl(String url, String webThumbnailUrl) {
+        db.execSQL("update CollectBook set webThumbnailUrl=? where mangaUrl=?",
+                new Object[]{webThumbnailUrl, url});
+    }
+
     /**
      * 查询所有生词
      *
