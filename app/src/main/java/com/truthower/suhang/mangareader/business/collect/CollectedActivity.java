@@ -19,6 +19,7 @@ import com.truthower.suhang.mangareader.base.BaseActivity;
 import com.truthower.suhang.mangareader.bean.MangaBean;
 import com.truthower.suhang.mangareader.business.detail.WebMangaDetailsActivity;
 import com.truthower.suhang.mangareader.config.Configure;
+import com.truthower.suhang.mangareader.db.DbAdapter;
 import com.truthower.suhang.mangareader.listener.JsoupCallBack;
 import com.truthower.suhang.mangareader.listener.OnRecycleItemClickListener;
 import com.truthower.suhang.mangareader.listener.OnSevenFourteenListDialogListener;
@@ -30,6 +31,7 @@ import com.truthower.suhang.mangareader.utils.Logger;
 import com.truthower.suhang.mangareader.utils.PermissionUtil;
 import com.truthower.suhang.mangareader.widget.bar.TopBar;
 import com.truthower.suhang.mangareader.widget.dialog.ListDialog;
+import com.truthower.suhang.mangareader.widget.dialog.SingleLoadBarUtil;
 import com.truthower.suhang.mangareader.widget.recyclerview.RecyclerGridDecoration;
 
 import java.util.ArrayList;
@@ -55,19 +57,19 @@ import io.reactivex.schedulers.Schedulers;
 public class CollectedActivity extends BaseActivity implements OnRefreshListener, OnLoadMoreListener {
     private View emptyView;
     private ArrayList<MangaBean> collectedMangaList = new ArrayList<>();
-    private int collectType;
     private OnlineMangaRecyclerListAdapter adapter;
     private RecyclerView mangaRcv;
     private SwipeToLoadLayout swipeToLoadLayout;
     private TextView totalCollectTv;
     private SpiderBase spider;
     private String[] selectOptions = {"获取最后更新日期", "修复缩略图"};
+    private DbAdapter db;//数据库
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        db = new DbAdapter(this);
         Intent intent = getIntent();
-        collectType = intent.getIntExtra("collectType", Configure.COLLECT_TYPE_COLLECT);
         initUI();
         initSpider();
         doGetData();
@@ -89,17 +91,6 @@ public class CollectedActivity extends BaseActivity implements OnRefreshListener
 
         emptyView = findViewById(R.id.empty_view);
 
-        switch (collectType) {
-            case Configure.COLLECT_TYPE_COLLECT:
-                baseTopBar.setTitle("我的收藏");
-                break;
-            case Configure.COLLECT_TYPE_WAIT_FOR_UPDATE:
-                baseTopBar.setTitle("正在追更");
-                break;
-            case Configure.COLLECT_TYPE_FINISHED:
-                baseTopBar.setTitle("我看完的");
-                break;
-        }
         baseTopBar.setRightBackground(R.drawable.more);
         baseTopBar.setOnTopBarClickListener(new TopBar.OnTopBarClickListener() {
             @Override
@@ -117,6 +108,7 @@ public class CollectedActivity extends BaseActivity implements OnRefreshListener
 
             }
         });
+        baseTopBar.setTitle("我的收藏");
     }
 
     @Override
@@ -125,51 +117,8 @@ public class CollectedActivity extends BaseActivity implements OnRefreshListener
     }
 
     private void doGetData() {
-//        if (TextUtils.isEmpty(LoginBean.getInstance().getUserName(this))) {
-//            this.finish();
-//            return;
-//        }
-//        SingleLoadBarUtil.getInstance().showLoadBar(CollectedActivity.this);
-//        AVQuery<AVObject> query = new AVQuery<>("Collected");
-//        query.whereEqualTo("owner", LoginBean.getInstance().getUserName());
-//        query.limit(999);
-//        query.findInBackground(new FindCallback<AVObject>() {
-//            @Override
-//            public void done(List<AVObject> list, AVException e) {
-//                SingleLoadBarUtil.getInstance().dismissLoadBar();
-//                if (LeanCloundUtil.handleLeanResult(CollectedActivity.this, e)) {
-//                    collectedMangaList = new ArrayList<MangaBean>();
-//                    if (null != list && list.size() > 0) {
-//                        MangaBean item;
-//                        for (int i = 0; i < list.size(); i++) {
-//                            item = new MangaBean();
-//                            item.setName(list.get(i).getString("mangaName"));
-//                            item.setWebThumbnailUrl(list.get(i).getString("webThumbnailUrl"));
-//                            item.setUrl(list.get(i).getString("mangaUrl"));
-//
-//                            switch (collectType) {
-//                                case Configure.COLLECT_TYPE_COLLECT:
-//                                    if (!list.get(i).getBoolean("finished")) {
-//                                        collectedMangaList.add(item);
-//                                    }
-//                                    break;
-//                                case Configure.COLLECT_TYPE_WAIT_FOR_UPDATE:
-//                                    if (list.get(i).getBoolean("top")) {
-//                                        collectedMangaList.add(item);
-//                                    }
-//                                    break;
-//                                case Configure.COLLECT_TYPE_FINISHED:
-//                                    if (list.get(i).getBoolean("finished")) {
-//                                        collectedMangaList.add(item);
-//                                    }
-//                                    break;
-//                            }
-//                        }
-//                    }
-//                    initListView();
-//                }
-//            }
-//        });
+        collectedMangaList = db.queryAllCollect();
+        initListView();
     }
 
     private void initSpider() {
@@ -481,6 +430,12 @@ public class CollectedActivity extends BaseActivity implements OnRefreshListener
     public void onLoadMore() {
         swipeToLoadLayout.setRefreshing(false);
         swipeToLoadLayout.setLoadingMore(false);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        db.closeDb();
     }
 
     @Override

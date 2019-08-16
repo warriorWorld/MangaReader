@@ -13,7 +13,10 @@ public class DbHelper extends SQLiteOpenHelper {
             + "manga_name text)";
     public static final String WORDS_BOOK = "create table if not exists WordsBook ("
             + "id integer primary key autoincrement,"
-            + "word text," + "time integer," + "example_path text,"+ "createdtime TimeStamp NOT NULL DEFAULT (datetime('now','localtime')))";
+            + "word text," + "time integer," + "example_path text," + "createdtime TimeStamp NOT NULL DEFAULT (datetime('now','localtime')))";
+    public static final String COLLECT_BOOK = "create table if not exists CollectBook ("
+            + "id integer primary key autoincrement,"
+            + "name text," + "webThumbnailUrl text," + "mangaUrl text," + "createdtime TimeStamp NOT NULL DEFAULT (datetime('now','localtime')))";
 
     public DbHelper(Context context, String name, CursorFactory factory,
                     int version) {
@@ -25,6 +28,7 @@ public class DbHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         db.execSQL(DATA_STATISTICS);
         db.execSQL(WORDS_BOOK);
+        db.execSQL(COLLECT_BOOK);
     }
 
     @Override
@@ -32,6 +36,6 @@ public class DbHelper extends SQLiteOpenHelper {
         db.execSQL("drop table if exists WordsBook");
         db.execSQL(DATA_STATISTICS);
         db.execSQL(WORDS_BOOK);
+        db.execSQL(COLLECT_BOOK);
     }
-
 }

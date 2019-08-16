@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import com.truthower.suhang.mangareader.R;
 import com.truthower.suhang.mangareader.base.BaseFragment;
+import com.truthower.suhang.mangareader.business.collect.CollectedActivity;
 import com.truthower.suhang.mangareader.business.download.DownloadActivity;
 import com.truthower.suhang.mangareader.business.other.AboutActivity;
 import com.truthower.suhang.mangareader.business.wordsbook.WordsBookActivity;
@@ -33,6 +34,8 @@ public class UserFragment extends BaseFragment implements View.OnClickListener {
     private TextView dayOfWeekTv;
     private int currentMonth, currentDay;
     private String currentDayOfWeek;
+    private RelativeLayout collectRl;
+    private RelativeLayout shareRl;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -51,7 +54,7 @@ public class UserFragment extends BaseFragment implements View.OnClickListener {
             dialog.show();
             dialog.setTitle("教程");
             dialog.setMessage("想要更新App可以进入设置页检查更新下载最新App" +
-                    "\n设置页可以关闭本教程" );
+                    "\n设置页可以关闭本教程");
         }
         return v;
     }
@@ -64,7 +67,10 @@ public class UserFragment extends BaseFragment implements View.OnClickListener {
         dayTv = (TextView) v.findViewById(R.id.day_tv);
         monthTv = (TextView) v.findViewById(R.id.month_tv);
         dayOfWeekTv = (TextView) v.findViewById(R.id.day_of_week_tv);
-
+        collectRl = (RelativeLayout) v.findViewById(R.id.collect_rl);
+        shareRl = (RelativeLayout) v.findViewById(R.id.share_rl);
+        collectRl.setOnClickListener(this);
+        shareRl.setOnClickListener(this);
         newWordBookRl.setOnClickListener(this);
         downloadRl.setOnClickListener(this);
         userTopBarRl.setOnClickListener(this);
@@ -114,6 +120,12 @@ public class UserFragment extends BaseFragment implements View.OnClickListener {
                 break;
             case R.id.about_rl:
                 intent = new Intent(getActivity(), AboutActivity.class);
+                break;
+            case R.id.collect_rl:
+                intent = new Intent(getActivity(), CollectedActivity.class);
+                break;
+            case R.id.share_rl:
+
                 break;
         }
         if (null != intent) {

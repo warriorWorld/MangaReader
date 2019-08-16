@@ -18,7 +18,7 @@ public class Configure {
     public final static boolean isTest = false;
     public static int currentOrientation=90;
     //数据库版本号
-    public static final int DB_VERSION = 3;
+    public static final int DB_VERSION = 4;
     public final static String[] websList = {"KaKaLot", "MangaReader"};
     public final static String[] masterWebsList = {"MangaReader", "NManga", "KaKaLot", "LManga"};
     public final static String[] VPN_MUST_LIST = {"NOTHING"};
@@ -59,10 +59,6 @@ public class Configure {
     final public static int PERMISSION_LOCATION_REQUST_CODE = 8022;
     final public static int PERMISSION_FILE_REQUST_CODE = 8023;
     final public static int PERMISSION_READ_PHONE_STATE_REQUST_CODE = 8024;
-    //收藏类型
-    final public static int COLLECT_TYPE_COLLECT = 0;
-    final public static int COLLECT_TYPE_WAIT_FOR_UPDATE = 1;
-    final public static int COLLECT_TYPE_FINISHED = 2;
     //OCR识别
     final public static OCRParameters tps = new OCRParameters.Builder().source("youdaoocr").timeout(100000)
             .type(OCRParameters.TYPE_LINE).lanType(RecognizeLanguage.LINE_CHINESE_ENGLISH.getCode()).build();//

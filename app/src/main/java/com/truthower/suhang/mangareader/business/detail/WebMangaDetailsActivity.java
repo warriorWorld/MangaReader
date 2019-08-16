@@ -23,11 +23,11 @@ import com.truthower.suhang.mangareader.bean.MangaBean;
 import com.truthower.suhang.mangareader.business.download.DownloadActivity;
 import com.truthower.suhang.mangareader.business.download.DownloadMangaManager;
 import com.truthower.suhang.mangareader.business.main.MainActivity;
-import com.truthower.suhang.mangareader.business.other.AboutActivity;
 import com.truthower.suhang.mangareader.business.read.ReadMangaActivity;
 import com.truthower.suhang.mangareader.business.search.SearchActivity;
 import com.truthower.suhang.mangareader.config.Configure;
 import com.truthower.suhang.mangareader.config.ShareKeys;
+import com.truthower.suhang.mangareader.db.DbAdapter;
 import com.truthower.suhang.mangareader.eventbus.EventBusEvent;
 import com.truthower.suhang.mangareader.eventbus.JumpEvent;
 import com.truthower.suhang.mangareader.eventbus.TagClickEvent;
@@ -82,10 +82,14 @@ public class WebMangaDetailsActivity extends TTSActivity implements AdapterView.
     private int trySpiderPosition = 0;
     private String currentMangaName;
     private String[] authorOptions;
+    private View collectV;
+    private boolean isCollected = false;
+    private DbAdapter db;//数据库
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        db = new DbAdapter(this);
         Intent intent = getIntent();
         mangaUrl = intent.getStringExtra("mangaUrl");
         if (TextUtils.isEmpty(mangaUrl)) {
@@ -229,6 +233,30 @@ public class WebMangaDetailsActivity extends TTSActivity implements AdapterView.
         }
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        doGetIsCollected();
+    }
+
+    private void doGetIsCollected() {
+        isCollected = db.queryCollectExist(mangaUrl);
+        toggleCollect();
+    }
+
+    private void doCollect() {
+        db.insertCollect(currentManga.getName(), mangaUrl, currentManga.getWebThumbnailUrl());
+        baseToast.showToast("收藏成功");
+        doGetIsCollected();
+    }
+
+    private void deleteCollected() {
+        db.deleteCollect(mangaUrl);
+        baseToast.showToast("取消收藏");
+        isCollected = false;
+        toggleCollect();
+    }
+
     private void initGridView() {
         if (null == adapter) {
             adapter = new OnlineMangaDetailAdapter(this, currentManga.getChapters());
@@ -271,10 +299,12 @@ public class WebMangaDetailsActivity extends TTSActivity implements AdapterView.
         mangaAuthorTv = (TextView) findViewById(R.id.manga_author);
         mangaTypeTv = (TextView) findViewById(R.id.manga_type);
         lastUpdateTv = (TextView) findViewById(R.id.manga_update_date);
+        collectV = findViewById(R.id.collect_view);
         mangaTypeTv.setOnClickListener(this);
         thumbnailIV.setOnClickListener(this);
         thumbnailIV.setOnLongClickListener(this);
         mangaAuthorTv.setOnClickListener(this);
+        collectV.setOnClickListener(this);
         baseTopBar.setRightBackground(R.drawable.more);
         baseTopBar.setOnTopBarClickListener(new TopBar.OnTopBarClickListener() {
 
@@ -571,6 +601,13 @@ public class WebMangaDetailsActivity extends TTSActivity implements AdapterView.
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
+            case R.id.collect_view:
+                if (isCollected) {
+                    deleteCollected();
+                } else {
+                    doCollect();
+                }
+                break;
             case R.id.manga_type:
                 showTagsSelector();
                 break;
@@ -617,6 +654,20 @@ public class WebMangaDetailsActivity extends TTSActivity implements AdapterView.
     @Override
     public void onPermissionsDenied(int requestCode, List<String> perms) {
         baseToast.showToast("没文件读取/写入授权,你让我怎么下载漫画?", true);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        db.closeDb();
+    }
+
+    private void toggleCollect() {
+        if (isCollected) {
+            collectV.setBackgroundResource(R.drawable.collected);
+        } else {
+            collectV.setBackgroundResource(R.drawable.collect);
+        }
     }
 
     @Override
