@@ -1,7 +1,9 @@
 package com.truthower.suhang.mangareader.business.main;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.ClipboardManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -36,10 +38,12 @@ public class UserFragment extends BaseFragment implements View.OnClickListener {
     private String currentDayOfWeek;
     private RelativeLayout collectRl;
     private RelativeLayout shareRl;
+    private ClipboardManager clip;//复制文本用
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
+        clip = (ClipboardManager) getActivity().getSystemService(Context.CLIPBOARD_SERVICE);
         View v = inflater.inflate(R.layout.fragment_user, container, false);
         Date date = new Date(System.currentTimeMillis());
         SimpleDateFormat format = new SimpleDateFormat("EEEE");
@@ -106,6 +110,26 @@ public class UserFragment extends BaseFragment implements View.OnClickListener {
         dialog.setCancelText("顺序");
     }
 
+    private void showShareDialog() {
+        MangaDialog dialog = new MangaDialog(getActivity());
+        dialog.setOnPeanutDialogClickListener(new MangaDialog.OnPeanutDialogClickListener() {
+            @Override
+            public void onOkClick() {
+                clip.setText("782685214");
+                baseToast.showToast("复制成功");
+            }
+
+            @Override
+            public void onCancelClick() {
+
+            }
+        });
+        dialog.show();
+        dialog.setTitle("云服务停用");
+        dialog.setMessage("由于失去云服务,后续更新只能在qq群里发布所以请大家加qq群782685214.");
+        dialog.setOkText("复制群号");
+    }
+
     @Override
     public void onClick(View v) {
         Intent intent = null;
@@ -125,7 +149,7 @@ public class UserFragment extends BaseFragment implements View.OnClickListener {
                 intent = new Intent(getActivity(), CollectedActivity.class);
                 break;
             case R.id.share_rl:
-
+                showShareDialog();
                 break;
         }
         if (null != intent) {
