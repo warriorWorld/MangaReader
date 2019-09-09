@@ -317,7 +317,7 @@ public class CollectedActivity extends BaseActivity implements OnRefreshListener
     //因为我不知道当期收藏的漫画是哪个网站的 所以就一个个试
     private int trySpiderPosition = 0;
 
-    private void getMangaDetail(final String url, final JsoupCallBack<MangaBean> resultListener) {
+    private synchronized void getMangaDetail(final String url, final JsoupCallBack<MangaBean> resultListener) {
         spider.getMangaDetail(url, new JsoupCallBack<MangaBean>() {
             @Override
             public void loadSucceed(final MangaBean result) {
