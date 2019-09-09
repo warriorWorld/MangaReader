@@ -317,17 +317,21 @@ public class CollectedActivity extends BaseActivity implements OnRefreshListener
     //因为我不知道当期收藏的漫画是哪个网站的 所以就一个个试
     private int trySpiderPosition = 0;
 
+    /**
+     * 这里是多个漫画用同一个spider去获取详情 spider就有线程冲突的问题,加一个synchronized关键字,让同一时
+     * 间仅有一个线程调用该方法,避免上述问题.从而解决漫画名称/更新时间和漫画本身不对应的问题
+     */
     private synchronized void getMangaDetail(final String url, final JsoupCallBack<MangaBean> resultListener) {
         spider.getMangaDetail(url, new JsoupCallBack<MangaBean>() {
             @Override
             public void loadSucceed(final MangaBean result) {
-                Logger.d("getMangaDetail:  "+result.getName()+"   "+result.getLast_update()+"   "+url+"   "+result.getWebThumbnailUrl()+"   "+result.getAuthor()+"   "+result.getUrl());
+                Logger.d("getMangaDetail:  " + result.getName() + "   " + result.getLast_update() + "   " + url + "   " + result.getWebThumbnailUrl() + "   " + result.getAuthor() + "   " + result.getUrl());
                 resultListener.loadSucceed(result);
             }
 
             @Override
             public void loadFailed(String error) {
-                Logger.d("loadFailed:  "+url+"   "+error);
+                Logger.d("loadFailed:  " + url + "   " + error);
                 if (error.equals(Configure.WRONG_WEBSITE_EXCEPTION)) {
                     try {
                         if (PermissionUtil.isMaster(CollectedActivity.this)) {
