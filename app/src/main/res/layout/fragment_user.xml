@@ -273,7 +273,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="3dp"
-                    android:text="欢迎来到404之国"
+                    android:text="批评不自由,赞美无意义."
                     android:textColor="@color/main_text_color_gray"
                     android:textSize="10sp"/>
             </LinearLayout>

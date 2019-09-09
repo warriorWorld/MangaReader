@@ -118,6 +118,9 @@ public class KaKaLotSpider extends SpiderBase {
                             }
                             item.setTypes(types);
                             item.setTypeCodes(typeCodes);
+                            Logger.d("inside:  "+item.getName()+"   "+item.getLast_update()+"   "+item.getWebThumbnailUrl()+"   "+item.getAuthor()+"   "+item.getUrl());
+                        }else {
+                            Logger.d("mangaTagDetailElements=null");
                         }
 
                         Elements chapterElements = doc.select("div.row a");

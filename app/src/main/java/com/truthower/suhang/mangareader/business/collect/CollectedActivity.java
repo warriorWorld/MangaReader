@@ -176,9 +176,6 @@ public class CollectedActivity extends BaseActivity implements OnRefreshListener
                                 getMangaDetail(bean.getUrl(), new JsoupCallBack<MangaBean>() {
                                     @Override
                                     public void loadSucceed(MangaBean result) {
-                                        result.setUrl(bean.getUrl());
-                                        result.setName(bean.getName());
-                                        result.setWebThumbnailUrl(bean.getWebThumbnailUrl());
                                         e.onNext(result);//这个onnext和onComplete并不是最后的那个onnext和onComplete而是其中一个分支，最终这些分支经过flatMap汇聚
                                         e.onComplete();
                                     }
@@ -324,11 +321,13 @@ public class CollectedActivity extends BaseActivity implements OnRefreshListener
         spider.getMangaDetail(url, new JsoupCallBack<MangaBean>() {
             @Override
             public void loadSucceed(final MangaBean result) {
+                Logger.d("getMangaDetail:  "+result.getName()+"   "+result.getLast_update()+"   "+url+"   "+result.getWebThumbnailUrl()+"   "+result.getAuthor()+"   "+result.getUrl());
                 resultListener.loadSucceed(result);
             }
 
             @Override
             public void loadFailed(String error) {
+                Logger.d("loadFailed:  "+url+"   "+error);
                 if (error.equals(Configure.WRONG_WEBSITE_EXCEPTION)) {
                     try {
                         if (PermissionUtil.isMaster(CollectedActivity.this)) {

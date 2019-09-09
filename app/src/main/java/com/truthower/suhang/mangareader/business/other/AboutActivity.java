@@ -1,7 +1,9 @@
 package com.truthower.suhang.mangareader.business.other;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.ClipboardManager;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
@@ -28,11 +30,13 @@ public class AboutActivity extends BaseActivity implements View.OnClickListener 
     private CheckBox closeTranslateCb, economyModeCb, closeTutorialCb;
     private CheckBox closeTtsCb;
     private View gestureRl;
+    private ClipboardManager clip;//复制文本用
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         initUI();
+        clip = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
     }
 
     @Override
@@ -115,7 +119,7 @@ public class AboutActivity extends BaseActivity implements View.OnClickListener 
         authorDialog.show();
         authorDialog.setTitle("联系作者");
         authorDialog.setOkText("知道了");
-        authorDialog.setMessage("作者:  苏航\n邮箱:  772192594@qq.com");
+        authorDialog.setMessage("qq群:782685214");
     }
 
     private void showGestureDialog() {
@@ -151,13 +155,33 @@ public class AboutActivity extends BaseActivity implements View.OnClickListener 
         });
     }
 
+    private void showUpdateDialog() {
+        MangaDialog dialog = new MangaDialog(this);
+        dialog.setOnPeanutDialogClickListener(new MangaDialog.OnPeanutDialogClickListener() {
+            @Override
+            public void onOkClick() {
+                clip.setText("782685214");
+                baseToast.showToast("复制成功");
+            }
+
+            @Override
+            public void onCancelClick() {
+
+            }
+        });
+        dialog.show();
+        dialog.setTitle("云服务停用");
+        dialog.setMessage("由于失去云服务,后续更新只能在qq群里发布所以请大家加qq群782685214.");
+        dialog.setOkText("复制群号");
+    }
+
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.app_icon_iv:
                 break;
             case R.id.check_update_rl:
-                showBaseDialog("欢迎来到404之国", "由于某些不能说的原因,本App彻底与后台服务断开连接,如有更新需求请加qq群782685214", "确定", "取消", null);
+                showUpdateDialog();
                 break;
             case R.id.author_rl:
                 showAuthorDialog();
