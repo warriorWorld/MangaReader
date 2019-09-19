@@ -109,7 +109,7 @@ public class RecommendFragment extends BaseFragment implements
         MangaBean item2=new MangaBean();
         item2.setWebThumbnailUrl("https://avt.mkklcdnv3.com/avatar_225/837-read_attack_on_titan_manga_online_free2.jpg");
         item2.setName("进击的巨人");
-        item2.setUrl("https://manganelo.com/manga/read_attack_on_titan_manga_online_free2");
+        item2.setUrl("https://manganelo.com/manga/kxqh9261558062112");
         mangaList.add(item2);
         MangaBean item3=new MangaBean();
         item3.setWebThumbnailUrl("https://avt.mkklcdnv3.com/avatar_225/1459-ajin.jpg");
@@ -119,7 +119,7 @@ public class RecommendFragment extends BaseFragment implements
         MangaBean item4=new MangaBean();
         item4.setWebThumbnailUrl("https://avt.mkklcdnv3.com/avatar_225/1083-read_berserk_manga_online.jpg");
         item4.setName("剑风传奇");
-        item4.setUrl("https://manganelo.com/manga/read_berserk_manga_online");
+        item4.setUrl("https://manganelo.com/manga/ilsi12001567132882");
         mangaList.add(item4);
         MangaBean item5=new MangaBean();
         item5.setWebThumbnailUrl("https://avt.mkklcdnv3.com/avatar_225/3326-read_dragon_ball_manga_online_for_free2.jpg");
@@ -209,7 +209,7 @@ public class RecommendFragment extends BaseFragment implements
         MangaBean item22=new MangaBean();
         item22.setWebThumbnailUrl("https://avt.mkklcdnv3.com/avatar_225/8542-ookami_to_koushinryou.jpg");
         item22.setName("狼与香辛料");
-        item22.setUrl("https://manganelo.com/manga/ookami_to_koushinryou");
+        item22.setUrl("https://manganelo.com/manga/tifr98811554781969");
         mangaList.add(item22);
         MangaBean item23=new MangaBean();
         item23.setWebThumbnailUrl("https://avt.mkklcdnv3.com/avatar_225/11563-kokou_no_hito.jpg");
@@ -224,7 +224,7 @@ public class RecommendFragment extends BaseFragment implements
         MangaBean item25=new MangaBean();
         item25.setWebThumbnailUrl("https://avt.mkklcdnv3.com/avatar_225/8550-initial_d.jpg");
         item25.setName("头文字D");
-        item25.setUrl("https://manganelo.com/manga/initial_d");
+        item25.setUrl("https://manganelo.com/manga/cvcn98891556768005");
         mangaList.add(item25);
         MangaBean item26=new MangaBean();
         item26.setWebThumbnailUrl("https://avt.mkklcdnv3.com/avatar_225/2295-weirdo.jpg");
@@ -247,10 +247,45 @@ public class RecommendFragment extends BaseFragment implements
         item29.setUrl("https://manganelo.com/manga/blades_of_the_guardians");
         mangaList.add(item29);
         MangaBean item30=new MangaBean();
-        item30.setWebThumbnailUrl("");
-        item30.setName("");
-        item30.setUrl("");
+        item30.setWebThumbnailUrl("https://avt.mkklcdnv3.com/avatar_225/9005-phantom_blood.jpg");
+        item30.setName("JOJO1");
+        item30.setUrl("https://mangakakalot.com/manga/phantom_blood");
         mangaList.add(item30);
+        MangaBean item31=new MangaBean();
+        item31.setWebThumbnailUrl("https://s4.mangareader.net/cover/jojos-bizarre-adventure-part-2-battle-tendency/jojos-bizarre-adventure-part-2-battle-tendency-l0.jpg");
+        item31.setName("JOJO2");
+        item31.setUrl("https://www.mangareader.net/jojos-bizarre-adventure-part-2-battle-tendency");
+        mangaList.add(item31);
+        MangaBean item32=new MangaBean();
+        item32.setWebThumbnailUrl("https://avt.mkklcdnv3.com/avatar_225/18892-jojos_bizarre_adventure.jpg");
+        item32.setName("JOJO3");
+        item32.setUrl("https://manganelo.com/manga/jojos_bizarre_adventure");
+        mangaList.add(item32);
+        MangaBean item33=new MangaBean();
+        item33.setWebThumbnailUrl("https://avt.mkklcdnv3.com/avatar_225/17580-diamond_wa_kudakenai.jpg");
+        item33.setName("JOJO4");
+        item33.setUrl("https://mangakakalot.com/manga/diamond_wa_kudakenai");
+        mangaList.add(item33);
+        MangaBean item34=new MangaBean();
+        item34.setWebThumbnailUrl("https://avt.mkklcdnv3.com/avatar_225/92-vento_aureo.jpg");
+        item34.setName("JOJO5");
+        item34.setUrl("https://manganelo.com/manga/vento_aureo");
+        mangaList.add(item34);
+        MangaBean item35=new MangaBean();
+        item35.setWebThumbnailUrl("https://avt.mkklcdnv3.com/avatar_225/21930-bi918289.jpg");
+        item35.setName("JOJO6");
+        item35.setUrl("https://manganelo.com/manga/bi918289");
+        mangaList.add(item35);
+        MangaBean item36=new MangaBean();
+        item36.setWebThumbnailUrl("https://avt.mkklcdnv3.com/avatar_225/21779-af918141.jpg");
+        item36.setName("JOJO7");
+        item36.setUrl("https://manganelo.com/manga/af918141");
+        mangaList.add(item36);
+        MangaBean item37=new MangaBean();
+        item37.setWebThumbnailUrl("https://avt.mkklcdnv3.com/avatar_225/21552-yx917940.jpg");
+        item37.setName("JOJO8");
+        item37.setUrl("https://manganelo.com/manga/yx917940");
+        mangaList.add(item37);
 
         initGridView();
     }
@@ -292,6 +327,7 @@ public class RecommendFragment extends BaseFragment implements
                 adapter.notifyDataSetChanged();
             }
         } catch (Exception e) {
+            e.printStackTrace();
         }
         swipeToLoadLayout.setRefreshing(false);
         swipeToLoadLayout.setLoadingMore(false);
@@ -506,11 +542,13 @@ public class RecommendFragment extends BaseFragment implements
 
     @Override
     public void onLoadMore() {
-        doGetData();
+        swipeToLoadLayout.setRefreshing(false);
+        swipeToLoadLayout.setLoadingMore(false);
     }
 
     @Override
     public void onRefresh() {
-        doGetData();
+        swipeToLoadLayout.setRefreshing(false);
+        swipeToLoadLayout.setLoadingMore(false);
     }
 }
