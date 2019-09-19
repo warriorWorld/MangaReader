@@ -96,11 +96,6 @@ public class RecommendFragment extends BaseFragment implements
     }
 
     private void doGetData() {
-        MangaBean item = new MangaBean();
-        item.setWebThumbnailUrl("http://ww3.sinaimg.cn/mw600/006XNEY7gy1fup9fnneypj30j60i9mzy.jpg");
-        item.setName("qq群782685214");
-        item.setUrl("https://manganelo.com/manga/ookami_to_koushinryou");
-        mangaList.add(item);
         MangaBean item1 = new MangaBean();
         item1.setWebThumbnailUrl("https://avt.mkklcdnv3.com/avatar_225/45-read_one_piece_manga_online_free4.jpg");
         item1.setName("海贼王");
@@ -402,9 +397,9 @@ public class RecommendFragment extends BaseFragment implements
         item60.setUrl("https://manganelo.com/manga/gekkan_shoujo_nozakikun");
         mangaList.add(item60);
         MangaBean item61 = new MangaBean();
-        item61.setWebThumbnailUrl("https://manganelo.com/manga/saiki_kusuo_no_sainan");
+        item61.setWebThumbnailUrl("https://avt.mkklcdnv3.com/avatar_225/155-saiki_kusuo_no_sainan.jpg");
         item61.setName("齐木楠雄的灾难");
-        item61.setUrl("https://avt.mkklcdnv3.com/avatar_225/155-saiki_kusuo_no_sainan.jpg");
+        item61.setUrl("https://manganelo.com/manga/saiki_kusuo_no_sainan");
         mangaList.add(item61);
         MangaBean item62 = new MangaBean();
         item62.setWebThumbnailUrl("https://avt.mkklcdnv3.com/avatar_225/3948-cowboy_bebop.jpg");
@@ -437,9 +432,9 @@ public class RecommendFragment extends BaseFragment implements
         item67.setUrl("https://manganelo.com/manga/jackals");
         mangaList.add(item67);
         MangaBean item68 = new MangaBean();
-        item68.setWebThumbnailUrl("https://manganelo.com/manga/read_akame_ga_kill_manga");
+        item68.setWebThumbnailUrl("https://avt.mkklcdnv3.com/avatar_225/1164-read_akame_ga_kill_manga.jpg");
         item68.setName("斬·赤紅之瞳!");
-        item68.setUrl("https://avt.mkklcdnv3.com/avatar_225/1164-read_akame_ga_kill_manga.jpg");
+        item68.setUrl("https://manganelo.com/manga/read_akame_ga_kill_manga");
         mangaList.add(item68);
         MangaBean item69 = new MangaBean();
         item69.setWebThumbnailUrl("https://avt.mkklcdnv3.com/avatar_225/1530-kaiji.jpg");

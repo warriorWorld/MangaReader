@@ -182,6 +182,13 @@
                     android:layout_centerVertical="true"
                     android:src="@drawable/forward"/>
             </RelativeLayout>
+            <TextView
+                android:layout_width="wrap_content"
+                android:textSize="13sp"
+                android:textColor="@color/main_text_color_gray"
+                android:layout_gravity="center_horizontal"
+                android:text="获取最新版本APP,请加入qq群782685214."
+                android:layout_height="wrap_content"></TextView>
         </LinearLayout>
     </ScrollView>
 
