@@ -59,6 +59,7 @@ public class MangaReaderSpider extends SpiderBase {
         new Thread() {
             @Override
             public void run() {
+                org.jsoup.nodes.Document doc=null;
                 try {
                     if (TextUtils.isEmpty(type) || type.equals("all")) {
                         doc = Jsoup.connect(webUrl + "popular/" + page)
@@ -110,6 +111,7 @@ public class MangaReaderSpider extends SpiderBase {
         new Thread() {
             @Override
             public void run() {
+                org.jsoup.nodes.Document doc=null;
                 try {
                     doc = Jsoup.connect(mangaURL)
                             .timeout(10000).get();
@@ -252,6 +254,7 @@ public class MangaReaderSpider extends SpiderBase {
         new Thread() {
             @Override
             public void run() {
+                org.jsoup.nodes.Document doc=null;
                 try {
                     String keyW = keyWord.replaceAll(" ", "+");
                     doc = Jsoup.connect(webUrl + "search/?w=" +
@@ -359,6 +362,7 @@ public class MangaReaderSpider extends SpiderBase {
         new Thread() {
             @Override
             public void run() {
+                org.jsoup.nodes.Document doc=null;
                 for (int i = 0; i < pageSize; i++) {
                     try {
                         doc = Jsoup.connect(chapterUrl + "/" + (i + 1))
@@ -388,6 +392,7 @@ public class MangaReaderSpider extends SpiderBase {
         new Thread() {
             @Override
             public void run() {
+                org.jsoup.nodes.Document doc=null;
                 try {
                     doc = Jsoup.connect(url + "/" + 1)
                             .timeout(10000).get();

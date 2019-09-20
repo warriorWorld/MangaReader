@@ -38,6 +38,7 @@ public class NMangaSpider extends SpiderBase {
         new Thread() {
             @Override
             public void run() {
+                org.jsoup.nodes.Document doc=null;
                 try {
                     if (TextUtils.isEmpty(type) || type.equals("all")) {
                         doc = Jsoup.connect(webUrl + "?page=" + page)
@@ -88,6 +89,7 @@ public class NMangaSpider extends SpiderBase {
         new Thread() {
             @Override
             public void run() {
+                org.jsoup.nodes.Document doc=null;
                 try {
                     doc = Jsoup.connect(mangaURL)
                             .timeout(10000).get();

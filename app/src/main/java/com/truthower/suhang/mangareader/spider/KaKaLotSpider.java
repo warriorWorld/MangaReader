@@ -38,6 +38,7 @@ public class KaKaLotSpider extends SpiderBase {
         new Thread() {
             @Override
             public void run() {
+                org.jsoup.nodes.Document doc=null;
                 try {
                     if (TextUtils.isEmpty(type) || type.equals("all")) {
                         doc = Jsoup.connect(webUrl + "manga_list?type=topview&category=all&alpha=all&page=" + page + "&state=all")
@@ -76,6 +77,7 @@ public class KaKaLotSpider extends SpiderBase {
         new Thread() {
             @Override
             public void run() {
+                org.jsoup.nodes.Document doc=null;
                 try {
                     doc = Jsoup.connect(mangaURL)
                             .timeout(10000).get();
@@ -182,6 +184,7 @@ public class KaKaLotSpider extends SpiderBase {
         new Thread() {
             @Override
             public void run() {
+                org.jsoup.nodes.Document doc=null;
                 try {
                     doc = Jsoup.connect(chapterUrl)
                             .timeout(10000).get();
@@ -208,6 +211,7 @@ public class KaKaLotSpider extends SpiderBase {
         new Thread() {
             @Override
             public void run() {
+                org.jsoup.nodes.Document doc=null;
                 try {
                     String keyW = keyWord.replaceAll(" ", "_");
                     switch (type) {
