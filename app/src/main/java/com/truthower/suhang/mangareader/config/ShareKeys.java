@@ -10,6 +10,7 @@ public class ShareKeys {
     public static final String CLOSE_TRANSLATE = "close_translate";
     public static final String CLOSE_TUTORIAL = "close_tutorial";
     public static final String CLOSE_TTS = "close_TTS";
+    public static final String CLOSE_WRAP_IMG = "close_wrap_img";
     public static final String CLOSE_SH_KEYBOARD = "close_sh_keyboard";
     public static final String CLOSE_SH_KEYBOARD_VIBRATION = "close_sh_keyboard_vibration";
     public static final String CLOSE_SH_KEYBOARD_SOUND = "close_sh_keyboard_sound";

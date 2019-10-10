@@ -29,6 +29,7 @@ public class AboutActivity extends BaseActivity implements View.OnClickListener 
 
     private CheckBox closeTranslateCb, economyModeCb, closeTutorialCb;
     private CheckBox closeTtsCb;
+    private CheckBox closeWrapCb;
     private View gestureRl;
     private ClipboardManager clip;//复制文本用
 
@@ -87,6 +88,14 @@ public class AboutActivity extends BaseActivity implements View.OnClickListener 
                         (AboutActivity.this, ShareKeys.CLOSE_TTS, isChecked);
             }
         });
+        closeWrapCb=findViewById(R.id.close_wrap_cb);
+        closeWrapCb.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                SharedPreferencesUtils.setSharedPreferencesData
+                        (AboutActivity.this, ShareKeys.CLOSE_WRAP_IMG, isChecked);
+            }
+        });
         keyboardRl = (RelativeLayout) findViewById(R.id.keyboard_rl);
         closeTranslateCb.setChecked
                 (SharedPreferencesUtils.getBooleanSharedPreferencesData(AboutActivity.this,
@@ -100,7 +109,9 @@ public class AboutActivity extends BaseActivity implements View.OnClickListener 
         closeTtsCb.setChecked
                 (SharedPreferencesUtils.getBooleanSharedPreferencesData(AboutActivity.this,
                         ShareKeys.CLOSE_TTS, false));
-
+        closeWrapCb.setChecked
+                (SharedPreferencesUtils.getBooleanSharedPreferencesData(AboutActivity.this,
+                        ShareKeys.CLOSE_WRAP_IMG, false));
         gestureRl.setOnClickListener(this);
         keyboardRl.setOnClickListener(this);
         appIconIv.setOnClickListener(this);

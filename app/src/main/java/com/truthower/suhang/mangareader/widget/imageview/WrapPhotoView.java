@@ -12,7 +12,9 @@ import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.truthower.suhang.mangareader.R;
 import com.truthower.suhang.mangareader.config.Configure;
+import com.truthower.suhang.mangareader.config.ShareKeys;
 import com.truthower.suhang.mangareader.utils.ImageUtil;
+import com.truthower.suhang.mangareader.utils.SharedPreferencesUtils;
 
 import uk.co.senab.photoview.PhotoView;
 
@@ -33,13 +35,15 @@ public class WrapPhotoView extends PhotoView {
                                 setImageResource(R.drawable.spider_hat_gray512);
                                 return;
                             }
-                            //获取bitmap的宽度
-                            float bitWidth = mBitmap.getWidth();
-                            //获取bitmap的宽度
-                            float bithight = mBitmap.getHeight();
-                            // 高按照比例计算
-                            if (bitWidth > bithight) {
-                                mBitmap = ImageUtil.getRotateBitmap(mBitmap, Configure.currentOrientation);
+                            if (!SharedPreferencesUtils.getBooleanSharedPreferencesData(mContext, ShareKeys.CLOSE_WRAP_IMG, false)) {
+                                //获取bitmap的宽度
+                                float bitWidth = mBitmap.getWidth();
+                                //获取bitmap的宽度
+                                float bithight = mBitmap.getHeight();
+                                // 高按照比例计算
+                                if (bitWidth > bithight) {
+                                    mBitmap = ImageUtil.getRotateBitmap(mBitmap, Configure.currentOrientation);
+                                }
                             }
                             setImageBitmap(mBitmap);
                         }

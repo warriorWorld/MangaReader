@@ -397,6 +397,7 @@ public class ReadMangaActivity extends TTSActivity implements OnClickListener, S
 
             @Override
             public void onTitleLongClick() {
+                adapter.notifyDataSetChanged();
             }
         });
 
