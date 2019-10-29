@@ -5,6 +5,8 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
+import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.hardware.Sensor;
@@ -118,6 +120,7 @@ public class ReadMangaActivity extends TTSActivity implements OnClickListener, S
     private DbAdapter db;//数据库
     private DragView screenDv;
     private String realMangaName;
+    private HashMap<Integer, Integer> orientationMap = new HashMap<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -299,6 +302,24 @@ public class ReadMangaActivity extends TTSActivity implements OnClickListener, S
 
                             }
                         });
+                break;
+            case EventBusEvent.NEED_LANDSCAPE_EVENT:
+                int orientation;
+                if (Configure.currentOrientation == 90) {
+                    orientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE;
+                } else {
+                    orientation = ActivityInfo.SCREEN_ORIENTATION_REVERSE_LANDSCAPE;
+                }
+                orientationMap.put(event.getIntMsg(), orientation);
+                if (event.getIntMsg() == historyPosition) {
+                    setOrientation(orientation);
+                }
+                break;
+            case EventBusEvent.NEED_PORTRAIT_EVENT:
+                orientationMap.put(event.getIntMsg(), ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+                if (event.getIntMsg() == historyPosition) {
+                    setOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+                }
                 break;
         }
         if (null != intent) {
@@ -744,6 +765,12 @@ public class ReadMangaActivity extends TTSActivity implements OnClickListener, S
                     historyPosition = position;
                     readProgressTv.setText(position + 1 + "/" + pathList.size());
                     seekBar.setProgress(historyPosition);
+                    if (!SharedPreferencesUtils.getBooleanSharedPreferencesData(ReadMangaActivity.this, ShareKeys.CLOSE_WRAP_IMG, false)) {
+                        if (orientationMap.containsKey(position) && getOrientation() != orientationMap.get(position)) {
+                            setOrientation(orientationMap.get(position));
+                            adapter.notifyDataSetChanged();
+                        }
+                    }
                 }
 
                 @Override
@@ -763,6 +790,22 @@ public class ReadMangaActivity extends TTSActivity implements OnClickListener, S
         } else {
             seekBar.setVisibility(View.VISIBLE);
         }
+    }
+
+    private void setOrientation(int orientation) {
+        if (getOrientation() != orientation) {
+            setRequestedOrientation(orientation);
+            if (orientation == ActivityInfo.SCREEN_ORIENTATION_PORTRAIT) {
+                topBar.setVisibility(View.VISIBLE);
+            } else {
+                topBar.setVisibility(View.GONE);
+            }
+        }
+    }
+
+    // 判断当前屏幕朝向是否为竖屏
+    private int getOrientation() {
+        return getApplicationContext().getResources().getConfiguration().orientation;
     }
 
     @Override

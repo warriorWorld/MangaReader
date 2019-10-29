@@ -13,14 +13,18 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import com.truthower.suhang.mangareader.R;
 import com.truthower.suhang.mangareader.config.Configure;
 import com.truthower.suhang.mangareader.config.ShareKeys;
+import com.truthower.suhang.mangareader.eventbus.EventBusEvent;
 import com.truthower.suhang.mangareader.utils.ImageUtil;
 import com.truthower.suhang.mangareader.utils.SharedPreferencesUtils;
+
+import org.greenrobot.eventbus.EventBus;
 
 import uk.co.senab.photoview.PhotoView;
 
 public class WrapPhotoView extends PhotoView {
     private Context mContext;
     private Bitmap mBitmap;
+    private int position;
     /**
      * Handler处理类
      */
@@ -42,7 +46,10 @@ public class WrapPhotoView extends PhotoView {
                                 float bithight = mBitmap.getHeight();
                                 // 高按照比例计算
                                 if (bitWidth > bithight) {
-                                    mBitmap = ImageUtil.getRotateBitmap(mBitmap, Configure.currentOrientation);
+                                    EventBus.getDefault().post(new EventBusEvent(position,EventBusEvent.NEED_LANDSCAPE_EVENT));
+//                                    mBitmap = ImageUtil.getRotateBitmap(mBitmap, Configure.currentOrientation);
+                                }else {
+                                    EventBus.getDefault().post(new EventBusEvent(position,EventBusEvent.NEED_PORTRAIT_EVENT));
                                 }
                             }
                             setImageBitmap(mBitmap);
@@ -73,6 +80,11 @@ public class WrapPhotoView extends PhotoView {
     }
 
     public void setImgUrl(final String url, final DisplayImageOptions options) {
+        setImgUrl(url, options, -1);
+    }
+
+    public void setImgUrl(final String url, final DisplayImageOptions options, int position) {
+        this.position = position;
         setImageResource(R.drawable.spider_hat_color512);
         new Thread(new Runnable() {
             @Override

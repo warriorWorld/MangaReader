@@ -71,7 +71,7 @@ public class ReadMangaAdapter extends PagerAdapter {
             return gv;
         } else {
             WrapPhotoView wrapPhotoView = (WrapPhotoView) LayoutInflater.from(context).inflate(R.layout.item_wrapphotoview, container, false);
-            wrapPhotoView.setImgUrl(pathList.get(position),Configure.smallImageOptions);
+            wrapPhotoView.setImgUrl(pathList.get(position),Configure.smallImageOptions,position);
             container.addView(wrapPhotoView);
             return wrapPhotoView;
         }

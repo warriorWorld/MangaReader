@@ -13,8 +13,9 @@ public class EventBusEvent {
     public static final int DOWNLOAD_CHAPTER_START_EVENT = 21;
     public static final int TAG_CLICK_EVENT = 19;
     public static final int JUMP_EVENT = 20;
-    public static final int COPY_BOARD_EVENT=22;
-
+    public static final int COPY_BOARD_EVENT = 22;
+    public static final int NEED_LANDSCAPE_EVENT = 23;
+    public static final int NEED_PORTRAIT_EVENT = 24;
     private String msg;
     private int intMsg;
     private int eventType;
@@ -29,6 +30,11 @@ public class EventBusEvent {
 
     public EventBusEvent(String msg, int eventType) {
         this.msg = msg;
+        this.eventType = eventType;
+    }
+
+    public EventBusEvent(int intMsg, int eventType) {
+        this.intMsg = intMsg;
         this.eventType = eventType;
     }
 

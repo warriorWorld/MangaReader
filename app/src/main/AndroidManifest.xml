@@ -67,6 +67,8 @@
             android:launchMode="singleTask"></activity>
         <activity
             android:name=".business.read.ReadMangaActivity"
+            android:configChanges="orientation|screenSize"
+            android:screenOrientation="portrait"
             android:launchMode="singleTask"></activity>
         <activity android:name=".business.download.DownloadActivity"></activity>
         <activity
