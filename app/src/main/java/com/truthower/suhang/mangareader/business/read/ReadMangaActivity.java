@@ -6,7 +6,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
-import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.hardware.Sensor;
@@ -25,6 +24,7 @@ import android.text.style.UnderlineSpan;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.android.volley.Request;
@@ -38,6 +38,7 @@ import com.truthower.suhang.mangareader.adapter.ReadMangaAdapter;
 import com.truthower.suhang.mangareader.base.TTSActivity;
 import com.truthower.suhang.mangareader.bean.YoudaoResponse;
 import com.truthower.suhang.mangareader.business.detail.WebMangaDetailsActivity;
+import com.truthower.suhang.mangareader.business.other.AboutActivity;
 import com.truthower.suhang.mangareader.business.other.KeyboardSettingActivity;
 import com.truthower.suhang.mangareader.config.Configure;
 import com.truthower.suhang.mangareader.config.ShareKeys;
@@ -121,6 +122,12 @@ public class ReadMangaActivity extends TTSActivity implements OnClickListener, S
     private DragView screenDv;
     private String realMangaName;
     private HashMap<Integer, Integer> orientationMap = new HashMap<>();
+    private SensorManager sManager;
+    private Sensor mSensorAccelerometer;
+    private ImageView landscapeRefreshIv;
+    private ImageView landscapeOptionsIv;
+    private ImageView landscapeShotTranslateIv;
+    private ImageView landscapeTranslateIv;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -189,9 +196,8 @@ public class ReadMangaActivity extends TTSActivity implements OnClickListener, S
     }
 
     private void initSensorManager() {
-        SensorManager sManager = (SensorManager) getSystemService(SENSOR_SERVICE);
-        Sensor mSensorAccelerometer = sManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
-        sManager.registerListener(this, mSensorAccelerometer, SensorManager.SENSOR_DELAY_UI);
+        sManager = (SensorManager) getSystemService(SENSOR_SERVICE);
+        mSensorAccelerometer = sManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
     }
 
     @Override
@@ -202,6 +208,7 @@ public class ReadMangaActivity extends TTSActivity implements OnClickListener, S
     @Override
     protected void onResume() {
         super.onResume();
+        sManager.registerListener(this, mSensorAccelerometer, SensorManager.SENSOR_DELAY_UI);
     }
 
     private void doGetWebPics() {
@@ -341,6 +348,10 @@ public class ReadMangaActivity extends TTSActivity implements OnClickListener, S
         ocrBtn = (Button) findViewById(R.id.ocr_btn);
         readProgressTv = (TextView) findViewById(R.id.read_progress_tv);
         screenDv = (DragView) findViewById(R.id.screenshoot_dv);
+        landscapeRefreshIv = (ImageView) findViewById(R.id.landscape_refresh_iv);
+        landscapeOptionsIv = (ImageView) findViewById(R.id.landscape_options_iv);
+        landscapeShotTranslateIv = (ImageView) findViewById(R.id.landscape_shot_translate_iv);
+        landscapeTranslateIv = (ImageView) findViewById(R.id.landscape_translate_iv);
         screenDv.setSavePosition(true);
         new Thread(new Runnable() {
             @Override
@@ -358,6 +369,10 @@ public class ReadMangaActivity extends TTSActivity implements OnClickListener, S
                 }
             }
         }).start();
+        landscapeOptionsIv.setOnClickListener(this);
+        landscapeRefreshIv.setOnClickListener(this);
+        landscapeShotTranslateIv.setOnClickListener(this);
+        landscapeTranslateIv.setOnClickListener(this);
         readProgressTv.setOnClickListener(this);
         screenDv.setOnClickListener(this);
         showSeekBar.setOnClickListener(this);
@@ -797,8 +812,16 @@ public class ReadMangaActivity extends TTSActivity implements OnClickListener, S
             setRequestedOrientation(orientation);
             if (orientation == ActivityInfo.SCREEN_ORIENTATION_PORTRAIT) {
                 topBar.setVisibility(View.VISIBLE);
+                landscapeTranslateIv.setVisibility(View.GONE);
+                landscapeShotTranslateIv.setVisibility(View.GONE);
+                landscapeRefreshIv.setVisibility(View.GONE);
+                landscapeOptionsIv.setVisibility(View.GONE);
             } else {
                 topBar.setVisibility(View.GONE);
+                landscapeTranslateIv.setVisibility(View.VISIBLE);
+                landscapeShotTranslateIv.setVisibility(View.VISIBLE);
+                landscapeRefreshIv.setVisibility(View.VISIBLE);
+                landscapeOptionsIv.setVisibility(View.VISIBLE);
             }
         }
     }
@@ -819,6 +842,7 @@ public class ReadMangaActivity extends TTSActivity implements OnClickListener, S
     protected void onPause() {
         super.onPause();
         saveState();
+        sManager.unregisterListener(this);
     }
 
     @Override
@@ -870,7 +894,18 @@ public class ReadMangaActivity extends TTSActivity implements OnClickListener, S
             case R.id.read_progress_tv:
 
                 break;
+            case R.id.landscape_refresh_iv:
+                adapter.notifyDataSetChanged();
+                break;
+            case R.id.landscape_options_iv:
+                Intent intent = new Intent(ReadMangaActivity.this, AboutActivity.class);
+                startActivity(intent);
+                break;
+            case R.id.landscape_translate_iv:
+                showSearchDialog();
+                break;
             case R.id.screenshoot_dv:
+            case R.id.landscape_shot_translate_iv:
                 MobclickAgent.onEvent(ReadMangaActivity.this, "shot_translate");
                 try {
                     baseToast.showToast("手指划过区域然后松手截屏");

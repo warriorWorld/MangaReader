@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-             xmlns:app="http://schemas.android.com/apk/res-auto"
-             xmlns:tools="http://schemas.android.com/tools"
-             android:layout_width="match_parent"
-             android:layout_height="match_parent"
-             android:orientation="vertical">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -17,9 +17,9 @@
             android:layout_height="40dp"
             android:background="@color/white"
             app:left_background="@drawable/nav_back_icon"
-            app:titleTextSize="14sp"
             app:right_background="@drawable/dictionary"
             app:titleTextColor="@color/main_text_color"
+            app:titleTextSize="14sp"
             app:title_textColor="@color/main_text_color">
 
         </com.truthower.suhang.mangareader.widget.bar.TopBar>
@@ -45,7 +45,7 @@
             android:layout_marginBottom="15dp"
             android:visibility="gone"
             app:dsb_max="100"
-            app:dsb_min="1"/>
+            app:dsb_min="1" />
 
         <View
             android:id="@+id/show_seek_bar"
@@ -66,7 +66,7 @@
             android:text="OCR"
             android:textColor="@color/white"
             android:textSize="12sp"
-            android:visibility="gone"/>
+            android:visibility="gone" />
 
         <TextView
             android:id="@+id/read_progress_tv"
@@ -77,14 +77,52 @@
             android:layout_marginRight="7dp"
             android:layout_marginBottom="7dp"
             android:textColor="@color/main_text_color"
-            android:textSize="10sp"/>
+            android:textSize="10sp" />
+
+        <ImageView
+            android:id="@+id/landscape_refresh_iv"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_above="@+id/landscape_translate_iv"
+            android:layout_marginLeft="16dp"
+            android:layout_marginBottom="16dp"
+            android:src="@drawable/ic_refresh"></ImageView>
+
+        <ImageView
+            android:id="@+id/landscape_options_iv"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_alignParentBottom="true"
+            android:layout_marginLeft="16dp"
+            android:layout_marginBottom="30dp"
+            android:src="@drawable/ic_options"></ImageView>
+
+        <ImageView
+            android:id="@+id/landscape_shot_translate_iv"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_above="@+id/landscape_translate_iv"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="16dp"
+            android:layout_marginBottom="16dp"
+            android:src="@drawable/ic_shoot_duck"></ImageView>
+
+        <ImageView
+            android:id="@+id/landscape_translate_iv"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginRight="16dp"
+            android:layout_marginBottom="30dp"
+            android:src="@drawable/ic_translate"></ImageView>
 
         <ImageView
             android:id="@+id/test_iv"
             android:layout_width="120dp"
             android:layout_height="200dp"
             android:layout_centerInParent="true"
-            android:visibility="gone"/>
+            android:visibility="gone" />
 
         <com.truthower.suhang.mangareader.widget.dragview.DragView
             android:id="@+id/screenshoot_dv"
@@ -92,12 +130,12 @@
             android:layout_height="30dp"
             android:layout_alignParentBottom="true"
             android:layout_marginBottom="10dp"
-            android:src="@drawable/search_word_screenshot"/>
+            android:src="@drawable/search_word_screenshot" />
     </RelativeLayout>
 
     <com.truthower.suhang.mangareader.widget.shotview.ShotView
         android:id="@+id/shot_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:visibility="invisible"/>
+        android:visibility="invisible" />
 </FrameLayout>
