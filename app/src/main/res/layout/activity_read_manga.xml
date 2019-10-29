@@ -81,8 +81,9 @@
 
         <ImageView
             android:id="@+id/landscape_refresh_iv"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
+            android:layout_width="25dp"
+            android:visibility="gone"
+            android:layout_height="25dp"
             android:layout_above="@+id/landscape_translate_iv"
             android:layout_marginLeft="16dp"
             android:layout_marginBottom="16dp"
@@ -90,17 +91,19 @@
 
         <ImageView
             android:id="@+id/landscape_options_iv"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
             android:layout_alignParentBottom="true"
+            android:visibility="gone"
             android:layout_marginLeft="16dp"
             android:layout_marginBottom="30dp"
             android:src="@drawable/ic_options"></ImageView>
 
         <ImageView
             android:id="@+id/landscape_shot_translate_iv"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:visibility="gone"
             android:layout_above="@+id/landscape_translate_iv"
             android:layout_alignParentRight="true"
             android:layout_marginRight="16dp"
@@ -109,8 +112,9 @@
 
         <ImageView
             android:id="@+id/landscape_translate_iv"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:visibility="gone"
             android:layout_alignParentRight="true"
             android:layout_alignParentBottom="true"
             android:layout_marginRight="16dp"
