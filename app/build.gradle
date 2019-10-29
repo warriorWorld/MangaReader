@@ -66,7 +66,7 @@ dependencies {
     implementation 'com.roger.gifloadinglibrary:gifloadinglibrary:1.0.0'
     //圆角
     implementation 'com.makeramen:roundedimageview:2.3.0'
-    implementation 'com.github.warriorWorld:StyleLibrary:1.1.2'
+    implementation 'com.github.warriorWorld:StyleLibrary:1.1.4'
     implementation 'com.google.code.gson:gson:2.8.5'
     //分包 65535
     implementation 'com.android.support:multidex:1.0.0'

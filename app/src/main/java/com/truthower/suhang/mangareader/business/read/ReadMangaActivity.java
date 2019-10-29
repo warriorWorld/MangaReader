@@ -922,7 +922,7 @@ public class ReadMangaActivity extends TTSActivity implements OnClickListener, S
 
 
     @Override
-    public void onClick(final View v) {
+    public void onClick(View v) {
         switch (v.getId()) {
             case R.id.show_seek_bar:
                 cutSeekBar();
@@ -951,8 +951,8 @@ public class ReadMangaActivity extends TTSActivity implements OnClickListener, S
                         shotView.setL(new ShotView.FinishShotListener() {
                             @Override
                             public void finishShot(Bitmap bp) {
-                                switch (v.getId()){
-                                    case R.id.screenshoot_dv:
+                                switch (getOrientation()) {
+                                    case ActivityInfo.SCREEN_ORIENTATION_PORTRAIT:
                                         if (SharedPreferencesUtils.getBooleanSharedPreferencesData
                                                 (ReadMangaActivity.this, ShareKeys.CLOSE_SH_KEYBOARD, false)) {
                                             showImgEditDialog(bp);
@@ -960,7 +960,7 @@ public class ReadMangaActivity extends TTSActivity implements OnClickListener, S
                                             showImgKeyBoardDialog(bp);
                                         }
                                         break;
-                                    case R.id.landscape_shot_translate_iv:
+                                  default:
                                         showImgLandscapeKeyBoardDialog(bp);
                                         break;
                                 }
