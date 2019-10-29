@@ -19,6 +19,7 @@ import com.truthower.suhang.mangareader.base.BaseActivity;
 import com.truthower.suhang.mangareader.bean.MangaBean;
 import com.truthower.suhang.mangareader.business.read.ReadMangaActivity;
 import com.truthower.suhang.mangareader.config.Configure;
+import com.truthower.suhang.mangareader.config.ShareKeys;
 import com.truthower.suhang.mangareader.listener.OnSevenFourteenListDialogListener;
 import com.truthower.suhang.mangareader.sort.FileComparator;
 import com.truthower.suhang.mangareader.sort.FileComparatorAllNum;
@@ -26,6 +27,7 @@ import com.truthower.suhang.mangareader.sort.FileComparatorDirectory;
 import com.truthower.suhang.mangareader.sort.FileComparatorWithBracket;
 import com.truthower.suhang.mangareader.spider.FileSpider;
 import com.truthower.suhang.mangareader.utils.ReplaceUtil;
+import com.truthower.suhang.mangareader.utils.SharedPreferencesUtils;
 import com.truthower.suhang.mangareader.widget.bar.TopBar;
 import com.truthower.suhang.mangareader.widget.dialog.ListDialog;
 import com.truthower.suhang.mangareader.widget.dialog.MangaDialog;
@@ -78,6 +80,10 @@ public class LocalMangaDetailsActivity extends BaseActivity implements AdapterVi
 
         currentMangaName = intent.getStringExtra("currentMangaName");
         baseTopBar.setTitle(currentMangaName);
+        SharedPreferencesUtils.setSharedPreferencesData(this, ShareKeys.LAST_READ_MANGA_NAME,
+                currentMangaName);
+        SharedPreferencesUtils.setSharedPreferencesData(this, ShareKeys.LAST_READ_MANGA_PATH,
+                filePath);
     }
 
     @AfterPermissionGranted(Configure.PERMISSION_FILE_REQUST_CODE)
@@ -422,7 +428,7 @@ public class LocalMangaDetailsActivity extends BaseActivity implements AdapterVi
                     }
                 }
                 isInEditMode = false;
-                isInSectionDeleteMode=false;
+                isInSectionDeleteMode = false;
                 resetEditMode();
                 initFile();
             }

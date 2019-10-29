@@ -57,5 +57,6 @@
         app:left_text=""
         app:right_text=""
         app:titleTextColor="@color/main_text_color"
+        app:right_background="@drawable/ic_shortcut"
         app:title_text="本地"></com.truthower.suhang.mangareader.widget.bar.TopBar>
 </RelativeLayout>

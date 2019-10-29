@@ -43,4 +43,6 @@ public class ShareKeys {
     public static final String LAST_DRAGVIEW_POSITION = "last_dragview_position";
     public static final String IS_MASTER = "is_master";
     public static final String IS_CREATOR = "is_creator";
+    public static final String LAST_READ_MANGA_PATH = "last_read_manga_path";
+    public static final String LAST_READ_MANGA_NAME = "last_read_manga_name";
 }

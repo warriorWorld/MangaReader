@@ -218,7 +218,16 @@ public class LocalMangaFragment extends BaseFragment implements
 
             @Override
             public void onRightClick() {
-
+                String name = SharedPreferencesUtils.getSharedPreferencesData(getActivity(), ShareKeys.LAST_READ_MANGA_NAME);
+                String path = SharedPreferencesUtils.getSharedPreferencesData(getActivity(), ShareKeys.LAST_READ_MANGA_PATH);
+                if (!TextUtils.isEmpty(name)&&!TextUtils.isEmpty(path)){
+                    Intent intent = new Intent(getActivity(), LocalMangaDetailsActivity.class);
+                    intent.putExtra("filePath", path);
+                    intent.putExtra("currentMangaName", name);
+                    startActivity(intent);
+                }else {
+                    baseToast.showToast("没有最近阅读记录");
+                }
             }
 
             @Override
