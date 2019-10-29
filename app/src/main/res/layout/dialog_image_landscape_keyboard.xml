@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                style="@style/TransparentDialog"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/transparency"
+                android:orientation="vertical">
+
+    <ImageView
+        android:id="@+id/image_view"
+        style="@style/TransparentDialog"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/keyboard_layout"
+        android:layout_gravity="center_horizontal"
+        android:adjustViewBounds="true"
+        android:background="@color/transparency"
+        android:padding="8dp"
+        android:scaleType="fitCenter"
+        android:src="@color/transparency"/>
+
+    <include
+        android:id="@+id/keyboard_layout"
+        layout="@layout/dialog_keyboard_landscape"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"></include>
+</RelativeLayout>

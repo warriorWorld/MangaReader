@@ -3,24 +3,24 @@
 3    package="com.umeng.message.lib.test" >
 4
 5    <uses-sdk
-5-->D:\android_workspace\MangaReader\push\build\intermediates\tmp\manifest\androidTest\debug\manifestMerger1844570121001860867.xml:5:5-74
+5-->D:\android_workspace\MangaReader\push\build\intermediates\tmp\manifest\androidTest\debug\manifestMerger8240867959394674577.xml:5:5-74
 6        android:minSdkVersion="14"
-6-->D:\android_workspace\MangaReader\push\build\intermediates\tmp\manifest\androidTest\debug\manifestMerger1844570121001860867.xml:5:15-41
+6-->D:\android_workspace\MangaReader\push\build\intermediates\tmp\manifest\androidTest\debug\manifestMerger8240867959394674577.xml:5:15-41
 7        android:targetSdkVersion="25" />
-7-->D:\android_workspace\MangaReader\push\build\intermediates\tmp\manifest\androidTest\debug\manifestMerger1844570121001860867.xml:5:42-71
+7-->D:\android_workspace\MangaReader\push\build\intermediates\tmp\manifest\androidTest\debug\manifestMerger8240867959394674577.xml:5:42-71
 8
 9    <instrumentation
-9-->D:\android_workspace\MangaReader\push\build\intermediates\tmp\manifest\androidTest\debug\manifestMerger1844570121001860867.xml:11:5-15:76
+9-->D:\android_workspace\MangaReader\push\build\intermediates\tmp\manifest\androidTest\debug\manifestMerger8240867959394674577.xml:11:5-15:76
 10        android:name="android.test.InstrumentationTestRunner"
-10-->D:\android_workspace\MangaReader\push\build\intermediates\tmp\manifest\androidTest\debug\manifestMerger1844570121001860867.xml:11:22-75
+10-->D:\android_workspace\MangaReader\push\build\intermediates\tmp\manifest\androidTest\debug\manifestMerger8240867959394674577.xml:11:22-75
 11        android:functionalTest="false"
-11-->D:\android_workspace\MangaReader\push\build\intermediates\tmp\manifest\androidTest\debug\manifestMerger1844570121001860867.xml:14:22-52
+11-->D:\android_workspace\MangaReader\push\build\intermediates\tmp\manifest\androidTest\debug\manifestMerger8240867959394674577.xml:14:22-52
 12        android:handleProfiling="false"
-12-->D:\android_workspace\MangaReader\push\build\intermediates\tmp\manifest\androidTest\debug\manifestMerger1844570121001860867.xml:13:22-53
+12-->D:\android_workspace\MangaReader\push\build\intermediates\tmp\manifest\androidTest\debug\manifestMerger8240867959394674577.xml:13:22-53
 13        android:label="Tests for com.umeng.message.lib.test"
-13-->D:\android_workspace\MangaReader\push\build\intermediates\tmp\manifest\androidTest\debug\manifestMerger1844570121001860867.xml:15:22-74
+13-->D:\android_workspace\MangaReader\push\build\intermediates\tmp\manifest\androidTest\debug\manifestMerger8240867959394674577.xml:15:22-74
 14        android:targetPackage="com.umeng.message.lib.test" />
-14-->D:\android_workspace\MangaReader\push\build\intermediates\tmp\manifest\androidTest\debug\manifestMerger1844570121001860867.xml:12:22-72
+14-->D:\android_workspace\MangaReader\push\build\intermediates\tmp\manifest\androidTest\debug\manifestMerger8240867959394674577.xml:12:22-72
 15
 16    <uses-permission android:name="android.permission.INTERNET" />
 16-->[__tested_artifact__::push] D:\android_workspace\MangaReader\push\build\intermediates\library_manifest\debug\AndroidManifest.xml:11:5-67
@@ -69,11 +69,11 @@
 30-->[__tested_artifact__::push] D:\android_workspace\MangaReader\push\build\intermediates\library_manifest\debug\AndroidManifest.xml:25:22-73
 31
 32    <application android:debuggable="true" >
-32-->D:\android_workspace\MangaReader\push\build\intermediates\tmp\manifest\androidTest\debug\manifestMerger1844570121001860867.xml:7:5-9:19
-32-->D:\android_workspace\MangaReader\push\build\intermediates\tmp\manifest\androidTest\debug\manifestMerger1844570121001860867.xml:7:18-43
+32-->D:\android_workspace\MangaReader\push\build\intermediates\tmp\manifest\androidTest\debug\manifestMerger8240867959394674577.xml:7:5-9:19
+32-->D:\android_workspace\MangaReader\push\build\intermediates\tmp\manifest\androidTest\debug\manifestMerger8240867959394674577.xml:7:18-43
 33        <uses-library android:name="android.test.runner" />
-33-->D:\android_workspace\MangaReader\push\build\intermediates\tmp\manifest\androidTest\debug\manifestMerger1844570121001860867.xml:8:9-60
-33-->D:\android_workspace\MangaReader\push\build\intermediates\tmp\manifest\androidTest\debug\manifestMerger1844570121001860867.xml:8:23-57
+33-->D:\android_workspace\MangaReader\push\build\intermediates\tmp\manifest\androidTest\debug\manifestMerger8240867959394674577.xml:8:9-60
+33-->D:\android_workspace\MangaReader\push\build\intermediates\tmp\manifest\androidTest\debug\manifestMerger8240867959394674577.xml:8:23-57
 34
 35        <service
 35-->[__tested_artifact__::push] D:\android_workspace\MangaReader\push\build\intermediates\library_manifest\debug\AndroidManifest.xml:28:9-38:19

@@ -41,7 +41,6 @@ dependencies {
     // jsoup HTML parser library @ https://jsoup.org/
     implementation 'org.jsoup:jsoup:1.10.3'
     implementation 'org.greenrobot:eventbus:3.0.0'
-    implementation files('libs/universal-image-loader-1.9.5.jar')
     implementation 'pub.devrel:easypermissions:0.4.2'
     implementation files('libs/afinal-0.3.32-bin.jar')
     //可缩放的view
@@ -67,7 +66,7 @@ dependencies {
     implementation 'com.roger.gifloadinglibrary:gifloadinglibrary:1.0.0'
     //圆角
     implementation 'com.makeramen:roundedimageview:2.3.0'
-    implementation 'com.github.warriorWorld:StyleLibrary:1.0.7'
+    implementation 'com.github.warriorWorld:StyleLibrary:1.1.2'
     implementation 'com.google.code.gson:gson:2.8.5'
     //分包 65535
     implementation 'com.android.support:multidex:1.0.0'

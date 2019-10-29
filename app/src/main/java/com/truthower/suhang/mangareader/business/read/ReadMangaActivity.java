@@ -29,7 +29,9 @@ import android.widget.TextView;
 
 import com.android.volley.Request;
 import com.android.volley.VolleyError;
+import com.insightsurfface.stylelibrary.keyboard.English26KeyBoardView;
 import com.insightsurfface.stylelibrary.keyboard.KeyBoardDialog;
+import com.insightsurfface.stylelibrary.keyboard.LandscapeKeyBoardDialog;
 import com.insightsurfface.stylelibrary.listener.OnKeyboardChangeListener;
 import com.insightsurfface.stylelibrary.listener.OnKeyboardListener;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -58,6 +60,7 @@ import com.truthower.suhang.mangareader.volley.VolleyCallBack;
 import com.truthower.suhang.mangareader.volley.VolleyTool;
 import com.truthower.suhang.mangareader.widget.bar.TopBar;
 import com.truthower.suhang.mangareader.widget.dialog.ImgKeyboardDialog;
+import com.truthower.suhang.mangareader.widget.dialog.ImgLandsacpeKeyboardDialog;
 import com.truthower.suhang.mangareader.widget.dialog.MangaDialog;
 import com.truthower.suhang.mangareader.widget.dialog.MangaImgEditDialog;
 import com.truthower.suhang.mangareader.widget.dialog.OnlyEditDialog;
@@ -536,6 +539,22 @@ public class ReadMangaActivity extends TTSActivity implements OnClickListener, S
         dialog.show();
     }
 
+    private void showLandsacpeKeyboardDialog() {
+        final LandscapeKeyBoardDialog dialog = new LandscapeKeyBoardDialog(this);
+        dialog.setKeyBorad26Listener(new English26KeyBoardView.KeyBorad26Listener() {
+            @Override
+            public void inputFinish(String s) {
+                translateWord(s);
+            }
+
+            @Override
+            public void closeKeyboard() {
+
+            }
+        });
+        dialog.show();
+    }
+
     private void showHelpDialog() {
         MangaDialog dialog = new MangaDialog(this);
         dialog.show();
@@ -596,6 +615,23 @@ public class ReadMangaActivity extends TTSActivity implements OnClickListener, S
             @Override
             public void onQuestionClick() {
                 showHelpDialog();
+            }
+        });
+        dialog.show();
+        dialog.setImgRes(bp);
+    }
+
+    private void showImgLandscapeKeyBoardDialog(Bitmap bp) {
+        ImgLandsacpeKeyboardDialog dialog = new ImgLandsacpeKeyboardDialog(this);
+        dialog.setKeyBorad26Listener(new English26KeyBoardView.KeyBorad26Listener() {
+            @Override
+            public void inputFinish(String s) {
+                translateWord(s);
+            }
+
+            @Override
+            public void closeKeyboard() {
+
             }
         });
         dialog.show();
@@ -886,7 +922,7 @@ public class ReadMangaActivity extends TTSActivity implements OnClickListener, S
 
 
     @Override
-    public void onClick(View v) {
+    public void onClick(final View v) {
         switch (v.getId()) {
             case R.id.show_seek_bar:
                 cutSeekBar();
@@ -902,7 +938,7 @@ public class ReadMangaActivity extends TTSActivity implements OnClickListener, S
                 startActivity(intent);
                 break;
             case R.id.landscape_translate_iv:
-                showSearchDialog();
+                showLandsacpeKeyboardDialog();
                 break;
             case R.id.screenshoot_dv:
             case R.id.landscape_shot_translate_iv:
@@ -915,11 +951,18 @@ public class ReadMangaActivity extends TTSActivity implements OnClickListener, S
                         shotView.setL(new ShotView.FinishShotListener() {
                             @Override
                             public void finishShot(Bitmap bp) {
-                                if (SharedPreferencesUtils.getBooleanSharedPreferencesData
-                                        (ReadMangaActivity.this, ShareKeys.CLOSE_SH_KEYBOARD, false)) {
-                                    showImgEditDialog(bp);
-                                } else {
-                                    showImgKeyBoardDialog(bp);
+                                switch (v.getId()){
+                                    case R.id.screenshoot_dv:
+                                        if (SharedPreferencesUtils.getBooleanSharedPreferencesData
+                                                (ReadMangaActivity.this, ShareKeys.CLOSE_SH_KEYBOARD, false)) {
+                                            showImgEditDialog(bp);
+                                        } else {
+                                            showImgKeyBoardDialog(bp);
+                                        }
+                                        break;
+                                    case R.id.landscape_shot_translate_iv:
+                                        showImgLandscapeKeyBoardDialog(bp);
+                                        break;
                                 }
                             }
                         });
