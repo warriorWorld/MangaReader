@@ -978,16 +978,17 @@ public class ReadMangaActivity extends TTSActivity implements OnClickListener, S
                     /**
                      * getDecorView这个方法是获取缓存的屏幕 显然PhotoView这个控件放大缩小并没有触发新的缓存 所以截屏后再放大缩小就会有问题了
                      * 而我通过viewpager翻页的方法强行触发新的缓存解决这个问题
+                     * 不是很有必要处理这个问题 所以先注释掉了
                      */
-                    if (historyPosition + 1 == pathList.size()) {
-                        int temp = historyPosition;
-                        mangaPager.setCurrentItem(temp - 1);
-                        mangaPager.setCurrentItem(temp);
-                    } else {
-                        int temp = historyPosition;
-                        mangaPager.setCurrentItem(temp + 1);
-                        mangaPager.setCurrentItem(temp);
-                    }
+//                    if (historyPosition + 1 == pathList.size()) {
+//                        int temp = historyPosition;
+//                        mangaPager.setCurrentItem(temp - 1);
+//                        mangaPager.setCurrentItem(temp);
+//                    } else {
+//                        int temp = historyPosition;
+//                        mangaPager.setCurrentItem(temp + 1);
+//                        mangaPager.setCurrentItem(temp);
+//                    }
                     shotView.setBitmap(bgBitmap);
                     shotView.setVisibility(View.VISIBLE);
                 } catch (Exception e) {
