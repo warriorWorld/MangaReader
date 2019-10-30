@@ -131,6 +131,7 @@ public class ReadMangaActivity extends TTSActivity implements OnClickListener, S
     private ImageView landscapeOptionsIv;
     private ImageView landscapeShotTranslateIv;
     private ImageView landscapeTranslateIv;
+    private boolean closeOrientationChange = false;//用于在截屏时临时关闭转屏及刷新,因为截屏时需要翻页刷新缓存.
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -817,7 +818,9 @@ public class ReadMangaActivity extends TTSActivity implements OnClickListener, S
                     readProgressTv.setText(position + 1 + "/" + pathList.size());
                     seekBar.setProgress(historyPosition);
                     if (!SharedPreferencesUtils.getBooleanSharedPreferencesData(ReadMangaActivity.this, ShareKeys.CLOSE_WRAP_IMG, false)) {
-                        if (orientationMap.containsKey(position) && !isSameOrientation(orientationMap.get(position))) {
+                        if (orientationMap.containsKey(position) &&
+                                !isSameOrientation(orientationMap.get(position))
+                                && !closeOrientationChange) {
                             setOrientation(orientationMap.get(position));
                             adapter.notifyDataSetChanged();
                         }
@@ -844,7 +847,7 @@ public class ReadMangaActivity extends TTSActivity implements OnClickListener, S
     }
 
     private void setOrientation(int orientation) {
-        if (orientation!=getOrientation()) {
+        if (orientation != getOrientation()) {
             setRequestedOrientation(orientation);
             if (orientation == ActivityInfo.SCREEN_ORIENTATION_PORTRAIT) {
                 topBar.setVisibility(View.VISIBLE);
@@ -959,6 +962,7 @@ public class ReadMangaActivity extends TTSActivity implements OnClickListener, S
             case R.id.landscape_shot_translate_iv:
                 MobclickAgent.onEvent(ReadMangaActivity.this, "shot_translate");
                 try {
+                    closeOrientationChange = true;
                     baseToast.showToast("手指划过区域然后松手截屏");
 
                     if (shotView == null) {
@@ -966,6 +970,7 @@ public class ReadMangaActivity extends TTSActivity implements OnClickListener, S
                         shotView.setL(new ShotView.FinishShotListener() {
                             @Override
                             public void finishShot(Bitmap bp) {
+                                closeOrientationChange = false;
                                 switch (getOrientation()) {
                                     case ActivityInfo.SCREEN_ORIENTATION_PORTRAIT:
                                         if (SharedPreferencesUtils.getBooleanSharedPreferencesData
@@ -985,24 +990,24 @@ public class ReadMangaActivity extends TTSActivity implements OnClickListener, S
                         shotView.setIsRunning(true);
                     }
 
-                    Bitmap bgBitmap = shotView.getBitmap();
-                    if (bgBitmap != null) {
-                        bgBitmap.recycle();
-                    }
-                    bgBitmap = ScreenShot.takeScreenShot(ReadMangaActivity.this);
+//                    Bitmap bgBitmap = shotView.getBitmap();
+//                    if (bgBitmap != null) {
+//                        bgBitmap.recycle();
+//                    }
+                    Bitmap bgBitmap = ScreenShot.takeScreenShot(ReadMangaActivity.this);
                     /**
                      * getDecorView这个方法是获取缓存的屏幕 显然PhotoView这个控件放大缩小并没有触发新的缓存 所以截屏后再放大缩小就会有问题了
                      * 而我通过viewpager翻页的方法强行触发新的缓存解决这个问题
                      */
-//                    if (historyPosition + 1 == pathList.size()) {
-//                        int temp = historyPosition;
-//                        mangaPager.setCurrentItem(temp - 1);
-//                        mangaPager.setCurrentItem(temp);
-//                    } else {
-//                        int temp = historyPosition;
-//                        mangaPager.setCurrentItem(temp + 1);
-//                        mangaPager.setCurrentItem(temp);
-//                    }
+                    if (historyPosition + 1 == pathList.size()) {
+                        int temp = historyPosition;
+                        mangaPager.setCurrentItem(temp - 1);
+                        mangaPager.setCurrentItem(temp);
+                    } else {
+                        int temp = historyPosition;
+                        mangaPager.setCurrentItem(temp + 1);
+                        mangaPager.setCurrentItem(temp);
+                    }
                     shotView.setBitmap(bgBitmap);
                     shotView.setVisibility(View.VISIBLE);
                 } catch (Exception e) {
