@@ -817,7 +817,7 @@ public class ReadMangaActivity extends TTSActivity implements OnClickListener, S
                     readProgressTv.setText(position + 1 + "/" + pathList.size());
                     seekBar.setProgress(historyPosition);
                     if (!SharedPreferencesUtils.getBooleanSharedPreferencesData(ReadMangaActivity.this, ShareKeys.CLOSE_WRAP_IMG, false)) {
-                        if (orientationMap.containsKey(position) && getOrientation() != orientationMap.get(position)) {
+                        if (orientationMap.containsKey(position) && !isSameOrientation(orientationMap.get(position))) {
                             setOrientation(orientationMap.get(position));
                             adapter.notifyDataSetChanged();
                         }
@@ -844,7 +844,7 @@ public class ReadMangaActivity extends TTSActivity implements OnClickListener, S
     }
 
     private void setOrientation(int orientation) {
-        if (getOrientation() != orientation) {
+        if (!isSameOrientation(orientation)) {
             setRequestedOrientation(orientation);
             if (orientation == ActivityInfo.SCREEN_ORIENTATION_PORTRAIT) {
                 topBar.setVisibility(View.VISIBLE);
@@ -865,6 +865,21 @@ public class ReadMangaActivity extends TTSActivity implements OnClickListener, S
     // 判断当前屏幕朝向是否为竖屏
     private int getOrientation() {
         return getApplicationContext().getResources().getConfiguration().orientation;
+    }
+
+    /**
+     * 当orientation与AndroidManifest中设置的默认朝向不同时 会返回SCREEN_ORIENTATION_USER而不是真正的
+     * orientation.
+     * 这个方法不区分横屏和反向横屏
+     *
+     * @return
+     */
+    private boolean isSameOrientation(int orientation) {
+        if (orientation == ActivityInfo.SCREEN_ORIENTATION_PORTRAIT) {
+            return getOrientation() == ActivityInfo.SCREEN_ORIENTATION_PORTRAIT;
+        } else {
+            return getOrientation() != ActivityInfo.SCREEN_ORIENTATION_PORTRAIT;
+        }
     }
 
     @Override
@@ -960,7 +975,7 @@ public class ReadMangaActivity extends TTSActivity implements OnClickListener, S
                                             showImgKeyBoardDialog(bp);
                                         }
                                         break;
-                                  default:
+                                    default:
                                         showImgLandscapeKeyBoardDialog(bp);
                                         break;
                                 }
