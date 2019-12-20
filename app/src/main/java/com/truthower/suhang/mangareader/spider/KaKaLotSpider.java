@@ -87,26 +87,21 @@ public class KaKaLotSpider extends SpiderBase {
                 }
                 try {
                     if (null != doc) {
-                        Elements mangaPicDetailElements = doc.select("div.manga-info-pic");
-                        Elements mangaTextDetailElements = doc.select("ul.manga-info-text li");
-                        Elements mangaTagDetailElements = null;
-                        if (null != mangaTextDetailElements && mangaTextDetailElements.size() > 6) {
-                            mangaTagDetailElements = mangaTextDetailElements.get(6).select("a");
-                        }
+                        Elements mangaPicDetailElements = doc.select("div.story-info-left");
+                        Elements mangaTextDetailElements = doc.select("table.variations-tableInfo tr");
+                        Element mangaTitleElement=doc.select("div.story-info-right h1").first();
+                        Elements mangaTagDetailElements = mangaTextDetailElements.get(3).select("td.table-value a");
+                        Element lastUpdateElement=doc.select("span.stre-value").first();
+
                         MangaBean item = new MangaBean();
                         item.setUrl(mangaURL);
                         item.setWebThumbnailUrl(mangaPicDetailElements.first().getElementsByTag("img").last().attr("src"));
-
-                        if (null != mangaTagDetailElements) {
-                            item.setName(mangaTextDetailElements.get(0).select("h1").text());
+                        item.setName(mangaTitleElement.text());
+                        if (null != mangaTextDetailElements && mangaTextDetailElements.size() >=4) {
                             String authors = mangaTextDetailElements.get(1).text();
                             authors = authors.replaceAll("Author\\(s\\) : ", "");
                             authors = authors.substring(0, authors.length() - 1);//这个网站的作者最后一位总是有个逗号
                             item.setAuthor(authors);
-                            String lastUpadte = mangaTextDetailElements.get(3).text();
-                            lastUpadte = lastUpadte.replaceAll("Last updated : ", "");
-                            item.setLast_update(lastUpadte);
-
                             //Tag
                             String[] types = new String[mangaTagDetailElements.size()];
                             String[] typeCodes = new String[mangaTagDetailElements.size()];
@@ -115,17 +110,18 @@ public class KaKaLotSpider extends SpiderBase {
                                 //加个\\转义字符
                                 typeCode = typeCode.replaceAll("https://mangakakalot.com/manga_list\\?type=newest&category=", "");
                                 typeCode = typeCode.replaceAll("&alpha=all&page=1&state=all", "");
+                                typeCode=typeCode.replaceAll("https://manganelo.com","");
                                 typeCodes[i] = typeCode;
                                 types[i] = mangaTagDetailElements.get(i).text();
                             }
                             item.setTypes(types);
                             item.setTypeCodes(typeCodes);
-                            Logger.d("inside:  "+item.getName()+"   "+item.getLast_update()+"   "+item.getWebThumbnailUrl()+"   "+item.getAuthor()+"   "+item.getUrl());
-                        }else {
-                            Logger.d("mangaTagDetailElements=null");
                         }
-
-                        Elements chapterElements = doc.select("div.row a");
+                        //last update
+                        String lastUpadte = lastUpdateElement.text();
+                        item.setLast_update(lastUpadte);
+                        //chapter
+                        Elements chapterElements = doc.select("ul.row-content-chapter li");
                         ArrayList<ChapterBean> chapters = new ArrayList<ChapterBean>();
                         ChapterBean chapterBean;
                         int chapterPosition = 0;
@@ -134,7 +130,7 @@ public class KaKaLotSpider extends SpiderBase {
                             chapterBean = new ChapterBean();
                             chapterPosition++;
                             chapterBean.setChapterPosition(chapterPosition + "");
-                            chapterBean.setChapterUrl(chapterElements.get(i).attr("href"));
+                            chapterBean.setChapterUrl(chapterElements.get(i).select("a").first().attr("href"));
                             chapters.add(chapterBean);
                         }
                         item.setChapters(chapters);
@@ -193,7 +189,7 @@ public class KaKaLotSpider extends SpiderBase {
                     jsoupCallBack.loadFailed(e.toString());
                 }
                 if (null != doc) {
-                    Elements mangaPicsElements = doc.select("div.vung-doc").first().getElementsByTag("img");
+                    Elements mangaPicsElements = doc.select("div.container-chapter-reader").first().getElementsByTag("img");
                     ArrayList<String> pathList = new ArrayList<String>();
                     for (int i = 0; i < mangaPicsElements.size(); i++) {
                         pathList.add(mangaPicsElements.get(i).attr("src"));
