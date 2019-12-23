@@ -1,7 +1,6 @@
 # MangaReader
 MangaReader是一款看英文漫画的Android APP
 
-**点击下载**
 
 [点击下载](https://github.com/warriorWorld/MangaReader/blob/master/app/release/app-release.apk "Android apk 安装包")
 
