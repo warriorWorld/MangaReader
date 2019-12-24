@@ -179,6 +179,7 @@ public class WebMangaDetailsActivity extends TTSActivity implements AdapterView.
                                 initWebManga(url);
                                 trySpiderPosition++;
                             } catch (IndexOutOfBoundsException e) {
+                                e.printStackTrace();
                             }
                         }
                     }

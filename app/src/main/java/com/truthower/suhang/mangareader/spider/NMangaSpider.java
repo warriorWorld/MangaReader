@@ -156,7 +156,7 @@ public class NMangaSpider extends SpiderBase {
                         jsoupCallBack.loadFailed("doc load failed");
                     }
                 } catch (Exception e) {
-                    jsoupCallBack.loadFailed("catch 1 exception");
+                    jsoupCallBack.loadFailed(Configure.WRONG_WEBSITE_EXCEPTION);
                 }
             }
         }.start();
