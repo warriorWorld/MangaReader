@@ -62,6 +62,7 @@ public class OnlyEditDialog extends Dialog {
 
     private void init() {
         editText = (EditText) findViewById(R.id.edit_et);
+        editText.setFocusable(true);
         editText.setOnKeyListener(new View.OnKeyListener() {
             @Override
             public boolean onKey(View v, int keyCode, KeyEvent event) {
@@ -92,6 +93,7 @@ public class OnlyEditDialog extends Dialog {
     @Override
     public void show() {
         super.show();
+        editText.requestFocus();
         showKeyBroad();
     }
 
