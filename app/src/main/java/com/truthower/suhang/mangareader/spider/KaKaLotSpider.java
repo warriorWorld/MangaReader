@@ -30,8 +30,8 @@ import java.util.regex.Pattern;
  * http://www.mangareader.net/
  */
 public class KaKaLotSpider extends SpiderBase {
-    private String webUrl = "https://mangakakalot.com/";
-    private String webUrlNoLastLine = "https://mangakakalot.com";
+    private String webUrl = "https://manganelo.com/";
+    private String webUrlNoLastLine = "https://manganelo.com";
 
     @Override
     public <ResultObj> void getMangaList(final String type, final String page, final JsoupCallBack<ResultObj> jsoupCallBack) {
@@ -41,10 +41,10 @@ public class KaKaLotSpider extends SpiderBase {
                 org.jsoup.nodes.Document doc=null;
                 try {
                     if (TextUtils.isEmpty(type) || type.equals("all")) {
-                        doc = Jsoup.connect(webUrl + "manga_list?type=topview&category=all&alpha=all&page=" + page + "&state=all")
+                        doc = Jsoup.connect(webUrl + "genre-all/"+page+"?type=topview")
                                 .timeout(10000).get();
                     } else {
-                        doc = Jsoup.connect(webUrl + "manga_list?type=topview&category=" + type + "&alpha=all&page=" + page + "&state=all")
+                        doc = Jsoup.connect(webUrl + "genre-"+type+"/"+page)
                                 .timeout(10000).get();
                     }
                 } catch (IOException e) {
@@ -52,7 +52,7 @@ public class KaKaLotSpider extends SpiderBase {
                     jsoupCallBack.loadFailed(e.toString());
                 }
                 if (null != doc) {
-                    Elements mangaListElements = doc.select("div.list-truyen-item-wrap");
+                    Elements mangaListElements = doc.select("div.content-genres-item");
                     MangaBean item;
                     ArrayList<MangaBean> mangaList = new ArrayList<MangaBean>();
                     for (int i = 0; i < mangaListElements.size(); i++) {
