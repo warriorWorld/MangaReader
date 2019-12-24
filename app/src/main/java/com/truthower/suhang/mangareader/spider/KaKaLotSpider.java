@@ -211,10 +211,8 @@ public class KaKaLotSpider extends SpiderBase {
                 try {
                     String keyW = keyWord.replaceAll(" ", "_");
                     switch (type) {
+                        //这个网站改成都能通过一种方式搜索了
                         case BY_MANGA_AUTHOR:
-                            doc = Jsoup.connect(webUrl + "search_author/" + keyW)
-                                    .timeout(10000).get();
-                            break;
                         case BY_MANGA_NAME:
                             doc = Jsoup.connect(webUrl + "search/" + keyW)
                                     .timeout(10000).get();
@@ -225,14 +223,14 @@ public class KaKaLotSpider extends SpiderBase {
                     jsoupCallBack.loadFailed(e.toString());
                 }
                 if (null != doc) {
-                    Elements mangaListElements = doc.select("div.story_item_right h3");
-                    Elements mangaListHrefs = mangaListElements.select("a");
+                    Elements mangaListElements = doc.select("div.search-story-item");
                     MangaBean item;
                     ArrayList<MangaBean> mangaList = new ArrayList<MangaBean>();
                     for (int i = 0; i < mangaListElements.size(); i++) {
+                        Element element=mangaListElements.get(i).select("h3 a").first();
                         item = new MangaBean();
-                        item.setName(mangaListElements.get(i).text());
-                        item.setUrl(mangaListHrefs.get(i).attr("href"));
+                        item.setName(element.text());
+                        item.setUrl(element.attr("href"));
                         mangaList.add(item);
                     }
                     MangaListBean mangaListBean = new MangaListBean();
