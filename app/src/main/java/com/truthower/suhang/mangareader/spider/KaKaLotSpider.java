@@ -110,7 +110,7 @@ public class KaKaLotSpider extends SpiderBase {
                                 //加个\\转义字符
                                 typeCode = typeCode.replaceAll("https://mangakakalot.com/manga_list\\?type=newest&category=", "");
                                 typeCode = typeCode.replaceAll("&alpha=all&page=1&state=all", "");
-                                typeCode=typeCode.replaceAll("https://manganelo.com","");
+                                typeCode=typeCode.replaceAll("https://manganelo.com/genre-","");
                                 typeCodes[i] = typeCode;
                                 types[i] = mangaTagDetailElements.get(i).text();
                             }
