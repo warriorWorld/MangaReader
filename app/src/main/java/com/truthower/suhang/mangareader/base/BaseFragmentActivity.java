@@ -20,7 +20,6 @@ import com.truthower.suhang.mangareader.utils.ServiceUtil;
 import com.truthower.suhang.mangareader.widget.bar.TopBar;
 import com.truthower.suhang.mangareader.widget.dialog.MangaDialog;
 import com.truthower.suhang.mangareader.widget.toast.EasyToast;
-import com.umeng.analytics.MobclickAgent;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -56,7 +55,6 @@ public abstract class BaseFragmentActivity extends FragmentActivity {
         ActivityPoor.addActivity(this);
 
 //        PushAgent.getInstance(this).onAppStart();
-        MobclickAgent.onEvent(this, getLocalClassName().toString());
         setStatusTextColor();
     }
 
@@ -171,7 +169,6 @@ public abstract class BaseFragmentActivity extends FragmentActivity {
     @Override
     public void onResume() {
         super.onResume();
-        MobclickAgent.onResume(this);
         if (!ServiceUtil.isServiceWork(this,
                 "com.truthower.suhang.mangareader.service.CopyBoardService")) {
             Intent intent = new Intent(this, CopyBoardService.class);
@@ -182,7 +179,6 @@ public abstract class BaseFragmentActivity extends FragmentActivity {
     @Override
     public void onPause() {
         super.onPause();
-        MobclickAgent.onPause(this);
     }
 
     @Override

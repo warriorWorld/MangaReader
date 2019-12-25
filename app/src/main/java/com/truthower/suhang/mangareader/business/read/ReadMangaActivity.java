@@ -68,7 +68,6 @@ import com.truthower.suhang.mangareader.widget.dialog.TranslateDialog;
 import com.truthower.suhang.mangareader.widget.dragview.DragView;
 import com.truthower.suhang.mangareader.widget.shotview.ScreenShot;
 import com.truthower.suhang.mangareader.widget.shotview.ShotView;
-import com.umeng.analytics.MobclickAgent;
 import com.youdao.ocr.online.ImageOCRecognizer;
 import com.youdao.ocr.online.Line;
 import com.youdao.ocr.online.Line_Line;
@@ -279,7 +278,6 @@ public class ReadMangaActivity extends TTSActivity implements OnClickListener, S
 
             @Override
             public void onStopTrackingTouch(DiscreteSeekBar seekBar) {
-                MobclickAgent.onEvent(ReadMangaActivity.this, "seek_bar");
                 if (finalPosition >= 0) {
                     mangaPager.setCurrentItem(finalPosition - 1);
                 }
@@ -405,7 +403,6 @@ public class ReadMangaActivity extends TTSActivity implements OnClickListener, S
                 } else {
                     showKeyboardDialog();
                 }
-                MobclickAgent.onEvent(ReadMangaActivity.this, "translate");
             }
 
             @Override
@@ -416,7 +413,6 @@ public class ReadMangaActivity extends TTSActivity implements OnClickListener, S
                 } else {
                     showKeyboardDialog();
                 }
-                MobclickAgent.onEvent(ReadMangaActivity.this, "title_translate");
             }
 
             @Override
@@ -960,7 +956,6 @@ public class ReadMangaActivity extends TTSActivity implements OnClickListener, S
                 break;
             case R.id.screenshoot_dv:
             case R.id.landscape_shot_translate_iv:
-                MobclickAgent.onEvent(ReadMangaActivity.this, "shot_translate");
                 try {
                     closeOrientationChange = true;
                     baseToast.showToast("手指划过区域然后松手截屏");

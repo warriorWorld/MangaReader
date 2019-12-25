@@ -14,7 +14,6 @@ import android.view.Window;
 import android.view.WindowManager;
 
 import com.truthower.suhang.mangareader.R;
-import com.truthower.suhang.mangareader.business.detail.WebMangaDetailsActivity;
 import com.truthower.suhang.mangareader.eventbus.EventBusEvent;
 import com.truthower.suhang.mangareader.service.CopyBoardService;
 import com.truthower.suhang.mangareader.utils.ActivityPoor;
@@ -22,8 +21,6 @@ import com.truthower.suhang.mangareader.utils.ServiceUtil;
 import com.truthower.suhang.mangareader.widget.bar.TopBar;
 import com.truthower.suhang.mangareader.widget.dialog.MangaDialog;
 import com.truthower.suhang.mangareader.widget.toast.EasyToast;
-import com.umeng.analytics.MobclickAgent;
-import com.umeng.message.PushAgent;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -58,7 +55,6 @@ public abstract class BaseActivity extends Activity {
         ActivityPoor.addActivity(this);
 
 //        PushAgent.getInstance(this).onAppStart();
-        MobclickAgent.onEvent(this, getLocalClassName().toString());
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);//设置状态栏黑色字体
             this.getWindow().setStatusBarColor(getResources().getColor(R.color.white));
@@ -173,7 +169,6 @@ public abstract class BaseActivity extends Activity {
     @Override
     protected void onResume() {
         super.onResume();
-        MobclickAgent.onResume(this);
         if (!ServiceUtil.isServiceWork(this,
                 "com.truthower.suhang.mangareader.service.CopyBoardService")) {
             Intent intent = new Intent(this, CopyBoardService.class);
@@ -184,7 +179,6 @@ public abstract class BaseActivity extends Activity {
     @Override
     protected void onPause() {
         super.onPause();
-        MobclickAgent.onPause(this);
     }
 
     @Override

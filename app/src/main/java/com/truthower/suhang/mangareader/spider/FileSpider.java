@@ -54,6 +54,7 @@ public class FileSpider {
     }
 
     public ArrayList<MangaBean> getMangaList(final String path) {
+        try{
         File f = new File(path);//第一级目录 reptile
         if (!f.exists()) {
             f.mkdirs();
@@ -93,7 +94,11 @@ public class FileSpider {
                 } else if (null != files1 && files1.length > 0 && files1[0].isDirectory()) {
                     //如果下一级目录不是图片而是文件夹们  二级文件夹
                     File[] files2 = files1[0].listFiles();//第四级目录 某具体漫画内部的内部
-                    item.setLocalThumbnailUrl(files2[0].toString());
+                    try {
+                        item.setLocalThumbnailUrl(files2[0].toString());
+                    }catch (IndexOutOfBoundsException e){
+                        e.printStackTrace();
+                    }
                 } else if (null == files1 && !files[i].isDirectory()) {
                     //如果files1这一级就已经是单张图片了
                     item.setLocalThumbnailUrl(files[i].toString());
@@ -104,6 +109,9 @@ public class FileSpider {
             }
             return mangaList;
         } else {
+            return null;
+        }}catch (Exception e){
+            e.printStackTrace();
             return null;
         }
     }

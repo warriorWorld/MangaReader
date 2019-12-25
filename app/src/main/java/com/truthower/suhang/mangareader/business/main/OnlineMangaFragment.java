@@ -44,7 +44,6 @@ import com.truthower.suhang.mangareader.widget.dialog.SingleLoadBarUtil;
 import com.truthower.suhang.mangareader.widget.pulltorefresh.PullToRefreshBase;
 import com.truthower.suhang.mangareader.widget.pulltorefresh.PullToRefreshListView;
 import com.truthower.suhang.mangareader.widget.wheelview.wheelselector.SingleSelectorDialog;
-import com.umeng.analytics.MobclickAgent;
 
 import java.util.ArrayList;
 
@@ -322,23 +321,19 @@ public class OnlineMangaFragment extends BaseFragment implements PullToRefreshBa
                     case 0:
                         //切换站点
                         showWebsSelector();
-                        MobclickAgent.onEvent(getActivity(), "select_website");
                         break;
                     case 1:
                         Intent intent = new Intent(getActivity(), SearchActivity.class);
                         intent.putExtra("selectedWebSite", BaseParameterUtil.getInstance().getCurrentWebSite(getActivity()));
                         startActivity(intent);
-                        MobclickAgent.onEvent(getActivity(), "search");
                         break;
                     case 2:
-                        MobclickAgent.onEvent(getActivity(), "select_type");
                         //分类
                         showTypesSelector();
                         break;
                     case 3:
                         //跳转
                         showToPageDialog("跳转");
-                        MobclickAgent.onEvent(getActivity(), "jump_page");
                         break;
                 }
             }

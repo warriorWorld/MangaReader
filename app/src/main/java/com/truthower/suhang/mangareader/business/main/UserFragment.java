@@ -20,7 +20,6 @@ import com.truthower.suhang.mangareader.config.ShareKeys;
 import com.truthower.suhang.mangareader.utils.NumberUtil;
 import com.truthower.suhang.mangareader.utils.SharedPreferencesUtils;
 import com.truthower.suhang.mangareader.widget.dialog.MangaDialog;
-import com.umeng.analytics.MobclickAgent;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -135,11 +134,9 @@ public class UserFragment extends BaseFragment implements View.OnClickListener {
         Intent intent = null;
         switch (v.getId()) {
             case R.id.new_word_book_rl:
-                MobclickAgent.onEvent(getActivity(), "new_word_book");
                 showOrderSelectDialog();
                 break;
             case R.id.download_rl:
-                MobclickAgent.onEvent(getActivity(), "download");
                 intent = new Intent(getActivity(), DownloadActivity.class);
                 break;
             case R.id.about_rl:
