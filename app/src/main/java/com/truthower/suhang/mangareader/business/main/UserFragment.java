@@ -20,6 +20,7 @@ import com.truthower.suhang.mangareader.config.ShareKeys;
 import com.truthower.suhang.mangareader.utils.NumberUtil;
 import com.truthower.suhang.mangareader.utils.SharedPreferencesUtils;
 import com.truthower.suhang.mangareader.widget.dialog.MangaDialog;
+import com.truthower.suhang.mangareader.widget.dialog.MangaImgDialog;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -110,23 +111,10 @@ public class UserFragment extends BaseFragment implements View.OnClickListener {
     }
 
     private void showShareDialog() {
-        MangaDialog dialog = new MangaDialog(getActivity());
-        dialog.setOnPeanutDialogClickListener(new MangaDialog.OnPeanutDialogClickListener() {
-            @Override
-            public void onOkClick() {
-                clip.setText("782685214");
-                baseToast.showToast("复制成功");
-            }
-
-            @Override
-            public void onCancelClick() {
-
-            }
-        });
+        MangaImgDialog dialog=new MangaImgDialog(getActivity());
         dialog.show();
-        dialog.setTitle("云服务停用");
-        dialog.setMessage("由于失去云服务,后续更新只能在qq群里发布所以请大家加qq群782685214.");
-        dialog.setOkText("复制群号");
+        dialog.setText("扫码下载最新版英文漫画App");
+        dialog.setImgRes("drawable://"+R.drawable.qrcode_manga);
     }
 
     @Override

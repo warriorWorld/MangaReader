@@ -111,6 +111,11 @@ public class RecommendFragment extends BaseFragment implements
         item3.setName("亚人");
         item3.setUrl("https://manganelo.com/manga/ajin");
         mangaList.add(item3);
+        MangaBean item81 = new MangaBean();
+        item81.setWebThumbnailUrl("https://avt.mkklcdnv3.com/avatar_225/16363-kimetsu_no_yaiba.jpg");
+        item81.setName("鬼灭之刃");
+        item81.setUrl("https://manganelo.com/manga/kimetsu_no_yaiba");
+        mangaList.add(item81);
         MangaBean item4 = new MangaBean();
         item4.setWebThumbnailUrl("https://avt.mkklcdnv3.com/avatar_225/1083-read_berserk_manga_online.jpg");
         item4.setName("剑风传奇");
