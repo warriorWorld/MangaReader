@@ -113,7 +113,6 @@ public class UserFragment extends BaseFragment implements View.OnClickListener {
     private void showShareDialog() {
         MangaImgDialog dialog=new MangaImgDialog(getActivity());
         dialog.show();
-        dialog.setText("扫码下载最新版英文漫画App");
         dialog.setImgRes("drawable://"+R.drawable.qrcode_manga);
     }
 

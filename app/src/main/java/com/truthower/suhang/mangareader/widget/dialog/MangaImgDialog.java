@@ -28,7 +28,6 @@ public class MangaImgDialog extends Dialog {
     protected ImageView crossIv, imgIv;
     private OnImgDialogImgClickListener onImgDialogImgClickListener;
     protected Bitmap bpRescource;
-    private TextView imgTv;
 
     public MangaImgDialog(Context context) {
         super(context);
@@ -63,7 +62,6 @@ public class MangaImgDialog extends Dialog {
                 dismiss();
             }
         });
-        imgTv = findViewById(R.id.img_tv);
         imgIv = (ImageView) findViewById(R.id.image_view);
         imgIv.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -74,10 +72,6 @@ public class MangaImgDialog extends Dialog {
                 }
             }
         });
-    }
-
-    public void setText(String text) {
-        imgTv.setText(text);
     }
 
     public void setImgRes(String uri) {

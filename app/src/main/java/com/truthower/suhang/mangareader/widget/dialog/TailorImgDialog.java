@@ -5,7 +5,10 @@ package com.truthower.suhang.mangareader.widget.dialog;/**
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.view.Display;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 
 import com.truthower.suhang.mangareader.R;
 import com.truthower.suhang.mangareader.utils.DisplayUtil;
@@ -60,6 +63,19 @@ public class TailorImgDialog extends MangaImgDialog implements View.OnClickListe
     }
 
     @Override
+    public void setImgRes(Bitmap bp) {
+        super.setImgRes(bp);
+        resizeDialog();
+    }
+
+    private void resizeDialog() {
+        Window window = this.getWindow();
+        WindowManager.LayoutParams lp = window.getAttributes();
+        lp.height =(int)((Double.valueOf(lp.width )/ Double.valueOf(bpRescource.getWidth())) * bpRescource.getHeight());
+        window.setAttributes(lp);
+    }
+
+    @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.screenshoot_dv:
@@ -70,7 +86,7 @@ public class TailorImgDialog extends MangaImgDialog implements View.OnClickListe
                     if (bgBitmap != null) {
                         bgBitmap.recycle();
                     }
-                    bgBitmap = ScreenShot.takeScreenShot(this,imgIv.getWidth(),imgIv.getHeight());
+                    bgBitmap = ScreenShot.takeScreenShot(this, imgIv.getWidth(), imgIv.getHeight());
                     shotView.setBitmap(bgBitmap);
                     shotView.setVisibility(View.VISIBLE);
                 } catch (Exception e) {
