@@ -10,6 +10,7 @@ import android.widget.ImageView;
 
 import com.truthower.suhang.mangareader.config.ShareKeys;
 import com.truthower.suhang.mangareader.utils.DisplayUtil;
+import com.truthower.suhang.mangareader.utils.Logger;
 import com.truthower.suhang.mangareader.utils.SharedPreferencesUtils;
 import com.truthower.suhang.mangareader.utils.VibratorUtil;
 
@@ -26,7 +27,7 @@ public class DragView extends ImageView {
     private int lastMotion, lastLeft, lastRight, lastTop, lastBottom, screenWidth, screenHeight;
     private boolean edged = false;
     private int marginBottom;
-    private int clickThreshold = 0;
+    private int clickThreshold = 1;
     private float xDistance, yDistance;
     private boolean savePosition = false;
     private OnClickListener mOnClickListener;
@@ -162,6 +163,7 @@ public class DragView extends ImageView {
                 case MotionEvent.ACTION_MOVE:
                     xDistance = event.getX() - downX;
                     yDistance = event.getY() - downY;
+                    Logger.d("xDistance:"+xDistance+"      yDistance:"+yDistance);
                     if (xDistance != 0 && yDistance != 0) {
                         int l = (int) (getLeft() + xDistance);
                         int r = (int) (getRight() + xDistance);
