@@ -21,6 +21,7 @@ import com.truthower.suhang.mangareader.utils.NumberUtil;
 import com.truthower.suhang.mangareader.utils.SharedPreferencesUtils;
 import com.truthower.suhang.mangareader.widget.dialog.MangaDialog;
 import com.truthower.suhang.mangareader.widget.dialog.MangaImgDialog;
+import com.truthower.suhang.mangareader.widget.dialog.ShareDialog;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -111,9 +112,8 @@ public class UserFragment extends BaseFragment implements View.OnClickListener {
     }
 
     private void showShareDialog() {
-        MangaImgDialog dialog=new MangaImgDialog(getActivity());
+        ShareDialog dialog=new ShareDialog(getActivity());
         dialog.show();
-        dialog.setImgRes("drawable://"+R.drawable.qrcode_manga);
     }
 
     @Override

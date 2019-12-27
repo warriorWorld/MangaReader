@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    style="@style/TransparentDialog"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/transparency"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/share_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:text="扫描二维码下载最新版“英文漫画”App安装包！"
+        android:textColor="@color/white"
+        android:textSize="17sp"></TextView>
+
+    <ImageView
+        android:id="@+id/share_iv"
+        style="@style/TransparentDialog"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/share_tv"
+        android:layout_marginTop="12dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_gravity="center_horizontal"
+        android:adjustViewBounds="true"
+        android:scaleType="fitCenter"
+        android:src="@drawable/qrcode_manga" />
+
+    <Button
+        android:id="@+id/share_btn"
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:layout_below="@+id/share_iv"
+        android:layout_marginTop="12dp"
+        android:background="@drawable/btn_click_rewrite"
+        android:text="分享给好友"
+        android:textColor="@drawable/btn_text_click_rewrite"
+        android:textSize="17sp" />
+
+    <Button
+        android:id="@+id/save_btn"
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:layout_below="@+id/share_btn"
+        android:layout_marginTop="12dp"
+        android:background="@drawable/btn_click_rewrite"
+        android:text="保存图片"
+        android:textColor="@drawable/btn_text_click_rewrite"
+        android:textSize="17sp" />
+
+    <Button
+        android:id="@+id/close_btn"
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:layout_below="@+id/save_btn"
+        android:layout_marginTop="12dp"
+        android:background="@drawable/rect_bgw_rewrite"
+        android:text="关闭"
+        android:textColor="@color/manga_reader"
+        android:textSize="17sp" />
+</RelativeLayout>
