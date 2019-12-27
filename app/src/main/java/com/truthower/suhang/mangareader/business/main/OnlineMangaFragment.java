@@ -6,6 +6,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.text.ClipboardManager;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,6 +24,7 @@ import com.truthower.suhang.mangareader.adapter.OnlineMangaListAdapter;
 import com.truthower.suhang.mangareader.base.BaseFragment;
 import com.truthower.suhang.mangareader.bean.MangaBean;
 import com.truthower.suhang.mangareader.bean.MangaListBean;
+import com.truthower.suhang.mangareader.business.detail.LocalMangaDetailsActivity;
 import com.truthower.suhang.mangareader.business.detail.WebMangaDetailsActivity;
 import com.truthower.suhang.mangareader.business.other.KeyboardSettingActivity;
 import com.truthower.suhang.mangareader.business.search.SearchActivity;
@@ -118,7 +120,14 @@ public class OnlineMangaFragment extends BaseFragment implements PullToRefreshBa
         topBar.setOnTopBarClickListener(new TopBar.OnTopBarClickListener() {
             @Override
             public void onLeftClick() {
-
+                String lastUrl = SharedPreferencesUtils.getSharedPreferencesData(getActivity(), ShareKeys.LAST_READ_MANGA_URL);
+                if (!TextUtils.isEmpty(lastUrl)){
+                    Intent intent = new Intent(getActivity(), WebMangaDetailsActivity.class);
+                    intent.putExtra("mangaUrl", lastUrl);
+                    startActivity(intent);
+                }else {
+                    baseToast.showToast("没有最近阅读记录");
+                }
             }
 
             @Override

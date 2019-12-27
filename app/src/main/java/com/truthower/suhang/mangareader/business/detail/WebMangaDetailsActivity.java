@@ -112,6 +112,8 @@ public class WebMangaDetailsActivity extends TTSActivity implements AdapterView.
                     "\n5,点击漫画类型可以按漫画类型搜索漫画" +
                     "\n6,点击下方按钮给漫画评论和评分了");
         }
+        SharedPreferencesUtils.setSharedPreferencesData(this, ShareKeys.LAST_READ_MANGA_URL,
+                mangaUrl);
     }
 
     private void initSpider() {

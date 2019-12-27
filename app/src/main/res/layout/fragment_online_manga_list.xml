@@ -18,6 +18,7 @@
         android:background="@color/white"
         app:left_text=""
         app:right_background="@drawable/more"
+        app:left_background="@drawable/ic_shortcut"
         app:title_textColor="@color/main_text_color"
         app:title_text="漫画"></com.truthower.suhang.mangareader.widget.bar.TopBar>
 
