@@ -1,6 +1,7 @@
 package com.truthower.suhang.mangareader.utils;
 
 import android.content.Context;
+import android.graphics.Point;
 import android.util.DisplayMetrics;
 import android.view.WindowManager;
 
@@ -68,5 +69,20 @@ public class DisplayUtil {
         DisplayMetrics outMetrics = new DisplayMetrics();
         wm.getDefaultDisplay().getMetrics(outMetrics);
         return outMetrics.heightPixels;
+    }
+    /**
+     * 获取屏幕高度 適配全面屏高度
+     *
+     * @return
+     */
+    public static int getScreenRealHeight(Context context) {
+        WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+        if (wm != null) {
+            Point point = new Point();
+            wm.getDefaultDisplay().getRealSize(point);
+            return point.y;
+        }else {
+            return 0;
+        }
     }
 }

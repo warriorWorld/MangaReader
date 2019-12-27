@@ -30,7 +30,7 @@ public class ScreenShot {
 
         //获取屏幕长和高
         int width = activity.getWindowManager().getDefaultDisplay().getWidth();
-        int height = activity.getWindowManager().getDefaultDisplay().getHeight();
+        int height = DisplayUtil.getScreenRealHeight(activity);
         //去掉标题栏
         //Bitmap b = Bitmap.createBitmap(b1, 0, 25, 320, 455);
         Bitmap b = Bitmap.createBitmap(b1, 0, statusBarHeight, width, height - statusBarHeight);
