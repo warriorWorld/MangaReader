@@ -249,7 +249,7 @@ public class RecommendFragment extends BaseFragment implements
         MangaBean item30 = new MangaBean();
         item30.setWebThumbnailUrl("https://avt.mkklcdnv3.com/avatar_225/9005-phantom_blood.jpg");
         item30.setName("JOJO1");
-        item30.setUrl("https://mangakakalot.com/manga/phantom_blood");
+        item30.setUrl("https://manganelo.com/manga/phantom_blood");
         mangaList.add(item30);
         MangaBean item31 = new MangaBean();
         item31.setWebThumbnailUrl("https://s4.mangareader.net/cover/jojos-bizarre-adventure-part-2-battle-tendency/jojos-bizarre-adventure-part-2-battle-tendency-l0.jpg");
@@ -264,7 +264,7 @@ public class RecommendFragment extends BaseFragment implements
         MangaBean item33 = new MangaBean();
         item33.setWebThumbnailUrl("https://avt.mkklcdnv3.com/avatar_225/17580-diamond_wa_kudakenai.jpg");
         item33.setName("JOJO4");
-        item33.setUrl("https://mangakakalot.com/manga/diamond_wa_kudakenai");
+        item33.setUrl("https://manganelo.com/manga/diamond_wa_kudakenai");
         mangaList.add(item33);
         MangaBean item34 = new MangaBean();
         item34.setWebThumbnailUrl("https://avt.mkklcdnv3.com/avatar_225/92-vento_aureo.jpg");
@@ -289,17 +289,17 @@ public class RecommendFragment extends BaseFragment implements
         MangaBean item38 = new MangaBean();
         item38.setWebThumbnailUrl("https://avt.mkklcdnv3.com/avatar_225/7864-akira.jpg");
         item38.setName("Akira");
-        item38.setUrl("https://mangakakalot.com/manga/akira");
+        item38.setUrl("https://manganelo.com/manga/akira");
         mangaList.add(item38);
         MangaBean item39 = new MangaBean();
         item39.setWebThumbnailUrl("https://avt.mkklcdnv3.com/avatar_225/16959-goblin_slayer.jpg");
         item39.setName("哥布林杀手");
-        item39.setUrl("https://mangakakalot.com/manga/hgj2047065412");
+        item39.setUrl("https://manganelo.com/manga/hgj2047065412");
         mangaList.add(item39);
         MangaBean item40 = new MangaBean();
         item40.setWebThumbnailUrl("https://avt.mkklcdnv3.com/avatar_225/1079-the_ravages_of_time.jpg");
         item40.setName("火凤燎原");
-        item40.setUrl("https://mangakakalot.com/manga/the_ravages_of_time");
+        item40.setUrl("https://manganelo.com/manga/the_ravages_of_time");
         mangaList.add(item40);
         MangaBean item41 = new MangaBean();
         item41.setWebThumbnailUrl("https://avt.mkklcdnv3.com/avatar_225/11452-pluto.jpg");
