@@ -96,6 +96,7 @@ public class MangaImgEditDialog extends Dialog {
     @Override
     public void show() {
         super.show();
+        editText.requestFocus();
         showKeyBroad();
     }
 
