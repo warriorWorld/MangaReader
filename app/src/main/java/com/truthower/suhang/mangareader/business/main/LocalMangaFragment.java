@@ -267,14 +267,16 @@ public class LocalMangaFragment extends BaseFragment implements
 //            gifFolder.mkdirs();
 //        }
         for (int i = 0; i < fileArrayList.size(); i++) {
-            if (!fileArrayList.get(i).toString().contains("gif")) {
+            if (fileArrayList.get(i).toString().endsWith(".jpg")||fileArrayList.get(i).toString().endsWith(".png")) {
                 File to = new File(newPath, manganame + "(" + i + ")" + ".jpg");
 
                 fileArrayList.get(i).renameTo(to);
-            } else {
+            } else if (fileArrayList.get(i).toString().endsWith(".gif")){
                 File to = new File(newPath, manganame + "(" + i + ")" + ".gif");
 
                 fileArrayList.get(i).renameTo(to);
+            }else {
+                fileArrayList.get(i).delete();
             }
 //            else {
 //                Long time = new Date().getTime();
