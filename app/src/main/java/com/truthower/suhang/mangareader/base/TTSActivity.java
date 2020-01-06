@@ -3,6 +3,7 @@ package com.truthower.suhang.mangareader.base;
 import android.media.AudioManager;
 import android.os.Bundle;
 import android.speech.tts.TextToSpeech;
+import android.speech.tts.Voice;
 
 
 import com.truthower.suhang.mangareader.utils.SharedPreferencesUtils;
@@ -43,7 +44,7 @@ public abstract class TTSActivity extends BaseActivity implements TextToSpeech.O
                 return;
             }
         }
-        tts.setPitch(0.0f);// 设置音调，值越大声音越尖（女生），值越小则变成男声,1.0是常规
+        tts.setPitch(0.5f);// 设置音调，值越大声音越尖（女生），值越小则变成男声,1.0是常规
         HashMap<String, String> myHashAlarm = new HashMap();
         myHashAlarm.put(TextToSpeech.Engine.KEY_PARAM_STREAM,
                 String.valueOf(AudioManager.STREAM_ALARM));
@@ -77,7 +78,7 @@ public abstract class TTSActivity extends BaseActivity implements TextToSpeech.O
     @Override
     public void onInit(int status) {
         if (status == TextToSpeech.SUCCESS) {
-            int result = tts.setLanguage(Locale.US);
+            int result = tts.setLanguage(Locale.UK);
             if (result == TextToSpeech.LANG_MISSING_DATA
                     || result == TextToSpeech.LANG_NOT_SUPPORTED) {
                 baseToast.showToast("数据丢失或不支持");
