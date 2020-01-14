@@ -52,6 +52,7 @@ import com.truthower.suhang.mangareader.listener.OnSpeakClickListener;
 import com.truthower.suhang.mangareader.spider.FileSpider;
 import com.truthower.suhang.mangareader.spider.SpiderBase;
 import com.truthower.suhang.mangareader.utils.BaseParameterUtil;
+import com.truthower.suhang.mangareader.utils.DisplayUtil;
 import com.truthower.suhang.mangareader.utils.ImageUtil;
 import com.truthower.suhang.mangareader.utils.PermissionUtil;
 import com.truthower.suhang.mangareader.utils.SharedPreferencesUtils;
@@ -113,8 +114,6 @@ public class ReadMangaActivity extends TTSActivity implements OnClickListener, S
     private ProgressDialog loadBar;
     private boolean isLocalManga = false;
     private TopBar topBar;
-    private OnlyEditDialog searchDialog;
-    private MangaImgEditDialog mangaImgEditDialog;
     private ClipboardManager clip;//复制文本用
     private TranslateDialog translateResultDialog;
     private String chapterUrl;//线上漫画章节地址
@@ -486,21 +485,19 @@ public class ReadMangaActivity extends TTSActivity implements OnClickListener, S
     }
 
     private void showSearchDialog() {
-        if (null == searchDialog) {
-            searchDialog = new OnlyEditDialog(this);
-            searchDialog.setOnEditResultListener(new OnEditResultListener() {
-                @Override
-                public void onResult(String text) {
-                    translateWord(text);
-                }
+        OnlyEditDialog searchDialog = new OnlyEditDialog(this);
+        searchDialog.setOnEditResultListener(new OnEditResultListener() {
+            @Override
+            public void onResult(String text) {
+                translateWord(text);
+            }
 
-                @Override
-                public void onCancelClick() {
+            @Override
+            public void onCancelClick() {
 
-                }
-            });
-            searchDialog.setCancelable(true);
-        }
+            }
+        });
+        searchDialog.setCancelable(true);
         searchDialog.show();
         searchDialog.clearEdit();
     }
@@ -563,20 +560,18 @@ public class ReadMangaActivity extends TTSActivity implements OnClickListener, S
     }
 
     private void showImgEditDialog(Bitmap bp) {
-        if (null == mangaImgEditDialog) {
-            mangaImgEditDialog = new MangaImgEditDialog(this);
-            mangaImgEditDialog.setOnEditResultListener(new OnEditResultListener() {
-                @Override
-                public void onResult(String text) {
-                    translateWord(text);
-                }
+        MangaImgEditDialog mangaImgEditDialog = new MangaImgEditDialog(this);
+        mangaImgEditDialog.setOnEditResultListener(new OnEditResultListener() {
+            @Override
+            public void onResult(String text) {
+                translateWord(text);
+            }
 
-                @Override
-                public void onCancelClick() {
+            @Override
+            public void onCancelClick() {
 
-                }
-            });
-        }
+            }
+        });
         mangaImgEditDialog.show();
         mangaImgEditDialog.setImgRes(bp);
         mangaImgEditDialog.clearEdit();
@@ -952,7 +947,11 @@ public class ReadMangaActivity extends TTSActivity implements OnClickListener, S
                 startActivity(intent);
                 break;
             case R.id.landscape_translate_iv:
-                showLandsacpeKeyboardDialog();
+                if (DisplayUtil.isPad(ReadMangaActivity.this)) {
+                    showSearchDialog();
+                } else {
+                    showLandsacpeKeyboardDialog();
+                }
                 break;
             case R.id.screenshoot_dv:
             case R.id.landscape_shot_translate_iv:
@@ -976,7 +975,11 @@ public class ReadMangaActivity extends TTSActivity implements OnClickListener, S
                                         }
                                         break;
                                     default:
-                                        showImgLandscapeKeyBoardDialog(bp);
+                                        if (DisplayUtil.isPad(ReadMangaActivity.this)) {
+                                            showImgEditDialog(bp);
+                                        } else {
+                                            showImgLandscapeKeyBoardDialog(bp);
+                                        }
                                         break;
                                 }
                             }
