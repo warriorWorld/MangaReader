@@ -13,7 +13,7 @@ public class DbHelper extends SQLiteOpenHelper {
             + "manga_name text)";
     public static final String WORDS_BOOK = "create table if not exists WordsBook ("
             + "id integer primary key autoincrement,"
-            + "word text," + "time integer," + "example_path text," + "createdtime TimeStamp NOT NULL DEFAULT (datetime('now','localtime')))";
+            + "word text," + "time integer," +"kill_time integer,"+ "update_time long,"+"example_path text," + "createdtime TimeStamp NOT NULL DEFAULT (datetime('now','localtime')))";
     public static final String COLLECT_BOOK = "create table if not exists CollectBook ("
             + "id integer primary key autoincrement,"
             + "name text," + "webThumbnailUrl text," + "mangaUrl text," + "createdtime TimeStamp NOT NULL DEFAULT (datetime('now','localtime')))";

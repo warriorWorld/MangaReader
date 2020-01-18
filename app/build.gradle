@@ -1,4 +1,6 @@
 apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android-extensions'
+apply plugin: 'kotlin-android'
 
 android {
     compileSdkVersion 28
@@ -7,8 +9,8 @@ android {
         applicationId "com.truthower.suhang.mangareader"
         minSdkVersion 17
         targetSdkVersion 28
-        versionCode 47
-        versionName "4.0.5"
+        versionCode 48
+        versionName "4.1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         //分包 65535
         multiDexEnabled true
@@ -68,4 +70,9 @@ dependencies {
     //分包 65535
     implementation 'com.android.support:multidex:1.0.0'
     implementation files('libs/universal-image-loader-1.9.5.jar')
+    implementation "androidx.core:core-ktx:+"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+}
+repositories {
+    mavenCentral()
 }

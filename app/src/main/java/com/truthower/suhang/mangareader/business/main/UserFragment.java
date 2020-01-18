@@ -23,6 +23,7 @@ import com.truthower.suhang.mangareader.base.BaseFragment;
 import com.truthower.suhang.mangareader.business.collect.CollectedActivity;
 import com.truthower.suhang.mangareader.business.download.DownloadActivity;
 import com.truthower.suhang.mangareader.business.other.AboutActivity;
+import com.truthower.suhang.mangareader.business.words.WordsActivity;
 import com.truthower.suhang.mangareader.business.wordsbook.WordsBookActivity;
 import com.truthower.suhang.mangareader.config.Configure;
 import com.truthower.suhang.mangareader.config.ShareKeys;
@@ -285,8 +286,10 @@ public class UserFragment extends BaseFragment implements View.OnClickListener,
 
             @Override
             public void onCancelClick() {
-                Intent intent = new Intent(getActivity(), WordsBookActivity.class);
-                intent.putExtra("orderType", "order");
+//                Intent intent = new Intent(getActivity(), WordsBookActivity.class);
+//                intent.putExtra("orderType", "order");
+//                startActivity(intent);
+                Intent intent = new Intent(getActivity(), WordsActivity.class);
                 startActivity(intent);
             }
         });
