@@ -2,6 +2,7 @@ package com.truthower.suhang.mangareader.adapter;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -48,14 +49,27 @@ public class WordsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     public void onBindViewHolder(final RecyclerView.ViewHolder viewHolder, final int position) {
         final WordsBookBean item = list.get(position);
         ((NormalViewHolder) viewHolder).wordTv.setText(item.getWord() + "(" + item.getTime() + ")");
-//        ((NormalViewHolder) viewHolder).translateTv.setText(item.getTranslate());
-        ((NormalViewHolder) viewHolder).translateTv.setBackgroundColor(mContext.getResources().getColor(R.color.divide_line));
-        ((NormalViewHolder) viewHolder).translateTv.setTextColor(mContext.getResources().getColor(R.color.transparency));
+        ((NormalViewHolder) viewHolder).translateTv.setText(item.getTranslate());
+        if (TextUtils.isEmpty(item.getTranslate())) {
+            ((NormalViewHolder) viewHolder).translateTv.setBackgroundColor(mContext.getResources().getColor(R.color.divide_line));
+            ((NormalViewHolder) viewHolder).translateTv.setTextColor(mContext.getResources().getColor(R.color.transparency));
+        } else {
+            ((NormalViewHolder) viewHolder).translateTv.setBackgroundColor(mContext.getResources().getColor(R.color.transparency));
+            ((NormalViewHolder) viewHolder).translateTv.setTextColor(mContext.getResources().getColor(R.color.main_text_color_gray));
+        }
         ((NormalViewHolder) viewHolder).translateTv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ((NormalViewHolder) viewHolder).translateTv.setBackgroundColor(mContext.getResources().getColor(R.color.transparency));
-                ((NormalViewHolder) viewHolder).translateTv.setTextColor(mContext.getResources().getColor(R.color.main_text_color_gray));
+                if (((NormalViewHolder) viewHolder).translateTv.getCurrentTextColor() == mContext.getResources().getColor(R.color.main_text_color_gray)) {
+                    ((NormalViewHolder) viewHolder).translateTv.setBackgroundColor(mContext.getResources().getColor(R.color.divide_line));
+                    ((NormalViewHolder) viewHolder).translateTv.setTextColor(mContext.getResources().getColor(R.color.transparency));
+                } else {
+                    ((NormalViewHolder) viewHolder).translateTv.setBackgroundColor(mContext.getResources().getColor(R.color.transparency));
+                    ((NormalViewHolder) viewHolder).translateTv.setTextColor(mContext.getResources().getColor(R.color.main_text_color_gray));
+                }
+                if (null != onTranslateItemClickListener && TextUtils.isEmpty(item.getTranslate())) {
+                    onTranslateItemClickListener.onItemClick(position);
+                }
             }
         });
         ((NormalViewHolder) viewHolder).translateTv.setOnLongClickListener(new View.OnLongClickListener() {

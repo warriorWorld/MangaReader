@@ -14,14 +14,16 @@ public interface WordsContract {
 
         void killWord(int position);
 
-        void translateWord();
+        void translateWord(int position, String word);
     }
 
     interface View extends BaseView<Presenter> {
         void displayWords(ArrayList<WordsBookBean> list);
 
-        void displayTranslate(String translate);
+        void displayTranslate(int position, String translate);
 
         void displayKillWord();
+
+        void displayErrorMsg(String msg);
     }
 }

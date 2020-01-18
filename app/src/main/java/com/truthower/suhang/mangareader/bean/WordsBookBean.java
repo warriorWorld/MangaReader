@@ -9,6 +9,7 @@ public class WordsBookBean {
     private String example_path;
     private long update_time;
     private int kill_time;
+    private String translate;
 
     public String getWord() {
         return word;
@@ -48,5 +49,13 @@ public class WordsBookBean {
 
     public void setKill_time(int kill_time) {
         this.kill_time = kill_time;
+    }
+
+    public String getTranslate() {
+        return translate;
+    }
+
+    public void setTranslate(String translate) {
+        this.translate = translate;
     }
 }

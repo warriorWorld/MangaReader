@@ -9,8 +9,8 @@
     <com.truthower.suhang.mangareader.widget.imageview.WrapPhotoView
         android:id="@+id/word_iv"
         android:layout_width="match_parent"
-        android:layout_centerHorizontal="true"
         android:layout_height="30dp"
+        android:layout_centerHorizontal="true"
         android:scaleType="fitXY"></com.truthower.suhang.mangareader.widget.imageview.WrapPhotoView>
 
 
@@ -37,7 +37,7 @@
         android:background="@color/divide_line"
         android:includeFontPadding="false"
         android:padding="6dp"
-        android:text="单词"
+        android:text="正在翻译..."
         android:textColor="@color/main_text_color_gray"
         android:textSize="17sp" />
 

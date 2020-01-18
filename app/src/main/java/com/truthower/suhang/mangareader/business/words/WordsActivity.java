@@ -66,13 +66,20 @@ public class WordsActivity extends TTSActivity implements OnClickListener, Words
     }
 
     @Override
-    public void displayTranslate(String translate) {
-
+    public void displayTranslate(int position, String translate) {
+        wordsList.get(position).setTranslate(translate);
+        adapter.setList(wordsList);
+        adapter.notifyItemChanged(position);
     }
 
     @Override
     public void displayKillWord() {
 
+    }
+
+    @Override
+    public void displayErrorMsg(String msg) {
+        baseToast.showToast(msg);
     }
 
     @Override
@@ -167,6 +174,12 @@ public class WordsActivity extends TTSActivity implements OnClickListener, Words
                     public void onItemClick(int position) {
                     }
                 });
+                adapter.setOnTranslateItemClickListener(new OnRecycleItemClickListener() {
+                    @Override
+                    public void onItemClick(int position) {
+                        translation(position);
+                    }
+                });
                 wordsRcv.setAdapter(adapter);
             } else {
                 adapter.setList(wordsList);
@@ -177,45 +190,11 @@ public class WordsActivity extends TTSActivity implements OnClickListener, Words
         }
     }
 
-    private void translation(final String word) {
+    private void translation(int position) {
+        String word = wordsList.get(position).getWord();
         clip.setText(word);
         text2Speech(word);
-        String url = Configure.YOUDAO + word;
-        HashMap<String, String> params = new HashMap<String, String>();
-        VolleyCallBack<YoudaoResponse> callback = new VolleyCallBack<YoudaoResponse>() {
-
-            @Override
-            public void loadSucceed(YoudaoResponse result) {
-//                if (null != result && result.getErrorCode() == 0) {
-//                    YoudaoResponse.BasicBean item = result.getBasic();
-//                    String t = "";
-//                    if (null != item) {
-//                        for (int i = 0; i < item.getExplains().size(); i++) {
-//                            t = t + item.getExplains().get(i) + ";";
-//                        }
-//                        adapter.getNowView().setTranslate(result.getQuery() + " [" + item.getPhonetic() +
-//                                "]: " + "\n" + t);
-//                    } else {
-//                        adapter.getNowView().setTranslate("没查到该词");
-//                    }
-//                } else {
-//                    adapter.getNowView().setTranslate("网络连接失败");
-//                }
-            }
-
-            @Override
-            public void loadFailed(VolleyError error) {
-                baseToast.showToast("error\n" + error);
-            }
-
-            @Override
-            public void loadSucceedButNotNormal(YoudaoResponse result) {
-
-            }
-        };
-        VolleyTool.getInstance(this).requestData(Request.Method.GET,
-                WordsActivity.this, url, params,
-                YoudaoResponse.class, callback);
+        mPresenter.translateWord(position, word);
     }
 
     @Override
