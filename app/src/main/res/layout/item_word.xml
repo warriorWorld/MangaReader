@@ -9,7 +9,7 @@
     <com.truthower.suhang.mangareader.widget.imageview.WrapPhotoView
         android:id="@+id/word_iv"
         android:layout_width="match_parent"
-        android:layout_height="30dp"
+        android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:scaleType="fitXY"></com.truthower.suhang.mangareader.widget.imageview.WrapPhotoView>
 

@@ -12,7 +12,7 @@ public interface WordsContract {
 
         void getWords();
 
-        void killWord(int position);
+        void killWord(int position, String word);
 
         void translateWord(int position, String word);
     }
@@ -22,7 +22,7 @@ public interface WordsContract {
 
         void displayTranslate(int position, String translate);
 
-        void displayKillWord();
+        void displayKillWord(int position);
 
         void displayErrorMsg(String msg);
     }

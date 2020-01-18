@@ -70,7 +70,7 @@ public class DbAdapter {
         Cursor cursor = db
                 .query("WordsBook", null, null, null, null, null, "createdtime desc");
         long currentTime = System.currentTimeMillis();
-        int minGapTime = 24 * 60 * 60 * 1000;
+        int minGapTime = 6 * 60 * 60 * 1000;
         long minTime = currentTime - minGapTime;
 
         while (cursor.moveToNext()) {
@@ -174,16 +174,24 @@ public class DbAdapter {
 
     public int queryKilledTime(String word) {
         int res = 0;
-        Cursor cursor = db.rawQuery(
-                "select kill_time from WordsBook where word=?",
-                new String[]{word});
-        int count = cursor.getCount();
-        if (count > 0) {
-            while (cursor.moveToNext()) {
-                res = cursor.getInt(cursor.getColumnIndex("kill_time"));
+        Cursor cursor = null;
+        try {
+            cursor = db.rawQuery(
+                    "select kill_time from WordsBook where word=?",
+                    new String[]{word});
+            int count = cursor.getCount();
+            if (count > 0) {
+                while (cursor.moveToNext()) {
+                    res = cursor.getInt(cursor.getColumnIndex("kill_time"));
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (null != cursor) {
+                cursor.close();
             }
         }
-        cursor.close();
         return res;
     }
 
@@ -193,8 +201,8 @@ public class DbAdapter {
         if (time >= 3) {
             deleteWordByWord(word);
         } else {
-            db.execSQL("update WordsBook set kill_time=? where word=?",
-                    new Object[]{time, word});
+            db.execSQL("update WordsBook set kill_time=?,update_time=? where word=?",
+                    new Object[]{time,System.currentTimeMillis(), word});
         }
     }
 

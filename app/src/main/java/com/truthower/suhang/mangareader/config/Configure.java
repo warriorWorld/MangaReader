@@ -18,7 +18,7 @@ public class Configure {
     public final static boolean isTest = false;
     public static int currentOrientation=90;
     //数据库版本号
-    public static final int DB_VERSION = 4;
+    public static final int DB_VERSION = 5;
     public final static String[] websList = {"KaKaLot", "MangaReader"};
     public final static String[] masterWebsList = {"MangaReader", "NManga", "KaKaLot", "LManga"};
     public final static String[] VPN_MUST_LIST = {"NOTHING"};

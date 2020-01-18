@@ -8,6 +8,8 @@ import android.text.ClipboardManager;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.animation.AnimationUtils;
+import android.view.animation.LayoutAnimationController;
 import android.widget.TextView;
 
 import com.android.volley.Request;
@@ -27,6 +29,7 @@ import com.truthower.suhang.mangareader.config.Configure;
 import com.truthower.suhang.mangareader.config.ShareKeys;
 import com.truthower.suhang.mangareader.db.DbAdapter;
 import com.truthower.suhang.mangareader.listener.OnRecycleItemClickListener;
+import com.truthower.suhang.mangareader.listener.OnRecycleItemLongClickListener;
 import com.truthower.suhang.mangareader.spider.FileSpider;
 import com.truthower.suhang.mangareader.utils.ImageUtil;
 import com.truthower.suhang.mangareader.utils.SharedPreferencesUtils;
@@ -73,8 +76,9 @@ public class WordsActivity extends TTSActivity implements OnClickListener, Words
     }
 
     @Override
-    public void displayKillWord() {
-
+    public void displayKillWord(int position) {
+        VibratorUtil.Vibrate(WordsActivity.this, 60);
+        adapter.remove(position);
     }
 
     @Override
@@ -85,11 +89,6 @@ public class WordsActivity extends TTSActivity implements OnClickListener, Words
     @Override
     public void setPresenter(WordsContract.Presenter presenter) {
         this.mPresenter = presenter;
-    }
-
-    private enum OrderType {
-        ORDER,
-        RANDOM
     }
 
     @Override
@@ -135,7 +134,7 @@ public class WordsActivity extends TTSActivity implements OnClickListener, Words
                 e.printStackTrace();
             }
         } catch (Exception e) {
-
+            e.printStackTrace();
         }
     }
 
@@ -150,6 +149,8 @@ public class WordsActivity extends TTSActivity implements OnClickListener, Words
                         (this, LinearLayoutManager.VERTICAL, false));
         wordsRcv.setFocusable(false);
         wordsRcv.setHasFixedSize(true);
+        LayoutAnimationController controller = new LayoutAnimationController(AnimationUtils.loadAnimation(this, R.anim.recycler_load));
+        wordsRcv.setLayoutAnimation(controller);
         baseTopBar.setTitle("生词本");
     }
 
@@ -172,12 +173,19 @@ public class WordsActivity extends TTSActivity implements OnClickListener, Words
                 adapter.setOnRecycleItemClickListener(new OnRecycleItemClickListener() {
                     @Override
                     public void onItemClick(int position) {
+                        mPresenter.killWord(position, wordsList.get(position).getWord());
                     }
                 });
                 adapter.setOnTranslateItemClickListener(new OnRecycleItemClickListener() {
                     @Override
                     public void onItemClick(int position) {
                         translation(position);
+                    }
+                });
+                adapter.setOnRecycleItemLongClickListener(new OnRecycleItemLongClickListener() {
+                    @Override
+                    public void onItemLongClick(int position) {
+                        clip.setText(wordsList.get(position).getWord());
                     }
                 });
                 wordsRcv.setAdapter(adapter);

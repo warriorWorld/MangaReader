@@ -36,8 +36,9 @@ public class WordsPresenter implements WordsContract.Presenter {
     }
 
     @Override
-    public void killWord(int position) {
-
+    public void killWord(int position, String word) {
+        mInjector.dataRepository(mContext).killWordByWord(word);
+        mView.displayKillWord(position);
     }
 
     @Override
@@ -56,7 +57,7 @@ public class WordsPresenter implements WordsContract.Presenter {
                             t = t + item.getExplains().get(i) + ";";
                         }
                         mView.displayTranslate(position, " [" + item.getPhonetic() +
-                                "]; "  + t);
+                                "]; " + t);
                     } else {
                         mView.displayErrorMsg("没查到该词");
                     }
