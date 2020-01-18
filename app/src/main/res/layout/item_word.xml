@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/word_rl"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <com.truthower.suhang.mangareader.widget.imageview.WrapPhotoView
+        android:id="@+id/word_iv"
+        android:layout_width="match_parent"
+        android:layout_centerHorizontal="true"
+        android:layout_height="30dp"
+        android:scaleType="fitXY"></com.truthower.suhang.mangareader.widget.imageview.WrapPhotoView>
+
+
+    <TextView
+        android:id="@+id/word_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/word_iv"
+        android:layout_margin="10dp"
+        android:includeFontPadding="false"
+        android:text="word"
+        android:textColor="@color/main_text_color"
+        android:textSize="17sp" />
+
+    <TextView
+        android:id="@+id/translate_tv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/word_iv"
+        android:layout_marginTop="3dp"
+        android:layout_marginBottom="3dp"
+        android:layout_toLeftOf="@+id/kill_tv"
+        android:layout_toRightOf="@id/word_tv"
+        android:background="@color/divide_line"
+        android:includeFontPadding="false"
+        android:padding="6dp"
+        android:text="单词"
+        android:textColor="@color/main_text_color_gray"
+        android:textSize="17sp" />
+
+    <TextView
+        android:id="@+id/kill_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/word_iv"
+        android:layout_alignParentRight="true"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginRight="10dp"
+        android:text="斩"
+        android:textColor="@color/colorPrimary"
+        android:textSize="17sp"></TextView>
+</RelativeLayout>

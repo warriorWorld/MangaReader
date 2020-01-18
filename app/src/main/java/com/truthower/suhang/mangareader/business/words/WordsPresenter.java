@@ -29,6 +29,16 @@ public class WordsPresenter implements WordsContract.Presenter {
     }
 
     @Override
+    public void killWord(int position) {
+
+    }
+
+    @Override
+    public void translateWord() {
+
+    }
+
+    @Override
     public void onDestroy() {
         mContext = null;
         mInjector = null;

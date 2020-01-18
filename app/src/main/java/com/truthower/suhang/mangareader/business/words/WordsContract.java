@@ -10,10 +10,18 @@ public interface WordsContract {
     interface Presenter extends BasePresenter {
         void onViewCreated();
 
-       void getWords();
+        void getWords();
+
+        void killWord(int position);
+
+        void translateWord();
     }
 
     interface View extends BaseView<Presenter> {
         void displayWords(ArrayList<WordsBookBean> list);
+
+        void displayTranslate(String translate);
+
+        void displayKillWord();
     }
 }

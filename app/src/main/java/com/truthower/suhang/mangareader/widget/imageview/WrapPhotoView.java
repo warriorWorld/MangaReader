@@ -14,6 +14,7 @@ import com.truthower.suhang.mangareader.R;
 import com.truthower.suhang.mangareader.config.Configure;
 import com.truthower.suhang.mangareader.config.ShareKeys;
 import com.truthower.suhang.mangareader.eventbus.EventBusEvent;
+import com.truthower.suhang.mangareader.utils.DisplayUtil;
 import com.truthower.suhang.mangareader.utils.ImageUtil;
 import com.truthower.suhang.mangareader.utils.SharedPreferencesUtils;
 
@@ -46,10 +47,10 @@ public class WrapPhotoView extends PhotoView {
                                 float bithight = mBitmap.getHeight();
                                 // 高按照比例计算
                                 if (bitWidth > bithight) {
-                                    EventBus.getDefault().post(new EventBusEvent(position,EventBusEvent.NEED_LANDSCAPE_EVENT));
+                                    EventBus.getDefault().post(new EventBusEvent(position, EventBusEvent.NEED_LANDSCAPE_EVENT));
 //                                    mBitmap = ImageUtil.getRotateBitmap(mBitmap, Configure.currentOrientation);
-                                }else {
-                                    EventBus.getDefault().post(new EventBusEvent(position,EventBusEvent.NEED_PORTRAIT_EVENT));
+                                } else {
+                                    EventBus.getDefault().post(new EventBusEvent(position, EventBusEvent.NEED_PORTRAIT_EVENT));
                                 }
                             }
                             setImageBitmap(mBitmap);
@@ -77,6 +78,42 @@ public class WrapPhotoView extends PhotoView {
 
     private void init(Context context) {
         this.mContext = context;
+    }
+
+
+    public void setBitmap(final Bitmap bm) {
+        post(new Runnable() {
+            @Override
+            public void run() {
+                ViewGroup.LayoutParams vgl = getLayoutParams();
+                if (bm == null) {
+                    setImageResource(com.insightsurfface.stylelibrary.R.drawable.ic_loading);
+                    return;
+                }
+                //获取bitmap的宽度
+                float bitWidth = bm.getWidth();
+                //获取bitmap的宽度
+                float bithight = bm.getHeight();
+
+                //计算出图片的宽高比，然后按照图片的比列去缩放图片
+                float bitScalew = bitWidth / bithight;
+                float maxWidth = DisplayUtil.getScreenWidth(mContext);
+                if (maxWidth <= bitWidth) {
+                    vgl.width = (int) maxWidth;
+                    vgl.height = (int) (maxWidth / bitScalew);
+                } else {
+                    vgl.width = (int) bitWidth;
+                    vgl.height = (int) bithight;
+                }
+
+                //设置图片充满ImageView控件
+                setScaleType(ScaleType.FIT_XY);
+                //等比例缩放
+                setAdjustViewBounds(true);
+                setLayoutParams(vgl);
+                setImageBitmap(bm);
+            }
+        });
     }
 
     public void setImgUrl(final String url, final DisplayImageOptions options) {
