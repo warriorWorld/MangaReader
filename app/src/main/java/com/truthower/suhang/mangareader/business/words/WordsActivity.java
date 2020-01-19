@@ -152,6 +152,7 @@ public class WordsActivity extends TTSActivity implements OnClickListener, Words
         LayoutAnimationController controller = new LayoutAnimationController(AnimationUtils.loadAnimation(this, R.anim.recycler_load));
         wordsRcv.setLayoutAnimation(controller);
         baseTopBar.setTitle("生词本");
+        baseTopBar.setRightBackground(R.drawable.ic_shuffle_card);
     }
 
     @Override
