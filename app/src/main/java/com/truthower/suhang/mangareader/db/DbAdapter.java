@@ -7,7 +7,9 @@ import android.database.sqlite.SQLiteDatabase;
 import com.truthower.suhang.mangareader.bean.MangaBean;
 import com.truthower.suhang.mangareader.bean.WordsBookBean;
 import com.truthower.suhang.mangareader.config.Configure;
+import com.truthower.suhang.mangareader.spider.FileSpider;
 
+import java.io.File;
 import java.util.ArrayList;
 
 
@@ -202,7 +204,7 @@ public class DbAdapter {
             deleteWordByWord(word);
         } else {
             db.execSQL("update WordsBook set kill_time=?,update_time=? where word=?",
-                    new Object[]{time,System.currentTimeMillis(), word});
+                    new Object[]{time, System.currentTimeMillis(), word});
         }
     }
 
@@ -212,6 +214,7 @@ public class DbAdapter {
     public void deleteWordByWord(String word) {
         db.execSQL("delete from WordsBook where word=?",
                 new Object[]{word});
+        FileSpider.getInstance().deleteFile(Configure.WORDS_PATH + File.separator + word + ".png");
     }
 
     public void deleteCollect(String url) {
