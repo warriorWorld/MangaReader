@@ -3,10 +3,12 @@ package com.truthower.suhang.mangareader.business.detail;
 import android.Manifest;
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.View;
+import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.ImageView;
@@ -55,14 +57,13 @@ import org.greenrobot.eventbus.EventBus;
 import java.util.ArrayList;
 import java.util.List;
 
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import pub.devrel.easypermissions.AfterPermissionGranted;
 import pub.devrel.easypermissions.EasyPermissions;
 
 public class WebMangaDetailsActivity extends TTSActivity implements AdapterView.OnItemClickListener, View.OnClickListener,
-        PullToRefreshBase.OnRefreshListener<GridView>,
         EasyPermissions.PermissionCallbacks, View.OnLongClickListener {
     private SpiderBase spider;
-    private PullToRefreshGridView pullToRefreshGridView;
     private GridView mangaGV;
     private boolean chooseing = false;//判断是否在选择状态
     private boolean firstChoose = true;
@@ -85,6 +86,7 @@ public class WebMangaDetailsActivity extends TTSActivity implements AdapterView.
     private View collectV;
     private boolean isCollected = false;
     private DbAdapter db;//数据库
+    private SwipeRefreshLayout bgSrl;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -98,7 +100,6 @@ public class WebMangaDetailsActivity extends TTSActivity implements AdapterView.
         initSpider();
 
         initUI();
-        initPullGridView();
         initProgressBar();
         initWebManga(mangaUrl);
         if (!SharedPreferencesUtils.getBooleanSharedPreferencesData(this, ShareKeys.CLOSE_TUTORIAL, true)) {
@@ -265,7 +266,11 @@ public class WebMangaDetailsActivity extends TTSActivity implements AdapterView.
             adapter = new OnlineMangaDetailAdapter(this, currentManga.getChapters());
             mangaGV.setAdapter(adapter);
             mangaGV.setColumnWidth(50);
-            mangaGV.setNumColumns(5);
+            if (Configure.isPad){
+                mangaGV.setNumColumns(8);
+            }else {
+                mangaGV.setNumColumns(5);
+            }
             mangaGV.setVerticalSpacing(10);
             mangaGV.setHorizontalSpacing(3);
             mangaGV.setOnItemClickListener(this);
@@ -273,8 +278,7 @@ public class WebMangaDetailsActivity extends TTSActivity implements AdapterView.
             adapter.setChapters(currentManga.getChapters());
             adapter.notifyDataSetChanged();
         }
-        pullToRefreshGridView.onPullDownRefreshComplete();// 动画结束方法
-        pullToRefreshGridView.onPullUpRefreshComplete();
+        bgSrl.setRefreshing(false);
     }
 
     private void initOneShotGridView() {
@@ -290,17 +294,40 @@ public class WebMangaDetailsActivity extends TTSActivity implements AdapterView.
             oneShotAdapter.setChapterList(currentManga.getChapters());
             oneShotAdapter.notifyDataSetChanged();
         }
-        pullToRefreshGridView.onPullDownRefreshComplete();// 动画结束方法
-        pullToRefreshGridView.onPullUpRefreshComplete();
+        bgSrl.setRefreshing(false);
     }
 
     private void initUI() {
-        pullToRefreshGridView = (PullToRefreshGridView) findViewById(R.id.ptf_grid_view);
-        mangaGV = (GridView) pullToRefreshGridView.getRefreshableView();
+        mangaGV = (GridView) findViewById(R.id.ptf_grid_view);
+        mangaGV.setOnScrollListener(new AbsListView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(AbsListView view, int scrollState) {
+
+            }
+
+            @Override
+            public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+                if (null==bgSrl){
+                    return;
+                }
+                if (firstVisibleItem == 0) {
+                    bgSrl.setEnabled(true);
+                } else {
+                    bgSrl.setEnabled(false);
+                }
+            }
+        });
         thumbnailIV = (ImageView) findViewById(R.id.thumbnail);
         mangaNameTv = (TextView) findViewById(R.id.manga_name);
         mangaAuthorTv = (TextView) findViewById(R.id.manga_author);
         mangaTypeTv = (TextView) findViewById(R.id.manga_type);
+        bgSrl = findViewById(R.id.bg_srl);
+        bgSrl.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                initWebManga(mangaUrl);
+            }
+        });
         lastUpdateTv = (TextView) findViewById(R.id.manga_update_date);
         collectV = findViewById(R.id.collect_view);
         mangaTypeTv.setOnClickListener(this);
@@ -340,14 +367,6 @@ public class WebMangaDetailsActivity extends TTSActivity implements AdapterView.
                 WebMangaDetailsActivity.this.finish();
             }
         });
-    }
-
-    private void initPullGridView() {
-        // 上拉加载更多
-        pullToRefreshGridView.setPullLoadEnabled(true);
-        // 滚到底部自动加载
-        pullToRefreshGridView.setScrollLoadEnabled(false);
-        pullToRefreshGridView.setOnRefreshListener(this);
     }
 
     @Override
@@ -621,17 +640,6 @@ public class WebMangaDetailsActivity extends TTSActivity implements AdapterView.
                 showAuthorSelector();
                 break;
         }
-    }
-
-    @Override
-    public void onPullDownToRefresh(PullToRefreshBase<GridView> refreshView) {
-        initWebManga(mangaUrl);
-    }
-
-    @Override
-    public void onPullUpToRefresh(PullToRefreshBase<GridView> refreshView) {
-        pullToRefreshGridView.onPullDownRefreshComplete();// 动画结束方法
-        pullToRefreshGridView.onPullUpRefreshComplete();
     }
 
     @Override

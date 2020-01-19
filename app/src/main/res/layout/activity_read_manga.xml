@@ -87,7 +87,7 @@
             android:layout_above="@+id/landscape_translate_iv"
             android:layout_marginLeft="16dp"
             android:layout_marginBottom="16dp"
-            android:src="@drawable/ic_refresh"></ImageView>
+            android:src="@drawable/ic_refresh_green"></ImageView>
 
         <ImageView
             android:id="@+id/landscape_options_iv"
@@ -97,7 +97,7 @@
             android:visibility="gone"
             android:layout_marginLeft="16dp"
             android:layout_marginBottom="30dp"
-            android:src="@drawable/ic_options"></ImageView>
+            android:src="@drawable/ic_setting"></ImageView>
 
         <ImageView
             android:id="@+id/landscape_shot_translate_iv"
@@ -108,7 +108,7 @@
             android:layout_alignParentRight="true"
             android:layout_marginRight="16dp"
             android:layout_marginBottom="16dp"
-            android:src="@drawable/ic_shoot_duck"></ImageView>
+            android:src="@drawable/ic_target"></ImageView>
 
         <ImageView
             android:id="@+id/landscape_translate_iv"
@@ -119,7 +119,7 @@
             android:layout_alignParentBottom="true"
             android:layout_marginRight="16dp"
             android:layout_marginBottom="30dp"
-            android:src="@drawable/ic_translate"></ImageView>
+            android:src="@drawable/translate"></ImageView>
 
         <ImageView
             android:id="@+id/test_iv"
