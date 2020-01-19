@@ -74,7 +74,7 @@ public class WordsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                     ((NormalViewHolder) viewHolder).translateTv.setBackgroundColor(mContext.getResources().getColor(R.color.transparency));
                     ((NormalViewHolder) viewHolder).translateTv.setTextColor(mContext.getResources().getColor(R.color.main_text_color_gray));
                 }
-                if (null != onTranslateItemClickListener && TextUtils.isEmpty(item.getTranslate())) {
+                if (null != onTranslateItemClickListener) {
                     onTranslateItemClickListener.onItemClick(position);
                 }
             }

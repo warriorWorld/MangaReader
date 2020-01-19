@@ -3,6 +3,7 @@ package com.truthower.suhang.mangareader.business.words;
 import android.content.Context;
 import android.os.Bundle;
 import android.text.ClipboardManager;
+import android.text.TextUtils;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.animation.AnimationUtils;
@@ -168,7 +169,9 @@ public class WordsActivity extends TTSActivity implements WordsContract.View {
         String word = wordsList.get(position).getWord();
         clip.setText(word);
         text2Speech(word);
-        mPresenter.translateWord(position, word);
+        if (TextUtils.isEmpty(wordsList.get(position).getTranslate())) {
+            mPresenter.translateWord(position, word);
+        }
     }
 
     @Override

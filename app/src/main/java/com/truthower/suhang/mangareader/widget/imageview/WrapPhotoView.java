@@ -87,8 +87,10 @@ public class WrapPhotoView extends PhotoView {
             public void run() {
                 ViewGroup.LayoutParams vgl = getLayoutParams();
                 if (bm == null) {
-                    setImageResource(com.insightsurfface.stylelibrary.R.drawable.ic_loading);
+                    setVisibility(GONE);
                     return;
+                } else {
+                    setVisibility(VISIBLE);
                 }
                 vgl.width = width;
                 vgl.height = height;
@@ -109,8 +111,10 @@ public class WrapPhotoView extends PhotoView {
             public void run() {
                 ViewGroup.LayoutParams vgl = getLayoutParams();
                 if (bm == null) {
-                    setImageResource(com.insightsurfface.stylelibrary.R.drawable.ic_loading);
+                    setVisibility(GONE);
                     return;
+                } else {
+                    setVisibility(VISIBLE);
                 }
                 //获取bitmap的宽度
                 float bitWidth = bm.getWidth();
