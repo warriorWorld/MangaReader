@@ -13,6 +13,7 @@ import android.widget.TextView;
 
 import com.truthower.suhang.mangareader.R;
 import com.truthower.suhang.mangareader.base.BaseActivity;
+import com.truthower.suhang.mangareader.config.Configure;
 import com.truthower.suhang.mangareader.config.ShareKeys;
 import com.truthower.suhang.mangareader.utils.BaseParameterUtil;
 import com.truthower.suhang.mangareader.utils.SharedPreferencesUtils;
@@ -141,7 +142,7 @@ public class AboutActivity extends BaseActivity implements View.OnClickListener 
         authorDialog.show();
         authorDialog.setTitle("联系作者");
         authorDialog.setOkText("知道了");
-        authorDialog.setMessage("qq群:782685214");
+        authorDialog.setMessage("qq:"+ Configure.QQ);
     }
 
     private void showGestureDialog() {
@@ -182,7 +183,7 @@ public class AboutActivity extends BaseActivity implements View.OnClickListener 
         dialog.setOnPeanutDialogClickListener(new MangaDialog.OnPeanutDialogClickListener() {
             @Override
             public void onOkClick() {
-                clip.setText("782685214");
+                clip.setText(Configure.QQ);
                 baseToast.showToast("复制成功");
             }
 
@@ -193,7 +194,7 @@ public class AboutActivity extends BaseActivity implements View.OnClickListener 
         });
         dialog.show();
         dialog.setTitle("云服务停用");
-        dialog.setMessage("由于失去云服务,后续更新只能在qq群里发布所以请大家加qq群782685214.");
+        dialog.setMessage("由于失去云服务,后续更新只能在qq群里发布所以请大家加qq"+Configure.QQ+".");
         dialog.setOkText("复制群号");
     }
 

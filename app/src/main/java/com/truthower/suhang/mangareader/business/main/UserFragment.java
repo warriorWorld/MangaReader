@@ -100,7 +100,7 @@ public class UserFragment extends BaseFragment implements View.OnClickListener,
         shareRl = (RelativeLayout) v.findViewById(R.id.share_rl);
         qqTv = (TextView) v.findViewById(R.id.qq_tv);
         qqTv.setText
-                ("获取最新版App，请加qq群：" + Configure.QQ_GROUP + "（点击群号可复制），或直接点击下载最新App。",
+                ("获取最新版App，请加qq：" + Configure.QQ + "（点击群号可复制），或直接点击下载最新App。",
                         TextView.BufferType.SPANNABLE);
         qqTv.setMovementMethod(LinkMovementMethod.getInstance());
         qqTv.setHighlightColor(getResources().getColor(R.color.transparency));
@@ -115,12 +115,12 @@ public class UserFragment extends BaseFragment implements View.OnClickListener,
                 ds.setColor(getResources().getColor(R.color.main_text_color_gray));
 //                ds.setUnderlineText(true);
             }
-        }, 0, 15, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);//0开始
+        }, 0, 14, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);//0开始
         spannable.setSpan(new ClickableSpan() {
             @Override
             public void onClick(View widget) {
-                baseToast.showToast("已复制群号！");
-                clip.setText(Configure.QQ_GROUP);
+                baseToast.showToast("已复制QQ号！");
+                clip.setText(Configure.QQ);
             }
 
             @Override
@@ -128,7 +128,7 @@ public class UserFragment extends BaseFragment implements View.OnClickListener,
                 ds.setColor(getResources().getColor(R.color.main_text_color_blue));
                 ds.setUnderlineText(true);
             }
-        }, 15, 24, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        }, 14, 23, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         spannable.setSpan(new ClickableSpan() {
             @Override
             public void onClick(View widget) {
@@ -139,7 +139,7 @@ public class UserFragment extends BaseFragment implements View.OnClickListener,
                 ds.setColor(getResources().getColor(R.color.main_text_color_gray));
                 ds.setUnderlineText(false);
             }
-        }, 24, 37, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        }, 23, 36, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         spannable.setSpan(new ClickableSpan() {
             @Override
             public void onClick(View widget) {
@@ -151,7 +151,7 @@ public class UserFragment extends BaseFragment implements View.OnClickListener,
                 ds.setColor(getResources().getColor(R.color.main_text_color_blue));
                 ds.setUnderlineText(true);
             }
-        }, 37, 41, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        }, 36, 40, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         spannable.setSpan(new ClickableSpan() {
             @Override
             public void onClick(View widget) {
@@ -162,7 +162,7 @@ public class UserFragment extends BaseFragment implements View.OnClickListener,
                 ds.setColor(getResources().getColor(R.color.main_text_color_gray));
                 ds.setUnderlineText(false);
             }
-        }, 41, 47, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        }, 40, 46, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
 
         collectRl.setOnClickListener(this);
         shareRl.setOnClickListener(this);

@@ -63,6 +63,6 @@ public class Configure {
     //OCR识别
     final public static OCRParameters tps = new OCRParameters.Builder().source("youdaoocr").timeout(100000)
             .type(OCRParameters.TYPE_LINE).lanType(RecognizeLanguage.LINE_CHINESE_ENGLISH.getCode()).build();//
-    public static final String QQ_GROUP = "782685214";
     public static final String DOWNLOAD_URL="https://github.com/warriorWorld/MangaReader/raw/master/app/release/app-release.apk";
+    public static  final String QQ="772192594";
 }
