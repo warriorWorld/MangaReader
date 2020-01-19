@@ -27,7 +27,7 @@ public class AboutActivity extends BaseActivity implements View.OnClickListener 
     private RelativeLayout authorRl;
     private RelativeLayout keyboardRl;
 
-    private CheckBox closeTranslateCb, economyModeCb, closeTutorialCb;
+    private CheckBox closeTranslateCb, economyModeCb, closeTutorialCb, closeWordsImgCb;
     private CheckBox closeTtsCb;
     private CheckBox closeWrapCb;
     private View gestureRl;
@@ -88,12 +88,20 @@ public class AboutActivity extends BaseActivity implements View.OnClickListener 
                         (AboutActivity.this, ShareKeys.CLOSE_TTS, isChecked);
             }
         });
-        closeWrapCb=findViewById(R.id.close_wrap_cb);
+        closeWrapCb = findViewById(R.id.close_wrap_cb);
         closeWrapCb.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 SharedPreferencesUtils.setSharedPreferencesData
                         (AboutActivity.this, ShareKeys.CLOSE_WRAP_IMG, isChecked);
+            }
+        });
+        closeWordsImgCb = findViewById(R.id.close_words_img_cb);
+        closeWordsImgCb.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                SharedPreferencesUtils.setSharedPreferencesData
+                        (AboutActivity.this, ShareKeys.CLOSE_WORD_IMG, isChecked);
             }
         });
         keyboardRl = (RelativeLayout) findViewById(R.id.keyboard_rl);
@@ -112,6 +120,9 @@ public class AboutActivity extends BaseActivity implements View.OnClickListener 
         closeWrapCb.setChecked
                 (SharedPreferencesUtils.getBooleanSharedPreferencesData(AboutActivity.this,
                         ShareKeys.CLOSE_WRAP_IMG, false));
+        closeWordsImgCb.setChecked
+                (SharedPreferencesUtils.getBooleanSharedPreferencesData(AboutActivity.this,
+                        ShareKeys.CLOSE_WORD_IMG, false));
         gestureRl.setOnClickListener(this);
         keyboardRl.setOnClickListener(this);
         appIconIv.setOnClickListener(this);

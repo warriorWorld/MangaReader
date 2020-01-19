@@ -88,24 +88,28 @@ public class WordsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                 return true;
             }
         });
-        Bitmap bitmap;
-        if (bpHash.containsKey(item.getExample_path())) {
-            bitmap = bpHash.get(item.getExample_path());
+        if (TextUtils.isEmpty(item.getExample_path())) {
+            ((NormalViewHolder) viewHolder).wordIv.setVisibility(View.GONE);
         } else {
-            bitmap = ImageUtil.getLoacalBitmap(item.getExample_path()); //从本地取图片(在cdcard中获取)  //
-            bpHash.put(item.getExample_path(), bitmap);
+            ((NormalViewHolder) viewHolder).wordIv.setVisibility(View.VISIBLE);
+            Bitmap bitmap;
+            if (bpHash.containsKey(item.getExample_path())) {
+                bitmap = bpHash.get(item.getExample_path());
+            } else {
+                bitmap = ImageUtil.getLoacalBitmap(item.getExample_path()); //从本地取图片(在cdcard中获取)  //
+                bpHash.put(item.getExample_path(), bitmap);
+            }
+            if (sizeHash.containsKey(item.getExample_path())) {
+                ((NormalViewHolder) viewHolder).wordIv.setBitmap(bitmap, sizeHash.get(item.getExample_path())[0], sizeHash.get(item.getExample_path())[1]);
+            } else {
+                ((NormalViewHolder) viewHolder).wordIv.setBitmap(bitmap, new OnImgSizeListener() {
+                    @Override
+                    public void onSized(int width, int height) {
+                        sizeHash.put(item.getExample_path(), new int[]{width, height});
+                    }
+                });
+            }
         }
-        if (sizeHash.containsKey(item.getExample_path())) {
-            ((NormalViewHolder) viewHolder).wordIv.setBitmap(bitmap, sizeHash.get(item.getExample_path())[0], sizeHash.get(item.getExample_path())[1]);
-        } else {
-            ((NormalViewHolder) viewHolder).wordIv.setBitmap(bitmap, new OnImgSizeListener() {
-                @Override
-                public void onSized(int width, int height) {
-                    sizeHash.put(item.getExample_path(), new int[]{width, height});
-                }
-            });
-        }
-
         ((NormalViewHolder) viewHolder).killTv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

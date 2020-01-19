@@ -646,7 +646,12 @@ public class ReadMangaActivity extends TTSActivity implements OnClickListener, S
             text2Speech(word);
         }
         //记录查过的单词
-        db.insertWordsBookTb(word, Configure.WORDS_PATH + File.separator + word + ".png");
+        if (SharedPreferencesUtils.getBooleanSharedPreferencesData
+                (ReadMangaActivity.this, ShareKeys.CLOSE_WORD_IMG, false)) {
+            db.insertWordsBookTb(word, "");
+        }else {
+            db.insertWordsBookTb(word, Configure.WORDS_PATH + File.separator + word + ".png");
+        }
         if (SharedPreferencesUtils.getBooleanSharedPreferencesData(this, ShareKeys.CLOSE_TRANSLATE, false)) {
             //关闭自动翻译
             return;
