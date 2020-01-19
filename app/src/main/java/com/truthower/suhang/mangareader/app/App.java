@@ -10,7 +10,9 @@ import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.nostra13.universalimageloader.core.assist.QueueProcessingType;
 import com.truthower.suhang.mangareader.bean.DownloadBean;
 import com.truthower.suhang.mangareader.business.download.DownloadMangaManager;
+import com.truthower.suhang.mangareader.config.Configure;
 import com.truthower.suhang.mangareader.crash.CrashHandler;
+import com.truthower.suhang.mangareader.utils.DisplayUtil;
 import com.youdao.sdk.app.YouDaoApplication;
 
 import androidx.multidex.MultiDexApplication;
@@ -29,6 +31,7 @@ public class App extends MultiDexApplication {
         initDownloadManger();
 //        initUmeng();
         initYouDaoOCR();
+        Configure.isPad= DisplayUtil.isPad(this);
     }
 
     private void initYouDaoOCR() {

@@ -36,6 +36,7 @@ import com.truthower.suhang.mangareader.utils.SharedPreferencesUtils;
 import com.truthower.suhang.mangareader.utils.VibratorUtil;
 import com.truthower.suhang.mangareader.volley.VolleyCallBack;
 import com.truthower.suhang.mangareader.volley.VolleyTool;
+import com.truthower.suhang.mangareader.widget.bar.TopBar;
 import com.truthower.suhang.mangareader.widget.dialog.TailorImgDialog;
 import com.truthower.suhang.mangareader.widget.recyclerview.LinearLayoutMangerWithoutBug;
 
@@ -153,6 +154,23 @@ public class WordsActivity extends TTSActivity implements OnClickListener, Words
         wordsRcv.setLayoutAnimation(controller);
         baseTopBar.setTitle("生词本");
         baseTopBar.setRightBackground(R.drawable.ic_shuffle_card);
+        baseTopBar.setOnTopBarClickListener(new TopBar.OnTopBarClickListener() {
+            @Override
+            public void onLeftClick() {
+                finish();
+            }
+
+            @Override
+            public void onRightClick() {
+                Collections.shuffle(wordsList);
+                adapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onTitleClick() {
+
+            }
+        });
     }
 
     @Override

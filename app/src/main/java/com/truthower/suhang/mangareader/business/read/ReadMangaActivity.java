@@ -947,7 +947,7 @@ public class ReadMangaActivity extends TTSActivity implements OnClickListener, S
                 startActivity(intent);
                 break;
             case R.id.landscape_translate_iv:
-                if (DisplayUtil.isPad(ReadMangaActivity.this)) {
+                if (Configure.isPad) {
                     showSearchDialog();
                 } else {
                     showLandsacpeKeyboardDialog();
@@ -975,7 +975,7 @@ public class ReadMangaActivity extends TTSActivity implements OnClickListener, S
                                         }
                                         break;
                                     default:
-                                        if (DisplayUtil.isPad(ReadMangaActivity.this)) {
+                                        if (Configure.isPad) {
                                             showImgEditDialog(bp);
                                         } else {
                                             showImgLandscapeKeyBoardDialog(bp);

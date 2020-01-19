@@ -70,9 +70,4 @@ dependencies {
     //分包 65535
     implementation 'com.android.support:multidex:1.0.0'
     implementation files('libs/universal-image-loader-1.9.5.jar')
-    implementation "androidx.core:core-ktx:+"
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
-}
-repositories {
-    mavenCentral()
 }
