@@ -6,17 +6,22 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.nostra13.universalimageloader.core.ImageLoader;
 import com.truthower.suhang.mangareader.R;
 import com.truthower.suhang.mangareader.bean.WordsBookBean;
+import com.truthower.suhang.mangareader.config.Configure;
+import com.truthower.suhang.mangareader.listener.OnImgSizeListener;
 import com.truthower.suhang.mangareader.listener.OnRecycleItemClickListener;
 import com.truthower.suhang.mangareader.listener.OnRecycleItemLongClickListener;
 import com.truthower.suhang.mangareader.utils.ImageUtil;
 import com.truthower.suhang.mangareader.widget.imageview.WrapPhotoView;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -31,6 +36,8 @@ public class WordsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     private OnRecycleItemClickListener onTranslateItemClickListener;
     private OnRecycleItemLongClickListener mOnRecycleItemLongClickListener;
     private int currentWidth = 0;
+    private HashMap<String, int[]> sizeHash = new HashMap<>();
+    private HashMap<String, Bitmap> bpHash = new HashMap<>();
 
     public WordsAdapter(Context context) {
         this.mContext = context;
@@ -81,8 +88,24 @@ public class WordsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                 return true;
             }
         });
-        Bitmap bitmap = ImageUtil.getLoacalBitmap(item.getExample_path()); //从本地取图片(在cdcard中获取)  //
-        ((NormalViewHolder) viewHolder).wordIv.setBitmap(bitmap);
+        Bitmap bitmap;
+        if (bpHash.containsKey(item.getExample_path())) {
+            bitmap = bpHash.get(item.getExample_path());
+        } else {
+            bitmap = ImageUtil.getLoacalBitmap(item.getExample_path()); //从本地取图片(在cdcard中获取)  //
+            bpHash.put(item.getExample_path(), bitmap);
+        }
+        if (sizeHash.containsKey(item.getExample_path())) {
+            ((NormalViewHolder) viewHolder).wordIv.setBitmap(bitmap, sizeHash.get(item.getExample_path())[0], sizeHash.get(item.getExample_path())[1]);
+        } else {
+            ((NormalViewHolder) viewHolder).wordIv.setBitmap(bitmap, new OnImgSizeListener() {
+                @Override
+                public void onSized(int width, int height) {
+                    sizeHash.put(item.getExample_path(), new int[]{width, height});
+                }
+            });
+        }
+
         ((NormalViewHolder) viewHolder).killTv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

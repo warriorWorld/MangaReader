@@ -14,6 +14,7 @@ import com.truthower.suhang.mangareader.R;
 import com.truthower.suhang.mangareader.config.Configure;
 import com.truthower.suhang.mangareader.config.ShareKeys;
 import com.truthower.suhang.mangareader.eventbus.EventBusEvent;
+import com.truthower.suhang.mangareader.listener.OnImgSizeListener;
 import com.truthower.suhang.mangareader.utils.DisplayUtil;
 import com.truthower.suhang.mangareader.utils.ImageUtil;
 import com.truthower.suhang.mangareader.utils.SharedPreferencesUtils;
@@ -80,8 +81,29 @@ public class WrapPhotoView extends PhotoView {
         this.mContext = context;
     }
 
+    public void setBitmap(final Bitmap bm, final int width, final int height) {
+        post(new Runnable() {
+            @Override
+            public void run() {
+                ViewGroup.LayoutParams vgl = getLayoutParams();
+                if (bm == null) {
+                    setImageResource(com.insightsurfface.stylelibrary.R.drawable.ic_loading);
+                    return;
+                }
+                vgl.width = width;
+                vgl.height = height;
 
-    public void setBitmap(final Bitmap bm) {
+                //设置图片充满ImageView控件
+                setScaleType(ScaleType.FIT_XY);
+                //等比例缩放
+                setAdjustViewBounds(true);
+                setLayoutParams(vgl);
+                setImageBitmap(bm);
+            }
+        });
+    }
+
+    public void setBitmap(final Bitmap bm, final OnImgSizeListener listener) {
         post(new Runnable() {
             @Override
             public void run() {
@@ -112,6 +134,9 @@ public class WrapPhotoView extends PhotoView {
                 setAdjustViewBounds(true);
                 setLayoutParams(vgl);
                 setImageBitmap(bm);
+                if (null != listener) {
+                    listener.onSized(vgl.width, vgl.height);
+                }
             }
         });
     }
