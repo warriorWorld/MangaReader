@@ -55,8 +55,13 @@ public class LocalMangaListAdapter extends BaseAdapter {
     public View getView(int position, View convertView, ViewGroup parent) {
         ViewHolder viewHolder = null;
         if (convertView == null) {
-            convertView = LayoutInflater.from(context).inflate(
-                    R.layout.item_manga, parent, false);
+            if (Configure.isPad){
+                convertView = LayoutInflater.from(context).inflate(
+                        R.layout.item_lv_manga_pad, parent, false);
+            }else {
+                convertView = LayoutInflater.from(context).inflate(
+                        R.layout.item_manga, parent, false);
+            }
             viewHolder = new ViewHolder();
             viewHolder.manga_view = (ImageView) convertView
                     .findViewById(R.id.manga_view);
