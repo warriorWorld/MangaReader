@@ -35,6 +35,7 @@ import com.insightsurfface.stylelibrary.keyboard.LandscapeKeyBoardDialog;
 import com.insightsurfface.stylelibrary.listener.OnKeyboardChangeListener;
 import com.insightsurfface.stylelibrary.listener.OnKeyboardListener;
 import com.nostra13.universalimageloader.core.ImageLoader;
+import com.roger.gifloadinglibrary.BitmapUtil;
 import com.truthower.suhang.mangareader.R;
 import com.truthower.suhang.mangareader.adapter.ReadMangaAdapter;
 import com.truthower.suhang.mangareader.base.TTSActivity;
@@ -490,6 +491,7 @@ public class ReadMangaActivity extends TTSActivity implements OnClickListener, S
             @Override
             public void onResult(String text) {
                 translateWord(text);
+                copyToWordsFolder(text);
             }
 
             @Override
@@ -516,6 +518,7 @@ public class ReadMangaActivity extends TTSActivity implements OnClickListener, S
             @Override
             public void onFinish(String res) {
                 translateWord(res);
+                copyToWordsFolder(res);
             }
         });
         dialog.setOnKeyboardListener(new OnKeyboardListener() {
@@ -539,6 +542,7 @@ public class ReadMangaActivity extends TTSActivity implements OnClickListener, S
             @Override
             public void inputFinish(String s) {
                 translateWord(s);
+                copyToWordsFolder(s);
             }
 
             @Override
@@ -559,12 +563,13 @@ public class ReadMangaActivity extends TTSActivity implements OnClickListener, S
         dialog.setOkText("知道了");
     }
 
-    private void showImgEditDialog(Bitmap bp) {
+    private void showImgEditDialog(final Bitmap bp) {
         MangaImgEditDialog mangaImgEditDialog = new MangaImgEditDialog(this);
         mangaImgEditDialog.setOnEditResultListener(new OnEditResultListener() {
             @Override
             public void onResult(String text) {
                 translateWord(text);
+                copyToWordsFolder(text, bp);
             }
 
             @Override
@@ -577,7 +582,7 @@ public class ReadMangaActivity extends TTSActivity implements OnClickListener, S
         mangaImgEditDialog.clearEdit();
     }
 
-    private void showImgKeyBoardDialog(Bitmap bp) {
+    private void showImgKeyBoardDialog(final Bitmap bp) {
         ImgKeyboardDialog dialog = new ImgKeyboardDialog(this);
         dialog.setOnKeyboardChangeListener(new OnKeyboardChangeListener() {
             @Override
@@ -595,6 +600,7 @@ public class ReadMangaActivity extends TTSActivity implements OnClickListener, S
             @Override
             public void onFinish(String res) {
                 translateWord(res);
+                copyToWordsFolder(res, bp);
             }
         });
         dialog.setOnKeyboardListener(new OnKeyboardListener() {
@@ -613,12 +619,13 @@ public class ReadMangaActivity extends TTSActivity implements OnClickListener, S
         dialog.setImgRes(bp);
     }
 
-    private void showImgLandscapeKeyBoardDialog(Bitmap bp) {
+    private void showImgLandscapeKeyBoardDialog(final Bitmap bp) {
         ImgLandsacpeKeyboardDialog dialog = new ImgLandsacpeKeyboardDialog(this);
         dialog.setKeyBorad26Listener(new English26KeyBoardView.KeyBorad26Listener() {
             @Override
             public void inputFinish(String s) {
                 translateWord(s);
+                copyToWordsFolder(s, bp);
             }
 
             @Override
@@ -631,7 +638,6 @@ public class ReadMangaActivity extends TTSActivity implements OnClickListener, S
     }
 
     private void translateWord(final String word) {
-        copyToWordsFolder(word);
         SharedPreferencesUtils.setSharedPreferencesData(this, ShareKeys.THIS_USER_IS_NOT_AN_IDIOT,
                 false);
         clip.setText(word);
@@ -684,7 +690,17 @@ public class ReadMangaActivity extends TTSActivity implements OnClickListener, S
     }
 
     private void copyToWordsFolder(String imgName) {
-        if (isLocalManga) {
+        copyToWordsFolder(imgName, null);
+    }
+
+    private void copyToWordsFolder(final String imgName, final Bitmap bp) {
+        if (SharedPreferencesUtils.getBooleanSharedPreferencesData
+                (ReadMangaActivity.this, ShareKeys.CLOSE_WORD_IMG, false)) {
+            return;
+        }
+        if (bp != null) {
+            FileSpider.saveBitmap(bp, Configure.WORDS_FOLDER_NAME, File.separator + imgName + ".png");
+        } else if (isLocalManga) {
             File thumbnailFile = new File(Configure.WORDS_PATH);
             if (!thumbnailFile.exists()) {
                 thumbnailFile.mkdirs();
