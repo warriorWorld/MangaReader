@@ -47,12 +47,6 @@
             app:dsb_max="100"
             app:dsb_min="1" />
 
-        <View
-            android:id="@+id/show_seek_bar"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
-            android:layout_centerInParent="true"></View>
-
         <Button
             android:id="@+id/ocr_btn"
             android:layout_width="30dp"

@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.os.Handler;
 import android.os.Message;
 import android.util.AttributeSet;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
@@ -17,11 +18,13 @@ import com.truthower.suhang.mangareader.eventbus.EventBusEvent;
 import com.truthower.suhang.mangareader.listener.OnImgSizeListener;
 import com.truthower.suhang.mangareader.utils.DisplayUtil;
 import com.truthower.suhang.mangareader.utils.ImageUtil;
+import com.truthower.suhang.mangareader.utils.Logger;
 import com.truthower.suhang.mangareader.utils.SharedPreferencesUtils;
 
 import org.greenrobot.eventbus.EventBus;
 
 import uk.co.senab.photoview.PhotoView;
+import uk.co.senab.photoview.PhotoViewAttacher;
 
 public class WrapPhotoView extends PhotoView {
     private Context mContext;
@@ -79,6 +82,17 @@ public class WrapPhotoView extends PhotoView {
 
     private void init(Context context) {
         this.mContext = context;
+        setOnPhotoTapListener(new PhotoViewAttacher.OnPhotoTapListener() {
+            @Override
+            public void onPhotoTap(View view, float x, float y) {
+                EventBus.getDefault().post(new EventBusEvent(EventBusEvent.ON_TAP_EVENT,new float[]{x,y}));
+            }
+
+            @Override
+            public void onOutsidePhotoTap() {
+
+            }
+        });
     }
 
     public void setBitmap(final Bitmap bm, final int width, final int height) {

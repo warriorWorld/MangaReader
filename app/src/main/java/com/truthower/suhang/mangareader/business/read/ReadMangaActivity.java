@@ -55,6 +55,7 @@ import com.truthower.suhang.mangareader.spider.SpiderBase;
 import com.truthower.suhang.mangareader.utils.BaseParameterUtil;
 import com.truthower.suhang.mangareader.utils.DisplayUtil;
 import com.truthower.suhang.mangareader.utils.ImageUtil;
+import com.truthower.suhang.mangareader.utils.Logger;
 import com.truthower.suhang.mangareader.utils.PermissionUtil;
 import com.truthower.suhang.mangareader.utils.SharedPreferencesUtils;
 import com.truthower.suhang.mangareader.utils.VibratorUtil;
@@ -104,7 +105,6 @@ public class ReadMangaActivity extends TTSActivity implements OnClickListener, S
     private SpiderBase spider;
     private DiscreteSeekBar seekBar;
     private Button ocrBtn;
-    private View showSeekBar;
     private TextView readProgressTv;
     // 截图的view
     private ShotView shotView = null;
@@ -330,6 +330,18 @@ public class ReadMangaActivity extends TTSActivity implements OnClickListener, S
                     setOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
                 }
                 break;
+            case EventBusEvent.ON_TAP_EVENT:
+                float touchX = event.getFloatsMsg()[0];
+                float touchY = event.getFloatsMsg()[1];
+                Logger.d("photo tap :" + touchX + "," + touchY);
+                if (touchX>0.4&&touchX<0.6&&touchY>0.4&&touchY<0.6) {
+                    cutSeekBar();
+                }else if (touchX<0.4&&historyPosition>0){
+                    mangaPager.setCurrentItem(historyPosition-1);
+                }else if (touchX>0.6&&historyPosition<pathList.size()-1){
+                    mangaPager.setCurrentItem(historyPosition+1);
+                }
+                break;
         }
         if (null != intent) {
             startActivity(intent);
@@ -346,7 +358,6 @@ public class ReadMangaActivity extends TTSActivity implements OnClickListener, S
     private void initUI() {
         mangaPager = (HackyViewPager) findViewById(R.id.manga_viewpager);
         seekBar = (DiscreteSeekBar) findViewById(R.id.seekbar);
-        showSeekBar = findViewById(R.id.show_seek_bar);
         ocrBtn = (Button) findViewById(R.id.ocr_btn);
         readProgressTv = (TextView) findViewById(R.id.read_progress_tv);
         screenDv = (DragView) findViewById(R.id.screenshoot_dv);
@@ -377,20 +388,6 @@ public class ReadMangaActivity extends TTSActivity implements OnClickListener, S
         landscapeTranslateIv.setOnClickListener(this);
         readProgressTv.setOnClickListener(this);
         screenDv.setOnClickListener(this);
-        showSeekBar.setOnClickListener(this);
-        showSeekBar.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View view) {
-                String file = pathList.get(historyPosition);
-                if (file.contains("file://")) {
-                    file = file.substring(7, file.length());
-                    showDeleteDialog(file);
-                } else {
-                    showSaveDialog(file);
-                }
-                return true;
-            }
-        });
 
         hideBaseTopBar();
         topBar = (TopBar) findViewById(R.id.read_manga_top_bar);
@@ -428,7 +425,13 @@ public class ReadMangaActivity extends TTSActivity implements OnClickListener, S
 
             @Override
             public void onRightLongClick() {
-
+                String file = pathList.get(historyPosition);
+                if (file.contains("file://")) {
+                    file = file.substring(7, file.length());
+                    showDeleteDialog(file);
+                } else {
+                    showSaveDialog(file);
+                }
             }
 
             @Override
@@ -649,7 +652,7 @@ public class ReadMangaActivity extends TTSActivity implements OnClickListener, S
         if (SharedPreferencesUtils.getBooleanSharedPreferencesData
                 (ReadMangaActivity.this, ShareKeys.CLOSE_WORD_IMG, false)) {
             db.insertWordsBookTb(word, "");
-        }else {
+        } else {
             db.insertWordsBookTb(word, Configure.WORDS_PATH + File.separator + word + ".png");
         }
         if (SharedPreferencesUtils.getBooleanSharedPreferencesData(this, ShareKeys.CLOSE_TRANSLATE, false)) {
@@ -954,9 +957,6 @@ public class ReadMangaActivity extends TTSActivity implements OnClickListener, S
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.show_seek_bar:
-                cutSeekBar();
-                break;
             case R.id.read_progress_tv:
 
                 break;

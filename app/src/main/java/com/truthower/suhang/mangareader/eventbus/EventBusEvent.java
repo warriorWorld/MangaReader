@@ -16,9 +16,11 @@ public class EventBusEvent {
     public static final int COPY_BOARD_EVENT = 22;
     public static final int NEED_LANDSCAPE_EVENT = 23;
     public static final int NEED_PORTRAIT_EVENT = 24;
+    public static final int ON_TAP_EVENT = 25;
     private String msg;
     private int intMsg;
     private int eventType;
+    private float[] floatsMsg;
 
     public EventBusEvent(int eventType) {
         this.eventType = eventType;
@@ -26,6 +28,11 @@ public class EventBusEvent {
 
     public EventBusEvent(String msg) {
         this.msg = msg;
+    }
+
+    public EventBusEvent(int eventType, float[] floatsMsg) {
+        this.eventType = eventType;
+        this.floatsMsg = floatsMsg;
     }
 
     public EventBusEvent(String msg, int eventType) {
@@ -66,5 +73,13 @@ public class EventBusEvent {
 
     public void setIntMsg(int intMsg) {
         this.intMsg = intMsg;
+    }
+
+    public float[] getFloatsMsg() {
+        return floatsMsg;
+    }
+
+    public void setFloatsMsg(float[] floatsMsg) {
+        this.floatsMsg = floatsMsg;
     }
 }
