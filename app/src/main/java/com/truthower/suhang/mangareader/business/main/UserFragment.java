@@ -286,10 +286,8 @@ public class UserFragment extends BaseFragment implements View.OnClickListener,
 
             @Override
             public void onCancelClick() {
-//                Intent intent = new Intent(getActivity(), WordsBookActivity.class);
-//                intent.putExtra("orderType", "order");
-//                startActivity(intent);
-                Intent intent = new Intent(getActivity(), WordsActivity.class);
+                Intent intent = new Intent(getActivity(), WordsBookActivity.class);
+                intent.putExtra("orderType", "order");
                 startActivity(intent);
             }
         });
@@ -309,7 +307,7 @@ public class UserFragment extends BaseFragment implements View.OnClickListener,
         Intent intent = null;
         switch (v.getId()) {
             case R.id.new_word_book_rl:
-                showOrderSelectDialog();
+                intent = new Intent(getActivity(), WordsActivity.class);
                 break;
             case R.id.download_rl:
                 intent = new Intent(getActivity(), DownloadActivity.class);
