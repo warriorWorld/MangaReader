@@ -15,6 +15,7 @@ public class ShareKeys {
     public static final String CLOSE_SH_KEYBOARD_VIBRATION = "close_sh_keyboard_vibration";
     public static final String CLOSE_SH_KEYBOARD_SOUND = "close_sh_keyboard_sound";
     public static final String CLOSE_WORD_IMG = "close_word_img";
+    public static final String CLOSE_CLICK_IMG = "close_click_img";
     public static final String DOWNLOAD_EXPLAIN = "download_explain";
     public static final String CURRENT_DOWNLOAD_EPISODE = "current_download_episode";
     public static final String CURRENT_DOWNLOAD_PAGE = "current_download_page";

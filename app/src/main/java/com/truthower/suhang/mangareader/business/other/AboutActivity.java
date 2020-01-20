@@ -27,8 +27,9 @@ public class AboutActivity extends BaseActivity implements View.OnClickListener 
     private RelativeLayout checkUpdateRl;
     private RelativeLayout authorRl;
     private RelativeLayout keyboardRl;
+    private View killableTimeRl, killPeriodRl;
 
-    private CheckBox closeTranslateCb, economyModeCb, closeTutorialCb, closeWordsImgCb;
+    private CheckBox closeTranslateCb, economyModeCb, closeTutorialCb, closeWordsImgCb, closeClickImgCb;
     private CheckBox closeTtsCb;
     private CheckBox closeWrapCb;
     private View gestureRl;
@@ -105,6 +106,14 @@ public class AboutActivity extends BaseActivity implements View.OnClickListener 
                         (AboutActivity.this, ShareKeys.CLOSE_WORD_IMG, isChecked);
             }
         });
+        closeClickImgCb = findViewById(R.id.close_click_img_cb);
+        closeClickImgCb.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                SharedPreferencesUtils.setSharedPreferencesData
+                        (AboutActivity.this, ShareKeys.CLOSE_CLICK_IMG, isChecked);
+            }
+        });
         keyboardRl = (RelativeLayout) findViewById(R.id.keyboard_rl);
         closeTranslateCb.setChecked
                 (SharedPreferencesUtils.getBooleanSharedPreferencesData(AboutActivity.this,
@@ -124,6 +133,9 @@ public class AboutActivity extends BaseActivity implements View.OnClickListener 
         closeWordsImgCb.setChecked
                 (SharedPreferencesUtils.getBooleanSharedPreferencesData(AboutActivity.this,
                         ShareKeys.CLOSE_WORD_IMG, false));
+        closeClickImgCb.setChecked
+                (SharedPreferencesUtils.getBooleanSharedPreferencesData(AboutActivity.this,
+                        ShareKeys.CLOSE_CLICK_IMG, false));
         gestureRl.setOnClickListener(this);
         keyboardRl.setOnClickListener(this);
         appIconIv.setOnClickListener(this);
@@ -142,7 +154,7 @@ public class AboutActivity extends BaseActivity implements View.OnClickListener 
         authorDialog.show();
         authorDialog.setTitle("联系作者");
         authorDialog.setOkText("知道了");
-        authorDialog.setMessage("qq:"+ Configure.QQ);
+        authorDialog.setMessage("qq:" + Configure.QQ);
     }
 
     private void showGestureDialog() {
@@ -194,7 +206,7 @@ public class AboutActivity extends BaseActivity implements View.OnClickListener 
         });
         dialog.show();
         dialog.setTitle("云服务停用");
-        dialog.setMessage("由于失去云服务,后续更新只能在qq群里发布所以请大家加qq"+Configure.QQ+".");
+        dialog.setMessage("由于失去云服务,后续更新只能在qq群里发布所以请大家加qq" + Configure.QQ + ".");
         dialog.setOkText("复制群号");
     }
 

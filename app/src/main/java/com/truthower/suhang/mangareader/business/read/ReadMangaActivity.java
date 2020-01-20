@@ -334,12 +334,19 @@ public class ReadMangaActivity extends TTSActivity implements OnClickListener, S
                 float touchX = event.getFloatsMsg()[0];
                 float touchY = event.getFloatsMsg()[1];
                 Logger.d("photo tap :" + touchX + "," + touchY);
-                if (touchX>0.4&&touchX<0.6&&touchY>0.4&&touchY<0.6) {
+                if (touchX > 0.4 && touchX < 0.6 && touchY > 0.4 && touchY < 0.6) {
+                    VibratorUtil.Vibrate(this,20);
                     cutSeekBar();
-                }else if (touchX<0.4&&historyPosition>0){
-                    mangaPager.setCurrentItem(historyPosition-1);
-                }else if (touchX>0.6&&historyPosition<pathList.size()-1){
-                    mangaPager.setCurrentItem(historyPosition+1);
+                } else if (touchX < 0.4 && historyPosition > 0) {
+                    if (SharedPreferencesUtils.getBooleanSharedPreferencesData(this, ShareKeys.CLOSE_CLICK_IMG, false)) {
+                        return;
+                    }
+                    mangaPager.setCurrentItem(historyPosition - 1);
+                } else if (touchX > 0.6 && historyPosition < pathList.size() - 1) {
+                    if (SharedPreferencesUtils.getBooleanSharedPreferencesData(this, ShareKeys.CLOSE_CLICK_IMG, false)) {
+                        return;
+                    }
+                    mangaPager.setCurrentItem(historyPosition + 1);
                 }
                 break;
         }
