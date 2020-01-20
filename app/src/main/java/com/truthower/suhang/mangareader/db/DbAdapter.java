@@ -7,7 +7,9 @@ import android.database.sqlite.SQLiteDatabase;
 import com.truthower.suhang.mangareader.bean.MangaBean;
 import com.truthower.suhang.mangareader.bean.WordsBookBean;
 import com.truthower.suhang.mangareader.config.Configure;
+import com.truthower.suhang.mangareader.config.ShareKeys;
 import com.truthower.suhang.mangareader.spider.FileSpider;
+import com.truthower.suhang.mangareader.utils.SharedPreferencesUtils;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -17,8 +19,10 @@ public class DbAdapter {
     public static final String DB_NAME = "books.db";
     private DbHelper dbHelper;
     private SQLiteDatabase db;
+    private Context mContext;
 
     public DbAdapter(Context context) {
+        mContext = context;
         dbHelper = new DbHelper(context, DB_NAME, null, Configure.DB_VERSION);
         db = dbHelper.getWritableDatabase();
     }
@@ -72,8 +76,8 @@ public class DbAdapter {
         Cursor cursor = db
                 .query("WordsBook", null, null, null, null, null, "createdtime desc");
         long currentTime = System.currentTimeMillis();
-        int minGapTime = 6 * 60 * 60 * 1000;
-        long minTime = currentTime - minGapTime;
+        int killPeriod = SharedPreferencesUtils.getIntSharedPreferencesData(mContext, ShareKeys.KILL_PERIOD_KEY, 6);
+        int minGapTime = killPeriod * 60 * 60 * 1000;
 
         while (cursor.moveToNext()) {
             String word = cursor.getString(cursor.getColumnIndex("word"));
@@ -92,6 +96,8 @@ public class DbAdapter {
             } catch (Exception e) {
                 e.printStackTrace();
             }
+            //随着kill次数 间隔时长乘数递增
+            long minTime = currentTime - minGapTime*killTime;
             if (killTime > 0 && minTime < lastKillTime) {
                 //不显示 kill过的并且时间未超过时长的
             } else {
@@ -200,7 +206,8 @@ public class DbAdapter {
     public void killWordByWord(String word) {
         int time = queryKilledTime(word);
         time++;
-        if (time >= 3) {
+        int killableTime = SharedPreferencesUtils.getIntSharedPreferencesData(mContext, ShareKeys.KILLABLE_TIME_KEY, 3);
+        if (time >= killableTime) {
             deleteWordByWord(word);
         } else {
             db.execSQL("update WordsBook set kill_time=?,update_time=? where word=?",

@@ -165,6 +165,10 @@ public class MangaEditDialog extends Dialog implements View.OnClickListener {
         editTextV.setText("");
     }
 
+    public void setEditText(String text) {
+        editTextV.setText(text);
+        editTextV.setSelection(0, text.length());
+    }
 
     @Override
     public void onClick(View v) {

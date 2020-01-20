@@ -15,10 +15,12 @@ import com.truthower.suhang.mangareader.R;
 import com.truthower.suhang.mangareader.base.BaseActivity;
 import com.truthower.suhang.mangareader.config.Configure;
 import com.truthower.suhang.mangareader.config.ShareKeys;
+import com.truthower.suhang.mangareader.listener.OnEditResultListener;
 import com.truthower.suhang.mangareader.utils.BaseParameterUtil;
 import com.truthower.suhang.mangareader.utils.SharedPreferencesUtils;
 import com.truthower.suhang.mangareader.widget.dialog.GestureDialog;
 import com.truthower.suhang.mangareader.widget.dialog.MangaDialog;
+import com.truthower.suhang.mangareader.widget.dialog.MangaEditDialog;
 import com.truthower.suhang.mangareader.widget.gesture.GestureLockViewGroup;
 
 public class AboutActivity extends BaseActivity implements View.OnClickListener {
@@ -58,6 +60,8 @@ public class AboutActivity extends BaseActivity implements View.OnClickListener 
         checkUpdateRl = (RelativeLayout) findViewById(R.id.check_update_rl);
         authorRl = (RelativeLayout) findViewById(R.id.author_rl);
         gestureRl = findViewById(R.id.gesture_rl);
+        killableTimeRl = findViewById(R.id.killable_time_rl);
+        killPeriodRl = findViewById(R.id.kill_peroid_rl);
         economyModeCb = (CheckBox) findViewById(R.id.economy_mode_cb);
         economyModeCb.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -140,6 +144,8 @@ public class AboutActivity extends BaseActivity implements View.OnClickListener 
         keyboardRl.setOnClickListener(this);
         appIconIv.setOnClickListener(this);
         checkUpdateRl.setOnClickListener(this);
+        killPeriodRl.setOnClickListener(this);
+        killableTimeRl.setOnClickListener(this);
         authorRl.setOnClickListener(this);
         baseTopBar.setTitle("设置");
     }
@@ -210,6 +216,56 @@ public class AboutActivity extends BaseActivity implements View.OnClickListener 
         dialog.setOkText("复制群号");
     }
 
+    private void showKillableTimeDialog() {
+        MangaEditDialog dialog = new MangaEditDialog(this);
+        dialog.setOnEditResultListener(new OnEditResultListener() {
+            @Override
+            public void onResult(String text) {
+                SharedPreferencesUtils.setSharedPreferencesData
+                        (AboutActivity.this, ShareKeys.KILLABLE_TIME_KEY, Integer.valueOf(text));
+            }
+
+            @Override
+            public void onCancelClick() {
+
+            }
+        });
+        dialog.show();
+        dialog.setOnlyNumInput(true);
+        dialog.setTitle("可斩次数设置");
+        dialog.setHint("默认值为3 仅供参考");
+        dialog.setMessage("请输入要设置的可斩次数，如需一次既斩请输入1。");
+        int height = SharedPreferencesUtils.getIntSharedPreferencesData(this, ShareKeys.KILLABLE_TIME_KEY, -1);
+        if (height != -1) {
+            dialog.setEditText(height + "");
+        }
+    }
+
+    private void showKillPeriodDialog() {
+        MangaEditDialog dialog = new MangaEditDialog(this);
+        dialog.setOnEditResultListener(new OnEditResultListener() {
+            @Override
+            public void onResult(String text) {
+                SharedPreferencesUtils.setSharedPreferencesData
+                        (AboutActivity.this, ShareKeys.KILL_PERIOD_KEY, Integer.valueOf(text));
+            }
+
+            @Override
+            public void onCancelClick() {
+
+            }
+        });
+        dialog.show();
+        dialog.setOnlyNumInput(true);
+        dialog.setTitle("已斩单词出现间隔时长设置");
+        dialog.setHint("默认值为6小时 仅供参考");
+        dialog.setMessage("请输入要设置的已斩单词出现间隔时长（单位：小时）");
+        int height = SharedPreferencesUtils.getIntSharedPreferencesData(this, ShareKeys.KILL_PERIOD_KEY, -1);
+        if (height != -1) {
+            dialog.setEditText(height + "");
+        }
+    }
+
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
@@ -227,6 +283,12 @@ public class AboutActivity extends BaseActivity implements View.OnClickListener 
                 break;
             case R.id.gesture_rl:
                 showGestureDialog();
+                break;
+            case R.id.killable_time_rl:
+                showKillableTimeDialog();
+                break;
+            case R.id.kill_peroid_rl:
+                showKillPeriodDialog();
                 break;
         }
     }
