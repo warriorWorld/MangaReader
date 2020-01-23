@@ -17,6 +17,8 @@ public class EventBusEvent {
     public static final int NEED_LANDSCAPE_EVENT = 23;
     public static final int NEED_PORTRAIT_EVENT = 24;
     public static final int ON_TAP_EVENT = 25;
+    public static final int TO_LAST_CHAPTER = 26;
+    public static final int TO_NEXT_CHAPTER = 27;
     private String msg;
     private int intMsg;
     private int eventType;

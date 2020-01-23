@@ -84,6 +84,7 @@ import com.youdao.ocr.online.Word;
 import com.youdao.sdk.app.EncryptHelper;
 
 import org.adw.library.widgets.discreteseekbar.DiscreteSeekBar;
+import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
 import java.io.ByteArrayOutputStream;
@@ -335,18 +336,26 @@ public class ReadMangaActivity extends TTSActivity implements OnClickListener, S
                 float touchY = event.getFloatsMsg()[1];
                 Logger.d("photo tap :" + touchX + "," + touchY);
                 if (touchX > 0.4 && touchX < 0.6 && touchY > 0.4 && touchY < 0.6) {
-                    VibratorUtil.Vibrate(this,20);
+                    VibratorUtil.Vibrate(this, 20);
                     cutSeekBar();
-                } else if (touchX < 0.4 && historyPosition > 0) {
-                    if (SharedPreferencesUtils.getBooleanSharedPreferencesData(this, ShareKeys.CLOSE_CLICK_IMG, false)) {
-                        return;
+                } else if (touchX < 0.4) {
+                    if (historyPosition > 0) {
+                        if (SharedPreferencesUtils.getBooleanSharedPreferencesData(this, ShareKeys.CLOSE_CLICK_IMG, false)) {
+                            return;
+                        }
+                        mangaPager.setCurrentItem(historyPosition - 1);
+                    } else {
+                        showToLastChapterDialog();
                     }
-                    mangaPager.setCurrentItem(historyPosition - 1);
-                } else if (touchX > 0.6 && historyPosition < pathList.size() - 1) {
-                    if (SharedPreferencesUtils.getBooleanSharedPreferencesData(this, ShareKeys.CLOSE_CLICK_IMG, false)) {
-                        return;
+                } else if (touchX > 0.6) {
+                    if (historyPosition < pathList.size() - 1) {
+                        if (SharedPreferencesUtils.getBooleanSharedPreferencesData(this, ShareKeys.CLOSE_CLICK_IMG, false)) {
+                            return;
+                        }
+                        mangaPager.setCurrentItem(historyPosition + 1);
+                    } else {
+                        showToNextChapterDialog();
                     }
-                    mangaPager.setCurrentItem(historyPosition + 1);
                 }
                 break;
         }
@@ -361,6 +370,43 @@ public class ReadMangaActivity extends TTSActivity implements OnClickListener, S
         readProgressTv.setText(historyPosition + 1 + "/" + pathList.size());
     }
 
+    private void showToLastChapterDialog() {
+        MangaDialog dialog = new MangaDialog(this);
+        dialog.setOnPeanutDialogClickListener(new MangaDialog.OnPeanutDialogClickListener() {
+            @Override
+            public void onOkClick() {
+                EventBus.getDefault().post(new EventBusEvent(EventBusEvent.TO_LAST_CHAPTER));
+            }
+
+            @Override
+            public void onCancelClick() {
+
+            }
+        });
+        dialog.show();
+        dialog.setTitle("已经是第一页，是否跳转到上一章节？");
+        dialog.setOkText("是");
+        dialog.setCancelText("否");
+    }
+
+    private void showToNextChapterDialog() {
+        MangaDialog dialog = new MangaDialog(this);
+        dialog.setOnPeanutDialogClickListener(new MangaDialog.OnPeanutDialogClickListener() {
+            @Override
+            public void onOkClick() {
+                EventBus.getDefault().post(new EventBusEvent(EventBusEvent.TO_NEXT_CHAPTER));
+            }
+
+            @Override
+            public void onCancelClick() {
+
+            }
+        });
+        dialog.show();
+        dialog.setTitle("已经是最后一页，是否跳转到下一章节？");
+        dialog.setOkText("是");
+        dialog.setCancelText("否");
+    }
 
     private void initUI() {
         mangaPager = (HackyViewPager) findViewById(R.id.manga_viewpager);
