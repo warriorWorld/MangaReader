@@ -345,6 +345,9 @@ public class ReadMangaActivity extends TTSActivity implements OnClickListener, S
                         }
                         mangaPager.setCurrentItem(historyPosition - 1);
                     } else {
+                        if (isLocalManga){
+                            return;
+                        }
                         showToLastChapterDialog();
                     }
                 } else if (touchX > 0.6) {
@@ -354,6 +357,9 @@ public class ReadMangaActivity extends TTSActivity implements OnClickListener, S
                         }
                         mangaPager.setCurrentItem(historyPosition + 1);
                     } else {
+                        if (isLocalManga){
+                            return;
+                        }
                         showToNextChapterDialog();
                     }
                 }
