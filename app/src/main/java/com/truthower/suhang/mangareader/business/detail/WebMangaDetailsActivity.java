@@ -3,8 +3,10 @@ package com.truthower.suhang.mangareader.business.detail;
 import android.Manifest;
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.View;
@@ -39,9 +41,11 @@ import com.truthower.suhang.mangareader.listener.OnSevenFourteenListDialogListen
 import com.truthower.suhang.mangareader.spider.SpiderBase;
 import com.truthower.suhang.mangareader.utils.ActivityPoor;
 import com.truthower.suhang.mangareader.utils.BaseParameterUtil;
+import com.truthower.suhang.mangareader.utils.Logger;
 import com.truthower.suhang.mangareader.utils.PermissionUtil;
 import com.truthower.suhang.mangareader.utils.SharedPreferencesUtils;
 import com.truthower.suhang.mangareader.utils.UltimateTextSizeUtil;
+import com.truthower.suhang.mangareader.utils.VibratorUtil;
 import com.truthower.suhang.mangareader.widget.bar.TopBar;
 import com.truthower.suhang.mangareader.widget.dialog.GestureDialog;
 import com.truthower.suhang.mangareader.widget.dialog.ListDialog;
@@ -266,9 +270,9 @@ public class WebMangaDetailsActivity extends TTSActivity implements AdapterView.
             adapter = new OnlineMangaDetailAdapter(this, currentManga.getChapters());
             mangaGV.setAdapter(adapter);
             mangaGV.setColumnWidth(50);
-            if (Configure.isPad){
+            if (Configure.isPad) {
                 mangaGV.setNumColumns(8);
-            }else {
+            } else {
                 mangaGV.setNumColumns(5);
             }
             mangaGV.setVerticalSpacing(10);
@@ -307,7 +311,7 @@ public class WebMangaDetailsActivity extends TTSActivity implements AdapterView.
 
             @Override
             public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
-                if (null==bgSrl){
+                if (null == bgSrl) {
                     return;
                 }
                 if (firstVisibleItem == 0) {
@@ -367,6 +371,51 @@ public class WebMangaDetailsActivity extends TTSActivity implements AdapterView.
                 WebMangaDetailsActivity.this.finish();
             }
         });
+    }
+
+    @Override
+    public void onEventMainThread(EventBusEvent event) {
+        if (null == event) {
+            return;
+        }
+        Intent intent = null;
+        switch (event.getEventType()) {
+            case EventBusEvent.TO_LAST_CHAPTER:
+                if (spider.isOneShot()) {
+                    return;
+                }
+                if (adapter.getLastReadPosition() > 0) {
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            //readactivity是singletask 先结束后打开
+                            toReadActivity(adapter.getLastReadPosition() - 1);
+                        }
+                    }, 500);
+                } else {
+                    baseToast.showToast("已经是第一章");
+                }
+                break;
+            case EventBusEvent.TO_NEXT_CHAPTER:
+                if (spider.isOneShot()) {
+                    return;
+                }
+                if (adapter.getLastReadPosition() < currentManga.getChapters().size() - 1) {
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            //readactivity是singletask 先结束后打开
+                            toReadActivity(adapter.getLastReadPosition() + 1);
+                        }
+                    }, 500);
+                } else {
+                    baseToast.showToast("已经是最后一章");
+                }
+                break;
+        }
+        if (null != intent) {
+            startActivity(intent);
+        }
     }
 
     @Override

@@ -376,6 +376,7 @@ public class ReadMangaActivity extends TTSActivity implements OnClickListener, S
             @Override
             public void onOkClick() {
                 EventBus.getDefault().post(new EventBusEvent(EventBusEvent.TO_LAST_CHAPTER));
+                finish();
             }
 
             @Override
@@ -395,6 +396,7 @@ public class ReadMangaActivity extends TTSActivity implements OnClickListener, S
             @Override
             public void onOkClick() {
                 EventBus.getDefault().post(new EventBusEvent(EventBusEvent.TO_NEXT_CHAPTER));
+                finish();
             }
 
             @Override
