@@ -63,7 +63,7 @@ public class WordsActivity extends TTSActivity implements WordsContract.View {
     @Override
     public void displayKillWord(int position) {
         if (Configure.isPad) {
-            text2Speech("噌");
+            text2Speech("shit");
         } else {
             //平板没有转子
             VibratorUtil.Vibrate(WordsActivity.this, 60);

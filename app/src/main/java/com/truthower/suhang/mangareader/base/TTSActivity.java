@@ -44,7 +44,7 @@ public abstract class TTSActivity extends BaseActivity implements TextToSpeech.O
                 return;
             }
         }
-        tts.setPitch(0.5f);// 设置音调，值越大声音越尖（女生），值越小则变成男声,1.0是常规
+        tts.setPitch(1f);// 设置音调，值越大声音越尖（女生），值越小则变成男声,1.0是常规
         HashMap<String, String> myHashAlarm = new HashMap();
         myHashAlarm.put(TextToSpeech.Engine.KEY_PARAM_STREAM,
                 String.valueOf(AudioManager.STREAM_ALARM));
