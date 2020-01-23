@@ -179,7 +179,7 @@ public class WordsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         public WrapPhotoView wordIv;
         public TextView wordTv;
         public TextView translateTv;
-        public TextView killTv;
+        public View killTv;
 
         public NormalViewHolder(View view) {
             super(view);
@@ -187,7 +187,7 @@ public class WordsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             wordIv = (WrapPhotoView) view.findViewById(R.id.word_iv);
             wordTv = (TextView) view.findViewById(R.id.word_tv);
             translateTv = (TextView) view.findViewById(R.id.translate_tv);
-            killTv = (TextView) view.findViewById(R.id.kill_tv);
+            killTv = view.findViewById(R.id.kill_tv);
         }
     }
 }

@@ -15,8 +15,11 @@ import com.truthower.suhang.mangareader.adapter.WordsAdapter;
 import com.truthower.suhang.mangareader.base.DependencyInjectorIml;
 import com.truthower.suhang.mangareader.base.TTSActivity;
 import com.truthower.suhang.mangareader.bean.WordsBookBean;
+import com.truthower.suhang.mangareader.config.Configure;
+import com.truthower.suhang.mangareader.config.ShareKeys;
 import com.truthower.suhang.mangareader.listener.OnRecycleItemClickListener;
 import com.truthower.suhang.mangareader.listener.OnRecycleItemLongClickListener;
+import com.truthower.suhang.mangareader.utils.SharedPreferencesUtils;
 import com.truthower.suhang.mangareader.utils.VibratorUtil;
 import com.truthower.suhang.mangareader.widget.bar.TopBar;
 import com.truthower.suhang.mangareader.widget.recyclerview.LinearLayoutMangerWithoutBug;
@@ -58,7 +61,12 @@ public class WordsActivity extends TTSActivity implements WordsContract.View {
 
     @Override
     public void displayKillWord(int position) {
-        VibratorUtil.Vibrate(WordsActivity.this, 60);
+        if (Configure.isPad) {
+            text2Speech("噌");
+        } else {
+            //平板没有转子
+            VibratorUtil.Vibrate(WordsActivity.this, 60);
+        }
         adapter.remove(position);
         sizeTv.setText(wordsList.size() + "");
     }
@@ -168,7 +176,10 @@ public class WordsActivity extends TTSActivity implements WordsContract.View {
     private void translation(int position) {
         String word = wordsList.get(position).getWord();
         clip.setText(word);
-        text2Speech(word);
+        if (!SharedPreferencesUtils.getBooleanSharedPreferencesData
+                (this, ShareKeys.CLOSE_TTS, false)) {
+            text2Speech(word);
+        }
         if (TextUtils.isEmpty(wordsList.get(position).getTranslate())) {
             mPresenter.translateWord(position, word);
         }

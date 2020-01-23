@@ -41,16 +41,14 @@
         android:textColor="@color/main_text_color_gray"
         android:textSize="17sp" />
 
-    <TextView
+    <ImageView
         android:id="@+id/kill_tv"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="28dp"
+        android:layout_height="28dp"
         android:layout_below="@+id/word_iv"
         android:layout_alignParentRight="true"
         android:layout_marginLeft="10dp"
-        android:layout_marginTop="10dp"
-        android:layout_marginRight="10dp"
-        android:text="斩"
-        android:textColor="@color/colorPrimary"
-        android:textSize="17sp"></TextView>
+        android:layout_marginTop="4dp"
+        android:src="@drawable/ic_stab"
+        android:layout_marginRight="10dp"></ImageView>
 </RelativeLayout>
