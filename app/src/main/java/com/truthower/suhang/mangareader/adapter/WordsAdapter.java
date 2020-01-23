@@ -117,7 +117,7 @@ public class WordsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder viewHolder, int position, @NonNull List<Object> payloads) {
-        //关于为什么要重写这个方法详见：https://blog.csdn.net/qq15357971925/article/details/78043332
+        //重写这个方法解决点击翻译图片闪烁问题 详见：https://blog.csdn.net/qq15357971925/article/details/78043332
         if (payloads.isEmpty()) {
             onBindViewHolder(viewHolder, position);
         } else {
