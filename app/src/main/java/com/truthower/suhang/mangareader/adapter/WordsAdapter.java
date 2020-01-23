@@ -22,7 +22,9 @@ import com.truthower.suhang.mangareader.widget.imageview.WrapPhotoView;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
+import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 /**
@@ -67,13 +69,6 @@ public class WordsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         ((NormalViewHolder) viewHolder).translateTv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (((NormalViewHolder) viewHolder).translateTv.getCurrentTextColor() == mContext.getResources().getColor(R.color.main_text_color_gray)) {
-                    ((NormalViewHolder) viewHolder).translateTv.setBackgroundColor(mContext.getResources().getColor(R.color.divide_line));
-                    ((NormalViewHolder) viewHolder).translateTv.setTextColor(mContext.getResources().getColor(R.color.transparency));
-                } else {
-                    ((NormalViewHolder) viewHolder).translateTv.setBackgroundColor(mContext.getResources().getColor(R.color.transparency));
-                    ((NormalViewHolder) viewHolder).translateTv.setTextColor(mContext.getResources().getColor(R.color.main_text_color_gray));
-                }
                 if (null != onTranslateItemClickListener) {
                     onTranslateItemClickListener.onItemClick(position);
                 }
@@ -118,6 +113,28 @@ public class WordsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                 }
             }
         });
+    }
+
+    @Override
+    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder viewHolder, int position, @NonNull List<Object> payloads) {
+        if (payloads.isEmpty()) {
+            onBindViewHolder(viewHolder, position);
+        } else {
+            final WordsBookBean item = list.get(position);
+            ((NormalViewHolder) viewHolder).translateTv.setText(item.getTranslate());
+            if (TextUtils.isEmpty(item.getTranslate())) {
+                ((NormalViewHolder) viewHolder).translateTv.setBackgroundColor(mContext.getResources().getColor(R.color.divide_line));
+                ((NormalViewHolder) viewHolder).translateTv.setTextColor(mContext.getResources().getColor(R.color.transparency));
+            } else {
+                if (((NormalViewHolder) viewHolder).translateTv.getCurrentTextColor() == mContext.getResources().getColor(R.color.main_text_color_gray)) {
+                    ((NormalViewHolder) viewHolder).translateTv.setBackgroundColor(mContext.getResources().getColor(R.color.divide_line));
+                    ((NormalViewHolder) viewHolder).translateTv.setTextColor(mContext.getResources().getColor(R.color.transparency));
+                } else {
+                    ((NormalViewHolder) viewHolder).translateTv.setBackgroundColor(mContext.getResources().getColor(R.color.transparency));
+                    ((NormalViewHolder) viewHolder).translateTv.setTextColor(mContext.getResources().getColor(R.color.main_text_color_gray));
+                }
+            }
+        }
     }
 
     @Override

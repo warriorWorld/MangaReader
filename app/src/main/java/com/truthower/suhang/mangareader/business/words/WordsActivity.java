@@ -56,7 +56,8 @@ public class WordsActivity extends TTSActivity implements WordsContract.View {
     public void displayTranslate(int position, String translate) {
         wordsList.get(position).setTranslate(translate);
         adapter.setList(wordsList);
-        adapter.notifyItemChanged(position);
+        //关于为什么要传第二个参数详见：https://blog.csdn.net/qq15357971925/article/details/78043332
+        adapter.notifyItemChanged(position,"not null");
     }
 
     @Override
