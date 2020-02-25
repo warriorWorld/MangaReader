@@ -565,6 +565,7 @@ public class ReadMangaActivity extends TTSActivity implements OnClickListener, S
         });
         searchDialog.setCancelable(true);
         searchDialog.show();
+        searchDialog.setDimAmount(0.2f);
         searchDialog.clearEdit();
     }
 

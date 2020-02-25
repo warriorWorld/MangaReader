@@ -59,6 +59,9 @@ public class OnlyEditDialog extends Dialog {
         window.setAttributes(lp);
     }
 
+    public void setDimAmount(float dimAmount) {
+        getWindow().setDimAmount(dimAmount);//去掉蒙层
+    }
 
     private void init() {
         editText = (EditText) findViewById(R.id.edit_et);
