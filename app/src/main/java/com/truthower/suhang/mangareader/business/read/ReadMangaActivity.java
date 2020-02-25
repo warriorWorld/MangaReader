@@ -198,6 +198,11 @@ public class ReadMangaActivity extends TTSActivity implements OnClickListener, S
                     "\n5,长按屏幕中间稍微靠下位置可保存或删除当前图片");
         }
         initSensorManager();
+        if (isLocalManga){
+            deleteIv.setImageResource(R.drawable.delete);
+        }else {
+            deleteIv.setImageResource(R.drawable.ic_save);
+        }
     }
 
     private void initSensorManager() {
