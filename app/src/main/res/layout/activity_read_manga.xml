@@ -47,6 +47,16 @@
             app:dsb_max="100"
             app:dsb_min="1" />
 
+        <ImageView
+            android:id="@+id/delete_iv"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_above="@+id/seekbar"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="20dp"
+            android:src="@drawable/delete"
+            android:visibility="gone"></ImageView>
+
         <Button
             android:id="@+id/ocr_btn"
             android:layout_width="30dp"
@@ -76,44 +86,44 @@
         <ImageView
             android:id="@+id/landscape_refresh_iv"
             android:layout_width="25dp"
-            android:visibility="gone"
             android:layout_height="25dp"
             android:layout_above="@+id/landscape_translate_iv"
             android:layout_marginLeft="16dp"
             android:layout_marginBottom="16dp"
-            android:src="@drawable/ic_refresh_green"></ImageView>
+            android:src="@drawable/ic_refresh_green"
+            android:visibility="gone"></ImageView>
 
         <ImageView
             android:id="@+id/landscape_options_iv"
             android:layout_width="25dp"
             android:layout_height="25dp"
             android:layout_alignParentBottom="true"
-            android:visibility="gone"
             android:layout_marginLeft="16dp"
             android:layout_marginBottom="30dp"
-            android:src="@drawable/ic_setting"></ImageView>
+            android:src="@drawable/ic_setting"
+            android:visibility="gone"></ImageView>
 
         <ImageView
             android:id="@+id/landscape_shot_translate_iv"
             android:layout_width="25dp"
             android:layout_height="25dp"
-            android:visibility="gone"
             android:layout_above="@+id/landscape_translate_iv"
             android:layout_alignParentRight="true"
             android:layout_marginRight="16dp"
             android:layout_marginBottom="16dp"
-            android:src="@drawable/ic_target"></ImageView>
+            android:src="@drawable/ic_target"
+            android:visibility="gone"></ImageView>
 
         <ImageView
             android:id="@+id/landscape_translate_iv"
             android:layout_width="25dp"
             android:layout_height="25dp"
-            android:visibility="gone"
             android:layout_alignParentRight="true"
             android:layout_alignParentBottom="true"
             android:layout_marginRight="16dp"
             android:layout_marginBottom="30dp"
-            android:src="@drawable/translate"></ImageView>
+            android:src="@drawable/translate"
+            android:visibility="gone"></ImageView>
 
         <ImageView
             android:id="@+id/test_iv"

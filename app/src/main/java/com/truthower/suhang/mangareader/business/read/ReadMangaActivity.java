@@ -132,6 +132,7 @@ public class ReadMangaActivity extends TTSActivity implements OnClickListener, S
     private ImageView landscapeShotTranslateIv;
     private ImageView landscapeTranslateIv;
     private boolean closeOrientationChange = false;//用于在截屏时临时关闭转屏及刷新,因为截屏时需要翻页刷新缓存.
+    private ImageView deleteIv;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -337,7 +338,7 @@ public class ReadMangaActivity extends TTSActivity implements OnClickListener, S
                 Logger.d("photo tap :" + touchX + "," + touchY);
                 if (touchX > 0.4 && touchX < 0.6 && touchY > 0.4 && touchY < 0.6) {
                     VibratorUtil.Vibrate(this, 20);
-                    cutSeekBar();
+                    toggleControlUI();
                 } else if (touchX < 0.4) {
                     if (historyPosition > 0) {
                         if (SharedPreferencesUtils.getBooleanSharedPreferencesData(this, ShareKeys.CLOSE_CLICK_IMG, false)) {
@@ -345,7 +346,7 @@ public class ReadMangaActivity extends TTSActivity implements OnClickListener, S
                         }
                         mangaPager.setCurrentItem(historyPosition - 1);
                     } else {
-                        if (isLocalManga){
+                        if (isLocalManga) {
                             return;
                         }
                         showToLastChapterDialog();
@@ -357,7 +358,7 @@ public class ReadMangaActivity extends TTSActivity implements OnClickListener, S
                         }
                         mangaPager.setCurrentItem(historyPosition + 1);
                     } else {
-                        if (isLocalManga){
+                        if (isLocalManga) {
                             return;
                         }
                         showToNextChapterDialog();
@@ -421,6 +422,7 @@ public class ReadMangaActivity extends TTSActivity implements OnClickListener, S
         seekBar = (DiscreteSeekBar) findViewById(R.id.seekbar);
         ocrBtn = (Button) findViewById(R.id.ocr_btn);
         readProgressTv = (TextView) findViewById(R.id.read_progress_tv);
+        deleteIv = findViewById(R.id.delete_iv);
         screenDv = (DragView) findViewById(R.id.screenshoot_dv);
         landscapeRefreshIv = (ImageView) findViewById(R.id.landscape_refresh_iv);
         landscapeOptionsIv = (ImageView) findViewById(R.id.landscape_options_iv);
@@ -449,6 +451,7 @@ public class ReadMangaActivity extends TTSActivity implements OnClickListener, S
         landscapeTranslateIv.setOnClickListener(this);
         readProgressTv.setOnClickListener(this);
         screenDv.setOnClickListener(this);
+        deleteIv.setOnClickListener(this);
 
         hideBaseTopBar();
         topBar = (TopBar) findViewById(R.id.read_manga_top_bar);
@@ -486,13 +489,7 @@ public class ReadMangaActivity extends TTSActivity implements OnClickListener, S
 
             @Override
             public void onRightLongClick() {
-                String file = pathList.get(historyPosition);
-                if (file.contains("file://")) {
-                    file = file.substring(7, file.length());
-                    showDeleteDialog(file);
-                } else {
-                    showSaveDialog(file);
-                }
+
             }
 
             @Override
@@ -915,11 +912,13 @@ public class ReadMangaActivity extends TTSActivity implements OnClickListener, S
         }
     }
 
-    private void cutSeekBar() {
+    private void toggleControlUI() {
         if (seekBar.isShown()) {
+            deleteIv.setVisibility(View.GONE);
             seekBar.setVisibility(View.GONE);
         } else {
             seekBar.setVisibility(View.VISIBLE);
+            deleteIv.setVisibility(View.VISIBLE);
         }
     }
 
@@ -1019,6 +1018,15 @@ public class ReadMangaActivity extends TTSActivity implements OnClickListener, S
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
+            case R.id.delete_iv:
+                String file = pathList.get(historyPosition);
+                if (file.contains("file://")) {
+                    file = file.substring(7, file.length());
+                    showDeleteDialog(file);
+                } else {
+                    showSaveDialog(file);
+                }
+                break;
             case R.id.read_progress_tv:
 
                 break;
