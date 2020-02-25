@@ -42,7 +42,7 @@ public class WordsPresenter implements WordsContract.Presenter {
     }
 
     @Override
-    public void translateWord(final int position, String word) {
+    public void translateWord(final int position, final String word) {
         String url = Configure.YOUDAO + word;
         HashMap<String, String> params = new HashMap<String, String>();
         VolleyCallBack<YoudaoResponse> callback = new VolleyCallBack<YoudaoResponse>() {
@@ -60,6 +60,8 @@ public class WordsPresenter implements WordsContract.Presenter {
                                 "]; " + t);
                     } else {
                         mView.displayErrorMsg("没查到该词");
+                        mInjector.dataRepository(mContext).deleteWordByWord(word);
+                        mView.displayKillWord(position);
                     }
                 } else {
                     mView.displayErrorMsg("网络连接失败");

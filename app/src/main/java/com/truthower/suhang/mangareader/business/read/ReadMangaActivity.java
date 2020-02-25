@@ -489,7 +489,7 @@ public class ReadMangaActivity extends TTSActivity implements OnClickListener, S
 
             @Override
             public void onRightLongClick() {
-
+                toggleControlUI();
             }
 
             @Override

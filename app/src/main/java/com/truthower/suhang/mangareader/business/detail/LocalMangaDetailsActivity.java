@@ -278,8 +278,15 @@ public class LocalMangaDetailsActivity extends BaseActivity implements AdapterVi
                     mangaList.get(deleteStartPoint).setChecked(true);
                     adapter.notifyDataSetChanged();
                 } else {
-                    for (int i = 0; i < position - deleteStartPoint + 1; i++) {
-                        mangaList.get(deleteStartPoint + i).setChecked(true);
+                    int count = position - deleteStartPoint;
+                    if (count > 0) {
+                        for (int i = 0; i <=count; i++) {
+                            mangaList.get(deleteStartPoint + i).setChecked(true);
+                        }
+                    }else {
+                        for (int i = 0; i <=Math.abs(count); i++) {
+                            mangaList.get(deleteStartPoint - i).setChecked(true);
+                        }
                     }
                     adapter.notifyDataSetChanged();
                 }
