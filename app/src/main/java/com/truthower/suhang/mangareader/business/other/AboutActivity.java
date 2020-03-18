@@ -37,6 +37,8 @@ public class AboutActivity extends BaseActivity implements View.OnClickListener 
     private CheckBox closeWrapCb;
     private RelativeLayout openPremiumRl;
     private CheckBox openPremiumCb;
+    private RelativeLayout openPremiumVoiceRl;
+    private CheckBox openPremiumVoiceCb;
     private View gestureRl;
     private ClipboardManager clip;//复制文本用
 
@@ -65,11 +67,16 @@ public class AboutActivity extends BaseActivity implements View.OnClickListener 
         gestureRl = findViewById(R.id.gesture_rl);
         killableTimeRl = findViewById(R.id.killable_time_rl);
         killPeriodRl = findViewById(R.id.kill_peroid_rl);
-        openPremiumRl=findViewById(R.id.open_premium_rl);
-        if (PermissionUtil.isMaster(this)||PermissionUtil.isCreator(this)){
+        openPremiumRl = findViewById(R.id.open_premium_rl);
+        openPremiumVoiceRl = findViewById(R.id.open_premium_voice_rl);
+        if (PermissionUtil.isMaster(this) || PermissionUtil.isCreator(this)) {
             openPremiumRl.setVisibility(View.VISIBLE);
-        }else {
+            openPremiumVoiceRl.setVisibility(View.VISIBLE);
+        } else {
             openPremiumRl.setVisibility(View.GONE);
+            openPremiumVoiceRl.setVisibility(View.GONE);
+            openPremiumVoiceCb.setChecked(false);
+            openPremiumCb.setChecked(false);
         }
         economyModeCb = (CheckBox) findViewById(R.id.economy_mode_cb);
         economyModeCb.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -133,6 +140,20 @@ public class AboutActivity extends BaseActivity implements View.OnClickListener 
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 SharedPreferencesUtils.setSharedPreferencesData
                         (AboutActivity.this, ShareKeys.OPEN_PREMIUM_KEY, isChecked);
+                if (isChecked){
+                    openPremiumVoiceRl.setVisibility(View.VISIBLE);
+                }else {
+                    openPremiumVoiceCb.setChecked(false);
+                    openPremiumVoiceRl.setVisibility(View.GONE);
+                }
+            }
+        });
+        openPremiumVoiceCb = findViewById(R.id.open_premium_voice_cb);
+        openPremiumVoiceCb.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                SharedPreferencesUtils.setSharedPreferencesData
+                        (AboutActivity.this, ShareKeys.OPEN_PREMIUM_VOICE_KEY, isChecked);
             }
         });
         keyboardRl = (RelativeLayout) findViewById(R.id.keyboard_rl);
@@ -160,6 +181,9 @@ public class AboutActivity extends BaseActivity implements View.OnClickListener 
         openPremiumCb.setChecked
                 (SharedPreferencesUtils.getBooleanSharedPreferencesData(AboutActivity.this,
                         ShareKeys.OPEN_PREMIUM_KEY, false));
+        openPremiumVoiceCb.setChecked
+                (SharedPreferencesUtils.getBooleanSharedPreferencesData(AboutActivity.this,
+                        ShareKeys.OPEN_PREMIUM_VOICE_KEY, false));
         gestureRl.setOnClickListener(this);
         keyboardRl.setOnClickListener(this);
         appIconIv.setOnClickListener(this);

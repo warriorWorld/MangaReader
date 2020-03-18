@@ -734,6 +734,15 @@ public class ReadMangaActivity extends TTSActivity implements OnClickListener, S
                         @Override
                         public void run() {
                             if (null != translate && null != translate.getExplains() && translate.getExplains().size() > 0) {
+                                if (SharedPreferencesUtils.getBooleanSharedPreferencesData
+                                        (ReadMangaActivity.this, ShareKeys.OPEN_PREMIUM_VOICE_KEY, false)) {
+                                    playVoice(translate.getUSSpeakUrl());
+                                } else {
+                                    if (!SharedPreferencesUtils.getBooleanSharedPreferencesData
+                                            (ReadMangaActivity.this, ShareKeys.CLOSE_TTS, false)) {
+                                        text2Speech(word);
+                                    }
+                                }
                                 showVIPTranslateResultDialog(translate);
                             } else {
                                 baseToast.showToast("没查到该词");

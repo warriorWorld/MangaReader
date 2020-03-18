@@ -16,7 +16,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.truthower.suhang.mangareader.R;
+import com.truthower.suhang.mangareader.config.ShareKeys;
 import com.truthower.suhang.mangareader.utils.AudioMgr;
+import com.truthower.suhang.mangareader.utils.SharedPreferencesUtils;
 import com.youdao.sdk.common.YouDaoLog;
 import com.youdao.sdk.ydtranslate.Translate;
 import com.youdao.sdk.ydtranslate.WebExplain;
@@ -40,7 +42,7 @@ public class TranslateResultDialog extends Dialog implements View.OnClickListene
     private TextView okTv;
     private Translate mTranslate;
     private Group webTranslateGroup;
-    private Group ukGroup,usGroup;
+    private Group ukGroup, usGroup;
 
     public TranslateResultDialog(Context context) {
         super(context);
@@ -80,8 +82,8 @@ public class TranslateResultDialog extends Dialog implements View.OnClickListene
         translateTv = (TextView) findViewById(R.id.translate_tv);
         webTranslateTv = (TextView) findViewById(R.id.web_translate_tv);
         okTv = findViewById(R.id.ok_tv);
-        ukGroup=findViewById(R.id.uk_group);
-        usGroup=findViewById(R.id.us_group);
+        ukGroup = findViewById(R.id.uk_group);
+        usGroup = findViewById(R.id.us_group);
         webTranslateGroup = findViewById(R.id.web_translate_group);
         webTranslateGroup.setVisibility(View.GONE);
         ukPhoneticTv.setOnClickListener(this);
@@ -94,8 +96,6 @@ public class TranslateResultDialog extends Dialog implements View.OnClickListene
     public void setTranslate(Translate translate) {
         mTranslate = translate;
         if (null != translate && null != translate.getExplains() && translate.getExplains().size() > 0) {
-            playVoice(translate.getUSSpeakUrl());
-
             StringBuilder translateSb = new StringBuilder();
             for (int i = 0; i < translate.getExplains().size(); i++) {
                 translateSb.append(translate.getExplains().get(i)).append(";\n");
