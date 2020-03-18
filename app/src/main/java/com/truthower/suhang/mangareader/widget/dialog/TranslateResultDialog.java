@@ -16,7 +16,10 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.truthower.suhang.mangareader.R;
+import com.truthower.suhang.mangareader.bean.YoudaoResponse;
+import com.truthower.suhang.mangareader.business.read.ReadMangaActivity;
 import com.truthower.suhang.mangareader.config.ShareKeys;
+import com.truthower.suhang.mangareader.listener.OnSpeakClickListener;
 import com.truthower.suhang.mangareader.utils.AudioMgr;
 import com.truthower.suhang.mangareader.utils.SharedPreferencesUtils;
 import com.youdao.sdk.common.YouDaoLog;
@@ -43,6 +46,8 @@ public class TranslateResultDialog extends Dialog implements View.OnClickListene
     private Translate mTranslate;
     private Group webTranslateGroup;
     private Group ukGroup, usGroup;
+    private OnSpeakClickListener onSpeakClickListener;
+    private String word;
 
     public TranslateResultDialog(Context context) {
         super(context);
@@ -96,6 +101,7 @@ public class TranslateResultDialog extends Dialog implements View.OnClickListene
     public void setTranslate(Translate translate) {
         mTranslate = translate;
         if (null != translate && null != translate.getExplains() && translate.getExplains().size() > 0) {
+            word = translate.getQuery();
             StringBuilder translateSb = new StringBuilder();
             for (int i = 0; i < translate.getExplains().size(); i++) {
                 translateSb.append(translate.getExplains().get(i)).append(";\n");
@@ -134,6 +140,44 @@ public class TranslateResultDialog extends Dialog implements View.OnClickListene
         }
     }
 
+    public void setTranslate(YoudaoResponse youdaoResponse) {
+        YoudaoResponse.BasicBean translate = youdaoResponse.getBasic();
+        word = youdaoResponse.getQuery();
+        webTranslateGroup.setVisibility(View.GONE);
+        if (null != translate && null != translate.getExplains() && translate.getExplains().size() > 0) {
+            StringBuilder translateSb = new StringBuilder();
+            for (int i = 0; i < translate.getExplains().size(); i++) {
+                translateSb.append(translate.getExplains().get(i)).append(";\n");
+            }
+            wordTv.setText(youdaoResponse.getQuery());
+            if (!TextUtils.isEmpty(translate.getUk_phonetic()) || !TextUtils.isEmpty(translate.getPhonetic())) {
+                if (!TextUtils.isEmpty(translate.getUk_phonetic())) {
+                    ukPhoneticTv.setText("/" + translate.getUk_phonetic() + "/");
+                } else if (!TextUtils.isEmpty(translate.getPhonetic())) {
+                    ukPhoneticTv.setText("/" + translate.getPhonetic() + "/");
+                } else {
+                    ukPhoneticTv.setText("");
+                }
+                ukGroup.setVisibility(View.VISIBLE);
+            } else {
+                ukGroup.setVisibility(View.GONE);
+            }
+            if (!TextUtils.isEmpty(translate.getUs_phonetic()) || !TextUtils.isEmpty(translate.getPhonetic())) {
+                if (!TextUtils.isEmpty(translate.getUs_phonetic())) {
+                    usPhoneticTv.setText("/" + translate.getUs_phonetic() + "/");
+                } else if (!TextUtils.isEmpty(translate.getPhonetic())) {
+                    usPhoneticTv.setText("/" + translate.getPhonetic() + "/");
+                } else {
+                    usPhoneticTv.setText("");
+                }
+                usGroup.setVisibility(View.VISIBLE);
+            } else {
+                usGroup.setVisibility(View.GONE);
+            }
+            translateTv.setText(translateSb);
+        }
+    }
+
     private synchronized void playVoice(String speakUrl) {
         YouDaoLog.e(AudioMgr.PLAY_LOG + "TranslateDetailActivity click to playVoice speakUrl = " + speakUrl);
         if (!TextUtils.isEmpty(speakUrl) && speakUrl.startsWith("http")) {
@@ -159,12 +203,30 @@ public class TranslateResultDialog extends Dialog implements View.OnClickListene
                 break;
             case R.id.uk_iv:
             case R.id.uk_phonetic_tv:
-                playVoice(mTranslate.getUKSpeakUrl());
+                if (null != mTranslate && SharedPreferencesUtils.getBooleanSharedPreferencesData
+                        (context, ShareKeys.OPEN_PREMIUM_VOICE_KEY, false)) {
+                    playVoice(mTranslate.getUKSpeakUrl());
+                } else {
+                    if (null != onSpeakClickListener) {
+                        onSpeakClickListener.onSpeakUKClick(word);
+                    }
+                }
                 break;
             case R.id.us_iv:
             case R.id.us_phonetic_tv:
-                playVoice(mTranslate.getUSSpeakUrl());
+                if (null != mTranslate && SharedPreferencesUtils.getBooleanSharedPreferencesData
+                        (context, ShareKeys.OPEN_PREMIUM_VOICE_KEY, false)) {
+                    playVoice(mTranslate.getUSSpeakUrl());
+                } else {
+                    if (null != onSpeakClickListener) {
+                        onSpeakClickListener.onSpeakUSClick(word);
+                    }
+                }
                 break;
         }
+    }
+
+    public void setOnSpeakClickListener(OnSpeakClickListener onSpeakClickListener) {
+        this.onSpeakClickListener = onSpeakClickListener;
     }
 }

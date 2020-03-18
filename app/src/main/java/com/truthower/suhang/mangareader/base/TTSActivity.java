@@ -36,6 +36,10 @@ public abstract class TTSActivity extends BaseActivity implements TextToSpeech.O
         text2Speech(text, true);
     }
 
+    protected void setLanguage(Locale language) {
+        tts.setLanguage(language);
+    }
+
     protected void text2Speech(String text, boolean breakSpeaking) {
         if (tts == null) {
             return;

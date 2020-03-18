@@ -147,7 +147,7 @@ public class TranslateDialog extends Dialog implements View.OnClickListener {
             case R.id.title_ll:
             case R.id.message_tv:
                 if (null != onSpeakClickListener) {
-                    onSpeakClickListener.onSpeakClick(titleTv.getText().toString());
+                    onSpeakClickListener.onSpeakUSClick(titleTv.getText().toString());
                 }
                 break;
         }

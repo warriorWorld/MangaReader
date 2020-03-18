@@ -17,5 +17,7 @@
 package com.truthower.suhang.mangareader.listener;
 
 public interface OnSpeakClickListener {
-    void onSpeakClick(String word);
+    void onSpeakUSClick(String word);
+
+    void onSpeakUKClick(String word);
 }

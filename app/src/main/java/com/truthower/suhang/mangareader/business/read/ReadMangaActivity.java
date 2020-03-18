@@ -80,6 +80,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 
 import androidx.viewpager.widget.ViewPager;
 
@@ -769,17 +770,7 @@ public class ReadMangaActivity extends TTSActivity implements OnClickListener, S
                 @Override
                 public void loadSucceed(YoudaoResponse result) {
                     if (null != result && result.getErrorCode() == 0) {
-                        YoudaoResponse.BasicBean item = result.getBasic();
-                        String t = "";
-                        if (null != item) {
-                            for (int i = 0; i < item.getExplains().size(); i++) {
-                                t = t + item.getExplains().get(i) + ";";
-                            }
-
-                            showTranslateResultDialog(word, result.getQuery() + "  [" + item.getPhonetic() + "]: " + "\n" + t);
-                        } else {
-                            baseToast.showToast("没查到该词");
-                        }
+                        showTranslateResultDialog(result);
                     } else {
                         baseToast.showToast("没查到该词");
                     }
@@ -831,26 +822,40 @@ public class ReadMangaActivity extends TTSActivity implements OnClickListener, S
 
     private void showVIPTranslateResultDialog(Translate translate) {
         TranslateResultDialog translateResultDialog = new TranslateResultDialog(this);
+        translateResultDialog.setOnSpeakClickListener(new OnSpeakClickListener() {
+            @Override
+            public void onSpeakUSClick(String word) {
+                setLanguage(Locale.US);
+                text2Speech(word);
+            }
+
+            @Override
+            public void onSpeakUKClick(String word) {
+                setLanguage(Locale.UK);
+                text2Speech(word);
+            }
+        });
         translateResultDialog.show();
         translateResultDialog.setTranslate(translate);
     }
 
-    private void showTranslateResultDialog(final String title, String msg) {
-        if (null == translateResultDialog) {
-            translateResultDialog = new TranslateDialog(this);
-            translateResultDialog.setOnSpeakClickListener(new OnSpeakClickListener() {
-                @Override
-                public void onSpeakClick(String word) {
-                    text2Speech(word);
-                }
-            });
-        }
-        translateResultDialog.show();
+    private void showTranslateResultDialog(YoudaoResponse translate) {
+        TranslateResultDialog translateResultDialog = new TranslateResultDialog(this);
+        translateResultDialog.setOnSpeakClickListener(new OnSpeakClickListener() {
+            @Override
+            public void onSpeakUSClick(String word) {
+                setLanguage(Locale.US);
+                text2Speech(word);
+            }
 
-        translateResultDialog.setTitle(title);
-        translateResultDialog.setMessage(msg);
-        translateResultDialog.setOkText("确定");
-        translateResultDialog.setCancelable(true);
+            @Override
+            public void onSpeakUKClick(String word) {
+                setLanguage(Locale.UK);
+                text2Speech(word);
+            }
+        });
+        translateResultDialog.show();
+        translateResultDialog.setTranslate(translate);
     }
 
     private void showDeleteDialog(final String fileName) {
