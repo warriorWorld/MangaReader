@@ -133,6 +133,8 @@ public class ReadMangaActivity extends TTSActivity implements OnClickListener, S
     private ImageView landscapeTranslateIv;
     private boolean closeOrientationChange = false;//用于在截屏时临时关闭转屏及刷新,因为截屏时需要翻页刷新缓存.
     private ImageView deleteIv;
+    private View gifToggleOptionsV;
+    private TextView imageSizeTv;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -198,9 +200,9 @@ public class ReadMangaActivity extends TTSActivity implements OnClickListener, S
                     "\n5,长按屏幕中间稍微靠下位置可保存或删除当前图片");
         }
         initSensorManager();
-        if (isLocalManga){
+        if (isLocalManga) {
             deleteIv.setImageResource(R.drawable.delete);
-        }else {
+        } else {
             deleteIv.setImageResource(R.drawable.ic_save);
         }
     }
@@ -380,6 +382,7 @@ public class ReadMangaActivity extends TTSActivity implements OnClickListener, S
         initViewPager();
         initSeekBar();
         readProgressTv.setText(historyPosition + 1 + "/" + pathList.size());
+        showImgSize(historyPosition);
     }
 
     private void showToLastChapterDialog() {
@@ -433,6 +436,8 @@ public class ReadMangaActivity extends TTSActivity implements OnClickListener, S
         landscapeOptionsIv = (ImageView) findViewById(R.id.landscape_options_iv);
         landscapeShotTranslateIv = (ImageView) findViewById(R.id.landscape_shot_translate_iv);
         landscapeTranslateIv = (ImageView) findViewById(R.id.landscape_translate_iv);
+        gifToggleOptionsV = findViewById(R.id.gif_toggle_options_v);
+        imageSizeTv = findViewById(R.id.img_size_tv);
         screenDv.setSavePosition(true);
         new Thread(new Runnable() {
             @Override
@@ -454,6 +459,7 @@ public class ReadMangaActivity extends TTSActivity implements OnClickListener, S
         landscapeRefreshIv.setOnClickListener(this);
         landscapeShotTranslateIv.setOnClickListener(this);
         landscapeTranslateIv.setOnClickListener(this);
+        gifToggleOptionsV.setOnClickListener(this);
         readProgressTv.setOnClickListener(this);
         screenDv.setOnClickListener(this);
         deleteIv.setOnClickListener(this);
@@ -904,6 +910,13 @@ public class ReadMangaActivity extends TTSActivity implements OnClickListener, S
                             adapter.notifyDataSetChanged();
                         }
                     }
+                    if ((pathList.get(position).endsWith(".gif") ||
+                            pathList.get(position).endsWith(".GIF"))) {
+                        gifToggleOptionsV.setVisibility(View.VISIBLE);
+                    } else {
+                        gifToggleOptionsV.setVisibility(View.GONE);
+                    }
+                    showImgSize(position);
                 }
 
                 @Override
@@ -914,6 +927,17 @@ public class ReadMangaActivity extends TTSActivity implements OnClickListener, S
         } else {
             adapter.setPathList(pathList);
             adapter.notifyDataSetChanged();
+        }
+    }
+
+    private void showImgSize(int position) {
+        if (isLocalManga) {
+            try {
+                imageSizeTv.setText(FileSpider.getInstance().toFileSize
+                        (FileSpider.getInstance().getFileSize(new File(pathList.get(position).replaceAll("file://", "")))));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -1031,6 +1055,10 @@ public class ReadMangaActivity extends TTSActivity implements OnClickListener, S
                 } else {
                     showSaveDialog(file);
                 }
+                break;
+            case R.id.gif_toggle_options_v:
+                VibratorUtil.Vibrate(this, 20);
+                toggleControlUI();
                 break;
             case R.id.read_progress_tv:
 

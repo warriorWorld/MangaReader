@@ -83,6 +83,23 @@
             android:textColor="@color/main_text_color"
             android:textSize="10sp" />
 
+        <TextView
+            android:id="@+id/img_size_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_marginLeft="7dp"
+            android:layout_marginBottom="7dp"
+            android:textColor="@color/main_text_color"
+            android:textSize="10sp" />
+
+        <View
+            android:id="@+id/gif_toggle_options_v"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_centerInParent="true"
+            android:visibility="gone"></View>
+
         <ImageView
             android:id="@+id/landscape_refresh_iv"
             android:layout_width="25dp"

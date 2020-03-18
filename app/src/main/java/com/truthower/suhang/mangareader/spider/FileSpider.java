@@ -13,6 +13,7 @@ import com.truthower.suhang.mangareader.eventbus.EventBusEvent;
 import com.truthower.suhang.mangareader.listener.DownloadCallBack;
 import com.truthower.suhang.mangareader.listener.JsoupCallBack;
 import com.truthower.suhang.mangareader.utils.ImageUtil;
+import com.truthower.suhang.mangareader.utils.Logger;
 import com.truthower.suhang.mangareader.utils.StringUtil;
 
 import org.greenrobot.eventbus.EventBus;
@@ -27,6 +28,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URL;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 
 /**
@@ -54,70 +56,71 @@ public class FileSpider {
     }
 
     public ArrayList<MangaBean> getMangaList(final String path) {
-        try{
-        File f = new File(path);//第一级目录 reptile
-        if (!f.exists()) {
-            f.mkdirs();
-        }
-        int firstFileLength = f.toString().length() + 1;
-        File[] files = f.listFiles();//第二级目录 具体漫画们
-        if (null != files && files.length > 0) {
-            ArrayList<MangaBean> mangaList = new ArrayList<MangaBean>();
-            for (int i = 0; i < files.length; i++) {
-                Bitmap bp = null;
-                MangaBean item = new MangaBean();
-
-                String title = files[i].toString();
-                title = title.substring(firstFileLength, title.length());
-
-                item.setName(title);
-                item.setUrl(files[i].toString());
-
-                File[] files1 = files[i].listFiles();//第三级目录 某具体漫画内部
-                if (null != files1 && files1.length > 0 && !files1[0].isDirectory()) {
-                    String thumbnailFilePath = files1[0].toString().substring(0,
-                            files1[0].toString().lastIndexOf(File.separator));
-                    thumbnailFilePath = thumbnailFilePath.replaceAll("file://", "");
-                    thumbnailFilePath = thumbnailFilePath.replaceAll(Configure.storagePath, "");
-                    thumbnailFilePath = thumbnailFilePath.replaceAll(File.separator, "_");
-                    thumbnailFilePath = thumbnailFilePath.substring(1, thumbnailFilePath.length())+".png";
-                    thumbnailFilePath=Configure.thumnailPath+File.separator+thumbnailFilePath;
-
-                    File thumbnailFile = new File(thumbnailFilePath);
-                    if (thumbnailFile.exists()) {
-                        item.setUserThumbnailUrl(thumbnailFilePath);
-                    } else {
-                        item.setUserThumbnailUrl("");
-                    }
-                    //如果下一级目录就直接是图片文件 则显示第一张图片
-                    item.setLocalThumbnailUrl(files1[0].toString());
-                } else if (null != files1 && files1.length > 0 && files1[0].isDirectory()) {
-                    //如果下一级目录不是图片而是文件夹们  二级文件夹
-                    File[] files2 = files1[0].listFiles();//第四级目录 某具体漫画内部的内部
-                    try {
-                        item.setLocalThumbnailUrl(files2[0].toString());
-                    }catch (IndexOutOfBoundsException e){
-                        e.printStackTrace();
-                    }
-                } else if (null == files1 && !files[i].isDirectory()) {
-                    //如果files1这一级就已经是单张图片了
-                    item.setLocalThumbnailUrl(files[i].toString());
-                } else {
-                    //空文件夹
-                }
-                mangaList.add(item);
+        try {
+            File f = new File(path);//第一级目录 reptile
+            if (!f.exists()) {
+                f.mkdirs();
             }
-            return mangaList;
-        } else {
-            return null;
-        }}catch (Exception e){
+            int firstFileLength = f.toString().length() + 1;
+            File[] files = f.listFiles();//第二级目录 具体漫画们
+            if (null != files && files.length > 0) {
+                ArrayList<MangaBean> mangaList = new ArrayList<MangaBean>();
+                for (int i = 0; i < files.length; i++) {
+                    Bitmap bp = null;
+                    MangaBean item = new MangaBean();
+
+                    String title = files[i].toString();
+                    title = title.substring(firstFileLength, title.length());
+
+                    item.setName(title);
+                    item.setUrl(files[i].toString());
+
+                    File[] files1 = files[i].listFiles();//第三级目录 某具体漫画内部
+                    if (null != files1 && files1.length > 0 && !files1[0].isDirectory()) {
+                        String thumbnailFilePath = files1[0].toString().substring(0,
+                                files1[0].toString().lastIndexOf(File.separator));
+                        thumbnailFilePath = thumbnailFilePath.replaceAll("file://", "");
+                        thumbnailFilePath = thumbnailFilePath.replaceAll(Configure.storagePath, "");
+                        thumbnailFilePath = thumbnailFilePath.replaceAll(File.separator, "_");
+                        thumbnailFilePath = thumbnailFilePath.substring(1, thumbnailFilePath.length()) + ".png";
+                        thumbnailFilePath = Configure.thumnailPath + File.separator + thumbnailFilePath;
+
+                        File thumbnailFile = new File(thumbnailFilePath);
+                        if (thumbnailFile.exists()) {
+                            item.setUserThumbnailUrl(thumbnailFilePath);
+                        } else {
+                            item.setUserThumbnailUrl("");
+                        }
+                        //如果下一级目录就直接是图片文件 则显示第一张图片
+                        item.setLocalThumbnailUrl(files1[0].toString());
+                    } else if (null != files1 && files1.length > 0 && files1[0].isDirectory()) {
+                        //如果下一级目录不是图片而是文件夹们  二级文件夹
+                        File[] files2 = files1[0].listFiles();//第四级目录 某具体漫画内部的内部
+                        try {
+                            item.setLocalThumbnailUrl(files2[0].toString());
+                        } catch (IndexOutOfBoundsException e) {
+                            e.printStackTrace();
+                        }
+                    } else if (null == files1 && !files[i].isDirectory()) {
+                        //如果files1这一级就已经是单张图片了
+                        item.setLocalThumbnailUrl(files[i].toString());
+                    } else {
+                        //空文件夹
+                    }
+                    mangaList.add(item);
+                }
+                return mangaList;
+            } else {
+                return null;
+            }
+        } catch (Exception e) {
             e.printStackTrace();
             return null;
         }
     }
 
 
-    public  void deleteFile(String file) {
+    public void deleteFile(String file) {
         if (file.contains("file://")) {
             file = file.substring(7, file.length());
         }
@@ -391,5 +394,58 @@ public class FileSpider {
             return true;
         }
         return false;
+    }
+
+    /**
+     * 获取指定文件大小
+     */
+    public  long getFileSize(File file) throws Exception {
+        long size = 0;
+        if (file.exists()) {
+            FileInputStream fis = null;
+            fis = new FileInputStream(file);
+            size = fis.available();
+        } else {
+            Logger.d("文件不存在!");
+        }
+        return size;
+    }
+
+    /**
+     * 获取指定文件夹
+     */
+    public  long getFileSizes(File f) throws Exception {
+        long size = 0;
+        File flist[] = f.listFiles();
+        for (int i = 0; i < flist.length; i++) {
+            if (flist[i].isDirectory()) {
+                size = size + getFileSizes(flist[i]);
+            } else {
+                size = size + getFileSize(flist[i]);
+            }
+        }
+        return size;
+    }
+
+    /**
+     * 转换文件大小
+     */
+    public  String toFileSize(long fileS) {
+        DecimalFormat df = new DecimalFormat("#.00");
+        String fileSizeString = "";
+        String wrongSize = "0B";
+        if (fileS == 0) {
+            return wrongSize;
+        }
+        if (fileS < 1024) {
+            fileSizeString = df.format((double) fileS) + "B";
+        } else if (fileS < 1048576) {
+            fileSizeString = df.format((double) fileS / 1024) + "KB";
+        } else if (fileS < 1073741824) {
+            fileSizeString = df.format((double) fileS / 1048576) + "MB";
+        } else {
+            fileSizeString = df.format((double) fileS / 1073741824) + "GB";
+        }
+        return fileSizeString;
     }
 }
