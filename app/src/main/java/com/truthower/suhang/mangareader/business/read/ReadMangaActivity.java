@@ -48,6 +48,7 @@ import com.truthower.suhang.mangareader.spider.FileSpider;
 import com.truthower.suhang.mangareader.spider.SpiderBase;
 import com.truthower.suhang.mangareader.utils.BaseParameterUtil;
 import com.truthower.suhang.mangareader.utils.Logger;
+import com.truthower.suhang.mangareader.utils.PermissionUtil;
 import com.truthower.suhang.mangareader.utils.SharedPreferencesUtils;
 import com.truthower.suhang.mangareader.utils.VibratorUtil;
 import com.truthower.suhang.mangareader.volley.VolleyCallBack;
@@ -59,6 +60,7 @@ import com.truthower.suhang.mangareader.widget.dialog.MangaDialog;
 import com.truthower.suhang.mangareader.widget.dialog.MangaImgEditDialog;
 import com.truthower.suhang.mangareader.widget.dialog.OnlyEditDialog;
 import com.truthower.suhang.mangareader.widget.dialog.TranslateDialog;
+import com.truthower.suhang.mangareader.widget.dialog.TranslateResultDialog;
 import com.truthower.suhang.mangareader.widget.dragview.DragView;
 import com.truthower.suhang.mangareader.widget.shotview.ScreenShot;
 import com.truthower.suhang.mangareader.widget.shotview.ShotView;
@@ -704,10 +706,6 @@ public class ReadMangaActivity extends TTSActivity implements OnClickListener, S
         SharedPreferencesUtils.setSharedPreferencesData(this, ShareKeys.THIS_USER_IS_NOT_AN_IDIOT,
                 false);
         clip.setText(word);
-        if (!SharedPreferencesUtils.getBooleanSharedPreferencesData
-                (this, ShareKeys.CLOSE_TTS, false)) {
-            text2Speech(word);
-        }
         //记录查过的单词
         if (SharedPreferencesUtils.getBooleanSharedPreferencesData
                 (ReadMangaActivity.this, ShareKeys.CLOSE_WORD_IMG, false)) {
@@ -719,78 +717,79 @@ public class ReadMangaActivity extends TTSActivity implements OnClickListener, S
             //关闭自动翻译
             return;
         }
-        //不使用SDK直接调用接口查词方式
-//        String url = Configure.YOUDAO + word;
-//        HashMap<String, String> params = new HashMap<String, String>();
-//        VolleyCallBack<YoudaoResponse> callback = new VolleyCallBack<YoudaoResponse>() {
-//
-//            @Override
-//            public void loadSucceed(YoudaoResponse result) {
-//                if (null != result && result.getErrorCode() == 0) {
-//                    YoudaoResponse.BasicBean item = result.getBasic();
-//                    String t = "";
-//                    if (null != item) {
-//                        for (int i = 0; i < item.getExplains().size(); i++) {
-//                            t = t + item.getExplains().get(i) + ";";
-//                        }
-//
-//                        showTranslateResultDialog(word, result.getQuery() + "  [" + item.getPhonetic() + "]: " + "\n" + t);
-//                    } else {
-//                        baseToast.showToast("没查到该词");
-//                    }
-//                } else {
-//                    baseToast.showToast("没查到该词");
-//                }
-//            }
-//
-//            @Override
-//            public void loadFailed(VolleyError error) {
-//                baseToast.showToast("error\n" + error);
-//            }
-//
-//            @Override
-//            public void loadSucceedButNotNormal(YoudaoResponse result) {
-//
-//            }
-//        };
-//        VolleyTool.getInstance(this).requestData(Request.Method.GET,
-//                ReadMangaActivity.this, url, params,
-//                YoudaoResponse.class, callback);
+        if (SharedPreferencesUtils.getBooleanSharedPreferencesData
+                (ReadMangaActivity.this, ShareKeys.OPEN_PREMIUM_KEY, false)) {
+            //使用SDK查词
+            Translator.getInstance(tps).lookup(word, "requestId", new TranslateListener() {
 
-        //使用SDK查词
-        Translator.getInstance(tps).lookup(word, "requestId", new TranslateListener() {
+                @Override
+                public void onError(TranslateErrorCode code, String s) {
+                    Logger.d("error" + s);
+                    baseToast.showToast("没查到该词");
+                }
 
-            @Override
-            public void onError(TranslateErrorCode code, String s) {
-                Logger.d("error" + s);
-                baseToast.showToast("没查到该词");
+                @Override
+                public void onResult(final Translate translate, final String s, String s1) {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (null != translate && null != translate.getExplains() && translate.getExplains().size() > 0) {
+                                showVIPTranslateResultDialog(translate);
+                            } else {
+                                baseToast.showToast("没查到该词");
+                            }
+                        }
+                    });
+                }
+
+                @Override
+                public void onResult(List<Translate> list, List<String> list1, List<TranslateErrorCode> list2, String s) {
+                    Logger.d(s);
+                }
+            });
+        } else {
+            //不使用SDK直接调用接口查词方式
+            if (!SharedPreferencesUtils.getBooleanSharedPreferencesData
+                    (this, ShareKeys.CLOSE_TTS, false)) {
+                text2Speech(word);
             }
+            String url = Configure.YOUDAO + word;
+            HashMap<String, String> params = new HashMap<String, String>();
+            VolleyCallBack<YoudaoResponse> callback = new VolleyCallBack<YoudaoResponse>() {
 
-            @Override
-            public void onResult(final Translate translate, final String s, String s1) {
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (null != translate && null != translate.getExplains() && translate.getExplains().size() > 0) {
-                            StringBuilder sb = new StringBuilder();
-                            for (int i = 0; i < translate.getExplains().size(); i++) {
-                                sb.append(translate.getExplains().get(i)).append(";");
+                @Override
+                public void loadSucceed(YoudaoResponse result) {
+                    if (null != result && result.getErrorCode() == 0) {
+                        YoudaoResponse.BasicBean item = result.getBasic();
+                        String t = "";
+                        if (null != item) {
+                            for (int i = 0; i < item.getExplains().size(); i++) {
+                                t = t + item.getExplains().get(i) + ";";
                             }
 
-                            showTranslateResultDialog(word, s + "  [" + translate.getPhonetic() + "]: " + "\n" + sb);
-                            playVoice(translate.getSpeakUrl());
+                            showTranslateResultDialog(word, result.getQuery() + "  [" + item.getPhonetic() + "]: " + "\n" + t);
                         } else {
                             baseToast.showToast("没查到该词");
                         }
+                    } else {
+                        baseToast.showToast("没查到该词");
                     }
-                });
-            }
+                }
 
-            @Override
-            public void onResult(List<Translate> list, List<String> list1, List<TranslateErrorCode> list2, String s) {
-                Logger.d(s);
-            }
-        });
+                @Override
+                public void loadFailed(VolleyError error) {
+                    baseToast.showToast("error\n" + error);
+                }
+
+                @Override
+                public void loadSucceedButNotNormal(YoudaoResponse result) {
+
+                }
+            };
+            VolleyTool.getInstance(this).requestData(Request.Method.GET,
+                    ReadMangaActivity.this, url, params,
+                    YoudaoResponse.class, callback);
+        }
     }
 
     private void copyToWordsFolder(String imgName) {
@@ -819,6 +818,12 @@ public class ReadMangaActivity extends TTSActivity implements OnClickListener, S
         } else {
             downLoadPic(pathList.get(historyPosition), Configure.WORDS_FOLDER_NAME, File.separator + imgName + ".png");
         }
+    }
+
+    private void showVIPTranslateResultDialog(Translate translate) {
+        TranslateResultDialog translateResultDialog = new TranslateResultDialog(this);
+        translateResultDialog.show();
+        translateResultDialog.setTranslate(translate);
     }
 
     private void showTranslateResultDialog(final String title, String msg) {

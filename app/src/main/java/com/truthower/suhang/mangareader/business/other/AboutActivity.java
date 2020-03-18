@@ -17,6 +17,7 @@ import com.truthower.suhang.mangareader.config.Configure;
 import com.truthower.suhang.mangareader.config.ShareKeys;
 import com.truthower.suhang.mangareader.listener.OnEditResultListener;
 import com.truthower.suhang.mangareader.utils.BaseParameterUtil;
+import com.truthower.suhang.mangareader.utils.PermissionUtil;
 import com.truthower.suhang.mangareader.utils.SharedPreferencesUtils;
 import com.truthower.suhang.mangareader.widget.dialog.GestureDialog;
 import com.truthower.suhang.mangareader.widget.dialog.MangaDialog;
@@ -34,6 +35,8 @@ public class AboutActivity extends BaseActivity implements View.OnClickListener 
     private CheckBox closeTranslateCb, economyModeCb, closeTutorialCb, closeWordsImgCb, closeClickImgCb;
     private CheckBox closeTtsCb;
     private CheckBox closeWrapCb;
+    private RelativeLayout openPremiumRl;
+    private CheckBox openPremiumCb;
     private View gestureRl;
     private ClipboardManager clip;//复制文本用
 
@@ -62,6 +65,12 @@ public class AboutActivity extends BaseActivity implements View.OnClickListener 
         gestureRl = findViewById(R.id.gesture_rl);
         killableTimeRl = findViewById(R.id.killable_time_rl);
         killPeriodRl = findViewById(R.id.kill_peroid_rl);
+        openPremiumRl=findViewById(R.id.open_premium_rl);
+        if (PermissionUtil.isMaster(this)||PermissionUtil.isCreator(this)){
+            openPremiumRl.setVisibility(View.VISIBLE);
+        }else {
+            openPremiumRl.setVisibility(View.GONE);
+        }
         economyModeCb = (CheckBox) findViewById(R.id.economy_mode_cb);
         economyModeCb.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -118,6 +127,14 @@ public class AboutActivity extends BaseActivity implements View.OnClickListener 
                         (AboutActivity.this, ShareKeys.CLOSE_CLICK_IMG, isChecked);
             }
         });
+        openPremiumCb = findViewById(R.id.open_premium_cb);
+        openPremiumCb.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                SharedPreferencesUtils.setSharedPreferencesData
+                        (AboutActivity.this, ShareKeys.OPEN_PREMIUM_KEY, isChecked);
+            }
+        });
         keyboardRl = (RelativeLayout) findViewById(R.id.keyboard_rl);
         closeTranslateCb.setChecked
                 (SharedPreferencesUtils.getBooleanSharedPreferencesData(AboutActivity.this,
@@ -140,6 +157,9 @@ public class AboutActivity extends BaseActivity implements View.OnClickListener 
         closeClickImgCb.setChecked
                 (SharedPreferencesUtils.getBooleanSharedPreferencesData(AboutActivity.this,
                         ShareKeys.CLOSE_CLICK_IMG, false));
+        openPremiumCb.setChecked
+                (SharedPreferencesUtils.getBooleanSharedPreferencesData(AboutActivity.this,
+                        ShareKeys.OPEN_PREMIUM_KEY, false));
         gestureRl.setOnClickListener(this);
         keyboardRl.setOnClickListener(this);
         appIconIv.setOnClickListener(this);

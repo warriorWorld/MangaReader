@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/word_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/activity_horizontal_margin"
+        android:layout_marginTop="@dimen/activity_vertical_margin"
+        android:includeFontPadding="false"
+        android:textColor="@color/main_text_color"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent"></TextView>
+
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/uk_group"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="visible"
+        app:constraint_referenced_ids="uk_iv,uk_phonetic_tv" />
+
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/us_group"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="visible"
+        app:constraint_referenced_ids="us_iv,us_phonetic_tv" />
+
+    <ImageView
+        android:id="@+id/uk_iv"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_marginLeft="10dp"
+        android:src="@drawable/ic_english"
+        app:layout_constraintBottom_toBottomOf="@+id/word_tv"
+        app:layout_constraintLeft_toRightOf="@+id/word_tv"
+        app:layout_constraintTop_toTopOf="@+id/word_tv"></ImageView>
+
+    <TextView
+        android:id="@+id/uk_phonetic_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="5dp"
+        android:includeFontPadding="false"
+        android:textColor="@color/main_text_color"
+        android:textSize="15sp"
+        app:layout_constraintBottom_toBottomOf="@+id/word_tv"
+        app:layout_constraintLeft_toRightOf="@+id/uk_iv"
+        app:layout_constraintTop_toTopOf="@+id/word_tv"></TextView>
+
+    <ImageView
+        android:id="@+id/us_iv"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_marginLeft="10dp"
+        android:src="@drawable/ic_american"
+        app:layout_constraintBottom_toBottomOf="@+id/word_tv"
+        app:layout_constraintLeft_toRightOf="@+id/uk_phonetic_tv"
+        app:layout_constraintTop_toTopOf="@+id/word_tv"></ImageView>
+
+    <TextView
+        android:id="@+id/us_phonetic_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="5dp"
+        android:includeFontPadding="false"
+        android:textColor="@color/main_text_color"
+        android:textSize="15sp"
+        app:layout_constraintBottom_toBottomOf="@+id/word_tv"
+        app:layout_constraintLeft_toRightOf="@+id/us_iv"
+        app:layout_constraintTop_toTopOf="@+id/word_tv"></TextView>
+
+    <TextView
+        android:id="@+id/translate_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/activity_horizontal_margin"
+        android:layout_marginTop="10dp"
+        android:includeFontPadding="false"
+        android:textColor="@color/main_text_color"
+        android:textSize="15sp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/word_tv"></TextView>
+
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/web_translate_group"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:constraint_referenced_ids="divide_v,web_translate_explain,web_translate_tv"></androidx.constraintlayout.widget.Group>
+
+    <View
+        android:id="@+id/divide_v"
+        android:layout_width="0dp"
+        android:layout_height="1px"
+        android:layout_marginTop="5dp"
+        android:background="@color/divide_line"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/translate_tv"></View>
+
+    <TextView
+        android:id="@+id/web_translate_explain"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/activity_horizontal_margin"
+        android:layout_marginTop="10dp"
+        android:includeFontPadding="false"
+        android:text="示例"
+        android:textColor="@color/main_text_color_gray"
+        android:textSize="12sp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/divide_v"></TextView>
+
+    <TextView
+        android:id="@+id/web_translate_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/activity_horizontal_margin"
+        android:layout_marginTop="10dp"
+        android:includeFontPadding="false"
+        android:textColor="@color/main_text_color"
+        android:textSize="15sp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/web_translate_explain"></TextView>
+
+    <TextView
+        android:id="@+id/ok_tv"
+        android:layout_width="0dp"
+        android:layout_height="40dp"
+        android:gravity="center"
+        android:text="OK"
+        android:textColor="@color/colorPrimary"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/web_translate_tv"></TextView>
+</androidx.constraintlayout.widget.ConstraintLayout>

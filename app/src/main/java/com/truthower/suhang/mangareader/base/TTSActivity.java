@@ -67,7 +67,6 @@ public abstract class TTSActivity extends BaseActivity implements TextToSpeech.O
     public synchronized void playVoice(String speakUrl) {
         YouDaoLog.e(AudioMgr.PLAY_LOG + "TranslateDetailActivity click to playVoice speakUrl = " + speakUrl);
         if (!TextUtils.isEmpty(speakUrl) && speakUrl.startsWith("http")) {
-            baseToast.showToast("正在发音");
             AudioMgr.startPlayVoice(speakUrl, new AudioMgr.SuccessListener() {
                 @Override
                 public void success() {
