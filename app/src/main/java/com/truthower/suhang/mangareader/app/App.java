@@ -30,11 +30,11 @@ public class App extends MultiDexApplication {
         dealFileUriExposedException();
         initDownloadManger();
 //        initUmeng();
-        initYouDaoOCR();
-        Configure.isPad= DisplayUtil.isPad(this);
+        initYouDao();
+        Configure.isPad = DisplayUtil.isPad(this);
     }
 
-    private void initYouDaoOCR() {
+    private void initYouDao() {
         YouDaoApplication.init(this, "627fbbbd88df98c2");
     }
 

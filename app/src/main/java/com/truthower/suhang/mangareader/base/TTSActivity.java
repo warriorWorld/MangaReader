@@ -4,10 +4,13 @@ import android.media.AudioManager;
 import android.os.Bundle;
 import android.speech.tts.TextToSpeech;
 import android.speech.tts.Voice;
+import android.text.TextUtils;
 
 
+import com.truthower.suhang.mangareader.utils.AudioMgr;
 import com.truthower.suhang.mangareader.utils.SharedPreferencesUtils;
 import com.truthower.suhang.mangareader.utils.VolumeUtil;
+import com.youdao.sdk.common.YouDaoLog;
 
 import java.util.HashMap;
 import java.util.Locale;
@@ -59,6 +62,24 @@ public abstract class TTSActivity extends BaseActivity implements TextToSpeech.O
         }
         tts.speak(text,
                 TextToSpeech.QUEUE_FLUSH, myHashAlarm);
+    }
+
+    public synchronized void playVoice(String speakUrl) {
+        YouDaoLog.e(AudioMgr.PLAY_LOG + "TranslateDetailActivity click to playVoice speakUrl = " + speakUrl);
+        if (!TextUtils.isEmpty(speakUrl) && speakUrl.startsWith("http")) {
+            baseToast.showToast("正在发音");
+            AudioMgr.startPlayVoice(speakUrl, new AudioMgr.SuccessListener() {
+                @Override
+                public void success() {
+                    YouDaoLog.e(AudioMgr.PLAY_LOG + "TranslateDetailActivity playVoice success");
+                }
+
+                @Override
+                public void playover() {
+                    YouDaoLog.e(AudioMgr.PLAY_LOG + "TranslateDetailActivity playover");
+                }
+            });
+        }
     }
 
     @Override

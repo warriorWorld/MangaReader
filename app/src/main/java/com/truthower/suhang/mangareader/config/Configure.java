@@ -5,8 +5,6 @@ import android.os.Environment;
 
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.truthower.suhang.mangareader.R;
-import com.youdao.ocr.online.OCRParameters;
-import com.youdao.ocr.online.RecognizeLanguage;
 
 import java.io.File;
 
@@ -60,9 +58,9 @@ public class Configure {
     final public static int PERMISSION_LOCATION_REQUST_CODE = 8022;
     final public static int PERMISSION_FILE_REQUST_CODE = 8023;
     final public static int PERMISSION_READ_PHONE_STATE_REQUST_CODE = 8024;
-    //OCR识别
-    final public static OCRParameters tps = new OCRParameters.Builder().source("youdaoocr").timeout(100000)
-            .type(OCRParameters.TYPE_LINE).lanType(RecognizeLanguage.LINE_CHINESE_ENGLISH.getCode()).build();//
+//    //OCR识别
+//    final public static OCRParameters tps = new OCRParameters.Builder().source("youdaoocr").timeout(100000)
+//            .type(OCRParameters.TYPE_LINE).lanType(RecognizeLanguage.LINE_CHINESE_ENGLISH.getCode()).build();//
     public static final String DOWNLOAD_URL="https://github.com/warriorWorld/MangaReader/raw/master/app/release/app-release.apk";
     public static  final String QQ="772192594";
 }

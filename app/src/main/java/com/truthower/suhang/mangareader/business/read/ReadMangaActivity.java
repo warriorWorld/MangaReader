@@ -7,7 +7,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
-import android.graphics.Color;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -16,11 +15,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.text.ClipboardManager;
 import android.text.SpannableString;
-import android.text.Spanned;
 import android.text.TextUtils;
-import android.text.style.AbsoluteSizeSpan;
-import android.text.style.ForegroundColorSpan;
-import android.text.style.UnderlineSpan;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -35,7 +30,6 @@ import com.insightsurfface.stylelibrary.keyboard.LandscapeKeyBoardDialog;
 import com.insightsurfface.stylelibrary.listener.OnKeyboardChangeListener;
 import com.insightsurfface.stylelibrary.listener.OnKeyboardListener;
 import com.nostra13.universalimageloader.core.ImageLoader;
-import com.roger.gifloadinglibrary.BitmapUtil;
 import com.truthower.suhang.mangareader.R;
 import com.truthower.suhang.mangareader.adapter.ReadMangaAdapter;
 import com.truthower.suhang.mangareader.base.TTSActivity;
@@ -53,10 +47,7 @@ import com.truthower.suhang.mangareader.listener.OnSpeakClickListener;
 import com.truthower.suhang.mangareader.spider.FileSpider;
 import com.truthower.suhang.mangareader.spider.SpiderBase;
 import com.truthower.suhang.mangareader.utils.BaseParameterUtil;
-import com.truthower.suhang.mangareader.utils.DisplayUtil;
-import com.truthower.suhang.mangareader.utils.ImageUtil;
 import com.truthower.suhang.mangareader.utils.Logger;
-import com.truthower.suhang.mangareader.utils.PermissionUtil;
 import com.truthower.suhang.mangareader.utils.SharedPreferencesUtils;
 import com.truthower.suhang.mangareader.utils.VibratorUtil;
 import com.truthower.suhang.mangareader.volley.VolleyCallBack;
@@ -71,23 +62,17 @@ import com.truthower.suhang.mangareader.widget.dialog.TranslateDialog;
 import com.truthower.suhang.mangareader.widget.dragview.DragView;
 import com.truthower.suhang.mangareader.widget.shotview.ScreenShot;
 import com.truthower.suhang.mangareader.widget.shotview.ShotView;
-import com.youdao.ocr.online.ImageOCRecognizer;
-import com.youdao.ocr.online.Line;
-import com.youdao.ocr.online.Line_Line;
-import com.youdao.ocr.online.OCRListener;
-import com.youdao.ocr.online.OCRParameters;
-import com.youdao.ocr.online.OCRResult;
-import com.youdao.ocr.online.OcrErrorCode;
-import com.youdao.ocr.online.Region;
-import com.youdao.ocr.online.Region_Line;
-import com.youdao.ocr.online.Word;
-import com.youdao.sdk.app.EncryptHelper;
+import com.youdao.sdk.app.LanguageUtils;
+import com.youdao.sdk.ydonlinetranslate.Translator;
+import com.youdao.sdk.ydtranslate.Translate;
+import com.youdao.sdk.ydtranslate.TranslateErrorCode;
+import com.youdao.sdk.ydtranslate.TranslateListener;
+import com.youdao.sdk.ydtranslate.TranslateParameters;
 
 import org.adw.library.widgets.discreteseekbar.DiscreteSeekBar;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Date;
@@ -135,6 +120,11 @@ public class ReadMangaActivity extends TTSActivity implements OnClickListener, S
     private ImageView deleteIv;
     private View gifToggleOptionsV;
     private TextView imageSizeTv;
+    private TranslateParameters tps = new TranslateParameters.Builder()
+            .source("MangaReader")
+            .from(LanguageUtils.getLangByName("中文"))
+            .to(LanguageUtils.getLangByName("英文"))
+            .build();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -512,42 +502,42 @@ public class ReadMangaActivity extends TTSActivity implements OnClickListener, S
         ocrBtn.setOnClickListener(this);
     }
 
-    private String getResult(OCRResult result) {
-        StringBuilder sb = new StringBuilder();
-        int i = 1;
-        if (OCRParameters.TYPE_TEXT.equals(result.getType())) {
-            //按文本识别
-            List<Region> regions = result.getRegions();
-            for (Region region : regions) {
-                List<Line> lines = region.getLines();
-                for (Line line : lines) {
-                    sb.append("文本" + i++ + "： ");
-                    List<Word> words = line.getWords();
-                    for (Word word : words) {
-                        sb.append(word.getText()).append(" ");
-                    }
-                    sb.append("\n");
-                }
-            }
-        } else {
-            //按行识别
-            List<Region_Line> regions = result.getRegions_Line();
-            for (Region_Line region : regions) {
-                List<Line_Line> lines = region.getLines();
-                for (Line_Line line : lines) {
-                    sb.append("文本" + i++ + "： ");
-                    sb.append(line.getText());
-                    sb.append("\n");
-                }
-            }
-        }
-        String text = sb.toString();
-        if (!TextUtils.isEmpty(text)) {
-            text = text.substring(0, text.length() - 2);
-        }
-        return text;
-
-    }
+//    private String getResult(OCRResult result) {
+//        StringBuilder sb = new StringBuilder();
+//        int i = 1;
+//        if (OCRParameters.TYPE_TEXT.equals(result.getType())) {
+//            //按文本识别
+//            List<Region> regions = result.getRegions();
+//            for (Region region : regions) {
+//                List<Line> lines = region.getLines();
+//                for (Line line : lines) {
+//                    sb.append("文本" + i++ + "： ");
+//                    List<Word> words = line.getWords();
+//                    for (Word word : words) {
+//                        sb.append(word.getText()).append(" ");
+//                    }
+//                    sb.append("\n");
+//                }
+//            }
+//        } else {
+//            //按行识别
+//            List<Region_Line> regions = result.getRegions_Line();
+//            for (Region_Line region : regions) {
+//                List<Line_Line> lines = region.getLines();
+//                for (Line_Line line : lines) {
+//                    sb.append("文本" + i++ + "： ");
+//                    sb.append(line.getText());
+//                    sb.append("\n");
+//                }
+//            }
+//        }
+//        String text = sb.toString();
+//        if (!TextUtils.isEmpty(text)) {
+//            text = text.substring(0, text.length() - 2);
+//        }
+//        return text;
+//
+//    }
 
     private void showOcrResultDialog(SpannableString spannableString) {
         MangaDialog dialog = new MangaDialog(this);
@@ -729,42 +719,78 @@ public class ReadMangaActivity extends TTSActivity implements OnClickListener, S
             //关闭自动翻译
             return;
         }
-        String url = Configure.YOUDAO + word;
-        HashMap<String, String> params = new HashMap<String, String>();
-        VolleyCallBack<YoudaoResponse> callback = new VolleyCallBack<YoudaoResponse>() {
+        //不使用SDK直接调用接口查词方式
+//        String url = Configure.YOUDAO + word;
+//        HashMap<String, String> params = new HashMap<String, String>();
+//        VolleyCallBack<YoudaoResponse> callback = new VolleyCallBack<YoudaoResponse>() {
+//
+//            @Override
+//            public void loadSucceed(YoudaoResponse result) {
+//                if (null != result && result.getErrorCode() == 0) {
+//                    YoudaoResponse.BasicBean item = result.getBasic();
+//                    String t = "";
+//                    if (null != item) {
+//                        for (int i = 0; i < item.getExplains().size(); i++) {
+//                            t = t + item.getExplains().get(i) + ";";
+//                        }
+//
+//                        showTranslateResultDialog(word, result.getQuery() + "  [" + item.getPhonetic() + "]: " + "\n" + t);
+//                    } else {
+//                        baseToast.showToast("没查到该词");
+//                    }
+//                } else {
+//                    baseToast.showToast("没查到该词");
+//                }
+//            }
+//
+//            @Override
+//            public void loadFailed(VolleyError error) {
+//                baseToast.showToast("error\n" + error);
+//            }
+//
+//            @Override
+//            public void loadSucceedButNotNormal(YoudaoResponse result) {
+//
+//            }
+//        };
+//        VolleyTool.getInstance(this).requestData(Request.Method.GET,
+//                ReadMangaActivity.this, url, params,
+//                YoudaoResponse.class, callback);
+
+        //使用SDK查词
+        Translator.getInstance(tps).lookup(word, "requestId", new TranslateListener() {
 
             @Override
-            public void loadSucceed(YoudaoResponse result) {
-                if (null != result && result.getErrorCode() == 0) {
-                    YoudaoResponse.BasicBean item = result.getBasic();
-                    String t = "";
-                    if (null != item) {
-                        for (int i = 0; i < item.getExplains().size(); i++) {
-                            t = t + item.getExplains().get(i) + ";";
+            public void onError(TranslateErrorCode code, String s) {
+                Logger.d("error" + s);
+                baseToast.showToast("没查到该词");
+            }
+
+            @Override
+            public void onResult(final Translate translate, final String s, String s1) {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (null != translate && null != translate.getExplains() && translate.getExplains().size() > 0) {
+                            StringBuilder sb = new StringBuilder();
+                            for (int i = 0; i < translate.getExplains().size(); i++) {
+                                sb.append(translate.getExplains().get(i)).append(";");
+                            }
+
+                            showTranslateResultDialog(word, s + "  [" + translate.getPhonetic() + "]: " + "\n" + sb);
+                            playVoice(translate.getSpeakUrl());
+                        } else {
+                            baseToast.showToast("没查到该词");
                         }
-
-                        showTranslateResultDialog(word, result.getQuery() + "  [" + item.getPhonetic() + "]: " + "\n" + t);
-                    } else {
-                        baseToast.showToast("没查到该词");
                     }
-                } else {
-                    baseToast.showToast("没查到该词");
-                }
+                });
             }
 
             @Override
-            public void loadFailed(VolleyError error) {
-                baseToast.showToast("error\n" + error);
+            public void onResult(List<Translate> list, List<String> list1, List<TranslateErrorCode> list2, String s) {
+                Logger.d(s);
             }
-
-            @Override
-            public void loadSucceedButNotNormal(YoudaoResponse result) {
-
-            }
-        };
-        VolleyTool.getInstance(this).requestData(Request.Method.GET,
-                ReadMangaActivity.this, url, params,
-                YoudaoResponse.class, callback);
+        });
     }
 
     private void copyToWordsFolder(String imgName) {
@@ -1137,70 +1163,70 @@ public class ReadMangaActivity extends TTSActivity implements OnClickListener, S
                 }
                 break;
             case R.id.ocr_btn:
-                if (PermissionUtil.isCreator(ReadMangaActivity.this)) {
-                    Bitmap bitmap = ImageUtil.readBitmapFromFile(pathList.get(mangaPager.getCurrentItem()).replaceAll("file://", ""), 768);
-                    ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                    int quality = 100;
-                    bitmap.compress(Bitmap.CompressFormat.JPEG, quality, baos);
-                    byte[] datas = baos.toByteArray();
-                    String bases64 = EncryptHelper.getBase64(datas);
-                    int count = bases64.length();
-                    while (count > 1.4 * 1024 * 1024) {
-                        quality = quality - 10;
-                        baos = new ByteArrayOutputStream();
-                        bitmap.compress(Bitmap.CompressFormat.JPEG, quality, baos);
-                        datas = baos.toByteArray();
-                        bases64 = EncryptHelper.getBase64(datas);
-                    }
-                    final String base64 = bases64;
-
-                    ImageOCRecognizer.getInstance(Configure.tps).recognize(base64,
-                            new OCRListener() {
-
-                                @Override
-                                public void onResult(final OCRResult result,
-                                                     String input) {
-                                    //识别成功
-                                    runOnUiThread(new Runnable() {
-                                        @Override
-                                        public void run() {
-                                            // TODO Auto-generated method stub
-                                            String text = getResult(result);
-                                            SpannableString spannableString = new SpannableString(text);
-                                            int start = 0;
-                                            while (start < text.length() && start >= 0) {
-                                                int s = text.indexOf("文本", start);
-                                                int end = text.indexOf("：", s) + 1;
-                                                if (s >= 0) {
-                                                    ForegroundColorSpan colorSpan = new ForegroundColorSpan(Color.parseColor("#808080"));
-                                                    AbsoluteSizeSpan sizeSpan = new AbsoluteSizeSpan(35);
-                                                    UnderlineSpan underlineSpan = new UnderlineSpan();
-                                                    spannableString.setSpan(sizeSpan, s, end, Spanned.SPAN_INCLUSIVE_INCLUSIVE);
-                                                    spannableString.setSpan(colorSpan, s, end, Spanned.SPAN_INCLUSIVE_INCLUSIVE);
-                                                    spannableString.setSpan(underlineSpan, s, end - 1, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
-                                                    start = end;
-                                                } else {
-                                                    break;
-                                                }
-
-                                            }
-                                            showOcrResultDialog(spannableString);
-                                        }
-                                    });
-                                }
-
-                                @Override
-                                public void onError(final OcrErrorCode error) {
-                                    //识别失败
-                                    runOnUiThread(new Runnable() {
-                                        @Override
-                                        public void run() {
-                                            showBaseDialog("失败", error.toString() + error.getCode(), "", "", null);
-                                        }
-                                    });
-                                }
-                            });
-                }
+//                if (PermissionUtil.isCreator(ReadMangaActivity.this)) {
+//                    Bitmap bitmap = ImageUtil.readBitmapFromFile(pathList.get(mangaPager.getCurrentItem()).replaceAll("file://", ""), 768);
+//                    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+//                    int quality = 100;
+//                    bitmap.compress(Bitmap.CompressFormat.JPEG, quality, baos);
+//                    byte[] datas = baos.toByteArray();
+//                    String bases64 = EncryptHelper.getBase64(datas);
+//                    int count = bases64.length();
+//                    while (count > 1.4 * 1024 * 1024) {
+//                        quality = quality - 10;
+//                        baos = new ByteArrayOutputStream();
+//                        bitmap.compress(Bitmap.CompressFormat.JPEG, quality, baos);
+//                        datas = baos.toByteArray();
+//                        bases64 = EncryptHelper.getBase64(datas);
+//                    }
+//                    final String base64 = bases64;
+//
+//                    ImageOCRecognizer.getInstance(Configure.tps).recognize(base64,
+//                            new OCRListener() {
+//
+//                                @Override
+//                                public void onResult(final OCRResult result,
+//                                                     String input) {
+//                                    //识别成功
+//                                    runOnUiThread(new Runnable() {
+//                                        @Override
+//                                        public void run() {
+//                                            // TODO Auto-generated method stub
+//                                            String text = getResult(result);
+//                                            SpannableString spannableString = new SpannableString(text);
+//                                            int start = 0;
+//                                            while (start < text.length() && start >= 0) {
+//                                                int s = text.indexOf("文本", start);
+//                                                int end = text.indexOf("：", s) + 1;
+//                                                if (s >= 0) {
+//                                                    ForegroundColorSpan colorSpan = new ForegroundColorSpan(Color.parseColor("#808080"));
+//                                                    AbsoluteSizeSpan sizeSpan = new AbsoluteSizeSpan(35);
+//                                                    UnderlineSpan underlineSpan = new UnderlineSpan();
+//                                                    spannableString.setSpan(sizeSpan, s, end, Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+//                                                    spannableString.setSpan(colorSpan, s, end, Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+//                                                    spannableString.setSpan(underlineSpan, s, end - 1, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
+//                                                    start = end;
+//                                                } else {
+//                                                    break;
+//                                                }
+//
+//                                            }
+//                                            showOcrResultDialog(spannableString);
+//                                        }
+//                                    });
+//                                }
+//
+//                                @Override
+//                                public void onError(final OcrErrorCode error) {
+//                                    //识别失败
+//                                    runOnUiThread(new Runnable() {
+//                                        @Override
+//                                        public void run() {
+//                                            showBaseDialog("失败", error.toString() + error.getCode(), "", "", null);
+//                                        }
+//                                    });
+//                                }
+//                            });
+//                }
                 break;
         }
     }
