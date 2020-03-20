@@ -71,17 +71,19 @@ public class TestActivity extends BaseActivity implements View.OnClickListener {
                 Uri uri1 = Uri.parse("content://com.insightsurfface.myword/WordsBook");
 
                 ArrayList<WordsBookBean> words = db.queryAllWordsBook();
-                ContentValues values = new ContentValues();
+
                 for (int i = 0; i < words.size(); i++) {
                     WordsBookBean item = words.get(i);
+                    ContentValues values = new ContentValues();
                     values.put("word", item.getWord());
                     values.put("time", item.getTime());
                     values.put("example_path", item.getExample_path());
                     values.put("update_time", item.getUpdate_time());
                     values.put("kill_time", item.getKill_time());
+                    //获得ContentResolver对象，调用方法
+                    getContentResolver().insert(uri1, values);
                 }
-                //获得ContentResolver对象，调用方法
-                getContentResolver().insert(uri1, values);
+
                 test("btn", "btn", "btn");
                 break;
         }
