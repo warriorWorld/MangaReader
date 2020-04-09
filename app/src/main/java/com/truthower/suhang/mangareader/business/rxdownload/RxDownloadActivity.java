@@ -12,7 +12,6 @@ import com.truthower.suhang.mangareader.R;
 import com.truthower.suhang.mangareader.adapter.RxDownloadAdapter;
 import com.truthower.suhang.mangareader.base.BaseActivity;
 import com.truthower.suhang.mangareader.bean.RxDownloadBean;
-import com.truthower.suhang.mangareader.business.download.DownloadMangaManager;
 import com.truthower.suhang.mangareader.config.Configure;
 import com.truthower.suhang.mangareader.config.ShareKeys;
 import com.truthower.suhang.mangareader.eventbus.EventBusEvent;
@@ -58,6 +57,7 @@ public class RxDownloadActivity extends BaseActivity implements View.OnClickList
 
             toggleDownloading(ServiceUtil.isServiceWork(this,
                     "com.truthower.suhang.mangareader.business.rxdownload.DownloadService"));
+            initRec();
             toggleEmpty(false);
         } catch (Exception e) {
             toggleEmpty(true);
@@ -66,12 +66,12 @@ public class RxDownloadActivity extends BaseActivity implements View.OnClickList
 
     @Override
     public void displayStart() {
-
+        toggleDownloading(true);
     }
 
     @Override
     public void displayStop() {
-
+        toggleDownloading(false);
     }
 
     @Override
@@ -216,7 +216,7 @@ public class RxDownloadActivity extends BaseActivity implements View.OnClickList
                         case EventBusEvent.DOWNLOAD_FINISH_EVENT:
                             toggleEmpty(true);
                             displayInfo(null);
-                            DownloadMangaManager.getInstance().reset(RxDownloadActivity.this);
+                            DownloadCaretaker.clean(RxDownloadActivity.this);
                             MangaDialog dialog = new MangaDialog(RxDownloadActivity.this);
                             dialog.show();
                             dialog.setTitle("全部下载完成!");
@@ -237,7 +237,7 @@ public class RxDownloadActivity extends BaseActivity implements View.OnClickList
         dialog.setOnPeanutDialogClickListener(new MangaDialog.OnPeanutDialogClickListener() {
             @Override
             public void onOkClick() {
-                DownloadMangaManager.getInstance().stopDownload(getApplicationContext());
+                mPresenter.stopDownload();
                 toggleDownloading(ServiceUtil.isServiceWork(RxDownloadActivity.this,
                         "com.truthower.suhang.mangareader.business.download.DownloadIntentService"));
             }
@@ -259,7 +259,7 @@ public class RxDownloadActivity extends BaseActivity implements View.OnClickList
             case R.id.download_btn:
                 switch (downloadState) {
                     case STOPED:
-                        DownloadMangaManager.getInstance().doDownload(getApplicationContext());
+                        mPresenter.startDownload();
                         break;
                     case ON_GOING:
                         showStopDownloadConfirmDialog();
