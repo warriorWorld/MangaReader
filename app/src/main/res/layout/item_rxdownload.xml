@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/download_rl"
+    android:layout_width="match_parent"
+    android:layout_height="35dp"
+    android:layout_marginLeft="10dp"
+    android:layout_marginRight="10dp"
+    android:layout_marginBottom="5dp">
+
+    <TextView
+        android:id="@+id/chapter_name_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:includeFontPadding="false"
+        android:text="第1话"
+        android:textColor="@color/main_text_color"
+        android:textSize="14sp"></TextView>
+
+    <ProgressBar
+        android:id="@+id/download_progress_bar"
+        style="@style/StyleProgressBarMini"
+        android:layout_width="match_parent"
+        android:layout_height="6dp"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_toLeftOf="@+id/progress_tv"
+        android:layout_toRightOf="@+id/chapter_name_tv"
+        android:background="@drawable/shape_progressbar_bg"
+        android:max="100"
+        android:progress="0"
+        android:scrollbarStyle="insideOverlay" />
+
+    <TextView
+        android:id="@+id/progress_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:includeFontPadding="false"
+        android:text="等待下载"
+        android:textColor="@color/main_text_color_gray"
+        android:textSize="12sp"></TextView>
+</RelativeLayout>

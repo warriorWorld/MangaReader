@@ -9,11 +9,13 @@ import android.os.IBinder;
 import com.truthower.suhang.mangareader.bean.RxDownloadBean;
 import com.truthower.suhang.mangareader.bean.RxDownloadChapterBean;
 import com.truthower.suhang.mangareader.bean.RxDownloadPageBean;
+import com.truthower.suhang.mangareader.eventbus.EventBusEvent;
 import com.truthower.suhang.mangareader.listener.JsoupCallBack;
 import com.truthower.suhang.mangareader.listener.MangaDownloader;
 import com.truthower.suhang.mangareader.spider.FileSpider;
-import com.truthower.suhang.mangareader.spider.SpiderBase;
 import com.truthower.suhang.mangareader.widget.toast.EasyToast;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.io.BufferedInputStream;
 import java.io.IOException;
@@ -22,21 +24,18 @@ import java.net.URL;
 import java.util.ArrayList;
 
 import androidx.annotation.Nullable;
-import io.reactivex.Flowable;
 import io.reactivex.Observable;
 import io.reactivex.ObservableEmitter;
 import io.reactivex.ObservableOnSubscribe;
 import io.reactivex.ObservableSource;
 import io.reactivex.Observer;
-import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
-import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
-import io.reactivex.functions.Predicate;
 import io.reactivex.schedulers.Schedulers;
 
 public class DownloadService extends Service {
     private RxDownloadBean downloadBean;
+    private ArrayList<RxDownloadChapterBean> chapters;
     private Disposable mDisposable;
     private EasyToast mEasyToast;
     private MangaDownloader mDownloader;
@@ -45,13 +44,13 @@ public class DownloadService extends Service {
     public void onCreate() {
         super.onCreate();
         mEasyToast = new EasyToast(this);
+        downloadBean = DownloadCaretaker.getDownloadMemoto(this);
+        chapters = downloadBean.getChapters();
+        mDownloader = downloadBean.getDownloader();
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        downloadBean = DownloadCaretaker.getDownloadMemoto(this);
-        final ArrayList<RxDownloadChapterBean> chapters = downloadBean.getChapters();
-        mDownloader = downloadBean.getDownloader();
         Observable.fromIterable(chapters)
                 .subscribeOn(Schedulers.io())
                 .observeOn(Schedulers.io())
@@ -62,26 +61,32 @@ public class DownloadService extends Service {
                         return Observable.create(new ObservableOnSubscribe<ArrayList<RxDownloadPageBean>>() {
                             @Override
                             public void subscribe(final ObservableEmitter<ArrayList<RxDownloadPageBean>> e) throws Exception {
-                                mDownloader.getMangaChapterPics(DownloadService.this, bean.getChapterUrl(), new JsoupCallBack<ArrayList<String>>() {
-                                    @Override
-                                    public void loadSucceed(ArrayList<String> result) {
-                                        ArrayList<RxDownloadPageBean> pages = new ArrayList<>();
-                                        for (int i = 0; i < result.size(); i++) {
-                                            RxDownloadPageBean item = new RxDownloadPageBean();
-                                            item.setPageUrl(result.get(i));
-                                            item.setPageName(downloadBean.getMangaName() + "_" + bean.getChapterName() + "_" + i + ".png");
-                                            item.setChapterBean(bean);
-                                            pages.add(item);
+                                if (null != bean.getPages() && bean.getPages().size() > 0) {
+                                    //之前获取过该章节的图片地址的情况
+                                    e.onNext(bean.getPages());
+                                } else {
+                                    mDownloader.getMangaChapterPics(DownloadService.this, bean.getChapterUrl(), new JsoupCallBack<ArrayList<String>>() {
+                                        @Override
+                                        public void loadSucceed(ArrayList<String> result) {
+                                            ArrayList<RxDownloadPageBean> pages = new ArrayList<>();
+                                            for (int i = 0; i < result.size(); i++) {
+                                                RxDownloadPageBean item = new RxDownloadPageBean();
+                                                item.setPageUrl(result.get(i));
+                                                item.setPageName(downloadBean.getMangaName() + "_" + bean.getChapterName() + "_" + i + ".png");
+                                                item.setChapterName(bean.getChapterName());
+                                                pages.add(item);
+                                            }
+                                            bean.setPages(pages);
+                                            bean.setPageCount(result.size());
+                                            e.onNext(pages);
                                         }
-                                        bean.setPages(pages);
-                                        e.onNext(pages);
-                                    }
 
-                                    @Override
-                                    public void loadFailed(String error) {
-                                        e.onError(new Exception());
-                                    }
-                                });
+                                        @Override
+                                        public void loadFailed(String error) {
+                                            e.onError(new Exception());
+                                        }
+                                    });
+                                }
                             }
                         });
                     }
@@ -102,10 +107,16 @@ public class DownloadService extends Service {
                     public void onNext(RxDownloadPageBean value) {
                         Bitmap bp = downloadUrlBitmap(value.getPageUrl());
                         //把图片保存到本地
-                        FileSpider.getInstance().saveBitmap(bp, value.getPageName(), value.getChapterBean().getChapterName(), downloadBean.getMangaName());
-                        value.getChapterBean().getPages().remove(value);
-                        if (value.getChapterBean().getPages().size() <= 0) {
-                            chapters.remove(value.getChapterBean());
+                        FileSpider.getInstance().saveBitmap(bp, value.getPageName(), value.getChapterName(), downloadBean.getMangaName());
+                        for (int i = 0; i < chapters.size(); i++) {
+                            if (value.getChapterName().equals(chapters.get(i).getChapterName())) {
+                                chapters.get(i).getPages().remove(value);
+                                EventBus.getDefault().post(new RxDownloadEvent(EventBusEvent.DOWNLOAD_PAGE_FINISH_EVENT, downloadBean, i));
+                                if (chapters.get(i).getPages().size() <= 0) {
+                                    EventBus.getDefault().post(new RxDownloadEvent(EventBusEvent.DOWNLOAD_CHAPTER_FINISH_EVENT, downloadBean, i));
+                                }
+                                return;
+                            }
                         }
                     }
 
@@ -117,6 +128,7 @@ public class DownloadService extends Service {
                     @Override
                     public void onComplete() {
                         mEasyToast.showToast("全部下载完成!");
+                        EventBus.getDefault().post(new RxDownloadEvent(EventBusEvent.DOWNLOAD_FINISH_EVENT));
                     }
                 });
 

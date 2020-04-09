@@ -7,7 +7,7 @@ package com.truthower.suhang.mangareader.bean;
 public class RxDownloadPageBean extends BaseBean {
     private String pageUrl;
     private String pageName;
-    private RxDownloadChapterBean chapterBean;
+    private String chapterName;
 
     public String getPageUrl() {
         return pageUrl;
@@ -25,11 +25,11 @@ public class RxDownloadPageBean extends BaseBean {
         this.pageName = pageName;
     }
 
-    public RxDownloadChapterBean getChapterBean() {
-        return chapterBean;
+    public String getChapterName() {
+        return chapterName;
     }
 
-    public void setChapterBean(RxDownloadChapterBean chapterBean) {
-        this.chapterBean = chapterBean;
+    public void setChapterName(String chapterName) {
+        this.chapterName = chapterName;
     }
 }

@@ -3,7 +3,6 @@ package com.truthower.suhang.mangareader.business.detail;
 import android.Manifest;
 import android.app.ProgressDialog;
 import android.content.Intent;
-import android.content.pm.ActivityInfo;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -21,13 +20,15 @@ import com.truthower.suhang.mangareader.R;
 import com.truthower.suhang.mangareader.adapter.OneShotDetailsAdapter;
 import com.truthower.suhang.mangareader.adapter.OnlineMangaDetailAdapter;
 import com.truthower.suhang.mangareader.base.TTSActivity;
-import com.truthower.suhang.mangareader.bean.ChapterBean;
-import com.truthower.suhang.mangareader.bean.DownloadBean;
 import com.truthower.suhang.mangareader.bean.MangaBean;
+import com.truthower.suhang.mangareader.bean.RxDownloadBean;
+import com.truthower.suhang.mangareader.bean.RxDownloadChapterBean;
 import com.truthower.suhang.mangareader.business.download.DownloadActivity;
-import com.truthower.suhang.mangareader.business.download.DownloadMangaManager;
 import com.truthower.suhang.mangareader.business.main.MainActivity;
 import com.truthower.suhang.mangareader.business.read.ReadMangaActivity;
+import com.truthower.suhang.mangareader.business.rxdownload.CommonDownloader;
+import com.truthower.suhang.mangareader.business.rxdownload.DownloadCaretaker;
+import com.truthower.suhang.mangareader.business.rxdownload.DownloadService;
 import com.truthower.suhang.mangareader.business.search.SearchActivity;
 import com.truthower.suhang.mangareader.config.Configure;
 import com.truthower.suhang.mangareader.config.ShareKeys;
@@ -41,19 +42,15 @@ import com.truthower.suhang.mangareader.listener.OnSevenFourteenListDialogListen
 import com.truthower.suhang.mangareader.spider.SpiderBase;
 import com.truthower.suhang.mangareader.utils.ActivityPoor;
 import com.truthower.suhang.mangareader.utils.BaseParameterUtil;
-import com.truthower.suhang.mangareader.utils.Logger;
 import com.truthower.suhang.mangareader.utils.PermissionUtil;
 import com.truthower.suhang.mangareader.utils.SharedPreferencesUtils;
 import com.truthower.suhang.mangareader.utils.UltimateTextSizeUtil;
-import com.truthower.suhang.mangareader.utils.VibratorUtil;
 import com.truthower.suhang.mangareader.widget.bar.TopBar;
 import com.truthower.suhang.mangareader.widget.dialog.GestureDialog;
 import com.truthower.suhang.mangareader.widget.dialog.ListDialog;
 import com.truthower.suhang.mangareader.widget.dialog.MangaDialog;
 import com.truthower.suhang.mangareader.widget.gesture.GestureLockViewGroup;
 import com.truthower.suhang.mangareader.widget.popupwindow.EasyPopupWindow;
-import com.truthower.suhang.mangareader.widget.pulltorefresh.PullToRefreshBase;
-import com.truthower.suhang.mangareader.widget.pulltorefresh.PullToRefreshGridView;
 import com.truthower.suhang.mangareader.widget.wheelview.wheelselector.SingleSelectorDialog;
 
 import org.greenrobot.eventbus.EventBus;
@@ -597,20 +594,31 @@ public class WebMangaDetailsActivity extends TTSActivity implements AdapterView.
             // Already have permission, do the thing
             // ...
             baseToast.showToast("开始下载!");
-            DownloadMangaManager.getInstance().reset(this);
-            MangaBean temp = currentManga;
-            ArrayList<ChapterBean> chapters = new ArrayList<>();
+            DownloadCaretaker.clean(this);
+            RxDownloadBean downloadBean = new RxDownloadBean();
+            downloadBean.setDownloader(new CommonDownloader(spider));
+            downloadBean.setMangaName(currentMangaName);
+            downloadBean.setMangaUrl(currentManga.getUrl());
+            downloadBean.setThumbnailUrl(currentManga.getWebThumbnailUrl());
+            ArrayList<RxDownloadChapterBean> chapters = new ArrayList<>();
             for (int i = start; i <= end; i++) {
-                ChapterBean item = new ChapterBean();
-                item = currentManga.getChapters().get(i);
+                RxDownloadChapterBean item = new RxDownloadChapterBean();
+                item.setChapterUrl(currentManga.getChapters().get(i).getChapterUrl());
+                item.setChapterName(i + "");
                 chapters.add(item);
             }
-            temp.setChapters(chapters);
-            DownloadBean.getInstance().setMangaBean(this, temp);
-            DownloadBean.getInstance().setOne_shot(this, spider.isOneShot());
-            DownloadBean.getInstance().initDownloadChapters();
-            DownloadBean.getInstance().setWebSite(this, BaseParameterUtil.getInstance().getCurrentWebSite(this));
-            DownloadMangaManager.getInstance().doDownload(getApplicationContext());
+            downloadBean.setChapters(chapters);
+            DownloadCaretaker.saveDownloadMemoto(this, downloadBean);
+
+            Intent serviceIntent = new Intent(this, DownloadService.class);
+            //先结束
+            stopService(serviceIntent);
+            //重新打开
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                startForegroundService(serviceIntent);
+            }else {
+                startService(serviceIntent);
+            }
 
             Intent intent = new Intent(this, DownloadActivity.class);
             startActivity(intent);
