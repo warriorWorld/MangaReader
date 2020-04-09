@@ -17,7 +17,6 @@ import com.truthower.suhang.mangareader.R;
 import com.truthower.suhang.mangareader.bean.RxDownloadBean;
 import com.truthower.suhang.mangareader.bean.RxDownloadChapterBean;
 import com.truthower.suhang.mangareader.bean.RxDownloadPageBean;
-import com.truthower.suhang.mangareader.business.download.DownloadActivity;
 import com.truthower.suhang.mangareader.eventbus.EventBusEvent;
 import com.truthower.suhang.mangareader.listener.JsoupCallBack;
 import com.truthower.suhang.mangareader.listener.MangaDownloader;
@@ -42,17 +41,11 @@ import io.reactivex.BackpressureStrategy;
 import io.reactivex.Flowable;
 import io.reactivex.FlowableEmitter;
 import io.reactivex.FlowableOnSubscribe;
-import io.reactivex.Observable;
-import io.reactivex.ObservableEmitter;
-import io.reactivex.ObservableOnSubscribe;
-import io.reactivex.ObservableSource;
-import io.reactivex.Observer;
-import io.reactivex.disposables.Disposable;
-import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
 
 public class DownloadService extends Service {
+    private String TAG = "DownloadService";
     private RxDownloadBean downloadBean;
     private ArrayList<RxDownloadChapterBean> chapters;
     private Subscription mDisposable;
@@ -109,14 +102,20 @@ public class DownloadService extends Service {
 //            }
 //        }
         Flowable
-                .create(new FlowableOnSubscribe<RxDownloadChapterBean>() {
-                    @Override
-                    public void subscribe(FlowableEmitter<RxDownloadChapterBean> e) throws Exception {
-                        while (!e.isCancelled() && e.requested() > 0 && chapters.iterator().hasNext()) {
-                            e.onNext(chapters.iterator().next());
-                        }
-                    }
-                }, BackpressureStrategy.ERROR)
+//                .create(new FlowableOnSubscribe<RxDownloadChapterBean>() {
+//                    @Override
+//                    public void subscribe(FlowableEmitter<RxDownloadChapterBean> e) throws Exception {
+//                        while (!e.isCancelled() && e.requested() > 0 && chapters.iterator().hasNext()) {
+//                            RxDownloadChapterBean item = chapters.iterator().next();
+//                            if (!item.isDownloaded()) {
+//                                e.onNext(item);
+//                                Logger.d(TAG + "chapter emit  " + item.getChapterName());
+//                            }
+//                        }
+//                    }
+//                }, BackpressureStrategy.ERROR)
+                .fromIterable(chapters)
+                .onBackpressureBuffer()
                 .subscribeOn(Schedulers.computation())
                 .observeOn(Schedulers.computation())
                 .concatMap(new Function<RxDownloadChapterBean, Publisher<ArrayList<RxDownloadPageBean>>>() {
@@ -128,6 +127,7 @@ public class DownloadService extends Service {
                                 if (null != bean.getPages() && bean.getPages().size() > 0) {
                                     //之前获取过该章节的图片地址的情况
                                     s.onNext(bean.getPages());
+                                    Logger.d(TAG + "previous pages emit");
                                 } else {
                                     mDownloader.getMangaChapterPics(DownloadService.this, bean.getChapterUrl(), new JsoupCallBack<ArrayList<String>>() {
                                         @Override
@@ -143,6 +143,7 @@ public class DownloadService extends Service {
                                             bean.setPages(pages);
                                             bean.setPageCount(result.size());
                                             s.onNext(pages);
+                                            Logger.d(TAG + "pages emit  " + bean.getChapterName());
                                         }
 
                                         @Override
@@ -177,24 +178,28 @@ public class DownloadService extends Service {
 
                     @Override
                     public void onNext(RxDownloadPageBean bean) {
+                        if (bean.isDownloaded()) {
+                            return;
+                        }
                         Bitmap bp = downloadUrlBitmap(bean.getPageUrl());
                         //把图片保存到本地
                         FileSpider.getInstance().saveBitmap(bp, bean.getPageName(), bean.getChapterName(), downloadBean.getMangaName());
+                        Logger.d(TAG + "download one page");
                         for (int i = 0; i < chapters.size(); i++) {
                             if (chapters.get(i).isDownloaded()) {
                                 continue;
                             }
                             if (bean.getChapterName().equals(chapters.get(i).getChapterName())) {
-                                chapters.get(i).addDownloadCount();
+                                bean.setDownloaded(true);
                                 EventBus.getDefault().post(new RxDownloadEvent(EventBusEvent.DOWNLOAD_PAGE_FINISH_EVENT, downloadBean, i));
                                 if (chapters.get(i).isDownloaded()) {
                                     chapters.remove(i);
                                     EventBus.getDefault().post(new RxDownloadEvent(EventBusEvent.DOWNLOAD_CHAPTER_FINISH_EVENT, downloadBean, i));
-                                    mDisposable.request(1);
                                 }
-                                return;
+                                break;
                             }
                         }
+                        mDisposable.request(1);
                     }
 
                     @Override
@@ -204,6 +209,7 @@ public class DownloadService extends Service {
 
                     @Override
                     public void onComplete() {
+                        Logger.d(TAG + "onComplete");
                         mEasyToast.showToast("全部下载完成!");
                         EventBus.getDefault().post(new RxDownloadEvent(EventBusEvent.DOWNLOAD_FINISH_EVENT));
                     }

@@ -69,12 +69,14 @@ public class RxDownloadAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         if (item.getPageCount() == 0) {
             ((NormalViewHolder) viewHolder).progressTv.setText("等待下载");
             ((NormalViewHolder) viewHolder).downloadProgressBar.setProgress(0);
-        } else if (item.isDownloaded()) {
-            ((NormalViewHolder) viewHolder).progressTv.setText("下载完成");
         } else {
             ((NormalViewHolder) viewHolder).downloadProgressBar.setMax(item.getPageCount());
-            ((NormalViewHolder) viewHolder).downloadProgressBar.setProgress(item.getDownloadCount());
-            ((NormalViewHolder) viewHolder).progressTv.setText(item.getDownloadCount() + "/" + item.getPageCount());
+            int progress = item.getDownloadCount();
+            ((NormalViewHolder) viewHolder).downloadProgressBar.setProgress(progress);
+            ((NormalViewHolder) viewHolder).progressTv.setText(progress + "/" + item.getPageCount());
+            if (progress==item.getPageCount()){
+                ((NormalViewHolder) viewHolder).progressTv.setText("下载完成");
+            }
         }
     }
 

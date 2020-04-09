@@ -6,7 +6,6 @@ public class RxDownloadChapterBean extends BaseBean {
     private String chapterUrl;
     private String chapterName;
     private int pageCount;
-    private int downloadCount;
     private ArrayList<RxDownloadPageBean> pages;
 
     public String getChapterUrl() {
@@ -42,18 +41,27 @@ public class RxDownloadChapterBean extends BaseBean {
     }
 
     public int getDownloadCount() {
-        return downloadCount;
-    }
-
-    public void addDownloadCount() {
-        downloadCount++;
-    }
-
-    public void setDownloadCount(int downloadCount) {
-        this.downloadCount = downloadCount;
+        if (null == pages || pages.size() == 0) {
+            return 0;
+        }
+        int count = 0;
+        for (RxDownloadPageBean item : pages) {
+            if (item.isDownloaded()) {
+                count++;
+            }
+        }
+        return count;
     }
 
     public boolean isDownloaded() {
-        return pageCount == downloadCount;
+        if (null == pages || pages.size() == 0) {
+            return false;
+        }
+        for (RxDownloadPageBean item : pages) {
+            if (!item.isDownloaded()) {
+                return false;
+            }
+        }
+        return true;
     }
 }

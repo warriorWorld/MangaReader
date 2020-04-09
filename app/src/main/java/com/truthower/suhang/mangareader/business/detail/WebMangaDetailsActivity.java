@@ -605,7 +605,7 @@ public class WebMangaDetailsActivity extends TTSActivity implements AdapterView.
             for (int i = start; i <= end; i++) {
                 RxDownloadChapterBean item = new RxDownloadChapterBean();
                 item.setChapterUrl(currentManga.getChapters().get(i).getChapterUrl());
-                item.setChapterName(i + "");
+                item.setChapterName((i+1) + "");
                 chapters.add(item);
             }
             downloadBean.setChapters(chapters);
