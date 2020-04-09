@@ -29,6 +29,7 @@ import com.truthower.suhang.mangareader.business.read.ReadMangaActivity;
 import com.truthower.suhang.mangareader.business.rxdownload.CommonDownloader;
 import com.truthower.suhang.mangareader.business.rxdownload.DownloadCaretaker;
 import com.truthower.suhang.mangareader.business.rxdownload.DownloadService;
+import com.truthower.suhang.mangareader.business.rxdownload.RxDownloadActivity;
 import com.truthower.suhang.mangareader.business.search.SearchActivity;
 import com.truthower.suhang.mangareader.config.Configure;
 import com.truthower.suhang.mangareader.config.ShareKeys;
@@ -620,7 +621,7 @@ public class WebMangaDetailsActivity extends TTSActivity implements AdapterView.
                 startService(serviceIntent);
             }
 
-            Intent intent = new Intent(this, DownloadActivity.class);
+            Intent intent = new Intent(this, RxDownloadActivity.class);
             startActivity(intent);
             WebMangaDetailsActivity.this.finish();
         } else {

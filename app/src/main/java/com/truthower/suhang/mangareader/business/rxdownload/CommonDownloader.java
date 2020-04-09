@@ -6,7 +6,9 @@ import com.truthower.suhang.mangareader.listener.JsoupCallBack;
 import com.truthower.suhang.mangareader.listener.MangaDownloader;
 import com.truthower.suhang.mangareader.spider.SpiderBase;
 
-public class CommonDownloader implements MangaDownloader {
+import java.io.Serializable;
+
+public class CommonDownloader implements MangaDownloader , Serializable {
     private SpiderBase spider;
 
     public CommonDownloader(SpiderBase spider) {

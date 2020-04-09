@@ -6,13 +6,14 @@ import com.truthower.suhang.mangareader.bean.ChapterBean;
 import com.truthower.suhang.mangareader.bean.MangaBean;
 import com.truthower.suhang.mangareader.listener.JsoupCallBack;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 /**
  * Created by Administrator on 2017/7/18.
  */
 
-public abstract class SpiderBase {
+public abstract class SpiderBase implements Serializable {
 
     public enum SearchType {
         BY_MANGA_NAME,

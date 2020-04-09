@@ -5,7 +5,9 @@ import android.content.Context;
 import com.truthower.suhang.mangareader.listener.JsoupCallBack;
 import com.truthower.suhang.mangareader.listener.MangaDownloader;
 
-public class NDownloader implements MangaDownloader {
+import java.io.Serializable;
+
+public class NDownloader implements MangaDownloader , Serializable {
     @Override
     public <ResultObj> void getMangaChapterPics(Context context, String chapterUrl, JsoupCallBack<ResultObj> jsoupCallBack) {
 
