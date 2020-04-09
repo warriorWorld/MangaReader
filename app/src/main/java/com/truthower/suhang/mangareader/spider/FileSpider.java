@@ -161,8 +161,8 @@ public class FileSpider {
      * @return
      * @childFolder 子文件夹名 因为漫画图片数量太大 所以在多一层子文件夹 自动建立
      */
-    public static String saveBitmap(Bitmap b, String bmpName,
-                                    String childFolder, String mangaName) {
+    public String saveBitmap(Bitmap b, String bmpName,
+                             String childFolder, String mangaName) {
 //        b = ImageUtil.imageZoom(b, 600);
         String path = Configure.storagePath + "/" + mangaName;
         String jpegName = path + "/" + childFolder + "/" + bmpName;
@@ -399,7 +399,7 @@ public class FileSpider {
     /**
      * 获取指定文件大小
      */
-    public  long getFileSize(File file) throws Exception {
+    public long getFileSize(File file) throws Exception {
         long size = 0;
         if (file.exists()) {
             FileInputStream fis = null;
@@ -414,7 +414,7 @@ public class FileSpider {
     /**
      * 获取指定文件夹
      */
-    public  long getFileSizes(File f) throws Exception {
+    public long getFileSizes(File f) throws Exception {
         long size = 0;
         File flist[] = f.listFiles();
         for (int i = 0; i < flist.length; i++) {
@@ -430,7 +430,7 @@ public class FileSpider {
     /**
      * 转换文件大小
      */
-    public  String toFileSize(long fileS) {
+    public String toFileSize(long fileS) {
         DecimalFormat df = new DecimalFormat("#.00");
         String fileSizeString = "";
         String wrongSize = "0B";

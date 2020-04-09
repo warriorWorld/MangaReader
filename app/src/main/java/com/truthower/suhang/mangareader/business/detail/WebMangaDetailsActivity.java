@@ -558,6 +558,38 @@ public class WebMangaDetailsActivity extends TTSActivity implements AdapterView.
         doDownload(0, currentManga.getChapters().size() - 1);
     }
 
+//    @AfterPermissionGranted(Configure.PERMISSION_FILE_REQUST_CODE)
+//    private void doDownload(int start, int end) {
+//        String[] perms = {Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE};
+//        if (EasyPermissions.hasPermissions(this, perms)) {
+//            // Already have permission, do the thing
+//            // ...
+//            baseToast.showToast("开始下载!");
+//            DownloadMangaManager.getInstance().reset(this);
+//            MangaBean temp = currentManga;
+//            ArrayList<ChapterBean> chapters = new ArrayList<>();
+//            for (int i = start; i <= end; i++) {
+//                ChapterBean item = new ChapterBean();
+//                item = currentManga.getChapters().get(i);
+//                chapters.add(item);
+//            }
+//            temp.setChapters(chapters);
+//            DownloadBean.getInstance().setMangaBean(this, temp);
+//            DownloadBean.getInstance().setOne_shot(this, spider.isOneShot());
+//            DownloadBean.getInstance().initDownloadChapters();
+//            DownloadBean.getInstance().setWebSite(this, BaseParameterUtil.getInstance().getCurrentWebSite(this));
+//            DownloadMangaManager.getInstance().doDownload(getApplicationContext());
+//
+//            Intent intent = new Intent(this, DownloadActivity.class);
+//            startActivity(intent);
+//            WebMangaDetailsActivity.this.finish();
+//        } else {
+//            // Do not have permissions, request them now
+//            EasyPermissions.requestPermissions(this, "我们需要写入/读取权限",
+//                    Configure.PERMISSION_FILE_REQUST_CODE, perms);
+//        }
+//    }
+
     @AfterPermissionGranted(Configure.PERMISSION_FILE_REQUST_CODE)
     private void doDownload(int start, int end) {
         String[] perms = {Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE};
