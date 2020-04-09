@@ -54,10 +54,11 @@ dependencies {
     //上下拉刷新
     implementation 'com.github.Aspsine:SwipeToLoadLayout:1.0.4'
     //RXJAVA
-    implementation 'com.squareup.retrofit2:retrofit:2.3.0'
+    implementation 'com.squareup.retrofit2:retrofit:2.4.0'
     implementation 'io.reactivex.rxjava2:rxjava:2.0.1'
     implementation 'io.reactivex.rxjava2:rxandroid:2.0.1'
     implementation 'com.squareup.retrofit2:adapter-rxjava2:2.2.0'
+    implementation "org.reactivestreams:reactive-streams:1.0.2"
     //gif
     implementation 'com.roger.gifloadinglibrary:gifloadinglibrary:1.0.0'
     //圆角
