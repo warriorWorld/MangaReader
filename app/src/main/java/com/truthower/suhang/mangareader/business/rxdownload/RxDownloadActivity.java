@@ -206,7 +206,10 @@ public class RxDownloadActivity extends BaseActivity implements View.OnClickList
                     switch (event.getEventType()) {
                         case EventBusEvent.DOWNLOAD_PAGE_FINISH_EVENT:
                             try {
-                                adapter.notifyItemChanged(event.getPosition(), "not null");
+                                if (null != adapter) {
+                                    adapter.setList(event.getDownloadBean().getChapters());
+                                    adapter.notifyItemChanged(event.getPosition(), "not null");
+                                }
                                 toggleDownloading(true);
                                 toggleEmpty(false);
                             } catch (Exception e) {

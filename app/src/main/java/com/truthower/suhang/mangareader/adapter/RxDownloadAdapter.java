@@ -68,11 +68,13 @@ public class RxDownloadAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         ((NormalViewHolder) viewHolder).chapterNameTv.setText("第" + item.getChapterName() + "话");
         if (item.getPageCount() == 0) {
             ((NormalViewHolder) viewHolder).progressTv.setText("等待下载");
+            ((NormalViewHolder) viewHolder).downloadProgressBar.setProgress(0);
+        } else if (item.isDownloaded()) {
+            ((NormalViewHolder) viewHolder).progressTv.setText("下载完成");
         } else {
             ((NormalViewHolder) viewHolder).downloadProgressBar.setMax(item.getPageCount());
-            int progress = item.getPageCount() - item.getPages().size();
-            ((NormalViewHolder) viewHolder).downloadProgressBar.setProgress(progress);
-            ((NormalViewHolder) viewHolder).progressTv.setText(progress + "/" + item.getPageCount());
+            ((NormalViewHolder) viewHolder).downloadProgressBar.setProgress(item.getDownloadCount());
+            ((NormalViewHolder) viewHolder).progressTv.setText(item.getDownloadCount() + "/" + item.getPageCount());
         }
     }
 
@@ -94,22 +96,18 @@ public class RxDownloadAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     }
 
     public void remove(int position) {
-        list.remove(position);
         notifyItemRemoved(position);
         //必须让后边的刷新 因为上边那个notify是不会重新bindview的所以会使后边的view的position错误
         notifyItemRangeChanged(position, list.size() - position);
     }
 
     public void add(int position, RxDownloadChapterBean data) {
-        list.add(position, data);
         notifyItemInserted(position);
         //必须让后边的刷新 因为上边那个notify是不会重新bindview的所以会使后边的view的position错误
         notifyItemRangeChanged(position, list.size() - position);
     }
 
     public void change(int position, RxDownloadChapterBean data) {
-        list.remove(position);
-        list.add(position, data);
         notifyItemChanged(position);
     }
 

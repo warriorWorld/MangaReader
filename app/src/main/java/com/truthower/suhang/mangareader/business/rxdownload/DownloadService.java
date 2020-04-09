@@ -38,7 +38,10 @@ import java.util.ArrayList;
 
 import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
+import io.reactivex.BackpressureStrategy;
 import io.reactivex.Flowable;
+import io.reactivex.FlowableEmitter;
+import io.reactivex.FlowableOnSubscribe;
 import io.reactivex.Observable;
 import io.reactivex.ObservableEmitter;
 import io.reactivex.ObservableOnSubscribe;
@@ -100,8 +103,20 @@ public class DownloadService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        Flowable.fromIterable(chapters)
-                .onBackpressureBuffer()
+//        for (RxDownloadChapterBean item : chapters) {
+//            if (item.isDownloaded()) {
+//                chapters.remove(item);
+//            }
+//        }
+        Flowable
+                .create(new FlowableOnSubscribe<RxDownloadChapterBean>() {
+                    @Override
+                    public void subscribe(FlowableEmitter<RxDownloadChapterBean> e) throws Exception {
+                        while (!e.isCancelled() && e.requested() > 0 && chapters.iterator().hasNext()) {
+                            e.onNext(chapters.iterator().next());
+                        }
+                    }
+                }, BackpressureStrategy.ERROR)
                 .subscribeOn(Schedulers.computation())
                 .observeOn(Schedulers.computation())
                 .concatMap(new Function<RxDownloadChapterBean, Publisher<ArrayList<RxDownloadPageBean>>>() {
@@ -157,6 +172,7 @@ public class DownloadService extends Service {
                     @Override
                     public void onSubscribe(Subscription s) {
                         mDisposable = s;
+                        s.request(3);
                     }
 
                     @Override
@@ -164,16 +180,21 @@ public class DownloadService extends Service {
                         Bitmap bp = downloadUrlBitmap(bean.getPageUrl());
                         //把图片保存到本地
                         FileSpider.getInstance().saveBitmap(bp, bean.getPageName(), bean.getChapterName(), downloadBean.getMangaName());
-//                        for (int i = 0; i < chapters.size(); i++) {
-//                            if (value.getChapterName().equals(chapters.get(i).getChapterName())) {
-//                                chapters.get(i).getPages().remove(value);
-//                                EventBus.getDefault().post(new RxDownloadEvent(EventBusEvent.DOWNLOAD_PAGE_FINISH_EVENT, downloadBean, i));
-//                                if (chapters.get(i).getPages().size() <= 0) {
-//                                    EventBus.getDefault().post(new RxDownloadEvent(EventBusEvent.DOWNLOAD_CHAPTER_FINISH_EVENT, downloadBean, i));
-//                                }
-//                                return;
-//                            }
-//                        }
+                        for (int i = 0; i < chapters.size(); i++) {
+                            if (chapters.get(i).isDownloaded()) {
+                                continue;
+                            }
+                            if (bean.getChapterName().equals(chapters.get(i).getChapterName())) {
+                                chapters.get(i).addDownloadCount();
+                                EventBus.getDefault().post(new RxDownloadEvent(EventBusEvent.DOWNLOAD_PAGE_FINISH_EVENT, downloadBean, i));
+                                if (chapters.get(i).isDownloaded()) {
+                                    chapters.remove(i);
+                                    EventBus.getDefault().post(new RxDownloadEvent(EventBusEvent.DOWNLOAD_CHAPTER_FINISH_EVENT, downloadBean, i));
+                                    mDisposable.request(1);
+                                }
+                                return;
+                            }
+                        }
                     }
 
                     @Override
