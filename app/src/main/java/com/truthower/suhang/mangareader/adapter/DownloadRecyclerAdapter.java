@@ -52,7 +52,7 @@ public class DownloadRecyclerAdapter extends RecyclerView.Adapter<DownloadRecycl
     @Override
     public void onBindViewHolder(ViewHolder viewHolder, final int position) {
         final RxDownloadChapterBean item = list.get(position);
-        viewHolder.chapterTv.setText("第" + item.getChapterName() + "话");
+        viewHolder.chapterTv.setText(item.getChapterName());
     }
 
     //获取数据的数量

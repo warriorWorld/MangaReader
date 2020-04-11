@@ -19,7 +19,6 @@ import com.truthower.suhang.mangareader.business.rxdownload.DownloadCaretaker;
 import com.truthower.suhang.mangareader.business.rxdownload.DownloadContract;
 import com.truthower.suhang.mangareader.config.Configure;
 import com.truthower.suhang.mangareader.config.ShareKeys;
-import com.truthower.suhang.mangareader.eventbus.DownLoadEvent;
 import com.truthower.suhang.mangareader.eventbus.EventBusEvent;
 import com.truthower.suhang.mangareader.utils.DisplayUtil;
 import com.truthower.suhang.mangareader.utils.ServiceUtil;
@@ -79,6 +78,12 @@ public class TpDownloadActivity extends BaseActivity implements View.OnClickList
             toggleDownloading(ServiceUtil.isServiceWork(this,
                     "com.truthower.suhang.mangareader.business.threadpooldownload.TpDownloadService"));
             initRec();
+            RxDownloadChapterBean chapterBean = mDownloadBean.getChapters().get(0);
+            if (null != chapterBean) {
+                downloadProgressBar.setMax(chapterBean.getPageCount());
+                downloadProgressBar.setProgress(chapterBean.getDownloadedCount());
+                chapterProgressTv.setText(chapterBean.getDownloadedCount() + "/" + chapterBean.getPageCount());
+            }
             toggleEmpty(false);
         } catch (Exception e) {
             toggleEmpty(true);
@@ -104,10 +109,8 @@ public class TpDownloadActivity extends BaseActivity implements View.OnClickList
                 downloadProgressBar.setProgress(currentChapter.getDownloadedCount());
                 chapterProgressTv.setText(currentChapter.getDownloadedCount() + "/" + currentChapter.getPageCount());
             }
-            toggleDownloading(true);
-            toggleEmpty(false);
         } catch (Exception e) {
-            toggleEmpty(true);
+            e.printStackTrace();
         }
     }
 
@@ -225,7 +228,7 @@ public class TpDownloadActivity extends BaseActivity implements View.OnClickList
         try {
             toggleEmpty(null == mDownloadBean || null == mDownloadBean.getChapters() ||
                     mDownloadBean.getChapters().size() <= 0);
-            int progress = (int) (100-(Float.valueOf(mDownloadBean.getChapters().size()) / Float.valueOf(mDownloadBean.getChapterCount())) * 100);
+            int progress = (int) (100 - (Float.valueOf(mDownloadBean.getChapters().size()) / Float.valueOf(mDownloadBean.getChapterCount())) * 100);
             totalProgressBar.setProgress(progress);
             totalProgressTv.setText(progress + "%");
             if (null == adapter) {
@@ -240,7 +243,7 @@ public class TpDownloadActivity extends BaseActivity implements View.OnClickList
 
                     @Override
                     public int getIntrinsicWidth() {
-                        return DisplayUtil.dip2px(TpDownloadActivity.this, 4);
+                        return DisplayUtil.dip2px(TpDownloadActivity.this, 2);
                     }
                 };
                 RecyclerGridDecoration itemDecoration = new RecyclerGridDecoration(TpDownloadActivity.this,
@@ -283,7 +286,7 @@ public class TpDownloadActivity extends BaseActivity implements View.OnClickList
             public void onOkClick() {
                 mPresenter.stopDownload();
                 toggleDownloading(ServiceUtil.isServiceWork(TpDownloadActivity.this,
-                        "com.truthower.suhang.mangareader.business.download.DownloadIntentService"));
+                        "com.truthower.suhang.mangareader.business.threadpooldownload.TpDownloadService"));
             }
 
             @Override
