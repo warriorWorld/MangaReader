@@ -9,7 +9,7 @@ public class RxDownloadPageBean extends BaseBean {
     private String pageName;
     private String chapterName;
     private String mangaName;
-    private boolean isDownloaded;
+    private volatile boolean isDownloaded;
 
     public String getPageUrl() {
         return pageUrl;

@@ -5,6 +5,7 @@ import java.util.ArrayList;
 public class RxDownloadChapterBean extends BaseBean {
     private String chapterUrl;
     private String chapterName;
+    private volatile int downloadedCount;
     private int pageCount;
     private ArrayList<RxDownloadPageBean> pages;
 
@@ -36,6 +37,10 @@ public class RxDownloadChapterBean extends BaseBean {
         return pageCount;
     }
 
+    public synchronized void addDownloadedCount() {
+        downloadedCount++;
+    }
+
     public void setPageCount(int pageCount) {
         this.pageCount = pageCount;
     }
@@ -53,15 +58,22 @@ public class RxDownloadChapterBean extends BaseBean {
         return count;
     }
 
-    public boolean isDownloaded() {
-        if (null == pages || pages.size() == 0) {
-            return false;
-        }
-        for (RxDownloadPageBean item : pages) {
-            if (!item.isDownloaded()) {
-                return false;
-            }
-        }
-        return true;
+    public int getDownloadedCount() {
+        return downloadedCount;
     }
+
+    public boolean isDownloaded() {
+        return downloadedCount == pageCount;
+    }
+//    public boolean isDownloaded() {
+//        if (null == pages || pages.size() == 0) {
+//            return false;
+//        }
+//        for (RxDownloadPageBean item : pages) {
+//            if (!item.isDownloaded()) {
+//                return false;
+//            }
+//        }
+//        return true;
+//    }
 }

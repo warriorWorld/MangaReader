@@ -22,6 +22,7 @@ import com.truthower.suhang.mangareader.business.rxdownload.DownloadService;
 import com.truthower.suhang.mangareader.business.rxdownload.RxDownloadActivity;
 import com.truthower.suhang.mangareader.listener.JsoupCallBack;
 import com.truthower.suhang.mangareader.listener.MangaDownloader;
+import com.truthower.suhang.mangareader.listener.OnResultListener;
 import com.truthower.suhang.mangareader.utils.Logger;
 import com.truthower.suhang.mangareader.widget.toast.EasyToast;
 
@@ -95,32 +96,64 @@ public class TpDownloadService extends Service {
     }
 
     private void getChapterInfo() {
+        if (null == chapters || chapters.size() <= 0) {
+            //下载完成
+            return;
+        }
         currentChapter = chapters.get(0);
-        mDownloader.getMangaChapterPics(this, currentChapter.getChapterUrl(), new JsoupCallBack<ArrayList<String>>() {
-            @Override
-            public void loadSucceed(ArrayList<String> result) {
-                ArrayList<RxDownloadPageBean> pages = new ArrayList<>();
-                for (int i = 0; i < result.size(); i++) {
-                    RxDownloadPageBean item = new RxDownloadPageBean();
-                    item.setPageUrl(result.get(i));
-                    item.setPageName(downloadBean.getMangaName() + "_" + currentChapter.getChapterName() + "_" + i + ".png");
-                    item.setChapterName(currentChapter.getChapterName());
-                    item.setMangaName(downloadBean.getMangaName());
-                    pages.add(item);
-
-                    mExecutorService.execute(new PageDownloadRunner(item));
-                    Logger.d("chapter: " + item.getChapterName() + " page" + i);
+        if (null != currentChapter.getPages() && currentChapter.getPages().size() > 0) {
+            //之前获取过该章节的图片地址的情况
+            Logger.d(TAG + "previous pages");
+            for (RxDownloadPageBean item : currentChapter.getPages()) {
+                if (!item.isDownloaded()) {
+                    executeRunable(item);
                 }
-                Logger.d("for done");
-                currentChapter.setPages(pages);
-                currentChapter.setPageCount(result.size());
+            }
+        } else {
+            mDownloader.getMangaChapterPics(this, currentChapter.getChapterUrl(), new JsoupCallBack<ArrayList<String>>() {
+                @Override
+                public void loadSucceed(ArrayList<String> result) {
+                    ArrayList<RxDownloadPageBean> pages = new ArrayList<>();
+                    for (int i = 0; i < result.size(); i++) {
+                        RxDownloadPageBean item = new RxDownloadPageBean();
+                        item.setPageUrl(result.get(i));
+                        item.setPageName(downloadBean.getMangaName() + "_" + currentChapter.getChapterName() + "_" + i + ".png");
+                        item.setChapterName(currentChapter.getChapterName());
+                        item.setMangaName(downloadBean.getMangaName());
+                        pages.add(item);
+
+                        executeRunable(item);
+                        Logger.d("chapter: " + item.getChapterName() + " page" + i);
+                    }
+                    Logger.d("for done");
+                    currentChapter.setPages(pages);
+                    currentChapter.setPageCount(result.size());
+                }
+
+                @Override
+                public void loadFailed(String error) {
+                    Logger.d("chapter load failed: " + error);
+                }
+            });
+        }
+    }
+
+    private void executeRunable(RxDownloadPageBean item) {
+        mExecutorService.execute(new PageDownloadRunner(item, new OnResultListener() {
+            @Override
+            public void onFinish() {
+                currentChapter.addDownloadedCount();
+                if (currentChapter.isDownloaded()) {
+                    chapters.remove(0);
+                    getChapterInfo();
+                }
             }
 
             @Override
-            public void loadFailed(String error) {
-                Logger.d("chapter load failed: " + error);
+            public void onFailed() {
+
             }
-        });
+        }));
     }
 
     @Nullable
