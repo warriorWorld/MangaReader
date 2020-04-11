@@ -12,6 +12,7 @@ import android.os.IBinder;
 import android.widget.RemoteViews;
 
 import com.truthower.suhang.mangareader.R;
+import com.truthower.suhang.mangareader.bean.DownloadBean;
 import com.truthower.suhang.mangareader.bean.RxDownloadBean;
 import com.truthower.suhang.mangareader.bean.RxDownloadChapterBean;
 import com.truthower.suhang.mangareader.bean.RxDownloadPageBean;
@@ -77,9 +78,19 @@ public class TpDownloadService extends Service {
                     0, false);
             notificationManager.notify(10, notificationBuilder.build());
 
-            Intent intent = new Intent(context, RxDownloadActivity.class);
+            Intent intent = new Intent(context, TpDownloadActivity.class);
             PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
             notificationBuilder.setContentIntent(pendingIntent);
+        } catch (Exception e) {
+            Logger.d("e" + e);
+        }
+    }
+
+    private void updateNotification() {
+        try {
+            remoteViews.setProgressBar(R.id.notification_download_progress_bar, currentChapter.getPageCount()
+                    , currentChapter.getDownloadedCount(), false);
+            notificationManager.notify(10, notificationBuilder.build());
         } catch (Exception e) {
             Logger.d("e" + e);
         }
@@ -144,7 +155,7 @@ public class TpDownloadService extends Service {
                 public void onFinish() {
                     currentChapter.addDownloadedCount();
                     EventBus.getDefault().post(new TpDownloadEvent(EventBusEvent.DOWNLOAD_PAGE_FINISH_EVENT, currentChapter));
-
+                    updateNotification();
                     if (currentChapter.isDownloaded()) {
                         chapters.remove(0);
                         EventBus.getDefault().post(new TpDownloadEvent(EventBusEvent.DOWNLOAD_CHAPTER_FINISH_EVENT, downloadBean));
