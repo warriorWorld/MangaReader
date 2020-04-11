@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+
+    <ImageView
+        android:id="@+id/thumbnail_iv"
+        android:layout_width="122dp"
+        android:layout_height="180dp"
+        android:layout_marginStart="15dp"
+        android:layout_marginTop="15dp"
+        android:src="@drawable/spider_hat_color512"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/manga_name_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="15dp"
+        android:layout_marginEnd="10dp"
+        android:includeFontPadding="false"
+        android:text="漫画名称:"
+        android:textColor="@color/main_text_color"
+        android:textSize="@dimen/details_text_size"
+        app:layout_constraintLeft_toRightOf="@+id/thumbnail_iv"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/manga_chapter_name_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="10dp"
+        android:text="章         节:"
+        android:textColor="@color/main_text_color"
+        android:textSize="@dimen/details_text_size"
+        app:layout_constraintLeft_toRightOf="@+id/thumbnail_iv"
+        app:layout_constraintTop_toBottomOf="@+id/manga_name_tv" />
+
+    <TextView
+        android:id="@+id/chapter_progress_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="5dp"
+        android:includeFontPadding="false"
+        android:text="0/0"
+        android:textColor="@color/main_text_color_gray"
+        android:textSize="12sp"
+        app:layout_constraintBottom_toBottomOf="@+id/download_progress_bar"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/download_progress_bar"></TextView>
+
+    <ProgressBar
+        android:id="@+id/download_progress_bar"
+        style="@style/StyleProgressBarMini"
+        android:layout_width="0dp"
+        android:layout_height="6dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="10dp"
+        android:background="@drawable/shape_progressbar_bg"
+        android:max="100"
+        android:progress="0"
+        android:scrollbarStyle="insideOverlay"
+        app:layout_constraintLeft_toRightOf="@+id/thumbnail_iv"
+        app:layout_constraintRight_toLeftOf="@+id/chapter_progress_tv"
+        app:layout_constraintTop_toBottomOf="@+id/manga_chapter_name_tv" />
+
+    <TextView
+        android:id="@+id/progress_explain_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="10dp"
+        android:text="总进度:"
+        android:textColor="@color/main_text_color"
+        android:textSize="@dimen/details_text_size"
+        app:layout_constraintLeft_toRightOf="@+id/thumbnail_iv"
+        app:layout_constraintTop_toBottomOf="@+id/download_progress_bar" />
+
+    <TextView
+        android:id="@+id/total_progress_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="5dp"
+        android:includeFontPadding="false"
+        android:text="0%"
+        android:textColor="@color/main_text_color_gray"
+        android:textSize="12sp"
+        app:layout_constraintBottom_toBottomOf="@+id/total_progress_bar"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/total_progress_bar"></TextView>
+
+    <ProgressBar
+        android:id="@+id/total_progress_bar"
+        style="@style/StyleProgressBarMini"
+        android:layout_width="0dp"
+        android:layout_height="6dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="10dp"
+        android:background="@drawable/shape_progressbar_bg"
+        android:max="100"
+        android:progress="0"
+        android:scrollbarStyle="insideOverlay"
+        app:layout_constraintLeft_toRightOf="@+id/thumbnail_iv"
+        app:layout_constraintRight_toLeftOf="@+id/chapter_progress_tv"
+        app:layout_constraintTop_toBottomOf="@+id/progress_explain_tv" />
+
+    <View
+        android:id="@+id/line"
+        android:layout_width="0dp"
+        android:layout_height="1px"
+        android:layout_marginTop="10dp"
+        android:background="@color/manga_reader"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/thumbnail_iv"></View>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/chapter_rcv"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_margin="3dp"
+        android:layout_marginTop="5dp"
+        app:layout_constraintBottom_toTopOf="@+id/download_btn"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/line"></androidx.recyclerview.widget.RecyclerView>
+
+    <Button
+        android:id="@+id/download_btn"
+        android:layout_width="0dp"
+        android:layout_height="50dp"
+        android:layout_alignParentBottom="true"
+        android:background="@drawable/btn_click_rewrite"
+        android:text="开始下载"
+        android:textColor="@drawable/btn_text_click_rewrite"
+        android:textSize="17sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent" />
+
+    <include
+        android:id="@+id/empty_view"
+        layout="@layout/emptyview_list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_centerInParent="true"
+        android:visibility="gone" />
+</androidx.constraintlayout.widget.ConstraintLayout>

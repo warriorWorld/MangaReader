@@ -31,6 +31,7 @@ import com.truthower.suhang.mangareader.business.rxdownload.DownloadCaretaker;
 import com.truthower.suhang.mangareader.business.rxdownload.DownloadService;
 import com.truthower.suhang.mangareader.business.rxdownload.RxDownloadActivity;
 import com.truthower.suhang.mangareader.business.search.SearchActivity;
+import com.truthower.suhang.mangareader.business.threadpooldownload.TpDownloadActivity;
 import com.truthower.suhang.mangareader.business.threadpooldownload.TpDownloadService;
 import com.truthower.suhang.mangareader.config.Configure;
 import com.truthower.suhang.mangareader.config.ShareKeys;
@@ -602,6 +603,7 @@ public class WebMangaDetailsActivity extends TTSActivity implements AdapterView.
             downloadBean.setMangaName(currentManga.getName());
             downloadBean.setMangaUrl(currentManga.getUrl());
             downloadBean.setThumbnailUrl(currentManga.getWebThumbnailUrl());
+            downloadBean.setChapterCount(end-start+1);
             ArrayList<RxDownloadChapterBean> chapters = new ArrayList<>();
             for (int i = start; i <= end; i++) {
                 RxDownloadChapterBean item = new RxDownloadChapterBean();
@@ -622,7 +624,7 @@ public class WebMangaDetailsActivity extends TTSActivity implements AdapterView.
                 startService(serviceIntent);
             }
 
-            Intent intent = new Intent(this, RxDownloadActivity.class);
+            Intent intent = new Intent(this, TpDownloadActivity.class);
             startActivity(intent);
             WebMangaDetailsActivity.this.finish();
         } else {

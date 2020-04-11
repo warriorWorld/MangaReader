@@ -24,6 +24,7 @@ public class RxDownloadBean extends BaseBean {
     private String thumbnailUrl;
     private ArrayList<RxDownloadChapterBean> chapters;
     private CommonDownloader downloader;
+    private int chapterCount;
 
     public String getMangaName() {
         return mangaName;
@@ -63,5 +64,13 @@ public class RxDownloadBean extends BaseBean {
 
     public void setDownloader(CommonDownloader downloader) {
         this.downloader = downloader;
+    }
+
+    public int getChapterCount() {
+        return chapterCount;
+    }
+
+    public void setChapterCount(int chapterCount) {
+        this.chapterCount = chapterCount;
     }
 }

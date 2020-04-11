@@ -7,8 +7,6 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Build;
 import android.os.IBinder;
 import android.widget.RemoteViews;
@@ -18,18 +16,17 @@ import com.truthower.suhang.mangareader.bean.RxDownloadBean;
 import com.truthower.suhang.mangareader.bean.RxDownloadChapterBean;
 import com.truthower.suhang.mangareader.bean.RxDownloadPageBean;
 import com.truthower.suhang.mangareader.business.rxdownload.DownloadCaretaker;
-import com.truthower.suhang.mangareader.business.rxdownload.DownloadService;
 import com.truthower.suhang.mangareader.business.rxdownload.RxDownloadActivity;
+import com.truthower.suhang.mangareader.business.rxdownload.RxDownloadEvent;
+import com.truthower.suhang.mangareader.eventbus.EventBusEvent;
 import com.truthower.suhang.mangareader.listener.JsoupCallBack;
 import com.truthower.suhang.mangareader.listener.MangaDownloader;
 import com.truthower.suhang.mangareader.listener.OnResultListener;
 import com.truthower.suhang.mangareader.utils.Logger;
 import com.truthower.suhang.mangareader.widget.toast.EasyToast;
 
-import java.io.BufferedInputStream;
-import java.io.IOException;
-import java.net.HttpURLConnection;
-import java.net.URL;
+import org.greenrobot.eventbus.EventBus;
+
 import java.util.ArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -98,6 +95,8 @@ public class TpDownloadService extends Service {
     private void getChapterInfo() {
         if (null == chapters || chapters.size() <= 0) {
             //下载完成
+            mEasyToast.showToast(downloadBean.getMangaName() + "全部下载完成!");
+            DownloadCaretaker.clean(this);
             return;
         }
         currentChapter = chapters.get(0);
@@ -143,8 +142,10 @@ public class TpDownloadService extends Service {
             @Override
             public void onFinish() {
                 currentChapter.addDownloadedCount();
+                EventBus.getDefault().post(new TpDownloadEvent(EventBusEvent.DOWNLOAD_PAGE_FINISH_EVENT, downloadBean, i));
                 if (currentChapter.isDownloaded()) {
                     chapters.remove(0);
+                    EventBus.getDefault().post(new RxDownloadEvent(EventBusEvent.DOWNLOAD_CHAPTER_FINISH_EVENT, downloadBean, i));
                     getChapterInfo();
                 }
             }
@@ -165,6 +166,7 @@ public class TpDownloadService extends Service {
     @Override
     public void onDestroy() {
         super.onDestroy();
+        mExecutorService.shutdown();
         DownloadCaretaker.saveDownloadMemoto(this, downloadBean);
     }
 }
