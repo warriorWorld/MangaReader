@@ -63,7 +63,7 @@ public class RxDownloadChapterBean extends BaseBean {
     }
 
     public boolean isDownloaded() {
-        return downloadedCount == pageCount;
+        return downloadedCount >= pageCount;
     }
 //    public boolean isDownloaded() {
 //        if (null == pages || pages.size() == 0) {
