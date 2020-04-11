@@ -10,21 +10,27 @@ import com.truthower.suhang.mangareader.R;
 import com.truthower.suhang.mangareader.base.BaseActivity;
 import com.truthower.suhang.mangareader.bean.WordsBookBean;
 import com.truthower.suhang.mangareader.db.DbAdapter;
+import com.truthower.suhang.mangareader.utils.Logger;
 import com.truthower.suhang.mangareader.widget.dialog.MangaDialog;
 
 import java.util.ArrayList;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class TestActivity extends BaseActivity implements View.OnClickListener {
-    private Button testBtn, testBtn1;
+    private Button testBtn, testBtn1, testBtn2;
     private MangaDialog mDialog;
     private String toastOut = "";
     private DbAdapter db;//数据库
+    private int cpuCount = Runtime.getRuntime().availableProcessors();
+    private ExecutorService mExecutorService = Executors.newFixedThreadPool(cpuCount);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         initView();
         db = new DbAdapter(this);
+        Logger.setTag("TestActivity");
     }
 
     private void initView() {
@@ -32,6 +38,8 @@ public class TestActivity extends BaseActivity implements View.OnClickListener {
         testBtn.setOnClickListener(this);
         testBtn1 = (Button) findViewById(R.id.test_btn1);
         testBtn1.setOnClickListener(this);
+        testBtn2 = findViewById(R.id.test_btn2);
+        testBtn2.setOnClickListener(this);
     }
 
     @Override
@@ -57,6 +65,15 @@ public class TestActivity extends BaseActivity implements View.OnClickListener {
         mDialog.show();
         mDialog.setTitle(title);
         mDialog.setMessage(message);
+    }
+
+    private void test2() {
+        Logger.d(cpuCount + " CPU");
+        for (int i = 0; i < 30; i++) {
+            mExecutorService.execute(new TestRunner());
+            Logger.d("for :" + i);
+        }
+        Logger.d("test done");
     }
 
     @Override
@@ -85,6 +102,9 @@ public class TestActivity extends BaseActivity implements View.OnClickListener {
                 }
 
                 test("btn", "btn", "btn");
+                break;
+            case R.id.test_btn2:
+                test2();
                 break;
         }
     }

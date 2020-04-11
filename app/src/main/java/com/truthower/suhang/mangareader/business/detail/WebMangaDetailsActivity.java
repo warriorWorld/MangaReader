@@ -31,6 +31,7 @@ import com.truthower.suhang.mangareader.business.rxdownload.DownloadCaretaker;
 import com.truthower.suhang.mangareader.business.rxdownload.DownloadService;
 import com.truthower.suhang.mangareader.business.rxdownload.RxDownloadActivity;
 import com.truthower.suhang.mangareader.business.search.SearchActivity;
+import com.truthower.suhang.mangareader.business.threadpooldownload.TpDownloadService;
 import com.truthower.suhang.mangareader.config.Configure;
 import com.truthower.suhang.mangareader.config.ShareKeys;
 import com.truthower.suhang.mangareader.db.DbAdapter;
@@ -611,7 +612,7 @@ public class WebMangaDetailsActivity extends TTSActivity implements AdapterView.
             downloadBean.setChapters(chapters);
             DownloadCaretaker.saveDownloadMemoto(this, downloadBean);
 
-            Intent serviceIntent = new Intent(this, DownloadService.class);
+            Intent serviceIntent = new Intent(this, TpDownloadService.class);
             //先结束
             stopService(serviceIntent);
             //重新打开

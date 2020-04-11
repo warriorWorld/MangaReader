@@ -23,4 +23,12 @@
         android:background="@drawable/btn_click_rewrite"
         android:text="测试1"
         android:textColor="@color/white"/>
+    <Button
+        android:id="@+id/test_btn2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/btn_click_rewrite"
+        android:text="测试2"
+        android:textColor="@color/white"/>
 </LinearLayout>

@@ -102,6 +102,7 @@
         <service android:name=".business.download.DownloadIntentService"></service>
         <service android:name=".service.CopyBoardService"></service>
         <service android:name=".business.rxdownload.DownloadService"></service>
+        <service android:name="com.truthower.suhang.mangareader.business.threadpooldownload.TpDownloadService"></service>
 
         <meta-data
             android:name="UMENG_APPKEY"

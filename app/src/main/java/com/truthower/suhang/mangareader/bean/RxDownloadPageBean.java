@@ -8,6 +8,7 @@ public class RxDownloadPageBean extends BaseBean {
     private String pageUrl;
     private String pageName;
     private String chapterName;
+    private String mangaName;
     private boolean isDownloaded;
 
     public String getPageUrl() {
@@ -40,5 +41,13 @@ public class RxDownloadPageBean extends BaseBean {
 
     public void setDownloaded(boolean downloaded) {
         isDownloaded = downloaded;
+    }
+
+    public String getMangaName() {
+        return mangaName;
+    }
+
+    public void setMangaName(String mangaName) {
+        this.mangaName = mangaName;
     }
 }
