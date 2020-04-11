@@ -24,6 +24,7 @@ import com.truthower.suhang.mangareader.business.collect.CollectedActivity;
 import com.truthower.suhang.mangareader.business.download.DownloadActivity;
 import com.truthower.suhang.mangareader.business.other.AboutActivity;
 import com.truthower.suhang.mangareader.business.rxdownload.RxDownloadActivity;
+import com.truthower.suhang.mangareader.business.threadpooldownload.TpDownloadActivity;
 import com.truthower.suhang.mangareader.business.words.WordsActivity;
 import com.truthower.suhang.mangareader.business.wordsbook.WordsBookActivity;
 import com.truthower.suhang.mangareader.config.Configure;
@@ -311,7 +312,7 @@ public class UserFragment extends BaseFragment implements View.OnClickListener,
                 intent = new Intent(getActivity(), WordsActivity.class);
                 break;
             case R.id.download_rl:
-                intent = new Intent(getActivity(), RxDownloadActivity.class);
+                intent = new Intent(getActivity(), TpDownloadActivity.class);
                 break;
             case R.id.about_rl:
                 intent = new Intent(getActivity(), AboutActivity.class);

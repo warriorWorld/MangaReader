@@ -17,7 +17,6 @@ import com.truthower.suhang.mangareader.bean.RxDownloadChapterBean;
 import com.truthower.suhang.mangareader.bean.RxDownloadPageBean;
 import com.truthower.suhang.mangareader.business.rxdownload.DownloadCaretaker;
 import com.truthower.suhang.mangareader.business.rxdownload.RxDownloadActivity;
-import com.truthower.suhang.mangareader.business.rxdownload.RxDownloadEvent;
 import com.truthower.suhang.mangareader.eventbus.EventBusEvent;
 import com.truthower.suhang.mangareader.listener.JsoupCallBack;
 import com.truthower.suhang.mangareader.listener.MangaDownloader;
@@ -97,6 +96,7 @@ public class TpDownloadService extends Service {
             //下载完成
             mEasyToast.showToast(downloadBean.getMangaName() + "全部下载完成!");
             DownloadCaretaker.clean(this);
+            EventBus.getDefault().post(new TpDownloadEvent(EventBusEvent.DOWNLOAD_FINISH_EVENT));
             return;
         }
         currentChapter = chapters.get(0);
@@ -138,23 +138,29 @@ public class TpDownloadService extends Service {
     }
 
     private void executeRunable(RxDownloadPageBean item) {
-        mExecutorService.execute(new PageDownloadRunner(item, new OnResultListener() {
-            @Override
-            public void onFinish() {
-                currentChapter.addDownloadedCount();
-                EventBus.getDefault().post(new TpDownloadEvent(EventBusEvent.DOWNLOAD_PAGE_FINISH_EVENT, downloadBean, i));
-                if (currentChapter.isDownloaded()) {
-                    chapters.remove(0);
-                    EventBus.getDefault().post(new RxDownloadEvent(EventBusEvent.DOWNLOAD_CHAPTER_FINISH_EVENT, downloadBean, i));
-                    getChapterInfo();
+        try {
+            mExecutorService.execute(new PageDownloadRunner(item, new OnResultListener() {
+                @Override
+                public void onFinish() {
+                    currentChapter.addDownloadedCount();
+                    EventBus.getDefault().post(new TpDownloadEvent(EventBusEvent.DOWNLOAD_PAGE_FINISH_EVENT, currentChapter));
+
+                    if (currentChapter.isDownloaded()) {
+                        chapters.remove(0);
+                        EventBus.getDefault().post(new TpDownloadEvent(EventBusEvent.DOWNLOAD_CHAPTER_FINISH_EVENT, downloadBean));
+                        DownloadCaretaker.saveDownloadMemoto(TpDownloadService.this, downloadBean);
+                        getChapterInfo();
+                    }
                 }
-            }
 
-            @Override
-            public void onFailed() {
+                @Override
+                public void onFailed() {
 
-            }
-        }));
+                }
+            }));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Nullable

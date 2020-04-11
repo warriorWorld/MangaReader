@@ -5,9 +5,9 @@
     <color name="colorPrimaryDark">@color/manga_reader_deep</color>
     <color name="colorAccent">@color/manga_reader</color>
     <!--主流的几个颜色-->
-    <color name="manga_reader_shllow">#FA841D</color>
-    <color name="manga_reader">#D85415</color>
-    <color name="manga_reader_deep">#803509</color>
+    <color name="manga_reader_shllow">#118FA5</color>
+    <color name="manga_reader">#156DD8</color>
+    <color name="manga_reader_deep">#0D0980</color>
     <color name="manga_reader_blue">#456ec1</color>
     <color name="manga_reader_red">#F02C49</color>
     <color name="white">#ffffff</color>

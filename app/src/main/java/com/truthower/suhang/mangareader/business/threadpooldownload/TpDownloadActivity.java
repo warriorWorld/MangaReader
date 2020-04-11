@@ -12,20 +12,15 @@ import android.widget.TextView;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.truthower.suhang.mangareader.R;
 import com.truthower.suhang.mangareader.adapter.DownloadRecyclerAdapter;
-import com.truthower.suhang.mangareader.adapter.OnlineMangaDetailAdapter;
-import com.truthower.suhang.mangareader.adapter.OnlineMangaRecyclerListAdapter;
 import com.truthower.suhang.mangareader.base.BaseActivity;
 import com.truthower.suhang.mangareader.bean.RxDownloadBean;
-import com.truthower.suhang.mangareader.business.detail.LocalMangaDetailsActivity;
-import com.truthower.suhang.mangareader.business.download.DownloadMangaManager;
+import com.truthower.suhang.mangareader.bean.RxDownloadChapterBean;
 import com.truthower.suhang.mangareader.business.rxdownload.DownloadCaretaker;
 import com.truthower.suhang.mangareader.business.rxdownload.DownloadContract;
 import com.truthower.suhang.mangareader.config.Configure;
 import com.truthower.suhang.mangareader.config.ShareKeys;
 import com.truthower.suhang.mangareader.eventbus.DownLoadEvent;
 import com.truthower.suhang.mangareader.eventbus.EventBusEvent;
-import com.truthower.suhang.mangareader.listener.OnRecycleItemClickListener;
-import com.truthower.suhang.mangareader.listener.OnRecycleItemLongClickListener;
 import com.truthower.suhang.mangareader.utils.DisplayUtil;
 import com.truthower.suhang.mangareader.utils.ServiceUtil;
 import com.truthower.suhang.mangareader.utils.SharedPreferencesUtils;
@@ -58,6 +53,14 @@ public class TpDownloadActivity extends BaseActivity implements View.OnClickList
     private DownloadContract.Presenter mPresenter;
     private RxDownloadBean mDownloadBean;
     private DownloadRecyclerAdapter adapter;
+    private RxDownloadChapterBean currentChapter;
+
+    private enum DownloadState {
+        ON_GOING,
+        STOPED
+    }
+
+    private DownloadState downloadState = DownloadState.STOPED;
 
     @Override
     public void setPresenter(DownloadContract.Presenter presenter) {
@@ -95,24 +98,11 @@ public class TpDownloadActivity extends BaseActivity implements View.OnClickList
     @Override
     public void displayUpdate() {
         try {
-            if (DownloadBean.getInstance().isOne_shot()) {
-                mangaChapterNameTv.setText("章        节:  ONE SHOT");
-                downloadProgressBar.setMax(DownloadMangaManager.getInstance().getOneShotListTotalSize());
-                downloadProgressBar.setProgress(DownloadMangaManager.getInstance().getOneShotListTotalSize()
-                        - DownloadMangaManager.getInstance().getOneShotLeftSize());
-            } else {
-                if (null != DownloadMangaManager.getInstance().
-                        getCurrentChapter() && null != DownloadMangaManager.getInstance().
-                        getCurrentChapter().getPages()) {
-                    mangaChapterNameTv.setText("章        节:  第" +
-                            DownloadMangaManager.getInstance().
-                                    getCurrentChapter().getChapter_title() + "话");
-                    downloadProgressBar.setMax(DownloadMangaManager.getInstance().
-                            getCurrentChapter().getChapter_size());
-                    downloadProgressBar.setProgress(DownloadMangaManager.getInstance().
-                            getCurrentChapter().getChapter_size() - DownloadMangaManager.
-                            getInstance().getCurrentChapter().getPages().size());
-                }
+            if (null != currentChapter) {
+                mangaChapterNameTv.setText("章        节:  第" + currentChapter.getChapterName() + "话");
+                downloadProgressBar.setMax(currentChapter.getPageCount());
+                downloadProgressBar.setProgress(currentChapter.getDownloadedCount());
+                chapterProgressTv.setText(currentChapter.getDownloadedCount() + "/" + currentChapter.getPageCount());
             }
             toggleDownloading(true);
             toggleEmpty(false);
@@ -121,13 +111,42 @@ public class TpDownloadActivity extends BaseActivity implements View.OnClickList
         }
     }
 
-
-    private enum DownloadState {
-        ON_GOING,
-        STOPED
+    /**
+     * 在主线程中执行,eventbus遍历所有方法,就为了找到该方法并执行.传值自己随意写
+     *
+     * @param event
+     */
+    @Subscribe
+    public void onEventMainThread(final TpDownloadEvent event) {
+        try {
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    if (null == event)
+                        return;
+                    switch (event.getEventType()) {
+                        case EventBusEvent.DOWNLOAD_PAGE_FINISH_EVENT:
+                            currentChapter = event.getCurrentChapter();
+                            displayUpdate();
+                            break;
+                        case EventBusEvent.DOWNLOAD_FINISH_EVENT:
+                            toggleEmpty(true);
+                            DownloadCaretaker.clean(TpDownloadActivity.this);
+                            MangaDialog dialog = new MangaDialog(TpDownloadActivity.this);
+                            dialog.show();
+                            dialog.setTitle("全部下载完成!");
+                            break;
+                        case EventBusEvent.DOWNLOAD_CHAPTER_FINISH_EVENT:
+                            mDownloadBean = event.getDownloadBean();
+                            initRec();
+                            break;
+                    }
+                }
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
-
-    private DownloadState downloadState = DownloadState.STOPED;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -164,6 +183,7 @@ public class TpDownloadActivity extends BaseActivity implements View.OnClickList
         downloadProgressBar = (ProgressBar) findViewById(R.id.download_progress_bar);
         totalProgressTv = (TextView) findViewById(R.id.total_progress_tv);
         totalProgressBar = (ProgressBar) findViewById(R.id.total_progress_bar);
+        totalProgressBar.setMax(100);
         chapterRcv = (RecyclerView) findViewById(R.id.chapter_rcv);
         if (Configure.isPad) {
             chapterRcv.setLayoutManager(new StaggeredGridLayoutManager(8, StaggeredGridLayoutManager.VERTICAL));
@@ -205,6 +225,9 @@ public class TpDownloadActivity extends BaseActivity implements View.OnClickList
         try {
             toggleEmpty(null == mDownloadBean || null == mDownloadBean.getChapters() ||
                     mDownloadBean.getChapters().size() <= 0);
+            int progress = (int) (100-(Float.valueOf(mDownloadBean.getChapters().size()) / Float.valueOf(mDownloadBean.getChapterCount())) * 100);
+            totalProgressBar.setProgress(progress);
+            totalProgressTv.setText(progress + "%");
             if (null == adapter) {
                 adapter = new DownloadRecyclerAdapter(this);
                 adapter.setList(mDownloadBean.getChapters());
@@ -217,7 +240,7 @@ public class TpDownloadActivity extends BaseActivity implements View.OnClickList
 
                     @Override
                     public int getIntrinsicWidth() {
-                        return DisplayUtil.dip2px(TpDownloadActivity.this, 8);
+                        return DisplayUtil.dip2px(TpDownloadActivity.this, 4);
                     }
                 };
                 RecyclerGridDecoration itemDecoration = new RecyclerGridDecoration(TpDownloadActivity.this,
@@ -250,42 +273,6 @@ public class TpDownloadActivity extends BaseActivity implements View.OnClickList
         } else {
             downloadBtn.setText("开始下载");
             downloadState = DownloadState.STOPED;
-        }
-    }
-
-    /**
-     * 在主线程中执行,eventbus遍历所有方法,就为了找到该方法并执行.传值自己随意写
-     *
-     * @param event
-     */
-    @Subscribe
-    public void onEventMainThread(final DownLoadEvent event) {
-        try {
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    if (null == event)
-                        return;
-                    switch (event.getEventType()) {
-                        case EventBusEvent.DOWNLOAD_PAGE_FINISH_EVENT:
-                            displayUpdate();
-                            break;
-                        case EventBusEvent.DOWNLOAD_FINISH_EVENT:
-                            toggleEmpty(true);
-                            DownloadCaretaker.clean(TpDownloadActivity.this);
-                            MangaDialog dialog = new MangaDialog(TpDownloadActivity.this);
-                            dialog.show();
-                            dialog.setTitle("全部下载完成!");
-                            break;
-                        case EventBusEvent.DOWNLOAD_CHAPTER_FINISH_EVENT:
-                            initRec();
-                            displayUpdate();
-                            break;
-                    }
-                }
-            });
-        } catch (Exception e) {
-            e.printStackTrace();
         }
     }
 

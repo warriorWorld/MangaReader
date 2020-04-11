@@ -1,20 +1,25 @@
 package com.truthower.suhang.mangareader.business.threadpooldownload;
 
 import com.truthower.suhang.mangareader.bean.RxDownloadBean;
+import com.truthower.suhang.mangareader.bean.RxDownloadChapterBean;
 import com.truthower.suhang.mangareader.eventbus.EventBusEvent;
 
 public class TpDownloadEvent extends EventBusEvent {
     private RxDownloadBean mDownloadBean;
-    private int position;
+    private RxDownloadChapterBean currentChapter;
 
     public TpDownloadEvent(int event) {
         super(event);
     }
 
-    public TpDownloadEvent(int event, RxDownloadBean downloadBean, int position) {
+    public TpDownloadEvent(int event, RxDownloadBean downloadBean) {
         super(event);
         this.mDownloadBean = downloadBean;
-        this.position = position;
+    }
+
+    public TpDownloadEvent(int event, RxDownloadChapterBean downloadChapterBean) {
+        super(event);
+        this.currentChapter = downloadChapterBean;
     }
 
     public RxDownloadBean getDownloadBean() {
@@ -25,11 +30,11 @@ public class TpDownloadEvent extends EventBusEvent {
         mDownloadBean = downloadBean;
     }
 
-    public int getPosition() {
-        return position;
+    public RxDownloadChapterBean getCurrentChapter() {
+        return currentChapter;
     }
 
-    public void setPosition(int position) {
-        this.position = position;
+    public void setCurrentChapter(RxDownloadChapterBean currentChapter) {
+        this.currentChapter = currentChapter;
     }
 }
