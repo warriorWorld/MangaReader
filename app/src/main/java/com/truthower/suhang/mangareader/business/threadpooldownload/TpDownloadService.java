@@ -51,6 +51,11 @@ public class TpDownloadService extends Service {
     public void onCreate() {
         super.onCreate();
         Logger.setTag("TpDownloadService");
+        downloadBean = DownloadCaretaker.getDownloadMemoto(this);
+        chapters = Collections.synchronizedList(downloadBean.getChapters());
+        mDownloader = downloadBean.getDownloader();
+        createNotification(this);
+        startForeground(10, notificationBuilder.build());
         mEasyToast = new EasyToast(this);
     }
 
@@ -94,14 +99,6 @@ public class TpDownloadService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        downloadBean = (RxDownloadBean) intent.getSerializableExtra("downloadBean");
-        if (null == downloadBean) {
-            downloadBean = DownloadCaretaker.getDownloadMemoto(this);
-        }
-        chapters = Collections.synchronizedList(downloadBean.getChapters());
-        mDownloader = downloadBean.getDownloader();
-        createNotification(this);
-        startForeground(10, notificationBuilder.build());
         getChapterInfo();
         return super.onStartCommand(intent, flags, startId);
     }
@@ -158,7 +155,7 @@ public class TpDownloadService extends Service {
                     currentChapter.addDownloadedCount();
                     EventBus.getDefault().post(new TpDownloadEvent(EventBusEvent.DOWNLOAD_PAGE_FINISH_EVENT, currentChapter));
                     updateNotification();
-                    Logger.d("downloaded: " + currentChapter.getDownloadedCount() + "/" + currentChapter.getPageCount());
+                    Logger.d("downloaded: "+currentChapter.getDownloadedCount()+"/"+currentChapter.getPageCount());
                     if (currentChapter.isDownloaded()) {
                         Logger.d("one chapter downloaded; chapter:" + currentChapter.getChapterName());
                         chapters.remove(0);
