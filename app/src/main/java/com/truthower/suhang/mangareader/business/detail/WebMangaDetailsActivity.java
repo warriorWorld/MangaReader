@@ -615,8 +615,9 @@ public class WebMangaDetailsActivity extends TTSActivity implements AdapterView.
             DownloadCaretaker.saveDownloadMemoto(this, downloadBean);
 
             Intent serviceIntent = new Intent(this, TpDownloadService.class);
+            serviceIntent.putExtra("downloadBean",downloadBean);
             //先结束
-            stopService(serviceIntent);
+//            stopService(serviceIntent);
             //重新打开
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 startForegroundService(serviceIntent);

@@ -133,9 +133,7 @@ public class TpDownloadService extends Service {
                         pages.add(item);
 
                         executeRunable(item);
-                        Logger.d("chapter: " + item.getChapterName() + " page" + i);
                     }
-                    Logger.d("for done");
                     currentChapter.setPages(pages);
                     currentChapter.setPageCount(result.size());
                 }
@@ -157,6 +155,7 @@ public class TpDownloadService extends Service {
                     EventBus.getDefault().post(new TpDownloadEvent(EventBusEvent.DOWNLOAD_PAGE_FINISH_EVENT, currentChapter));
                     updateNotification();
                     if (currentChapter.isDownloaded()) {
+                        Logger.d("one chapter downloaded; chapter:" + currentChapter.getChapterName());
                         chapters.remove(0);
                         EventBus.getDefault().post(new TpDownloadEvent(EventBusEvent.DOWNLOAD_CHAPTER_FINISH_EVENT, downloadBean));
                         DownloadCaretaker.saveDownloadMemoto(TpDownloadService.this, downloadBean);

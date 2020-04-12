@@ -6,6 +6,7 @@ import android.graphics.BitmapFactory;
 import com.truthower.suhang.mangareader.bean.RxDownloadPageBean;
 import com.truthower.suhang.mangareader.listener.OnResultListener;
 import com.truthower.suhang.mangareader.spider.FileSpider;
+import com.truthower.suhang.mangareader.utils.Logger;
 
 import java.io.BufferedInputStream;
 import java.io.IOException;
@@ -27,6 +28,7 @@ public class PageDownloadRunner implements Runnable {
         //把图片保存到本地
         FileSpider.getInstance().saveBitmap(bp, mPageBean.getPageName(), mPageBean.getChapterName(), mPageBean.getMangaName());
         mPageBean.setDownloaded(true);
+        Logger.d("one page downloaded; chapter: "+mPageBean.getChapterName()+" page: "+mPageBean.getPageName());
         if (null != mOnResultListener) {
             mOnResultListener.onFinish();
         }
