@@ -171,7 +171,7 @@ public class UserFragment extends BaseFragment implements View.OnClickListener,
             }
         }, 40, 46, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
 
-        if (PermissionUtil.isMaster(getActivity()) || PermissionUtil.isCreator(getActivity())) {
+        if (PermissionUtil.isMaster(getActivity())) {
             manageDownloadRl.setVisibility(View.VISIBLE);
         } else {
             manageDownloadRl.setVisibility(View.GONE);

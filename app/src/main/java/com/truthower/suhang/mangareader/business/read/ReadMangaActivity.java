@@ -494,7 +494,7 @@ public class ReadMangaActivity extends TTSActivity implements OnClickListener, S
 
             @Override
             public void onRightLongClick() {
-                if (PermissionUtil.isMaster(ReadMangaActivity.this) || PermissionUtil.isCreator(ReadMangaActivity.this)) {
+                if (PermissionUtil.isMaster(ReadMangaActivity.this)) {
                     Intent intent = new Intent(ReadMangaActivity.this, ManageDownloadActivity.class);
                     startActivity(intent);
                 }

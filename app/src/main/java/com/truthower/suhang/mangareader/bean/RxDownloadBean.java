@@ -7,6 +7,7 @@ import android.text.TextUtils;
 
 import com.truthower.suhang.mangareader.business.rxdownload.CommonDownloader;
 import com.truthower.suhang.mangareader.config.ShareKeys;
+import com.truthower.suhang.mangareader.listener.MangaDownloader;
 import com.truthower.suhang.mangareader.spider.FileSpider;
 import com.truthower.suhang.mangareader.spider.SpiderBase;
 import com.truthower.suhang.mangareader.utils.ShareObjUtil;
@@ -23,7 +24,7 @@ public class RxDownloadBean extends BaseBean {
     private String mangaUrl;
     private String thumbnailUrl;
     private ArrayList<RxDownloadChapterBean> chapters;
-    private CommonDownloader downloader;
+    private MangaDownloader downloader;
     private int chapterCount;
 
     public String getMangaName() {
@@ -58,11 +59,11 @@ public class RxDownloadBean extends BaseBean {
         this.chapters = chapters;
     }
 
-    public CommonDownloader getDownloader() {
+    public MangaDownloader getDownloader() {
         return downloader;
     }
 
-    public void setDownloader(CommonDownloader downloader) {
+    public void setDownloader(MangaDownloader downloader) {
         this.downloader = downloader;
     }
 

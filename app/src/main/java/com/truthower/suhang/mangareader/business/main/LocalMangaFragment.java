@@ -232,7 +232,7 @@ public class LocalMangaFragment extends BaseFragment implements
 
             @Override
             public void onTitleClick() {
-                if (PermissionUtil.isMaster(getActivity()) || PermissionUtil.isCreator(getActivity())) {
+                if (PermissionUtil.isMaster(getActivity())) {
 //                    showOptionsSelector();
                     showOptionsSelectorDialog();
                 }

@@ -28,6 +28,7 @@
         android:background="@drawable/btn_click_rewrite"
         android:text="下载到当前"
         android:textColor="@drawable/btn_text_click_rewrite"
+        android:textAllCaps="false"
         android:textSize="17sp"
         app:layout_constraintBottom_toTopOf="@+id/download_btn1"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -36,6 +37,7 @@
     <Button
         android:id="@+id/download_btn1"
         android:layout_width="0dp"
+        android:textAllCaps="false"
         android:layout_height="50dp"
         android:background="@drawable/btn_click_rewrite"
         android:text="下载到下一个"
