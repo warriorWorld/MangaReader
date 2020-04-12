@@ -1,5 +1,7 @@
 package com.truthower.suhang.mangareader.business.threadpooldownload;
 
+import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
@@ -8,13 +10,21 @@ import android.widget.EditText;
 
 import com.truthower.suhang.mangareader.R;
 import com.truthower.suhang.mangareader.base.BaseActivity;
+import com.truthower.suhang.mangareader.bean.RxDownloadBean;
+import com.truthower.suhang.mangareader.bean.RxDownloadChapterBean;
+import com.truthower.suhang.mangareader.business.detail.WebMangaDetailsActivity;
+import com.truthower.suhang.mangareader.business.rxdownload.DownloadCaretaker;
 import com.truthower.suhang.mangareader.config.Configure;
 import com.truthower.suhang.mangareader.config.ShareKeys;
+import com.truthower.suhang.mangareader.spider.NDownloader;
+import com.truthower.suhang.mangareader.utils.Logger;
 import com.truthower.suhang.mangareader.utils.PermissionUtil;
+import com.truthower.suhang.mangareader.utils.ServiceUtil;
 import com.truthower.suhang.mangareader.utils.SharedPreferencesUtils;
 import com.truthower.suhang.mangareader.widget.bar.TopBar;
 
 import java.io.File;
+import java.util.ArrayList;
 
 public class ManageDownloadActivity extends BaseActivity implements View.OnClickListener {
     private EditText urlEt;
@@ -23,6 +33,7 @@ public class ManageDownloadActivity extends BaseActivity implements View.OnClick
     private String folderName;
     private String subFolderName;
     private String nextSubFolderName;
+    private int lastChapterNum;//文件夹中最后一个文件夹的名字
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,35 +91,64 @@ public class ManageDownloadActivity extends BaseActivity implements View.OnClick
         });
     }
 
-    private void assembleDownloadBean() {
-//        String content = urlEt.getText().toString().replaceAll(" ", "");
-//        urlEt.setText(content);
-//        if (TextUtils.isEmpty(content)) {
-//            return;
-//        }
-//        DownloadCaretaker.clean(this);
-//        RxDownloadBean downloadBean = new RxDownloadBean();
-//        downloadBean.setDownloader(new NDownloader());
-//        downloadBean.setMangaName(currentManga.getName());
-//        downloadBean.setMangaUrl(currentManga.getUrl());
-//        downloadBean.setThumbnailUrl(currentManga.getWebThumbnailUrl());
-//        downloadBean.setChapterCount(end - start + 1);
-//        ArrayList<RxDownloadChapterBean> chapters = new ArrayList<>();
-//        for (int i = start; i <= end; i++) {
-//            RxDownloadChapterBean item = new RxDownloadChapterBean();
-//            item.setChapterUrl(currentManga.getChapters().get(i).getChapterUrl());
-//            item.setChapterName((i + 1) + "");
-//            chapters.add(item);
-//        }
-//        downloadBean.setChapters(chapters);
-//        DownloadCaretaker.saveDownloadMemoto(this, downloadBean);
-//
-//        if (content.contains("\n")) {
-//            String[] urls = content.split("\n");
-//
-//        } else {
-//
-//        }
+    private void assembleDownloadBean(boolean isNext) {
+        String content = urlEt.getText().toString().replaceAll(" ", "");
+        urlEt.setText(content);
+        if (TextUtils.isEmpty(content)) {
+            return;
+        }
+        String mangaName;
+        if (isNext) {
+            //意味着该文件夹还不存在
+            mangaName = folderName + "/" + nextSubFolderName;
+            lastChapterNum = -1;
+        } else {
+            mangaName = folderName + "/" + subFolderName;
+            lastChapterNum = getLastChapterNum(Configure.storagePath + "/" + mangaName);
+            Logger.d("lastChapterNum: " + lastChapterNum);
+        }
+        DownloadCaretaker.clean(this);
+        RxDownloadBean downloadBean = new RxDownloadBean();
+        downloadBean.setDownloader(new NDownloader());
+        downloadBean.setMangaName(mangaName);
+        downloadBean.setThumbnailUrl("http://ww1.sinaimg.cn/mw600/00745YaMgy1gdqxtg9rqij30h40gomz1.jpg");
+        ArrayList<RxDownloadChapterBean> chapters = new ArrayList<>();
+        if (content.contains("\n")) {
+            String[] urls = content.split("\n");
+            for (int i = 0; i < urls.length; i++) {
+                RxDownloadChapterBean item = new RxDownloadChapterBean();
+                item.setChapterUrl(urls[i]);
+                item.setChapterName((lastChapterNum + i + 1) + "");
+                chapters.add(item);
+            }
+        } else {
+            RxDownloadChapterBean item = new RxDownloadChapterBean();
+            item.setChapterUrl(content);
+            item.setChapterName((lastChapterNum + 1) + "");
+            chapters.add(item);
+        }
+        downloadBean.setChapters(chapters);
+        downloadBean.setChapterCount(chapters.size());
+        DownloadCaretaker.saveDownloadMemoto(this, downloadBean);
+    }
+
+    private void startDownload() {
+        Intent serviceIntent = new Intent(this, TpDownloadService.class);
+        if (ServiceUtil.isServiceWork(this,
+                TpDownloadService.SERVICE_PCK_NAME)) {
+            //先结束
+            stopService(serviceIntent);
+        }
+        //重新打开
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            startForegroundService(serviceIntent);
+        } else {
+            startService(serviceIntent);
+        }
+
+        Intent intent = new Intent(this, TpDownloadActivity.class);
+        startActivity(intent);
+        this.finish();
     }
 
     private void getFileName() {
@@ -140,6 +180,24 @@ public class ManageDownloadActivity extends BaseActivity implements View.OnClick
         }
     }
 
+    private int getLastChapterNum(String folderName) {
+        int res = 0;
+        File f = new File(folderName);
+
+        File[] files = f.listFiles();
+        if (null == files || files.length == 0) {
+            return 0;
+        } else {
+            int[] fileNums = new int[files.length];
+            for (int i = 0; i < files.length; i++) {
+                String numString = files[i].getName();
+                fileNums[i] = Integer.valueOf(numString);
+            }
+            res = getMaxNum(fileNums);
+            return res;
+        }
+    }
+
     private int getMaxNum(int[] nums) {
         int maxNum = 0;
         for (int i = 0; i < nums.length; i++) {
@@ -160,8 +218,12 @@ public class ManageDownloadActivity extends BaseActivity implements View.OnClick
     public void onClick(View v) {
         if (v == downloadBtn) {
             // Handle clicks for downloadBtn
+            assembleDownloadBean(false);
+            startDownload();
         } else if (v == downloadBtn1) {
             // Handle clicks for downloadBtn1
+            assembleDownloadBean(true);
+            startDownload();
         }
     }
 

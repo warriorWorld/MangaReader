@@ -130,7 +130,7 @@ public class TpDownloadService extends Service {
                     for (int i = 0; i < result.size(); i++) {
                         RxDownloadPageBean item = new RxDownloadPageBean();
                         item.setPageUrl(result.get(i));
-                        item.setPageName(downloadBean.getMangaName() + "_" + currentChapter.getChapterName() + "_" + i + ".png");
+                        item.setPageName("manga_" + currentChapter.getChapterName() + "_" + i + ".png");
                         item.setChapterName(currentChapter.getChapterName());
                         item.setMangaName(downloadBean.getMangaName());
                         pages.add(item);
