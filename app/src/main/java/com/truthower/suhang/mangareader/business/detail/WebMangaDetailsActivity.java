@@ -621,6 +621,7 @@ public class WebMangaDetailsActivity extends TTSActivity implements AdapterView.
                 //先结束
                 stopService(serviceIntent);
             }
+            serviceIntent.putExtra("downloadBean", downloadBean);
             //重新打开
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 startForegroundService(serviceIntent);

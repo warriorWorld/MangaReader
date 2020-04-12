@@ -26,6 +26,8 @@ import com.truthower.suhang.mangareader.widget.toast.EasyToast;
 import org.greenrobot.eventbus.EventBus;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -33,10 +35,10 @@ import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
 
 public class TpDownloadService extends Service {
-    public static final String SERVICE_PCK_NAME="com.truthower.suhang.mangareader.business.threadpooldownload.TpDownloadService";
+    public static final String SERVICE_PCK_NAME = "com.truthower.suhang.mangareader.business.threadpooldownload.TpDownloadService";
     private String TAG = "TpDownloadService";
     private RxDownloadBean downloadBean;
-    private ArrayList<RxDownloadChapterBean> chapters;
+    private List<RxDownloadChapterBean> chapters;
     private EasyToast mEasyToast;
     private MangaDownloader mDownloader;
     private NotificationCompat.Builder notificationBuilder;
@@ -49,11 +51,6 @@ public class TpDownloadService extends Service {
     public void onCreate() {
         super.onCreate();
         Logger.setTag("TpDownloadService");
-        downloadBean = DownloadCaretaker.getDownloadMemoto(this);
-        chapters = downloadBean.getChapters();
-        mDownloader = downloadBean.getDownloader();
-        createNotification(this);
-        startForeground(10, notificationBuilder.build());
         mEasyToast = new EasyToast(this);
     }
 
@@ -97,6 +94,14 @@ public class TpDownloadService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+        downloadBean = (RxDownloadBean) intent.getSerializableExtra("downloadBean");
+        if (null == downloadBean) {
+            downloadBean = DownloadCaretaker.getDownloadMemoto(this);
+        }
+        chapters = Collections.synchronizedList(downloadBean.getChapters());
+        mDownloader = downloadBean.getDownloader();
+        createNotification(this);
+        startForeground(10, notificationBuilder.build());
         getChapterInfo();
         return super.onStartCommand(intent, flags, startId);
     }
@@ -153,6 +158,7 @@ public class TpDownloadService extends Service {
                     currentChapter.addDownloadedCount();
                     EventBus.getDefault().post(new TpDownloadEvent(EventBusEvent.DOWNLOAD_PAGE_FINISH_EVENT, currentChapter));
                     updateNotification();
+                    Logger.d("downloaded: " + currentChapter.getDownloadedCount() + "/" + currentChapter.getPageCount());
                     if (currentChapter.isDownloaded()) {
                         Logger.d("one chapter downloaded; chapter:" + currentChapter.getChapterName());
                         chapters.remove(0);

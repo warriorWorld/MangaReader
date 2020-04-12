@@ -24,6 +24,7 @@ public class TpDownloadPresenter implements DownloadContract.Presenter {
     @Override
     public void startDownload() {
         Intent intent = new Intent(mContext, TpDownloadService.class);
+        intent.putExtra("downloadBean",DownloadCaretaker.getDownloadMemoto(mContext));
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             mContext.startForegroundService(intent);
         } else {
