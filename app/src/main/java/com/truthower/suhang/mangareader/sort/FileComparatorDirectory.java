@@ -13,7 +13,7 @@ public class FileComparatorDirectory implements Comparator<MangaBean> {
 
     private void analysis(String s, boolean which) {
         String[] arri = s.split("/");
-        s = arri[arri.length - 2];
+        s = arri[arri.length - 1];
         String[] arri1=s.split("-");
         s=arri1[0];
         s= ReplaceUtil.onlyNumber(s);
@@ -30,8 +30,8 @@ public class FileComparatorDirectory implements Comparator<MangaBean> {
 
     @Override
     public int compare(MangaBean o1, MangaBean o2) {
-        analysis(o1.getLocalThumbnailUrl(), true);
-        analysis(o2.getLocalThumbnailUrl(), false);
+        analysis(o1.getUrl(), true);
+        analysis(o2.getUrl(), false);
 
         int res;
         if (chapterL > chapterR) {

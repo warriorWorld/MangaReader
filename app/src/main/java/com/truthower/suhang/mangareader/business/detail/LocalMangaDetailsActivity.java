@@ -162,21 +162,10 @@ public class LocalMangaDetailsActivity extends BaseActivity implements AdapterVi
         } else {
             //有很多话的漫画的文件夹层
             try {
-                String firstDirectoryName = pathList.get(0);
-                String[] arri = firstDirectoryName.split("/");
-
-                firstDirectoryName = arri[arri.length - 2];
-                String[] arri1 = firstDirectoryName.split("-");
-                firstDirectoryName = arri1[0];
-                firstDirectoryName = ReplaceUtil.onlyNumber(firstDirectoryName);
-
-                //用于判断是否位数字的异教徒写法
-                int isInt = Integer.valueOf(firstDirectoryName);
-                //没抛出异常 所以是纯数字
                 FileComparatorDirectory comparator4 = new FileComparatorDirectory();
                 Collections.sort(mangaList, comparator4);
             } catch (Exception e) {
-                //假设有异常就不是有很多话的漫画的文件夹层
+                e.printStackTrace();
             }
         }
     }
@@ -280,11 +269,11 @@ public class LocalMangaDetailsActivity extends BaseActivity implements AdapterVi
                 } else {
                     int count = position - deleteStartPoint;
                     if (count > 0) {
-                        for (int i = 0; i <=count; i++) {
+                        for (int i = 0; i <= count; i++) {
                             mangaList.get(deleteStartPoint + i).setChecked(true);
                         }
-                    }else {
-                        for (int i = 0; i <=Math.abs(count); i++) {
+                    } else {
+                        for (int i = 0; i <= Math.abs(count); i++) {
                             mangaList.get(deleteStartPoint - i).setChecked(true);
                         }
                     }
