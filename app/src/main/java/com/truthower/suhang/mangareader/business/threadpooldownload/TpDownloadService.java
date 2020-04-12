@@ -124,6 +124,7 @@ public class TpDownloadService extends Service {
             mDownloader.getMangaChapterPics(this, currentChapter.getChapterUrl(), new JsoupCallBack<ArrayList<String>>() {
                 @Override
                 public void loadSucceed(ArrayList<String> result) {
+                    currentChapter.setPageCount(result.size());
                     ArrayList<RxDownloadPageBean> pages = new ArrayList<>();
                     for (int i = 0; i < result.size(); i++) {
                         RxDownloadPageBean item = new RxDownloadPageBean();
@@ -136,7 +137,6 @@ public class TpDownloadService extends Service {
                         executeRunable(item);
                     }
                     currentChapter.setPages(pages);
-                    currentChapter.setPageCount(result.size());
                 }
 
                 @Override
@@ -155,7 +155,7 @@ public class TpDownloadService extends Service {
                     currentChapter.addDownloadedCount();
                     EventBus.getDefault().post(new TpDownloadEvent(EventBusEvent.DOWNLOAD_PAGE_FINISH_EVENT, currentChapter));
                     updateNotification();
-                    Logger.d("downloaded: "+currentChapter.getDownloadedCount()+"/"+currentChapter.getPageCount());
+                    Logger.d("downloaded: " + currentChapter.getDownloadedCount() + "/" + currentChapter.getPageCount());
                     if (currentChapter.isDownloaded()) {
                         Logger.d("one chapter downloaded; chapter:" + currentChapter.getChapterName());
                         chapters.remove(0);
