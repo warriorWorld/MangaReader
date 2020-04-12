@@ -37,6 +37,7 @@ import com.truthower.suhang.mangareader.bean.YoudaoResponse;
 import com.truthower.suhang.mangareader.business.detail.WebMangaDetailsActivity;
 import com.truthower.suhang.mangareader.business.other.AboutActivity;
 import com.truthower.suhang.mangareader.business.other.KeyboardSettingActivity;
+import com.truthower.suhang.mangareader.business.threadpooldownload.ManageDownloadActivity;
 import com.truthower.suhang.mangareader.config.Configure;
 import com.truthower.suhang.mangareader.config.ShareKeys;
 import com.truthower.suhang.mangareader.db.DbAdapter;
@@ -493,7 +494,10 @@ public class ReadMangaActivity extends TTSActivity implements OnClickListener, S
 
             @Override
             public void onRightLongClick() {
-                toggleControlUI();
+                if (PermissionUtil.isMaster(ReadMangaActivity.this) || PermissionUtil.isCreator(ReadMangaActivity.this)) {
+                    Intent intent = new Intent(ReadMangaActivity.this, ManageDownloadActivity.class);
+                    startActivity(intent);
+                }
             }
 
             @Override

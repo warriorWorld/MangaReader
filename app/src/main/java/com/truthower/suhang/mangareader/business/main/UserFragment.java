@@ -23,13 +23,16 @@ import com.truthower.suhang.mangareader.base.BaseFragment;
 import com.truthower.suhang.mangareader.business.collect.CollectedActivity;
 import com.truthower.suhang.mangareader.business.download.DownloadActivity;
 import com.truthower.suhang.mangareader.business.other.AboutActivity;
+import com.truthower.suhang.mangareader.business.read.ReadMangaActivity;
 import com.truthower.suhang.mangareader.business.rxdownload.RxDownloadActivity;
+import com.truthower.suhang.mangareader.business.threadpooldownload.ManageDownloadActivity;
 import com.truthower.suhang.mangareader.business.threadpooldownload.TpDownloadActivity;
 import com.truthower.suhang.mangareader.business.words.WordsActivity;
 import com.truthower.suhang.mangareader.business.wordsbook.WordsBookActivity;
 import com.truthower.suhang.mangareader.config.Configure;
 import com.truthower.suhang.mangareader.config.ShareKeys;
 import com.truthower.suhang.mangareader.utils.NumberUtil;
+import com.truthower.suhang.mangareader.utils.PermissionUtil;
 import com.truthower.suhang.mangareader.utils.SharedPreferencesUtils;
 import com.truthower.suhang.mangareader.widget.dialog.DownloadDialog;
 import com.truthower.suhang.mangareader.widget.dialog.MangaDialog;
@@ -56,6 +59,7 @@ public class UserFragment extends BaseFragment implements View.OnClickListener,
     private RelativeLayout downloadRl;
     private RelativeLayout aboutRl;
     private RelativeLayout userTopBarRl;
+    private View manageDownloadRl;
     private TextView dayTv;
     private TextView monthTv;
     private TextView dayOfWeekTv;
@@ -100,6 +104,7 @@ public class UserFragment extends BaseFragment implements View.OnClickListener,
         dayOfWeekTv = (TextView) v.findViewById(R.id.day_of_week_tv);
         collectRl = (RelativeLayout) v.findViewById(R.id.collect_rl);
         shareRl = (RelativeLayout) v.findViewById(R.id.share_rl);
+        manageDownloadRl = v.findViewById(R.id.manage_download_rl);
         qqTv = (TextView) v.findViewById(R.id.qq_tv);
         qqTv.setText
                 ("获取最新版App，请加qq：" + Configure.QQ + "（点击群号可复制），或直接点击下载最新App。",
@@ -166,12 +171,18 @@ public class UserFragment extends BaseFragment implements View.OnClickListener,
             }
         }, 40, 46, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
 
+        if (PermissionUtil.isMaster(getActivity()) || PermissionUtil.isCreator(getActivity())) {
+            manageDownloadRl.setVisibility(View.VISIBLE);
+        } else {
+            manageDownloadRl.setVisibility(View.GONE);
+        }
         collectRl.setOnClickListener(this);
         shareRl.setOnClickListener(this);
         newWordBookRl.setOnClickListener(this);
         downloadRl.setOnClickListener(this);
         userTopBarRl.setOnClickListener(this);
         aboutRl.setOnClickListener(this);
+        manageDownloadRl.setOnClickListener(this);
     }
 
     private void showVersionDialog() {
@@ -322,6 +333,9 @@ public class UserFragment extends BaseFragment implements View.OnClickListener,
                 break;
             case R.id.share_rl:
                 showShareDialog();
+                break;
+            case R.id.manage_download_rl:
+                intent = new Intent(getActivity(), ManageDownloadActivity.class);
                 break;
         }
         if (null != intent) {

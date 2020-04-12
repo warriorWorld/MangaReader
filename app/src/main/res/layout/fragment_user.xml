@@ -121,6 +121,41 @@
                 android:visibility="visible" />
 
             <RelativeLayout
+                android:id="@+id/manage_download_rl"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/user_item_h"
+                android:background="@color/white"
+                android:visibility="gone">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="@dimen/activity_horizontal_margin"
+                    android:gravity="center_vertical"
+                    android:text="下载管理"
+                    android:textColor="@color/main_text_color"
+                    android:textSize="@dimen/main_text_size" />
+
+
+                <ImageView
+                    android:layout_width="10dp"
+                    android:layout_height="10dp"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginRight="@dimen/activity_horizontal_margin"
+                    android:src="@drawable/forward" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1px"
+                    android:layout_alignParentBottom="true"
+                    android:background="@color/divide_line"
+                    android:visibility="visible" />
+            </RelativeLayout>
+
+            <RelativeLayout
                 android:id="@+id/download_rl"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/user_item_h"
@@ -188,9 +223,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                android:text="获取最新版本APP,请加入qq群782685214."
                 android:layout_marginLeft="20dp"
                 android:layout_marginRight="20dp"
+                android:text="获取最新版本APP,请加入qq群782685214."
                 android:textColor="@color/main_text_color_gray"
                 android:textSize="13sp"></TextView>
         </LinearLayout>

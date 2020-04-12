@@ -75,6 +75,7 @@
         <activity android:name=".business.download.DownloadActivity"></activity>
         <activity android:name=".business.rxdownload.RxDownloadActivity"></activity>
         <activity android:name=".business.threadpooldownload.TpDownloadActivity"></activity>
+        <activity android:name=".business.threadpooldownload.ManageDownloadActivity"></activity>
         <activity
             android:name=".business.user.LoginActivity"
             android:launchMode="singleTask"></activity>
