@@ -52,6 +52,7 @@ public class TpDownloadService extends Service {
         super.onCreate();
         Logger.setTag("TpDownloadService");
         downloadBean = DownloadCaretaker.getDownloadMemoto(this);
+        //chapters在很多线程中同时操作 需要线程安全
         chapters = Collections.synchronizedList(downloadBean.getChapters());
         mDownloader = downloadBean.getDownloader();
         createNotification(this);
