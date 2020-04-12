@@ -12,12 +12,10 @@ import android.os.IBinder;
 import android.widget.RemoteViews;
 
 import com.truthower.suhang.mangareader.R;
-import com.truthower.suhang.mangareader.bean.DownloadBean;
 import com.truthower.suhang.mangareader.bean.RxDownloadBean;
 import com.truthower.suhang.mangareader.bean.RxDownloadChapterBean;
 import com.truthower.suhang.mangareader.bean.RxDownloadPageBean;
 import com.truthower.suhang.mangareader.business.rxdownload.DownloadCaretaker;
-import com.truthower.suhang.mangareader.business.rxdownload.RxDownloadActivity;
 import com.truthower.suhang.mangareader.eventbus.EventBusEvent;
 import com.truthower.suhang.mangareader.listener.JsoupCallBack;
 import com.truthower.suhang.mangareader.listener.MangaDownloader;
@@ -35,6 +33,7 @@ import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
 
 public class TpDownloadService extends Service {
+    public static final String SERVICE_PCK_NAME="com.truthower.suhang.mangareader.business.threadpooldownload.TpDownloadService";
     private String TAG = "TpDownloadService";
     private RxDownloadBean downloadBean;
     private ArrayList<RxDownloadChapterBean> chapters;
@@ -50,12 +49,12 @@ public class TpDownloadService extends Service {
     public void onCreate() {
         super.onCreate();
         Logger.setTag("TpDownloadService");
-        createNotification(this);
-        startForeground(10, notificationBuilder.build());
-        mEasyToast = new EasyToast(this);
         downloadBean = DownloadCaretaker.getDownloadMemoto(this);
         chapters = downloadBean.getChapters();
         mDownloader = downloadBean.getDownloader();
+        createNotification(this);
+        startForeground(10, notificationBuilder.build());
+        mEasyToast = new EasyToast(this);
     }
 
     private void createNotification(Context context) {

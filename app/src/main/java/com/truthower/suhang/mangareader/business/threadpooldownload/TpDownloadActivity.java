@@ -76,7 +76,7 @@ public class TpDownloadActivity extends BaseActivity implements View.OnClickList
             mangaNameTv.setText("漫画名称:  " + mDownloadBean.getMangaName());
 
             toggleDownloading(ServiceUtil.isServiceWork(this,
-                    "com.truthower.suhang.mangareader.business.threadpooldownload.TpDownloadService"));
+                    TpDownloadService.SERVICE_PCK_NAME));
             initRec();
             RxDownloadChapterBean chapterBean = mDownloadBean.getChapters().get(0);
             if (null != chapterBean) {
@@ -286,7 +286,7 @@ public class TpDownloadActivity extends BaseActivity implements View.OnClickList
             public void onOkClick() {
                 mPresenter.stopDownload();
                 toggleDownloading(ServiceUtil.isServiceWork(TpDownloadActivity.this,
-                        "com.truthower.suhang.mangareader.business.threadpooldownload.TpDownloadService"));
+                        TpDownloadService.SERVICE_PCK_NAME));
             }
 
             @Override

@@ -46,6 +46,7 @@ import com.truthower.suhang.mangareader.spider.SpiderBase;
 import com.truthower.suhang.mangareader.utils.ActivityPoor;
 import com.truthower.suhang.mangareader.utils.BaseParameterUtil;
 import com.truthower.suhang.mangareader.utils.PermissionUtil;
+import com.truthower.suhang.mangareader.utils.ServiceUtil;
 import com.truthower.suhang.mangareader.utils.SharedPreferencesUtils;
 import com.truthower.suhang.mangareader.utils.UltimateTextSizeUtil;
 import com.truthower.suhang.mangareader.widget.bar.TopBar;
@@ -603,25 +604,27 @@ public class WebMangaDetailsActivity extends TTSActivity implements AdapterView.
             downloadBean.setMangaName(currentManga.getName());
             downloadBean.setMangaUrl(currentManga.getUrl());
             downloadBean.setThumbnailUrl(currentManga.getWebThumbnailUrl());
-            downloadBean.setChapterCount(end-start+1);
+            downloadBean.setChapterCount(end - start + 1);
             ArrayList<RxDownloadChapterBean> chapters = new ArrayList<>();
             for (int i = start; i <= end; i++) {
                 RxDownloadChapterBean item = new RxDownloadChapterBean();
                 item.setChapterUrl(currentManga.getChapters().get(i).getChapterUrl());
-                item.setChapterName((i+1) + "");
+                item.setChapterName((i + 1) + "");
                 chapters.add(item);
             }
             downloadBean.setChapters(chapters);
             DownloadCaretaker.saveDownloadMemoto(this, downloadBean);
 
             Intent serviceIntent = new Intent(this, TpDownloadService.class);
-            serviceIntent.putExtra("downloadBean",downloadBean);
-            //先结束
-//            stopService(serviceIntent);
+            if (ServiceUtil.isServiceWork(this,
+                    TpDownloadService.SERVICE_PCK_NAME)) {
+                //先结束
+                stopService(serviceIntent);
+            }
             //重新打开
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 startForegroundService(serviceIntent);
-            }else {
+            } else {
                 startService(serviceIntent);
             }
 
