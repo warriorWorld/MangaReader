@@ -82,6 +82,7 @@ public class ManageDownloadActivity extends BaseActivity implements View.OnClick
             @Override
             public void onRightClick() {
                 urlEt.setText("");
+                ManageDownloadCaretaker.clean(ManageDownloadActivity.this);
             }
 
             @Override
