@@ -204,7 +204,7 @@ public class ManageDownloadActivity extends BaseActivity implements View.OnClick
     }
 
     private void doDownload(boolean isNext) {
-        Intent stopIntent=new Intent(this,TpDownloadService.class);
+        Intent stopIntent = new Intent(this, TpDownloadService.class);
         if (ServiceUtil.isServiceWork(this,
                 TpDownloadService.SERVICE_PCK_NAME)) {
             //先结束
@@ -212,6 +212,22 @@ public class ManageDownloadActivity extends BaseActivity implements View.OnClick
         }
         assembleDownloadBean(isNext);
         startDownload();
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        if (!TextUtils.isEmpty(urlEt.getText().toString().replaceAll(" ", ""))) {
+            ManageDownloadCaretaker.saveContentMemoto(this, urlEt.getText().toString().replaceAll(" ", ""));
+        }
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        if (!TextUtils.isEmpty(ManageDownloadCaretaker.getContentMemoto(this))) {
+            urlEt.setText(ManageDownloadCaretaker.getContentMemoto(this));
+        }
     }
 
     /**
