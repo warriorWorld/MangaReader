@@ -598,6 +598,12 @@ public class WebMangaDetailsActivity extends TTSActivity implements AdapterView.
             // Already have permission, do the thing
             // ...
             baseToast.showToast("开始下载!");
+            Intent stopIntent=new Intent(this,TpDownloadService.class);
+            if (ServiceUtil.isServiceWork(this,
+                    TpDownloadService.SERVICE_PCK_NAME)) {
+                //先结束
+                stopService(stopIntent);
+            }
             DownloadCaretaker.clean(this);
             RxDownloadBean downloadBean = new RxDownloadBean();
             downloadBean.setDownloader(new CommonDownloader(spider));
@@ -616,11 +622,7 @@ public class WebMangaDetailsActivity extends TTSActivity implements AdapterView.
             DownloadCaretaker.saveDownloadMemoto(this, downloadBean);
 
             Intent serviceIntent = new Intent(this, TpDownloadService.class);
-            if (ServiceUtil.isServiceWork(this,
-                    TpDownloadService.SERVICE_PCK_NAME)) {
-                //先结束
-                stopService(serviceIntent);
-            }
+
             serviceIntent.putExtra("downloadBean", downloadBean);
             //重新打开
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {

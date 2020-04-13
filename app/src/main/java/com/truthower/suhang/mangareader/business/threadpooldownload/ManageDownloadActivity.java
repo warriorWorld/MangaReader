@@ -134,11 +134,6 @@ public class ManageDownloadActivity extends BaseActivity implements View.OnClick
 
     private void startDownload() {
         Intent serviceIntent = new Intent(this, TpDownloadService.class);
-        if (ServiceUtil.isServiceWork(this,
-                TpDownloadService.SERVICE_PCK_NAME)) {
-            //先结束
-            stopService(serviceIntent);
-        }
         //重新打开
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             startForegroundService(serviceIntent);
@@ -208,6 +203,17 @@ public class ManageDownloadActivity extends BaseActivity implements View.OnClick
         return maxNum;
     }
 
+    private void doDownload(boolean isNext) {
+        Intent stopIntent=new Intent(this,TpDownloadService.class);
+        if (ServiceUtil.isServiceWork(this,
+                TpDownloadService.SERVICE_PCK_NAME)) {
+            //先结束
+            stopService(stopIntent);
+        }
+        assembleDownloadBean(isNext);
+        startDownload();
+    }
+
     /**
      * Handle button click events<br />
      * <br />
@@ -218,12 +224,10 @@ public class ManageDownloadActivity extends BaseActivity implements View.OnClick
     public void onClick(View v) {
         if (v == downloadBtn) {
             // Handle clicks for downloadBtn
-            assembleDownloadBean(false);
-            startDownload();
+            doDownload(false);
         } else if (v == downloadBtn1) {
             // Handle clicks for downloadBtn1
-            assembleDownloadBean(true);
-            startDownload();
+            doDownload(true);
         }
     }
 
