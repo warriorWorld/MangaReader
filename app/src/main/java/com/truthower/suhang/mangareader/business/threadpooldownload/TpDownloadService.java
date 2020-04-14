@@ -110,6 +110,7 @@ public class TpDownloadService extends Service {
             mEasyToast.showToast(downloadBean.getMangaName() + "全部下载完成!");
             DownloadCaretaker.clean(this);
             EventBus.getDefault().post(new TpDownloadEvent(EventBusEvent.DOWNLOAD_FINISH_EVENT));
+            stopSelf();
             return;
         }
         currentChapter = chapters.get(0);

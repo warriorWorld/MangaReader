@@ -12,6 +12,7 @@ import com.truthower.suhang.mangareader.eventbus.DownLoadEvent;
 import com.truthower.suhang.mangareader.eventbus.EventBusEvent;
 import com.truthower.suhang.mangareader.listener.DownloadCallBack;
 import com.truthower.suhang.mangareader.listener.JsoupCallBack;
+import com.truthower.suhang.mangareader.listener.OnResultListener;
 import com.truthower.suhang.mangareader.utils.ImageUtil;
 import com.truthower.suhang.mangareader.utils.Logger;
 import com.truthower.suhang.mangareader.utils.StringUtil;
@@ -151,6 +152,10 @@ public class FileSpider {
         }
     }
 
+    public String saveBitmap(Bitmap b, String bmpName,
+                             String childFolder, String mangaName) {
+        return saveBitmap(b, bmpName, childFolder, mangaName, null);
+    }
 
     /**
      * 存图片 TODO
@@ -162,7 +167,7 @@ public class FileSpider {
      * @childFolder 子文件夹名 因为漫画图片数量太大 所以在多一层子文件夹 自动建立
      */
     public String saveBitmap(Bitmap b, String bmpName,
-                             String childFolder, String mangaName) {
+                             String childFolder, String mangaName, OnResultListener listener) {
 //        b = ImageUtil.imageZoom(b, 600);
         String path = Configure.storagePath + "/" + mangaName;
         String jpegName = path + "/" + childFolder + "/" + bmpName;
@@ -180,8 +185,17 @@ public class FileSpider {
             bos.close();
         } catch (IOException e) {
             e.printStackTrace();
-        }catch (NullPointerException e){
+            if (null != listener) {
+                listener.onFailed();
+            }
+        } catch (NullPointerException e) {
             e.printStackTrace();
+            if (null != listener) {
+                listener.onFailed();
+            }
+        }
+        if (null != listener) {
+            listener.onFinish();
         }
         return jpegName;
     }

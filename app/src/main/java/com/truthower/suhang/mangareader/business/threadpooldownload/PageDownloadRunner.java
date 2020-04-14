@@ -17,21 +17,35 @@ public class PageDownloadRunner implements Runnable {
     private RxDownloadPageBean mPageBean;
     private OnResultListener mOnResultListener;
 
-    public PageDownloadRunner(RxDownloadPageBean pageBean,OnResultListener onResultListener) {
+    public PageDownloadRunner(RxDownloadPageBean pageBean, OnResultListener onResultListener) {
         mPageBean = pageBean;
-        mOnResultListener=onResultListener;
+        mOnResultListener = onResultListener;
     }
 
     @Override
     public void run() {
         Bitmap bp = downloadUrlBitmap(mPageBean.getPageUrl());
         //把图片保存到本地
-        FileSpider.getInstance().saveBitmap(bp, mPageBean.getPageName(), mPageBean.getChapterName(), mPageBean.getMangaName());
-        mPageBean.setDownloaded(true);
-        Logger.d("one page downloaded; chapter: "+mPageBean.getChapterName()+" page: "+mPageBean.getPageName());
-        if (null != mOnResultListener) {
-            mOnResultListener.onFinish();
-        }
+        FileSpider.getInstance().saveBitmap(bp, mPageBean.getPageName(), mPageBean.getChapterName(), mPageBean.getMangaName(), new OnResultListener() {
+            @Override
+            public void onFinish() {
+                mPageBean.setDownloaded(true);
+                Logger.d("one page downloaded; chapter: " + mPageBean.getChapterName() + " page: " + mPageBean.getPageName());
+                if (null != mOnResultListener) {
+                    mOnResultListener.onFinish();
+                }
+            }
+
+            @Override
+            public void onFailed() {
+                //TODO 失败处理
+                Logger.d("one page downloaded filed!!! " + mPageBean.getChapterName() + " page: " + mPageBean.getPageName());
+                mPageBean.setDownloaded(true);
+                if (null != mOnResultListener) {
+                    mOnResultListener.onFinish();
+                }
+            }
+        });
     }
 
     private Bitmap downloadUrlBitmap(String urlString) {
