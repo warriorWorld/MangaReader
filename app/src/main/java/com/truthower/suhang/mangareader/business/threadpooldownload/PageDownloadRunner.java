@@ -24,9 +24,7 @@ public class PageDownloadRunner implements Runnable {
 
     @Override
     public void run() {
-        Bitmap bp = downloadUrlBitmap(mPageBean.getPageUrl());
-        //把图片保存到本地
-        FileSpider.getInstance().saveBitmap(bp, mPageBean.getPageName(), mPageBean.getChapterName(), mPageBean.getMangaName(), new OnResultListener() {
+        Bitmap bp = downloadUrlBitmap(mPageBean.getPageUrl(), new OnResultListener() {
             @Override
             public void onFinish() {
                 mPageBean.setDownloaded(true);
@@ -46,9 +44,11 @@ public class PageDownloadRunner implements Runnable {
                 }
             }
         });
+        //把图片保存到本地
+        FileSpider.getInstance().saveBitmap(bp, mPageBean.getPageName(), mPageBean.getChapterName(), mPageBean.getMangaName());
     }
 
-    private Bitmap downloadUrlBitmap(String urlString) {
+    private Bitmap downloadUrlBitmap(String urlString, OnResultListener listener) {
         HttpURLConnection urlConnection = null;
         BufferedInputStream in = null;
         Bitmap bitmap = null;
@@ -57,8 +57,14 @@ public class PageDownloadRunner implements Runnable {
             urlConnection = (HttpURLConnection) url.openConnection();
             in = new BufferedInputStream(urlConnection.getInputStream(), 8 * 1024);
             bitmap = BitmapFactory.decodeStream(in);
+            if (null != listener) {
+                listener.onFinish();
+            }
         } catch (final IOException e) {
             e.printStackTrace();
+            if (null != listener) {
+                listener.onFailed();
+            }
         } finally {
             if (urlConnection != null) {
                 urlConnection.disconnect();

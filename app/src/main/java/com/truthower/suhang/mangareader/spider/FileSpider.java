@@ -152,11 +152,6 @@ public class FileSpider {
         }
     }
 
-    public String saveBitmap(Bitmap b, String bmpName,
-                             String childFolder, String mangaName) {
-        return saveBitmap(b, bmpName, childFolder, mangaName, null);
-    }
-
     /**
      * 存图片 TODO
      *
@@ -167,7 +162,7 @@ public class FileSpider {
      * @childFolder 子文件夹名 因为漫画图片数量太大 所以在多一层子文件夹 自动建立
      */
     public String saveBitmap(Bitmap b, String bmpName,
-                             String childFolder, String mangaName, OnResultListener listener) {
+                             String childFolder, String mangaName) {
 //        b = ImageUtil.imageZoom(b, 600);
         String path = Configure.storagePath + "/" + mangaName;
         String jpegName = path + "/" + childFolder + "/" + bmpName;
@@ -185,17 +180,8 @@ public class FileSpider {
             bos.close();
         } catch (IOException e) {
             e.printStackTrace();
-            if (null != listener) {
-                listener.onFailed();
-            }
         } catch (NullPointerException e) {
             e.printStackTrace();
-            if (null != listener) {
-                listener.onFailed();
-            }
-        }
-        if (null != listener) {
-            listener.onFinish();
         }
         return jpegName;
     }
