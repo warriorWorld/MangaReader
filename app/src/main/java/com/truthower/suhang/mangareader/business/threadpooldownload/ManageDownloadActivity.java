@@ -54,8 +54,11 @@ public class ManageDownloadActivity extends BaseActivity implements View.OnClick
     }
 
     private void refreshUI() {
-        downloadBtn.setText("下载到" + folderName + "/" + subFolderName);
-        downloadBtn1.setText("下载到" + folderName + "/" + nextSubFolderName);
+        downloadBtn.setText("下载到当前(" + folderName + "/" + subFolderName + ")");
+        downloadBtn1.setText("下载到下一个(" + folderName + "/" + nextSubFolderName + ")");
+        if (!TextUtils.isEmpty(ManageDownloadCaretaker.getContentMemoto(this))) {
+            urlEt.setText(ManageDownloadCaretaker.getContentMemoto(this));
+        }
     }
 
     /**
@@ -216,18 +219,10 @@ public class ManageDownloadActivity extends BaseActivity implements View.OnClick
     }
 
     @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
+    protected void onPause() {
+        super.onPause();
         if (!TextUtils.isEmpty(urlEt.getText().toString().replaceAll(" ", ""))) {
             ManageDownloadCaretaker.saveContentMemoto(this, urlEt.getText().toString().replaceAll(" ", ""));
-        }
-    }
-
-    @Override
-    protected void onRestoreInstanceState(Bundle savedInstanceState) {
-        super.onRestoreInstanceState(savedInstanceState);
-        if (!TextUtils.isEmpty(ManageDownloadCaretaker.getContentMemoto(this))) {
-            urlEt.setText(ManageDownloadCaretaker.getContentMemoto(this));
         }
     }
 
