@@ -75,8 +75,6 @@ public class AboutActivity extends BaseActivity implements View.OnClickListener 
         } else {
             openPremiumRl.setVisibility(View.GONE);
             openPremiumVoiceRl.setVisibility(View.GONE);
-            openPremiumVoiceCb.setChecked(false);
-            openPremiumCb.setChecked(false);
         }
         economyModeCb = (CheckBox) findViewById(R.id.economy_mode_cb);
         economyModeCb.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
