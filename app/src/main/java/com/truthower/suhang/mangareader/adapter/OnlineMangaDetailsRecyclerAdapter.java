@@ -8,6 +8,7 @@ import android.widget.TextView;
 
 import com.truthower.suhang.mangareader.R;
 import com.truthower.suhang.mangareader.bean.ChapterBean;
+import com.truthower.suhang.mangareader.listener.OnRecycleItemClickListener;
 
 import java.util.ArrayList;
 
@@ -21,6 +22,7 @@ public class OnlineMangaDetailsRecyclerAdapter extends RecyclerView.Adapter<Onli
     private Context context;
     private ArrayList<ChapterBean> list = new ArrayList<>();
     private int lastReadPosition = -1;
+    private OnRecycleItemClickListener mOnRecycleItemClickListener;
 
     public OnlineMangaDetailsRecyclerAdapter(Context context) {
         this.context = context;
@@ -41,11 +43,19 @@ public class OnlineMangaDetailsRecyclerAdapter extends RecyclerView.Adapter<Onli
         final ChapterBean item = list.get(position);
         if (lastReadPosition == position) {
             viewHolder.bookmarkIv.setVisibility(View.VISIBLE);
-            viewHolder.chapterTv.setText("");
+            viewHolder.chapterTv.setText(item.getChapterPosition());
         } else {
             viewHolder.bookmarkIv.setVisibility(View.GONE);
             viewHolder.chapterTv.setText(item.getChapterPosition());
         }
+        viewHolder.chapterTv.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (null!=mOnRecycleItemClickListener){
+                    mOnRecycleItemClickListener.onItemClick(position);
+                }
+            }
+        });
     }
 
     //获取数据的数量
@@ -64,6 +74,14 @@ public class OnlineMangaDetailsRecyclerAdapter extends RecyclerView.Adapter<Onli
     public void setLastReadPosition(int lastReadPosition) {
         this.lastReadPosition = lastReadPosition;
         notifyDataSetChanged();
+    }
+
+    public int getLastReadPosition() {
+        return lastReadPosition;
+    }
+
+    public void setOnRecycleItemClickListener(OnRecycleItemClickListener onRecycleItemClickListener) {
+        mOnRecycleItemClickListener = onRecycleItemClickListener;
     }
 
     //自定义的ViewHolder，持有每个Item的的所有界面元素

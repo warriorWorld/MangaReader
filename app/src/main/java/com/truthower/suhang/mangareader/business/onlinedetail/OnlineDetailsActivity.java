@@ -1,9 +1,10 @@
 package com.truthower.suhang.mangareader.business.onlinedetail;
 
+import android.Manifest;
 import android.content.Intent;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
@@ -15,24 +16,52 @@ import com.truthower.suhang.mangareader.R;
 import com.truthower.suhang.mangareader.adapter.OnlineMangaDetailsRecyclerAdapter;
 import com.truthower.suhang.mangareader.base.BaseActivity;
 import com.truthower.suhang.mangareader.bean.MangaBean;
+import com.truthower.suhang.mangareader.bean.RxDownloadBean;
+import com.truthower.suhang.mangareader.bean.RxDownloadChapterBean;
+import com.truthower.suhang.mangareader.business.main.MainActivity;
+import com.truthower.suhang.mangareader.business.read.ReadMangaActivity;
+import com.truthower.suhang.mangareader.business.rxdownload.CommonDownloader;
+import com.truthower.suhang.mangareader.business.rxdownload.DownloadCaretaker;
+import com.truthower.suhang.mangareader.business.search.SearchActivity;
+import com.truthower.suhang.mangareader.business.threadpooldownload.TpDownloadActivity;
+import com.truthower.suhang.mangareader.business.threadpooldownload.TpDownloadService;
 import com.truthower.suhang.mangareader.config.Configure;
 import com.truthower.suhang.mangareader.config.ShareKeys;
+import com.truthower.suhang.mangareader.eventbus.EventBusEvent;
+import com.truthower.suhang.mangareader.eventbus.JumpEvent;
+import com.truthower.suhang.mangareader.eventbus.TagClickEvent;
+import com.truthower.suhang.mangareader.listener.OnRecycleItemClickListener;
+import com.truthower.suhang.mangareader.listener.OnResultListener;
+import com.truthower.suhang.mangareader.listener.OnSevenFourteenListDialogListener;
+import com.truthower.suhang.mangareader.utils.ActivityPoor;
 import com.truthower.suhang.mangareader.utils.BaseParameterUtil;
 import com.truthower.suhang.mangareader.utils.DisplayUtil;
+import com.truthower.suhang.mangareader.utils.ServiceUtil;
 import com.truthower.suhang.mangareader.utils.SharedPreferencesUtils;
 import com.truthower.suhang.mangareader.utils.UltimateTextSizeUtil;
+import com.truthower.suhang.mangareader.widget.bar.TopBar;
+import com.truthower.suhang.mangareader.widget.dialog.GestureDialog;
+import com.truthower.suhang.mangareader.widget.dialog.ListDialog;
+import com.truthower.suhang.mangareader.widget.dialog.MangaDialog;
+import com.truthower.suhang.mangareader.widget.gesture.GestureLockViewGroup;
 import com.truthower.suhang.mangareader.widget.popupwindow.EasyPopupWindow;
-import com.truthower.suhang.mangareader.widget.recyclerview.RecyclerGridDecoration;
 import com.truthower.suhang.mangareader.widget.recyclerview.SpaceItemDecoration;
+import com.truthower.suhang.mangareader.widget.wheelview.wheelselector.SingleSelectorDialog;
+
+import org.greenrobot.eventbus.EventBus;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+import pub.devrel.easypermissions.AfterPermissionGranted;
+import pub.devrel.easypermissions.EasyPermissions;
 
-public class OnlineDetailsActivity extends BaseActivity {
+public class OnlineDetailsActivity extends BaseActivity implements View.OnClickListener, EasyPermissions.PermissionCallbacks {
     private RelativeLayout mangaInfoRl;
     private ImageView thumbnailIv;
     private TextView nameTv;
@@ -46,6 +75,10 @@ public class OnlineDetailsActivity extends BaseActivity {
     private MangaBean currentManga;
     private OnlineMangaDetailsRecyclerAdapter adapter;
     private String mangaUrl;
+    private boolean chooseing = false;//判断是否在选择状态
+    private boolean firstChoose = true;
+    private String[] optionsList = {"下载全部", "区间下载"};
+    private int downloadStartPoint = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,6 +93,7 @@ public class OnlineDetailsActivity extends BaseActivity {
         initUI();
         initViewModel();
         mOnlineDetailVM.getMangaDetails(mangaUrl);
+        mOnlineDetailVM.getIsCollected(mangaUrl);
     }
 
     private void initUI() {
@@ -86,14 +120,14 @@ public class OnlineDetailsActivity extends BaseActivity {
         }
         // 减掉RecyclerView父布局两侧padding和item的宽度，然后平分，默认每个item右侧会填充剩余空间
         int spaceWidth = (DisplayUtil.getScreenWidth(this) -
-                (int) (DisplayUtil.dip2px(this,20)) -
-                (int) (DisplayUtil.dip2px(this,60) * column)) / (column * (column - 1));
+                (int) (DisplayUtil.dip2px(this, 20)) -
+                (int) (DisplayUtil.dip2px(this, 60) * column)) / (column * (column - 1));
         ptfGridView.addItemDecoration(new SpaceItemDecoration(spaceWidth, column));
 
         ptfGridView.setLayoutManager(new GridLayoutManager(this, column));
         ptfGridView.setFocusableInTouchMode(false);
         ptfGridView.setFocusable(false);
-//        ptfGridView.setHasFixedSize(true);
+        ptfGridView.setHasFixedSize(true);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             ptfGridView.setOnScrollChangeListener(new View.OnScrollChangeListener() {
                 @Override
@@ -109,6 +143,210 @@ public class OnlineDetailsActivity extends BaseActivity {
                 }
             });
         }
+        collectView.setOnClickListener(this);
+        typeTv.setOnClickListener(this);
+        authorTv.setOnClickListener(this);
+        thumbnailIv.setOnClickListener(this);
+        baseTopBar.setRightBackground(R.drawable.more);
+        baseTopBar.setOnTopBarClickListener(new TopBar.OnTopBarClickListener() {
+
+            @Override
+            public void onRightClick() {
+                if (mOnlineDetailVM.getIsForAdult()) {
+                    showGestureDialog(new OnResultListener() {
+                        @Override
+                        public void onFinish() {
+                            showOptionsSelectorDialog();
+                        }
+
+                        @Override
+                        public void onFailed() {
+
+                        }
+                    });
+                } else {
+                    showOptionsSelectorDialog();
+                }
+            }
+
+            @Override
+            public void onTitleClick() {
+
+            }
+
+            @Override
+            public void onLeftClick() {
+                OnlineDetailsActivity.this.finish();
+            }
+        });
+    }
+
+    private void showOptionsSelectorDialog() {
+        ListDialog listDialog = new ListDialog(this);
+        listDialog.setOnSevenFourteenListDialogListener(new OnSevenFourteenListDialogListener() {
+            @Override
+            public void onItemClick(String selectedRes, String selectedCodeRes) {
+
+            }
+
+            @Override
+            public void onItemClick(String selectedRes) {
+
+            }
+
+            @Override
+            public void onItemClick(int position) {
+                switch (position) {
+                    case 0:
+                        downloadAll();
+                        break;
+                    case 1:
+                        chooseing = true;
+                        firstChoose = true;
+                        baseToast.showToast("请点击下载起点!");
+                        break;
+                }
+            }
+        });
+        listDialog.show();
+        listDialog.setOptionsList(optionsList);
+    }
+
+    private void downloadAll() {
+        doDownload(0, currentManga.getChapters().size() - 1);
+    }
+
+    @AfterPermissionGranted(Configure.PERMISSION_FILE_REQUST_CODE)
+    private void doDownload(int start, int end) {
+        String[] perms = {Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE};
+        if (EasyPermissions.hasPermissions(this, perms)) {
+            // Already have permission, do the thing
+            // ...
+            baseToast.showToast("开始下载!");
+            Intent stopIntent = new Intent(this, TpDownloadService.class);
+            if (ServiceUtil.isServiceWork(this,
+                    TpDownloadService.SERVICE_PCK_NAME)) {
+                //先结束
+                stopService(stopIntent);
+            }
+            DownloadCaretaker.clean(this);
+            RxDownloadBean downloadBean = new RxDownloadBean();
+            downloadBean.setDownloader(new CommonDownloader(mOnlineDetailVM.getSpider()));
+            downloadBean.setMangaName(currentManga.getName());
+            downloadBean.setMangaUrl(currentManga.getUrl());
+            downloadBean.setThumbnailUrl(currentManga.getWebThumbnailUrl());
+            downloadBean.setChapterCount(end - start + 1);
+            ArrayList<RxDownloadChapterBean> chapters = new ArrayList<>();
+            for (int i = start; i <= end; i++) {
+                RxDownloadChapterBean item = new RxDownloadChapterBean();
+                item.setChapterUrl(currentManga.getChapters().get(i).getChapterUrl());
+                item.setChapterName((i + 1) + "");
+                chapters.add(item);
+            }
+            downloadBean.setChapters(chapters);
+            DownloadCaretaker.saveDownloadMemoto(this, downloadBean);
+
+            Intent serviceIntent = new Intent(this, TpDownloadService.class);
+
+            serviceIntent.putExtra("downloadBean", downloadBean);
+            //重新打开
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                startForegroundService(serviceIntent);
+            } else {
+                startService(serviceIntent);
+            }
+
+            Intent intent = new Intent(this, TpDownloadActivity.class);
+            startActivity(intent);
+            this.finish();
+        } else {
+            // Do not have permissions, request them now
+            EasyPermissions.requestPermissions(this, "我们需要写入/读取权限",
+                    Configure.PERMISSION_FILE_REQUST_CODE, perms);
+        }
+    }
+
+    @Override
+    public void onEventMainThread(EventBusEvent event) {
+        if (null == event) {
+            return;
+        }
+        Intent intent = null;
+        switch (event.getEventType()) {
+            case EventBusEvent.TO_LAST_CHAPTER:
+                if (adapter.getLastReadPosition() > 0) {
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            //readactivity是singletask 先结束后打开
+                            toReadActivity(adapter.getLastReadPosition() - 1);
+                        }
+                    }, 500);
+                } else {
+                    baseToast.showToast("已经是第一章");
+                }
+                break;
+            case EventBusEvent.TO_NEXT_CHAPTER:
+                if (adapter.getLastReadPosition() < currentManga.getChapters().size() - 1) {
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            //readactivity是singletask 先结束后打开
+                            toReadActivity(adapter.getLastReadPosition() + 1);
+                        }
+                    }, 500);
+                } else {
+                    baseToast.showToast("已经是最后一章");
+                }
+                break;
+        }
+        if (null != intent) {
+            startActivity(intent);
+        }
+    }
+
+    private void toReadActivity(int position) {
+        Intent intent = new Intent(this, ReadMangaActivity.class);
+        String currentMangaName = currentManga.getName() + "(" + currentManga.getChapters().
+                get(position).getChapterPosition() + ")";
+        SharedPreferencesUtils.setSharedPreferencesData(this,
+                ShareKeys.ONLINE_MANGA_READ_CHAPTER_POSITION + currentManga.getName(), position);
+        adapter.setLastReadPosition(position);
+
+        intent.putExtra("chapterUrl", currentManga.getChapters().get(position).getChapterUrl());
+        intent.putExtra("currentMangaName", currentMangaName);
+        startActivity(intent);
+    }
+
+    private void showGestureDialog(final OnResultListener listener) {
+        final GestureDialog gestureDialog = new GestureDialog(this);
+        gestureDialog.show();
+        gestureDialog.setOnGestureLockViewListener(new GestureLockViewGroup.OnGestureLockViewListener() {
+            @Override
+            public void onBlockSelected(int cId) {
+
+            }
+
+            @Override
+            public void onGestureEvent(boolean matched) {
+
+            }
+
+            @Override
+            public void onGestureEvent(String choose) {
+                if (choose.equals("7485")) {
+                    listener.onFinish();
+                } else {
+                    listener.onFailed();
+                }
+                gestureDialog.dismiss();
+            }
+
+            @Override
+            public void onUnmatchedExceedBoundary() {
+
+            }
+        });
     }
 
     private void initViewModel() {
@@ -122,10 +360,10 @@ public class OnlineDetailsActivity extends BaseActivity {
                 showDescription();
             }
         });
-        mOnlineDetailVM.getError().observe(this, new Observer<String>() {
+        mOnlineDetailVM.getMessage().observe(this, new Observer<String>() {
             @Override
             public void onChanged(String s) {
-
+                baseToast.showToast(s);
             }
         });
         mOnlineDetailVM.getAuthorOptions().observe(this, new Observer<String[]>() {
@@ -138,18 +376,10 @@ public class OnlineDetailsActivity extends BaseActivity {
             @Override
             public void onChanged(Boolean aBoolean) {
                 if (aBoolean) {
-                    baseToast.showToast("收藏成功");
                     collectView.setBackgroundResource(R.drawable.collected);
                 } else {
-                    baseToast.showToast("取消收藏");
                     collectView.setBackgroundResource(R.drawable.collect);
                 }
-            }
-        });
-        mOnlineDetailVM.getIsForAdult().observe(this, new Observer<Boolean>() {
-            @Override
-            public void onChanged(Boolean aBoolean) {
-
             }
         });
         mOnlineDetailVM.getIsUpdating().observe(this, new Observer<Boolean>() {
@@ -199,6 +429,66 @@ public class OnlineDetailsActivity extends BaseActivity {
                 (this, ShareKeys.ONLINE_MANGA_READ_CHAPTER_POSITION + currentManga.getName()));
     }
 
+    private void showTagsSelector() {
+        SingleSelectorDialog tagSelector = new SingleSelectorDialog(this);
+        tagSelector.setCancelable(true);
+        tagSelector.setOnSingleSelectedListener(new SingleSelectorDialog.OnSingleSelectedListener() {
+
+            @Override
+            public void onOkBtnClick(String selectedRes, String selectedCodeRes) {
+                JumpEvent jumpEvent = new JumpEvent(EventBusEvent.JUMP_EVENT);
+                jumpEvent.setJumpPoint(0);
+                TagClickEvent tagClickEvent = new TagClickEvent(EventBusEvent.TAG_CLICK_EVENT);
+                selectedRes = selectedRes.toLowerCase();
+                selectedRes = selectedRes.replaceAll(" ", "-");
+                tagClickEvent.setSelectTag(selectedRes);
+                if (!TextUtils.isEmpty(selectedCodeRes)) {
+                    tagClickEvent.setSelectCode(selectedCodeRes);
+                }
+                EventBus.getDefault().post(jumpEvent);
+                EventBus.getDefault().post(tagClickEvent);
+                ActivityPoor.finishAllActivityButThis(MainActivity.class);
+            }
+
+            @Override
+            public void onOkBtnClick(int position) {
+
+            }
+        });
+        tagSelector.show();
+        tagSelector.setWheelViewTitle("选择标签");
+        if (null != currentManga.getTypeCodes() && currentManga.getTypeCodes().length > 0) {
+            tagSelector.initOptionsData(currentManga.getTypes(), currentManga.getTypeCodes());
+        } else {
+            tagSelector.initOptionsData(currentManga.getTypes());
+        }
+    }
+
+    private void showAuthorSelector() {
+        SingleSelectorDialog authorSelector = new SingleSelectorDialog(this);
+        authorSelector.setCancelable(true);
+        authorSelector.setOnSingleSelectedListener(new SingleSelectorDialog.OnSingleSelectedListener() {
+
+            @Override
+            public void onOkBtnClick(String selectedRes, String selectedCodeRes) {
+                Intent intent = new Intent(OnlineDetailsActivity.this, SearchActivity.class);
+                intent.putExtra("selectedWebSite", BaseParameterUtil.getInstance().getCurrentWebSite(OnlineDetailsActivity.this));
+                intent.putExtra("searchType", "author");
+                intent.putExtra("keyWord", selectedRes);
+                intent.putExtra("immediateSearch", true);
+                startActivity(intent);
+            }
+
+            @Override
+            public void onOkBtnClick(int position) {
+
+            }
+        });
+        authorSelector.show();
+        authorSelector.setWheelViewTitle("选择作者");
+        authorSelector.initOptionsData(currentManga.getAuthor().split(","));
+    }
+
     private void showDescription() {
         String description = currentManga.getDescription();
         if (TextUtils.isEmpty(description)) {
@@ -215,6 +505,36 @@ public class OnlineDetailsActivity extends BaseActivity {
             if (null == adapter) {
                 adapter = new OnlineMangaDetailsRecyclerAdapter(this);
                 adapter.setList(currentManga.getChapters());
+                adapter.setOnRecycleItemClickListener(new OnRecycleItemClickListener() {
+                    @Override
+                    public void onItemClick(final int position) {
+                        if (chooseing) {
+                            if (firstChoose) {
+                                baseToast.showToast("请点击下载终点!");
+                                downloadStartPoint = position;
+                                firstChoose = false;
+                            } else {
+                                doDownload(downloadStartPoint, position);
+                            }
+                        } else {
+                            if (mOnlineDetailVM.getIsForAdult()) {
+                                showGestureDialog(new OnResultListener() {
+                                    @Override
+                                    public void onFinish() {
+                                        toReadActivity(position);
+                                    }
+
+                                    @Override
+                                    public void onFailed() {
+
+                                    }
+                                });
+                            } else {
+                                toReadActivity(position);
+                            }
+                        }
+                    }
+                });
                 ptfGridView.setAdapter(adapter);
             } else {
                 adapter.setList(currentManga.getChapters());
@@ -228,5 +548,48 @@ public class OnlineDetailsActivity extends BaseActivity {
     @Override
     protected int getLayoutId() {
         return R.layout.activity_manga_details_online;
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.collect_view:
+                mOnlineDetailVM.doCollect(currentManga.getName(), mangaUrl, currentManga.getWebThumbnailUrl());
+                break;
+            case R.id.thumbnail_iv:
+                showDescription();
+                break;
+            case R.id.type_tv:
+                showTagsSelector();
+                break;
+            case R.id.author_tv:
+                showAuthorSelector();
+                break;
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        // Forward results to EasyPermissions
+        try {
+            EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this);
+        } catch (RuntimeException e) {
+            //RuntimeException: Cannot execute method doDownload because it is non-void method and/or has input parameters
+            //google这个东西没法调用带参数的方法
+            MangaDialog dialog = new MangaDialog(this);
+            dialog.show();
+            dialog.setTitle("已获得授权,请重新点击下载.");
+        }
+    }
+
+    @Override
+    public void onPermissionsGranted(int requestCode, List<String> perms) {
+        baseToast.showToast("已获得授权,请继续!");
+    }
+
+    @Override
+    public void onPermissionsDenied(int requestCode, List<String> perms) {
+        baseToast.showToast("没文件读取/写入授权,你让我怎么下载漫画?", true);
     }
 }
