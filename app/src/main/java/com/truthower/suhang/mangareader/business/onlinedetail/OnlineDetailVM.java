@@ -2,7 +2,6 @@ package com.truthower.suhang.mangareader.business.onlinedetail;
 
 import android.content.Context;
 import android.os.Handler;
-import android.text.TextUtils;
 
 import com.truthower.suhang.mangareader.bean.MangaBean;
 import com.truthower.suhang.mangareader.config.Configure;
@@ -30,7 +29,7 @@ public class OnlineDetailVM extends ViewModel {
     private int trySpiderPosition = 0;
     private Handler mHandler = new Handler();
 
-    public void init(Context context) {
+    void init(Context context) {
         mContext = context.getApplicationContext();
         db = new DbAdapter(mContext);
         initSpider();
@@ -49,7 +48,7 @@ public class OnlineDetailVM extends ViewModel {
         }
     }
 
-    public void getMangaDetails(final String url) {
+    void getMangaDetails(final String url) {
         isUpdating.setValue(true);
         spider.getMangaDetail(url, new JsoupCallBack<MangaBean>() {
             @Override
@@ -85,11 +84,11 @@ public class OnlineDetailVM extends ViewModel {
         });
     }
 
-    public void getIsCollected(String url) {
+    void getIsCollected(String url) {
         isCollected.setValue(db.queryCollectExist(url));
     }
 
-    public void doCollect(String mangaName, String url, String thumbnailUrl) {
+    void doCollect(String mangaName, String url, String thumbnailUrl) {
         if (isCollected.getValue()) {
             db.deleteCollect(url);
             isCollected.setValue(false);
@@ -101,25 +100,25 @@ public class OnlineDetailVM extends ViewModel {
         }
     }
 
-    public LiveData<MangaBean> getManga() {
+    LiveData<MangaBean> getManga() {
         return manga;
     }
 
-    public LiveData<String> getMessage() {
+    LiveData<String> getMessage() {
         return message;
     }
 
-    public LiveData<String[]> getAuthorOptions() {
+    LiveData<String[]> getAuthorOptions() {
         return authorOptions;
     }
 
-    public LiveData<Boolean> getIsCollected() {
+    LiveData<Boolean> getIsCollected() {
         return isCollected;
     }
 
-    public boolean getIsForAdult() {
+    boolean getIsForAdult() {
         boolean isForAdult = false;
-        if (null==manga.getValue()||null==manga.getValue().getTypes()){
+        if (null == manga.getValue() || null == manga.getValue().getTypes()) {
             return false;
         }
         String types = Arrays.toString(manga.getValue().getTypes());
@@ -134,11 +133,11 @@ public class OnlineDetailVM extends ViewModel {
         return isForAdult;
     }
 
-    public LiveData<Boolean> getIsUpdating() {
+    LiveData<Boolean> getIsUpdating() {
         return isUpdating;
     }
 
-    public SpiderBase getSpider() {
+    SpiderBase getSpider() {
         return spider;
     }
 
