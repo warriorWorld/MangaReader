@@ -64,6 +64,7 @@
         </activity>
         <activity android:name=".business.detail.WebMangaDetailsActivity"></activity>
         <activity android:name=".business.detail.LocalMangaDetailsActivity"></activity>
+        <activity android:name=".business.onlinedetail.OnlineDetailsActivity"></activity>
         <activity
             android:name=".business.main.MainActivity"
             android:launchMode="singleTask"></activity>

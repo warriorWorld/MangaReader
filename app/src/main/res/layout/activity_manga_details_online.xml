@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.swiperefreshlayout.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/detail_srl"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <RelativeLayout
+            android:id="@+id/manga_info_rl"
+            android:layout_width="match_parent"
+            android:layout_height="180dp"
+            android:padding="10dp">
+
+            <ImageView
+                android:id="@+id/thumbnail_iv"
+                android:layout_width="122dp"
+                android:layout_height="match_parent"
+                android:layout_alignParentLeft="true" />
+
+            <TextView
+                android:id="@+id/name_tv"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="5dp"
+                android:layout_toLeftOf="@+id/collect_view"
+                android:layout_toRightOf="@+id/thumbnail_iv"
+                android:textColor="@color/main_text_color"
+                android:textSize="@dimen/details_text_size" />
+
+            <TextView
+                android:id="@+id/author_tv"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/name_tv"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="5dp"
+                android:layout_marginRight="3dp"
+                android:layout_toRightOf="@+id/thumbnail_iv"
+                android:textColor="@color/main_text_color"
+                android:textSize="@dimen/details_text_size" />
+
+            <TextView
+                android:id="@+id/type_tv"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/author_tv"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="5dp"
+                android:layout_marginRight="3dp"
+                android:layout_toRightOf="@+id/thumbnail_iv"
+                android:textColor="@color/main_text_color"
+                android:textSize="@dimen/details_text_size" />
+
+            <TextView
+                android:id="@+id/update_time_tv"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/type_tv"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="5dp"
+                android:layout_marginRight="3dp"
+                android:layout_toRightOf="@+id/thumbnail_iv"
+                android:textColor="@color/main_text_color"
+                android:textSize="14sp" />
+
+            <View
+                android:id="@+id/collect_view"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_alignParentRight="true"
+                android:layout_marginTop="3dp"
+                android:layout_marginRight="3dp"
+                android:background="@drawable/collect"></View>
+        </RelativeLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1px"
+            android:layout_below="@+id/manga_info"
+            android:background="@color/manga_reader"></View>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/ptf_grid_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/manga_info_rl"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"></androidx.recyclerview.widget.RecyclerView>
+    </RelativeLayout>
+</androidx.swiperefreshlayout.widget.SwipeRefreshLayout>

@@ -3,6 +3,7 @@ package com.truthower.suhang.mangareader.base;/**
  */
 
 import android.app.Activity;
+import android.app.AppComponentFactory;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
@@ -25,6 +26,7 @@ import com.truthower.suhang.mangareader.widget.toast.EasyToast;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
+import androidx.appcompat.app.AppCompatActivity;
 import io.reactivex.disposables.CompositeDisposable;
 
 
@@ -32,7 +34,7 @@ import io.reactivex.disposables.CompositeDisposable;
  * 作者：苏航 on 2016/10/17 11:56
  * 邮箱：772192594@qq.com
  */
-public abstract class BaseActivity extends Activity {
+public abstract class BaseActivity extends AppCompatActivity {
     protected TopBar baseTopBar;
     protected EasyToast baseToast;
     public CompositeDisposable mDisposable = new CompositeDisposable();

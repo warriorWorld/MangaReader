@@ -9,8 +9,8 @@ android {
         applicationId "com.truthower.suhang.mangareader"
         minSdkVersion 17
         targetSdkVersion 28
-        versionCode 52
-        versionName "4.2.0"
+        versionCode 53
+        versionName "4.2.1"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         //分包 65535
         multiDexEnabled true
@@ -28,6 +28,9 @@ android {
         abortOnError false
     }
     sourceSets.main.jniLibs.srcDirs = ['libs']//YOUDAO OCR
+    dataBinding {
+        enabled = true
+    }
 }
 
 dependencies {
@@ -71,4 +74,6 @@ dependencies {
     //有道
     implementation files('libs/YoudaoBase_v2.0.2.jar')
     implementation files('libs/YoudaoTranslateOnline_v2.0.0.jar')
+    //mvvm
+    implementation "android.arch.lifecycle:extensions:1.1.1"
 }
