@@ -21,6 +21,7 @@ import com.truthower.suhang.mangareader.base.BaseActivity;
 import com.truthower.suhang.mangareader.bean.MangaBean;
 import com.truthower.suhang.mangareader.bean.MangaListBean;
 import com.truthower.suhang.mangareader.business.detail.WebMangaDetailsActivity;
+import com.truthower.suhang.mangareader.business.onlinedetail.OnlineDetailsActivity;
 import com.truthower.suhang.mangareader.business.other.KeyboardSettingActivity;
 import com.truthower.suhang.mangareader.config.Configure;
 import com.truthower.suhang.mangareader.config.ShareKeys;
@@ -242,7 +243,7 @@ public class SearchActivity extends BaseActivity implements View.OnClickListener
                 adapter.setOnRecycleItemClickListener(new OnRecycleItemClickListener() {
                     @Override
                     public void onItemClick(int position) {
-                        Intent intent = new Intent(SearchActivity.this, WebMangaDetailsActivity.class);
+                        Intent intent = new Intent(SearchActivity.this, OnlineDetailsActivity.class);
                         intent.putExtra("mangaUrl", searchResultList.get(position).getUrl());
                         startActivity(intent);
                     }

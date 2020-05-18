@@ -26,6 +26,7 @@ import com.truthower.suhang.mangareader.bean.MangaBean;
 import com.truthower.suhang.mangareader.bean.MangaListBean;
 import com.truthower.suhang.mangareader.business.detail.LocalMangaDetailsActivity;
 import com.truthower.suhang.mangareader.business.detail.WebMangaDetailsActivity;
+import com.truthower.suhang.mangareader.business.onlinedetail.OnlineDetailsActivity;
 import com.truthower.suhang.mangareader.business.other.KeyboardSettingActivity;
 import com.truthower.suhang.mangareader.business.search.SearchActivity;
 import com.truthower.suhang.mangareader.config.Configure;
@@ -122,7 +123,7 @@ public class OnlineMangaFragment extends BaseFragment implements PullToRefreshBa
             public void onLeftClick() {
                 String lastUrl = SharedPreferencesUtils.getSharedPreferencesData(getActivity(), ShareKeys.LAST_READ_MANGA_URL);
                 if (!TextUtils.isEmpty(lastUrl)){
-                    Intent intent = new Intent(getActivity(), WebMangaDetailsActivity.class);
+                    Intent intent = new Intent(getActivity(), OnlineDetailsActivity.class);
                     intent.putExtra("mangaUrl", lastUrl);
                     startActivity(intent);
                 }else {
@@ -273,7 +274,7 @@ public class OnlineMangaFragment extends BaseFragment implements PullToRefreshBa
             mangaListLv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                    Intent intent = new Intent(getActivity(), WebMangaDetailsActivity.class);
+                    Intent intent = new Intent(getActivity(), OnlineDetailsActivity.class);
                     intent.putExtra("mangaUrl", totalMangaList.get(position).getUrl());
                     startActivity(intent);
                 }

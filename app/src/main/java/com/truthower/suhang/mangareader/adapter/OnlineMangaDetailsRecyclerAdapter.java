@@ -31,7 +31,7 @@ public class OnlineMangaDetailsRecyclerAdapter extends RecyclerView.Adapter<Onli
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
         View view;
-        view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.item_manga_web, viewGroup, false);
+        view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.item_manga_online, viewGroup, false);
         return new ViewHolder(view);
     }
 

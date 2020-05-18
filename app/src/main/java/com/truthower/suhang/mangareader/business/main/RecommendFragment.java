@@ -20,6 +20,7 @@ import com.truthower.suhang.mangareader.base.BaseFragment;
 import com.truthower.suhang.mangareader.base.BaseFragmentActivity;
 import com.truthower.suhang.mangareader.bean.MangaBean;
 import com.truthower.suhang.mangareader.business.detail.WebMangaDetailsActivity;
+import com.truthower.suhang.mangareader.business.onlinedetail.OnlineDetailsActivity;
 import com.truthower.suhang.mangareader.config.Configure;
 import com.truthower.suhang.mangareader.listener.JsoupCallBack;
 import com.truthower.suhang.mangareader.listener.OnRecycleItemClickListener;
@@ -517,7 +518,7 @@ public class RecommendFragment extends BaseFragment implements
                 adapter.setOnRecycleItemClickListener(new OnRecycleItemClickListener() {
                     @Override
                     public void onItemClick(int position) {
-                        Intent intent = new Intent(getActivity(), WebMangaDetailsActivity.class);
+                        Intent intent = new Intent(getActivity(), OnlineDetailsActivity.class);
                         intent.putExtra("mangaUrl", mangaList.get(position).getUrl());
                         startActivity(intent);
                     }

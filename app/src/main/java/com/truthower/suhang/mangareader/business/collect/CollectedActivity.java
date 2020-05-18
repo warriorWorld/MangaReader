@@ -18,6 +18,7 @@ import com.truthower.suhang.mangareader.adapter.OnlineMangaRecyclerListAdapter;
 import com.truthower.suhang.mangareader.base.BaseActivity;
 import com.truthower.suhang.mangareader.bean.MangaBean;
 import com.truthower.suhang.mangareader.business.detail.WebMangaDetailsActivity;
+import com.truthower.suhang.mangareader.business.onlinedetail.OnlineDetailsActivity;
 import com.truthower.suhang.mangareader.config.Configure;
 import com.truthower.suhang.mangareader.db.DbAdapter;
 import com.truthower.suhang.mangareader.listener.JsoupCallBack;
@@ -369,7 +370,7 @@ public class CollectedActivity extends BaseActivity implements OnRefreshListener
                 adapter.setOnRecycleItemClickListener(new OnRecycleItemClickListener() {
                     @Override
                     public void onItemClick(int position) {
-                        Intent intent = new Intent(CollectedActivity.this, WebMangaDetailsActivity.class);
+                        Intent intent = new Intent(CollectedActivity.this, OnlineDetailsActivity.class);
                         intent.putExtra("mangaUrl", collectedMangaList.get(position).getUrl());
                         startActivity(intent);
                     }

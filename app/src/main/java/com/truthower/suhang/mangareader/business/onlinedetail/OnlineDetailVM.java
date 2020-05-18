@@ -1,11 +1,19 @@
 package com.truthower.suhang.mangareader.business.onlinedetail;
 
+import android.app.ProgressDialog;
 import android.content.Context;
+import android.os.Handler;
+import android.text.TextUtils;
 
 import com.truthower.suhang.mangareader.bean.MangaBean;
+import com.truthower.suhang.mangareader.business.detail.WebMangaDetailsActivity;
+import com.truthower.suhang.mangareader.config.Configure;
 import com.truthower.suhang.mangareader.db.DbAdapter;
+import com.truthower.suhang.mangareader.listener.JsoupCallBack;
 import com.truthower.suhang.mangareader.spider.SpiderBase;
 import com.truthower.suhang.mangareader.utils.BaseParameterUtil;
+import com.truthower.suhang.mangareader.utils.PermissionUtil;
+
 
 import androidx.databinding.BaseObservable;
 import androidx.lifecycle.LiveData;
@@ -13,17 +21,21 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 public class OnlineDetailVM extends ViewModel {
-    private MutableLiveData<MangaBean> manga;
-    private MutableLiveData<String> error;
-    private MutableLiveData<String[]> authorOptions;
-    private MutableLiveData<Boolean> isCollected;
-    private MutableLiveData<Boolean> isForAdult;
+    private MutableLiveData<Boolean> isUpdating = new MutableLiveData<>();
+    private MutableLiveData<MangaBean> manga = new MutableLiveData<>();
+    private MutableLiveData<String> error = new MutableLiveData<>();
+    private MutableLiveData<String[]> authorOptions = new MutableLiveData<>();
+    private MutableLiveData<Boolean> isCollected = new MutableLiveData<>();
+    private MutableLiveData<Boolean> isForAdult = new MutableLiveData<>();
     private DbAdapter db;//数据库
     private Context mContext;
     private SpiderBase spider;
+    //因为我不知道当期收藏的漫画是哪个网站的 所以就一个个试
+    private int trySpiderPosition = 0;
+    private Handler mHandler = new Handler();
 
     public void init(Context context) {
-        mContext = context;
+        mContext = context.getApplicationContext();
         db = new DbAdapter(mContext);
         initSpider();
     }
@@ -39,6 +51,42 @@ public class OnlineDetailVM extends ViewModel {
         } catch (IllegalAccessException e) {
             e.printStackTrace();
         }
+    }
+
+    public void getMangaDetails(final String url) {
+        isUpdating.setValue(true);
+        spider.getMangaDetail(url, new JsoupCallBack<MangaBean>() {
+            @Override
+            public void loadSucceed(final MangaBean result) {
+                mHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        isUpdating.setValue(false);
+                        manga.setValue(result);
+                    }
+                });
+            }
+
+            @Override
+            public void loadFailed(final String error) {
+                mHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        isUpdating.setValue(false);
+                        if (error.equals(Configure.WRONG_WEBSITE_EXCEPTION)) {
+                            try {
+                                BaseParameterUtil.getInstance().saveCurrentWebSite(mContext, Configure.websList[trySpiderPosition]);
+                                initSpider();
+                                getMangaDetails(url);
+                                trySpiderPosition++;
+                            } catch (IndexOutOfBoundsException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }
+                });
+            }
+        });
     }
 
     public LiveData<MangaBean> getManga() {
@@ -61,10 +109,14 @@ public class OnlineDetailVM extends ViewModel {
         return isForAdult;
     }
 
+    public LiveData<Boolean> getIsUpdating() {
+        return isUpdating;
+    }
+
     @Override
     protected void onCleared() {
         super.onCleared();
+        isUpdating.setValue(false);
         db.closeDb();
-        mContext = null;
     }
 }
