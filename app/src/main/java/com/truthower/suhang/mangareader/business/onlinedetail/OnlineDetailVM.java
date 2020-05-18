@@ -9,6 +9,7 @@ import com.truthower.suhang.mangareader.db.DbAdapter;
 import com.truthower.suhang.mangareader.listener.JsoupCallBack;
 import com.truthower.suhang.mangareader.spider.SpiderBase;
 import com.truthower.suhang.mangareader.utils.BaseParameterUtil;
+import com.truthower.suhang.mangareader.widget.toast.EasyToast;
 
 import java.util.Arrays;
 
@@ -144,6 +145,7 @@ public class OnlineDetailVM extends ViewModel {
     @Override
     protected void onCleared() {
         super.onCleared();
+//        new EasyToast(mContext).showToast("viewmodel销毁了");
         isUpdating.setValue(false);
         db.closeDb();
     }
