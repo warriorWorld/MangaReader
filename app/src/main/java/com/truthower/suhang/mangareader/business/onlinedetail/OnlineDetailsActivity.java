@@ -6,6 +6,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.TextUtils;
+import android.util.SparseArray;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -36,6 +37,7 @@ import com.truthower.suhang.mangareader.listener.OnSevenFourteenListDialogListen
 import com.truthower.suhang.mangareader.utils.ActivityPoor;
 import com.truthower.suhang.mangareader.utils.BaseParameterUtil;
 import com.truthower.suhang.mangareader.utils.DisplayUtil;
+import com.truthower.suhang.mangareader.utils.SerializableSparseArray;
 import com.truthower.suhang.mangareader.utils.ServiceUtil;
 import com.truthower.suhang.mangareader.utils.ShareObjUtil;
 import com.truthower.suhang.mangareader.utils.SharedPreferencesUtils;
@@ -80,6 +82,7 @@ public class OnlineDetailsActivity extends BaseActivity implements View.OnClickL
     private boolean firstChoose = true;
     private String[] optionsList = {"下载全部", "区间下载", "缓存全部", "区间缓存", "清空缓存"};
     private int downloadStartPoint = 0;
+    private SerializableSparseArray<RxDownloadChapterBean> cacheChapters;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -386,6 +389,9 @@ public class OnlineDetailsActivity extends BaseActivity implements View.OnClickL
             @Override
             public void onChanged(MangaBean bean) {
                 currentManga = bean;
+                cacheChapters = (SerializableSparseArray<RxDownloadChapterBean>) ShareObjUtil.getObject(
+                        OnlineDetailsActivity.this, currentManga.getName()
+                                + ShareKeys.BRIDGE_KEY);
                 refreshUI();
                 showDescription();
             }
@@ -520,14 +526,19 @@ public class OnlineDetailsActivity extends BaseActivity implements View.OnClickL
     }
 
     private void showDescription() {
-        String description = currentManga.getDescription();
+        final String description = currentManga.getDescription();
         if (TextUtils.isEmpty(description)) {
             return;
         }
-        EasyPopupWindow ppw = new EasyPopupWindow(this);
-        ppw.adaptiveShowAsDropDown(thumbnailIv, 0, 0);
-        ppw.setMessage(description);
-        ppw.hideIKnowTv();
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                EasyPopupWindow ppw = new EasyPopupWindow(OnlineDetailsActivity.this);
+                ppw.adaptiveShowAsDropDown(thumbnailIv, 0, 0);
+                ppw.setMessage(description);
+                ppw.hideIKnowTv();
+            }
+        }, 1000);
     }
 
     private void initRec() {
@@ -535,6 +546,7 @@ public class OnlineDetailsActivity extends BaseActivity implements View.OnClickL
             if (null == adapter) {
                 adapter = new OnlineMangaDetailsRecyclerAdapter(this);
                 adapter.setList(currentManga.getChapters());
+                adapter.setCacheChapters(cacheChapters);
                 adapter.setOnRecycleItemClickListener(new OnRecycleItemClickListener() {
                     @Override
                     public void onItemClick(final int position) {

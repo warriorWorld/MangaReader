@@ -9,6 +9,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.IBinder;
+import android.util.SparseArray;
 import android.widget.RemoteViews;
 
 import com.truthower.suhang.mangareader.R;
@@ -16,11 +17,14 @@ import com.truthower.suhang.mangareader.bean.RxDownloadBean;
 import com.truthower.suhang.mangareader.bean.RxDownloadChapterBean;
 import com.truthower.suhang.mangareader.bean.RxDownloadPageBean;
 import com.truthower.suhang.mangareader.business.rxdownload.DownloadCaretaker;
+import com.truthower.suhang.mangareader.config.ShareKeys;
 import com.truthower.suhang.mangareader.eventbus.EventBusEvent;
 import com.truthower.suhang.mangareader.listener.JsoupCallBack;
 import com.truthower.suhang.mangareader.listener.MangaDownloader;
 import com.truthower.suhang.mangareader.listener.OnResultListener;
 import com.truthower.suhang.mangareader.utils.Logger;
+import com.truthower.suhang.mangareader.utils.SerializableSparseArray;
+import com.truthower.suhang.mangareader.utils.ShareObjUtil;
 import com.truthower.suhang.mangareader.widget.toast.EasyToast;
 
 import org.greenrobot.eventbus.EventBus;
@@ -46,6 +50,7 @@ public class TpDownloadService extends Service {
     private NotificationManager notificationManager;
     private RxDownloadChapterBean currentChapter;
     private ExecutorService mExecutorService = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
+    private SerializableSparseArray<RxDownloadChapterBean> cacheChapters;
 
     @Override
     public void onCreate() {
@@ -55,6 +60,10 @@ public class TpDownloadService extends Service {
         //chapters在很多线程中同时操作 需要线程安全
         chapters = Collections.synchronizedList(downloadBean.getChapters());
         mDownloader = downloadBean.getDownloader();
+        cacheChapters = (SerializableSparseArray<RxDownloadChapterBean>) ShareObjUtil.getObject(this, downloadBean.getMangaName() + ShareKeys.BRIDGE_KEY);
+        if (null == cacheChapters) {
+            cacheChapters = new SerializableSparseArray<>();
+        }
         createNotification(this);
         startForeground(10, notificationBuilder.build());
         mEasyToast = new EasyToast(this);
@@ -139,6 +148,13 @@ public class TpDownloadService extends Service {
                         executeRunable(item);
                     }
                     currentChapter.setPages(pages);
+                    try {
+                        //处理缓存
+                        cacheChapters.put(Integer.valueOf(currentChapter.getChapterName()), currentChapter);
+                        ShareObjUtil.saveObject(TpDownloadService.this, cacheChapters, downloadBean.getMangaName() + ShareKeys.BRIDGE_KEY);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                 }
 
                 @Override

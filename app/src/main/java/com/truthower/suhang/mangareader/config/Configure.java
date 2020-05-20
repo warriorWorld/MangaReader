@@ -13,7 +13,7 @@ import java.io.File;
  */
 
 public class Configure {
-    public final static boolean isTest = true;
+    public final static boolean isTest = false;
     public static boolean isPad=false;
     public static int currentOrientation=90;
     //数据库版本号

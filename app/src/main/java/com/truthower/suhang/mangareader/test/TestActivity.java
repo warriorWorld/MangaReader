@@ -8,9 +8,12 @@ import android.widget.Button;
 
 import com.truthower.suhang.mangareader.R;
 import com.truthower.suhang.mangareader.base.BaseActivity;
+import com.truthower.suhang.mangareader.bean.RxDownloadChapterBean;
 import com.truthower.suhang.mangareader.bean.WordsBookBean;
 import com.truthower.suhang.mangareader.db.DbAdapter;
 import com.truthower.suhang.mangareader.utils.Logger;
+import com.truthower.suhang.mangareader.utils.SerializableSparseArray;
+import com.truthower.suhang.mangareader.utils.ShareObjUtil;
 import com.truthower.suhang.mangareader.widget.dialog.MangaDialog;
 
 import java.util.ArrayList;
@@ -105,6 +108,9 @@ public class TestActivity extends BaseActivity implements View.OnClickListener {
                 break;
             case R.id.test_btn2:
                 test2();
+                SerializableSparseArray<RxDownloadChapterBean> test = new SerializableSparseArray();
+                test.put(3, new RxDownloadChapterBean());
+                ShareObjUtil.saveObject(TestActivity.this, test, "test");
                 break;
         }
     }

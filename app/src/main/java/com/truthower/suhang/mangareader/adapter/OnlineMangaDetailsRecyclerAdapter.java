@@ -1,6 +1,7 @@
 package com.truthower.suhang.mangareader.adapter;
 
 import android.content.Context;
+import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -8,7 +9,9 @@ import android.widget.TextView;
 
 import com.truthower.suhang.mangareader.R;
 import com.truthower.suhang.mangareader.bean.ChapterBean;
+import com.truthower.suhang.mangareader.bean.RxDownloadChapterBean;
 import com.truthower.suhang.mangareader.listener.OnRecycleItemClickListener;
+import com.truthower.suhang.mangareader.utils.SerializableSparseArray;
 
 import java.util.ArrayList;
 
@@ -23,6 +26,7 @@ public class OnlineMangaDetailsRecyclerAdapter extends RecyclerView.Adapter<Onli
     private ArrayList<ChapterBean> list = new ArrayList<>();
     private int lastReadPosition = -1;
     private OnRecycleItemClickListener mOnRecycleItemClickListener;
+    private SerializableSparseArray<RxDownloadChapterBean> cacheChapters;
 
     public OnlineMangaDetailsRecyclerAdapter(Context context) {
         this.context = context;
@@ -48,10 +52,16 @@ public class OnlineMangaDetailsRecyclerAdapter extends RecyclerView.Adapter<Onli
             viewHolder.bookmarkIv.setVisibility(View.GONE);
             viewHolder.chapterTv.setText(item.getChapterPosition());
         }
+
+        if (null != cacheChapters && null != cacheChapters.get(Integer.valueOf(item.getChapterPosition()))) {
+            viewHolder.chapterTv.setTextColor(context.getResources().getColor(R.color.manga_reader_red));
+        } else {
+            viewHolder.chapterTv.setTextColor(context.getResources().getColor(R.color.manga_reader));
+        }
         viewHolder.chapterTv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (null!=mOnRecycleItemClickListener){
+                if (null != mOnRecycleItemClickListener) {
                     mOnRecycleItemClickListener.onItemClick(position);
                 }
             }
@@ -82,6 +92,10 @@ public class OnlineMangaDetailsRecyclerAdapter extends RecyclerView.Adapter<Onli
 
     public void setOnRecycleItemClickListener(OnRecycleItemClickListener onRecycleItemClickListener) {
         mOnRecycleItemClickListener = onRecycleItemClickListener;
+    }
+
+    public void setCacheChapters(SerializableSparseArray<RxDownloadChapterBean> cacheChapters) {
+        this.cacheChapters = cacheChapters;
     }
 
     //自定义的ViewHolder，持有每个Item的的所有界面元素
