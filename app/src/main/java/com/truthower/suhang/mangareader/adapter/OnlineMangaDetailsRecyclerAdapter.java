@@ -26,7 +26,7 @@ public class OnlineMangaDetailsRecyclerAdapter extends RecyclerView.Adapter<Onli
     private ArrayList<ChapterBean> list = new ArrayList<>();
     private int lastReadPosition = -1;
     private OnRecycleItemClickListener mOnRecycleItemClickListener;
-    private SerializableSparseArray<RxDownloadChapterBean> cacheChapters;
+    private SparseArray<RxDownloadChapterBean> cacheChapters;
 
     public OnlineMangaDetailsRecyclerAdapter(Context context) {
         this.context = context;
@@ -94,7 +94,7 @@ public class OnlineMangaDetailsRecyclerAdapter extends RecyclerView.Adapter<Onli
         mOnRecycleItemClickListener = onRecycleItemClickListener;
     }
 
-    public void setCacheChapters(SerializableSparseArray<RxDownloadChapterBean> cacheChapters) {
+    public void setCacheChapters(SparseArray<RxDownloadChapterBean> cacheChapters) {
         this.cacheChapters = cacheChapters;
     }
 

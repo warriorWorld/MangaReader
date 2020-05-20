@@ -82,7 +82,7 @@ public class OnlineDetailsActivity extends BaseActivity implements View.OnClickL
     private boolean firstChoose = true;
     private String[] optionsList = {"下载全部", "区间下载", "缓存全部", "区间缓存", "清空缓存"};
     private int downloadStartPoint = 0;
-    private SerializableSparseArray<RxDownloadChapterBean> cacheChapters;
+    private SparseArray<RxDownloadChapterBean> cacheChapters;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -389,9 +389,12 @@ public class OnlineDetailsActivity extends BaseActivity implements View.OnClickL
             @Override
             public void onChanged(MangaBean bean) {
                 currentManga = bean;
-                cacheChapters = (SerializableSparseArray<RxDownloadChapterBean>) ShareObjUtil.getObject(
+                ArrayList<RxDownloadChapterBean> cacheArray = (ArrayList<RxDownloadChapterBean>) ShareObjUtil.getObject(
                         OnlineDetailsActivity.this, currentManga.getName()
                                 + ShareKeys.BRIDGE_KEY);
+                for (int i=0;i<cacheArray.size();i++){
+                    cacheChapters.put(Integer.valueOf(cacheArray.get(i).getChapterName()),cacheArray.get(i));
+                }
                 refreshUI();
                 showDescription();
             }

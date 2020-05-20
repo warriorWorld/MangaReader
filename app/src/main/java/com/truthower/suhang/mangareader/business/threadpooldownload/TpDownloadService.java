@@ -50,7 +50,7 @@ public class TpDownloadService extends Service {
     private NotificationManager notificationManager;
     private RxDownloadChapterBean currentChapter;
     private ExecutorService mExecutorService = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
-    private SerializableSparseArray<RxDownloadChapterBean> cacheChapters;
+    private ArrayList<RxDownloadChapterBean> cacheChapters;
 
     @Override
     public void onCreate() {
@@ -60,9 +60,9 @@ public class TpDownloadService extends Service {
         //chapters在很多线程中同时操作 需要线程安全
         chapters = Collections.synchronizedList(downloadBean.getChapters());
         mDownloader = downloadBean.getDownloader();
-        cacheChapters = (SerializableSparseArray<RxDownloadChapterBean>) ShareObjUtil.getObject(this, downloadBean.getMangaName() + ShareKeys.BRIDGE_KEY);
+        cacheChapters = (ArrayList<RxDownloadChapterBean>) ShareObjUtil.getObject(this, downloadBean.getMangaName() + ShareKeys.BRIDGE_KEY);
         if (null == cacheChapters) {
-            cacheChapters = new SerializableSparseArray<>();
+            cacheChapters = new ArrayList<>();
         }
         createNotification(this);
         startForeground(10, notificationBuilder.build());
@@ -150,7 +150,7 @@ public class TpDownloadService extends Service {
                     currentChapter.setPages(pages);
                     try {
                         //处理缓存
-                        cacheChapters.put(Integer.valueOf(currentChapter.getChapterName()), currentChapter);
+                        cacheChapters.add(currentChapter);
                         ShareObjUtil.saveObject(TpDownloadService.this, cacheChapters, downloadBean.getMangaName() + ShareKeys.BRIDGE_KEY);
                     } catch (Exception e) {
                         e.printStackTrace();
