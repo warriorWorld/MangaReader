@@ -108,7 +108,7 @@ public class OnlineDetailVM extends ViewModel {
         ShareObjUtil.saveObject(mContext, manga.getValue(), StringUtil.getKeyFromUrl(manga.getValue().getUrl()));
     }
 
-    void cleanAllCache() {
+    void cleanDetailCache() {
         ShareObjUtil.deleteFile(mContext, StringUtil.getKeyFromUrl(manga.getValue().getUrl()));
     }
 

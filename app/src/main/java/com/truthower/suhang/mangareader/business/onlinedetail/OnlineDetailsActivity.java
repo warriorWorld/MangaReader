@@ -80,7 +80,7 @@ public class OnlineDetailsActivity extends BaseActivity implements View.OnClickL
     private String mangaUrl;
     private boolean chooseing = false;//判断是否在选择状态
     private boolean firstChoose = true;
-    private String[] optionsList = {"下载全部", "区间下载", "缓存全部", "区间缓存", "清空缓存"};
+    private String[] optionsList = {"下载全部", "区间下载", "缓存详情", "清空缓存"};
     private int downloadStartPoint = 0;
     private SparseArray<RxDownloadChapterBean> cacheChapters = new SparseArray<>();
 
@@ -215,8 +215,6 @@ public class OnlineDetailsActivity extends BaseActivity implements View.OnClickL
                         baseToast.showToast("缓存完成");
                         break;
                     case 3:
-                        break;
-                    case 4:
                         showCleanCacheDialog();
                         break;
                 }
@@ -231,7 +229,7 @@ public class OnlineDetailsActivity extends BaseActivity implements View.OnClickL
         dialog.setOnPeanutDialogClickListener(new MangaDialog.OnPeanutDialogClickListener() {
             @Override
             public void onOkClick() {
-                mOnlineDetailVM.cleanAllCache();
+                mOnlineDetailVM.cleanDetailCache();
             }
 
             @Override
@@ -240,7 +238,7 @@ public class OnlineDetailsActivity extends BaseActivity implements View.OnClickL
             }
         });
         dialog.show();
-        dialog.setTitle("确定清空所有缓存?");
+        dialog.setTitle("确定清空详情页缓存?");
         dialog.setOkText("确定");
         dialog.setCancelText("算了");
     }
