@@ -34,6 +34,7 @@ import com.truthower.suhang.mangareader.R;
 import com.truthower.suhang.mangareader.adapter.ReadMangaAdapter;
 import com.truthower.suhang.mangareader.base.TTSActivity;
 import com.truthower.suhang.mangareader.bean.RxDownloadChapterBean;
+import com.truthower.suhang.mangareader.bean.RxDownloadPageBean;
 import com.truthower.suhang.mangareader.bean.YoudaoResponse;
 import com.truthower.suhang.mangareader.business.detail.WebMangaDetailsActivity;
 import com.truthower.suhang.mangareader.business.other.AboutActivity;
@@ -153,7 +154,20 @@ public class ReadMangaActivity extends TTSActivity implements OnClickListener, S
         if (null == pathList || pathList.size() == 0) {
             if (null != mChapterBean) {
                 mMangaType = MangaType.CACHE;
-
+                pathList = new ArrayList<>();
+                for (int i = 0; i < mChapterBean.getPages().size(); i++) {
+                    StringBuilder sb = new StringBuilder();
+                    sb.append("file://")
+                            .append(Configure.storagePath)
+                            .append("/")
+                            .append(mChapterBean.getPages().get(i).getMangaName())
+                            .append("/")
+                            .append(mChapterBean.getPages().get(i).getChapterName())
+                            .append("/")
+                            .append(mChapterBean.getPages().get(i).getPageName());
+                    pathList.add(sb.toString());
+                }
+                refresh();
             } else {
                 mMangaType = MangaType.ONLINE;
                 chapterUrl = intent.getStringExtra("chapterUrl");
@@ -213,10 +227,10 @@ public class ReadMangaActivity extends TTSActivity implements OnClickListener, S
         switch (mMangaType) {
             case ONESHOT:
             case ONLINE:
+            case CACHE:
                 deleteIv.setImageResource(R.drawable.ic_save);
                 break;
             case LOCAL:
-            case CACHE:
                 deleteIv.setImageResource(R.drawable.delete);
                 break;
         }
@@ -1119,11 +1133,36 @@ public class ReadMangaActivity extends TTSActivity implements OnClickListener, S
         switch (v.getId()) {
             case R.id.delete_iv:
                 String file = pathList.get(historyPosition);
-                if (file.contains("file://")) {
-                    file = file.substring(7, file.length());
-                    showDeleteDialog(file);
-                } else {
-                    showSaveDialog(file);
+                switch (mMangaType) {
+                    case ONESHOT:
+                    case ONLINE:
+                        showSaveDialog(file);
+                        break;
+                    case CACHE:
+                        new Thread(new Runnable() {
+                            @Override
+                            public void run() {
+                                RxDownloadPageBean pageBean = mChapterBean.getPages().get(historyPosition);
+                                Bitmap bp = ImageLoader.getInstance().loadImageSync(pageBean.getPageUrl(), Configure.smallImageOptions);
+                                //把图片保存到本地
+                                FileSpider.getInstance().saveBitmap(bp, pageBean.getPageName(), pageBean.getChapterName(), pageBean.getMangaName());
+                                runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        ImageLoader.getInstance().clearDiskCache();
+                                        ImageLoader.getInstance().clearMemoryCache();
+                                        adapter.notifyDataSetChanged();
+                                    }
+                                });
+                            }
+                        }).start();
+                        break;
+                    case LOCAL:
+                        if (file.contains("file://")) {
+                            file = file.substring(7, file.length());
+                            showDeleteDialog(file);
+                        }
+                        break;
                 }
                 break;
             case R.id.gif_toggle_options_v:
