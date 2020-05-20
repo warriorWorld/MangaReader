@@ -5,6 +5,7 @@ import android.graphics.BitmapFactory;
 
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.truthower.suhang.mangareader.bean.RxDownloadPageBean;
+import com.truthower.suhang.mangareader.config.Configure;
 import com.truthower.suhang.mangareader.listener.OnResultListener;
 import com.truthower.suhang.mangareader.spider.FileSpider;
 import com.truthower.suhang.mangareader.utils.Logger;
@@ -25,7 +26,7 @@ public class PageDownloadRunner implements Runnable {
 
     @Override
     public void run() {
-        Bitmap bp = ImageLoader.getInstance().loadImageSync(mPageBean.getPageUrl());
+        Bitmap bp = ImageLoader.getInstance().loadImageSync(mPageBean.getPageUrl(), Configure.smallImageOptions);
         //把图片保存到本地
         FileSpider.getInstance().saveBitmap(bp, mPageBean.getPageName(), mPageBean.getChapterName(), mPageBean.getMangaName());
         mPageBean.setDownloaded(true);

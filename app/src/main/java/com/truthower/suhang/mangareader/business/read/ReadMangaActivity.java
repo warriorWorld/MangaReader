@@ -33,6 +33,7 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import com.truthower.suhang.mangareader.R;
 import com.truthower.suhang.mangareader.adapter.ReadMangaAdapter;
 import com.truthower.suhang.mangareader.base.TTSActivity;
+import com.truthower.suhang.mangareader.bean.RxDownloadChapterBean;
 import com.truthower.suhang.mangareader.bean.YoudaoResponse;
 import com.truthower.suhang.mangareader.business.detail.WebMangaDetailsActivity;
 import com.truthower.suhang.mangareader.business.other.AboutActivity;
@@ -103,7 +104,6 @@ public class ReadMangaActivity extends TTSActivity implements OnClickListener, S
     private int historyPosition = 1;
     private int finalPosition = 1;
     private ProgressDialog loadBar;
-    private boolean isLocalManga = false;
     private TopBar topBar;
     private ClipboardManager clip;//复制文本用
     private TranslateDialog translateResultDialog;
@@ -129,6 +129,16 @@ public class ReadMangaActivity extends TTSActivity implements OnClickListener, S
             .from(LanguageUtils.getLangByName("中文"))
             .to(LanguageUtils.getLangByName("英文"))
             .build();
+    private RxDownloadChapterBean mChapterBean;
+
+    private enum MangaType {
+        LOCAL,
+        ONLINE,
+        CACHE,
+        ONESHOT
+    }
+
+    private MangaType mMangaType = MangaType.LOCAL;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -139,17 +149,23 @@ public class ReadMangaActivity extends TTSActivity implements OnClickListener, S
         initProgressBar();
         Intent intent = getIntent();
         pathList = (ArrayList<String>) intent.getSerializableExtra("pathList");
+        mChapterBean = (RxDownloadChapterBean) intent.getSerializableExtra("chapterBean");
         if (null == pathList || pathList.size() == 0) {
-            isLocalManga = false;
-            chapterUrl = intent.getStringExtra("chapterUrl");
-            doGetWebPics();
+            if (null != mChapterBean) {
+                mMangaType = MangaType.CACHE;
+
+            } else {
+                mMangaType = MangaType.ONLINE;
+                chapterUrl = intent.getStringExtra("chapterUrl");
+                doGetWebPics();
+            }
         } else {
             if (!pathList.get(0).contains("file://")) {
                 //这种情况说明是one shot
-                isLocalManga = false;
+                mMangaType = MangaType.ONESHOT;
                 toPage = intent.getIntExtra("img_position", 0);
             } else {
-                isLocalManga = true;
+                mMangaType = MangaType.LOCAL;
             }
             refresh();
             if (toPage != 0) {
@@ -194,10 +210,15 @@ public class ReadMangaActivity extends TTSActivity implements OnClickListener, S
                     "\n5,长按屏幕中间稍微靠下位置可保存或删除当前图片");
         }
         initSensorManager();
-        if (isLocalManga) {
-            deleteIv.setImageResource(R.drawable.delete);
-        } else {
-            deleteIv.setImageResource(R.drawable.ic_save);
+        switch (mMangaType) {
+            case ONESHOT:
+            case ONLINE:
+                deleteIv.setImageResource(R.drawable.ic_save);
+                break;
+            case LOCAL:
+            case CACHE:
+                deleteIv.setImageResource(R.drawable.delete);
+                break;
         }
     }
 
@@ -347,7 +368,7 @@ public class ReadMangaActivity extends TTSActivity implements OnClickListener, S
                         }
                         mangaPager.setCurrentItem(historyPosition - 1);
                     } else {
-                        if (isLocalManga) {
+                        if (mMangaType == MangaType.LOCAL) {
                             return;
                         }
                         showToLastChapterDialog();
@@ -359,7 +380,7 @@ public class ReadMangaActivity extends TTSActivity implements OnClickListener, S
                         }
                         mangaPager.setCurrentItem(historyPosition + 1);
                     } else {
-                        if (isLocalManga) {
+                        if (mMangaType == MangaType.LOCAL) {
                             return;
                         }
                         showToNextChapterDialog();
@@ -807,7 +828,7 @@ public class ReadMangaActivity extends TTSActivity implements OnClickListener, S
         }
         if (bp != null) {
             FileSpider.saveBitmap(bp, Configure.WORDS_FOLDER_NAME, File.separator + imgName + ".png");
-        } else if (isLocalManga) {
+        } else if (mMangaType == MangaType.LOCAL || mMangaType == MangaType.CACHE) {
             File thumbnailFile = new File(Configure.WORDS_PATH);
             if (!thumbnailFile.exists()) {
                 thumbnailFile.mkdirs();
@@ -931,7 +952,7 @@ public class ReadMangaActivity extends TTSActivity implements OnClickListener, S
     private void initViewPager() {
         if (null == adapter) {
             adapter = new ReadMangaAdapter(ReadMangaActivity.this, pathList);
-            if (isLocalManga) {
+            if (mMangaType == MangaType.LOCAL || mMangaType == MangaType.CACHE) {
                 mangaPager.setOffscreenPageLimit(1);
             } else {
                 mangaPager.setOffscreenPageLimit(3);
@@ -980,7 +1001,7 @@ public class ReadMangaActivity extends TTSActivity implements OnClickListener, S
     }
 
     private void showImgSize(int position) {
-        if (isLocalManga) {
+        if (mMangaType == MangaType.LOCAL || mMangaType == MangaType.CACHE) {
             try {
                 imageSizeTv.setText(FileSpider.getInstance().toFileSize
                         (FileSpider.getInstance().getFileSize(new File(pathList.get(position).replaceAll("file://", "")))));
@@ -1073,7 +1094,7 @@ public class ReadMangaActivity extends TTSActivity implements OnClickListener, S
 
     private void initProgressKey() {
         if (TextUtils.isEmpty(progressSaveKey)) {
-            if (isLocalManga) {
+            if (mMangaType == MangaType.LOCAL || mMangaType == MangaType.CACHE) {
                 int pos = pathList.get(0).lastIndexOf("/");
                 progressSaveKey = pathList.get(0).substring(0, pos);
             } else {

@@ -54,9 +54,11 @@ public class OnlineMangaDetailsRecyclerAdapter extends RecyclerView.Adapter<Onli
         }
 
         if (null != cacheChapters && null != cacheChapters.get(Integer.valueOf(item.getChapterPosition()))) {
-            viewHolder.chapterTv.setTextColor(context.getResources().getColor(R.color.manga_reader_red));
+            viewHolder.chapterTv.setTextColor(context.getResources().getColor(R.color.white));
+            viewHolder.chapterRl.setBackgroundResource(R.drawable.main_round_solid);
         } else {
             viewHolder.chapterTv.setTextColor(context.getResources().getColor(R.color.manga_reader));
+            viewHolder.chapterRl.setBackgroundResource(R.drawable.rect_white_main_5);
         }
         viewHolder.chapterTv.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -102,11 +104,13 @@ public class OnlineMangaDetailsRecyclerAdapter extends RecyclerView.Adapter<Onli
     public static class ViewHolder extends RecyclerView.ViewHolder {
         public TextView chapterTv;
         public View bookmarkIv;
+        public View chapterRl;
 
         public ViewHolder(View view) {
             super(view);
             chapterTv = view.findViewById(R.id.chapter);
             bookmarkIv = view.findViewById(R.id.bookmark_iv);
+            chapterRl = view.findViewById(R.id.chapter_rl);
         }
     }
 }

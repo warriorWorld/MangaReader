@@ -82,7 +82,7 @@ public class OnlineDetailsActivity extends BaseActivity implements View.OnClickL
     private boolean firstChoose = true;
     private String[] optionsList = {"下载全部", "区间下载", "缓存全部", "区间缓存", "清空缓存"};
     private int downloadStartPoint = 0;
-    private SparseArray<RxDownloadChapterBean> cacheChapters;
+    private SparseArray<RxDownloadChapterBean> cacheChapters = new SparseArray<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -345,8 +345,12 @@ public class OnlineDetailsActivity extends BaseActivity implements View.OnClickL
         SharedPreferencesUtils.setSharedPreferencesData(this,
                 ShareKeys.ONLINE_MANGA_READ_CHAPTER_POSITION + currentManga.getName(), position);
         adapter.setLastReadPosition(position);
-
-        intent.putExtra("chapterUrl", currentManga.getChapters().get(position).getChapterUrl());
+        RxDownloadChapterBean chapterBean = cacheChapters.get(Integer.valueOf(currentManga.getChapters().get(position).getChapterPosition()));
+        if (null != chapterBean) {
+            intent.putExtra("chapterBean", chapterBean);
+        } else {
+            intent.putExtra("chapterUrl", currentManga.getChapters().get(position).getChapterUrl());
+        }
         intent.putExtra("currentMangaName", currentMangaName);
         startActivity(intent);
     }
@@ -392,8 +396,10 @@ public class OnlineDetailsActivity extends BaseActivity implements View.OnClickL
                 ArrayList<RxDownloadChapterBean> cacheArray = (ArrayList<RxDownloadChapterBean>) ShareObjUtil.getObject(
                         OnlineDetailsActivity.this, currentManga.getName()
                                 + ShareKeys.BRIDGE_KEY);
-                for (int i=0;i<cacheArray.size();i++){
-                    cacheChapters.put(Integer.valueOf(cacheArray.get(i).getChapterName()),cacheArray.get(i));
+                if (null != cacheArray) {
+                    for (int i = 0; i < cacheArray.size(); i++) {
+                        cacheChapters.put(Integer.valueOf(cacheArray.get(i).getChapterName()), cacheArray.get(i));
+                    }
                 }
                 refreshUI();
                 showDescription();
