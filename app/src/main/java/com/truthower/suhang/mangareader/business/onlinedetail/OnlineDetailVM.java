@@ -9,6 +9,7 @@ import com.truthower.suhang.mangareader.db.DbAdapter;
 import com.truthower.suhang.mangareader.listener.JsoupCallBack;
 import com.truthower.suhang.mangareader.spider.SpiderBase;
 import com.truthower.suhang.mangareader.utils.BaseParameterUtil;
+import com.truthower.suhang.mangareader.utils.ShareObjUtil;
 import com.truthower.suhang.mangareader.widget.toast.EasyToast;
 
 import java.util.Arrays;
@@ -29,6 +30,7 @@ public class OnlineDetailVM extends ViewModel {
     //因为我不知道当期收藏的漫画是哪个网站的 所以就一个个试
     private int trySpiderPosition = 0;
     private Handler mHandler = new Handler();
+    private MangaBean cacheManga = null;
 
     void init(Context context) {
         mContext = context.getApplicationContext();
@@ -50,7 +52,19 @@ public class OnlineDetailVM extends ViewModel {
     }
 
     void getMangaDetails(final String url) {
+        getMangaDetails(url, false);
+    }
+
+    void getMangaDetails(final String url, boolean useCache) {
         isUpdating.setValue(true);
+        if (useCache) {
+            cacheManga = (MangaBean) ShareObjUtil.getObject(mContext, getKeyFromUrl(url));
+            if (null != cacheManga) {
+                isUpdating.setValue(false);
+                manga.setValue(cacheManga);
+                return;
+            }
+        }
         spider.getMangaDetail(url, new JsoupCallBack<MangaBean>() {
             @Override
             public void loadSucceed(final MangaBean result) {
@@ -59,6 +73,10 @@ public class OnlineDetailVM extends ViewModel {
                     public void run() {
                         isUpdating.setValue(false);
                         manga.setValue(result);
+                        if (null != cacheManga) {
+                            //说明使用了缓存,那就更新缓存
+                            cacheDetail();
+                        }
                     }
                 });
             }
@@ -73,7 +91,7 @@ public class OnlineDetailVM extends ViewModel {
                             try {
                                 BaseParameterUtil.getInstance().saveCurrentWebSite(mContext, Configure.websList[trySpiderPosition]);
                                 initSpider();
-                                getMangaDetails(url);
+                                getMangaDetails(url, false);
                                 trySpiderPosition++;
                             } catch (IndexOutOfBoundsException e) {
                                 e.printStackTrace();
@@ -83,6 +101,10 @@ public class OnlineDetailVM extends ViewModel {
                 });
             }
         });
+    }
+
+    void cacheDetail() {
+        ShareObjUtil.saveObject(mContext, manga.getValue(), getKeyFromUrl(manga.getValue().getUrl()));
     }
 
     void getIsCollected(String url) {
@@ -140,6 +162,13 @@ public class OnlineDetailVM extends ViewModel {
 
     SpiderBase getSpider() {
         return spider;
+    }
+
+    private String getKeyFromUrl(String url) {
+        String result = "";
+        int index = url.lastIndexOf("/") + 1;
+        result = url.substring(index);
+        return result;
     }
 
     @Override

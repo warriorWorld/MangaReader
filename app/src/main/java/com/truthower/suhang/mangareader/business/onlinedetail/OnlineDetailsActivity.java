@@ -77,7 +77,7 @@ public class OnlineDetailsActivity extends BaseActivity implements View.OnClickL
     private String mangaUrl;
     private boolean chooseing = false;//判断是否在选择状态
     private boolean firstChoose = true;
-    private String[] optionsList = {"下载全部", "区间下载"};
+    private String[] optionsList = {"下载全部", "区间下载", "缓存全部", "区间缓存"};
     private int downloadStartPoint = 0;
 
     @Override
@@ -92,7 +92,7 @@ public class OnlineDetailsActivity extends BaseActivity implements View.OnClickL
                 mangaUrl);
         initUI();
         initViewModel();
-        mOnlineDetailVM.getMangaDetails(mangaUrl);
+        mOnlineDetailVM.getMangaDetails(mangaUrl, true);
         mOnlineDetailVM.getIsCollected(mangaUrl);
     }
 
@@ -147,6 +147,7 @@ public class OnlineDetailsActivity extends BaseActivity implements View.OnClickL
         typeTv.setOnClickListener(this);
         authorTv.setOnClickListener(this);
         thumbnailIv.setOnClickListener(this);
+        updateTimeTv.setOnClickListener(this);
         baseTopBar.setRightBackground(R.drawable.more);
         baseTopBar.setOnTopBarClickListener(new TopBar.OnTopBarClickListener() {
 
@@ -204,6 +205,12 @@ public class OnlineDetailsActivity extends BaseActivity implements View.OnClickL
                         chooseing = true;
                         firstChoose = true;
                         baseToast.showToast("请点击下载起点!");
+                        break;
+                    case 2:
+                        mOnlineDetailVM.cacheDetail();
+                        baseToast.showToast("缓存完成");
+                        break;
+                    case 3:
                         break;
                 }
             }
@@ -564,6 +571,9 @@ public class OnlineDetailsActivity extends BaseActivity implements View.OnClickL
                 break;
             case R.id.author_tv:
                 showAuthorSelector();
+                break;
+            case R.id.update_time_tv:
+                mOnlineDetailVM.cacheDetail();
                 break;
         }
     }
