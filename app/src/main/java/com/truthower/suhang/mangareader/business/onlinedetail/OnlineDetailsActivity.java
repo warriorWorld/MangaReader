@@ -229,7 +229,7 @@ public class OnlineDetailsActivity extends BaseActivity implements View.OnClickL
         dialog.setOnPeanutDialogClickListener(new MangaDialog.OnPeanutDialogClickListener() {
             @Override
             public void onOkClick() {
-                mOnlineDetailVM.cleanDetailCache();
+                mOnlineDetailVM.cleanAllCache();
             }
 
             @Override
@@ -238,7 +238,7 @@ public class OnlineDetailsActivity extends BaseActivity implements View.OnClickL
             }
         });
         dialog.show();
-        dialog.setTitle("确定清空详情页缓存?");
+        dialog.setTitle("确定清空缓存?");
         dialog.setOkText("确定");
         dialog.setCancelText("算了");
     }

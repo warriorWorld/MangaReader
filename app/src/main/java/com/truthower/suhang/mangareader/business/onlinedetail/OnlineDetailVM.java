@@ -5,6 +5,7 @@ import android.os.Handler;
 
 import com.truthower.suhang.mangareader.bean.MangaBean;
 import com.truthower.suhang.mangareader.config.Configure;
+import com.truthower.suhang.mangareader.config.ShareKeys;
 import com.truthower.suhang.mangareader.db.DbAdapter;
 import com.truthower.suhang.mangareader.listener.JsoupCallBack;
 import com.truthower.suhang.mangareader.spider.SpiderBase;
@@ -108,8 +109,9 @@ public class OnlineDetailVM extends ViewModel {
         ShareObjUtil.saveObject(mContext, manga.getValue(), StringUtil.getKeyFromUrl(manga.getValue().getUrl()));
     }
 
-    void cleanDetailCache() {
+    void cleanAllCache() {
         ShareObjUtil.deleteFile(mContext, StringUtil.getKeyFromUrl(manga.getValue().getUrl()));
+        ShareObjUtil.deleteFile(mContext, manga.getValue().getName() + ShareKeys.BRIDGE_KEY);
     }
 
     void getIsCollected(String url) {
