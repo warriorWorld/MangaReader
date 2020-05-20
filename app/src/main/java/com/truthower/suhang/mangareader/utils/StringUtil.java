@@ -9,12 +9,12 @@ public class StringUtil {
         for (int i = 0; i < str.length(); i++) {
             /* 获取�?个字�? */
             String temp = str.substring(i, i + 1);
-			/* 判断是否为中文字�? */
+            /* 判断是否为中文字�? */
             if (temp.matches(chinese)) {
-				/* 中文字符长度�?2 */
+                /* 中文字符长度�?2 */
                 valueLength += 2;
             } else {
-				/* 其他字符长度�?1 */
+                /* 其他字符长度�?1 */
                 valueLength += 1;
             }
         }
@@ -61,5 +61,12 @@ public class StringUtil {
             return false;
         }
         return true;
+    }
+
+    public static String getKeyFromUrl(String url) {
+        String result = "";
+        int index = url.lastIndexOf("/") + 1;
+        result = url.substring(index);
+        return result;
     }
 }

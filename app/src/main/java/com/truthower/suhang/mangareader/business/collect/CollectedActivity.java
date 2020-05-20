@@ -30,6 +30,8 @@ import com.truthower.suhang.mangareader.utils.BaseParameterUtil;
 import com.truthower.suhang.mangareader.utils.DisplayUtil;
 import com.truthower.suhang.mangareader.utils.Logger;
 import com.truthower.suhang.mangareader.utils.PermissionUtil;
+import com.truthower.suhang.mangareader.utils.ShareObjUtil;
+import com.truthower.suhang.mangareader.utils.StringUtil;
 import com.truthower.suhang.mangareader.widget.bar.TopBar;
 import com.truthower.suhang.mangareader.widget.dialog.ListDialog;
 import com.truthower.suhang.mangareader.widget.recyclerview.RecyclerGridDecoration;
@@ -174,19 +176,25 @@ public class CollectedActivity extends BaseActivity implements OnRefreshListener
                         return Observable.create(new ObservableOnSubscribe<MangaBean>() {//创建新的支流
                             @Override
                             public void subscribe(final ObservableEmitter<MangaBean> e) throws Exception {
-                                getMangaDetail(bean.getUrl(), new JsoupCallBack<MangaBean>() {
-                                    @Override
-                                    public void loadSucceed(MangaBean result) {
-                                        e.onNext(result);//这个onnext和onComplete并不是最后的那个onnext和onComplete而是其中一个分支，最终这些分支经过flatMap汇聚
-                                        e.onComplete();
-                                    }
+                                MangaBean cacheManga = (MangaBean) ShareObjUtil.getObject(CollectedActivity.this, StringUtil.getKeyFromUrl(bean.getUrl()));
+                                if (null != cacheManga) {
+                                    e.onNext(cacheManga);
+                                    e.onComplete();
+                                } else {
+                                    getMangaDetail(bean.getUrl(), new JsoupCallBack<MangaBean>() {
+                                        @Override
+                                        public void loadSucceed(MangaBean result) {
+                                            e.onNext(result);//这个onnext和onComplete并不是最后的那个onnext和onComplete而是其中一个分支，最终这些分支经过flatMap汇聚
+                                            e.onComplete();
+                                        }
 
-                                    @Override
-                                    public void loadFailed(String error) {
-                                        e.onNext(bean);
-                                        e.onComplete();
-                                    }
-                                });
+                                        @Override
+                                        public void loadFailed(String error) {
+                                            e.onNext(bean);
+                                            e.onComplete();
+                                        }
+                                    });
+                                }
                             }
                         });
                     }

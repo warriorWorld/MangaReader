@@ -37,6 +37,7 @@ import com.truthower.suhang.mangareader.utils.ActivityPoor;
 import com.truthower.suhang.mangareader.utils.BaseParameterUtil;
 import com.truthower.suhang.mangareader.utils.DisplayUtil;
 import com.truthower.suhang.mangareader.utils.ServiceUtil;
+import com.truthower.suhang.mangareader.utils.ShareObjUtil;
 import com.truthower.suhang.mangareader.utils.SharedPreferencesUtils;
 import com.truthower.suhang.mangareader.utils.UltimateTextSizeUtil;
 import com.truthower.suhang.mangareader.widget.bar.TopBar;
@@ -77,7 +78,7 @@ public class OnlineDetailsActivity extends BaseActivity implements View.OnClickL
     private String mangaUrl;
     private boolean chooseing = false;//判断是否在选择状态
     private boolean firstChoose = true;
-    private String[] optionsList = {"下载全部", "区间下载", "缓存全部", "区间缓存"};
+    private String[] optionsList = {"下载全部", "区间下载", "缓存全部", "区间缓存", "清空缓存"};
     private int downloadStartPoint = 0;
 
     @Override
@@ -212,11 +213,33 @@ public class OnlineDetailsActivity extends BaseActivity implements View.OnClickL
                         break;
                     case 3:
                         break;
+                    case 4:
+                        showCleanCacheDialog();
+                        break;
                 }
             }
         });
         listDialog.show();
         listDialog.setOptionsList(optionsList);
+    }
+
+    private void showCleanCacheDialog() {
+        MangaDialog dialog = new MangaDialog(this);
+        dialog.setOnPeanutDialogClickListener(new MangaDialog.OnPeanutDialogClickListener() {
+            @Override
+            public void onOkClick() {
+                mOnlineDetailVM.cleanAllCache();
+            }
+
+            @Override
+            public void onCancelClick() {
+
+            }
+        });
+        dialog.show();
+        dialog.setTitle("确定清空所有缓存?");
+        dialog.setOkText("确定");
+        dialog.setCancelText("算了");
     }
 
     private void downloadAll() {

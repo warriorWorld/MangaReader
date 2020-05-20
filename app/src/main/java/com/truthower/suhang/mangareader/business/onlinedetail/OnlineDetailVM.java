@@ -10,6 +10,7 @@ import com.truthower.suhang.mangareader.listener.JsoupCallBack;
 import com.truthower.suhang.mangareader.spider.SpiderBase;
 import com.truthower.suhang.mangareader.utils.BaseParameterUtil;
 import com.truthower.suhang.mangareader.utils.ShareObjUtil;
+import com.truthower.suhang.mangareader.utils.StringUtil;
 import com.truthower.suhang.mangareader.widget.toast.EasyToast;
 
 import java.util.Arrays;
@@ -58,7 +59,7 @@ public class OnlineDetailVM extends ViewModel {
     void getMangaDetails(final String url, boolean useCache) {
         isUpdating.setValue(true);
         if (useCache) {
-            cacheManga = (MangaBean) ShareObjUtil.getObject(mContext, getKeyFromUrl(url));
+            cacheManga = (MangaBean) ShareObjUtil.getObject(mContext, StringUtil.getKeyFromUrl(url));
             if (null != cacheManga) {
                 isUpdating.setValue(false);
                 manga.setValue(cacheManga);
@@ -104,7 +105,11 @@ public class OnlineDetailVM extends ViewModel {
     }
 
     void cacheDetail() {
-        ShareObjUtil.saveObject(mContext, manga.getValue(), getKeyFromUrl(manga.getValue().getUrl()));
+        ShareObjUtil.saveObject(mContext, manga.getValue(), StringUtil.getKeyFromUrl(manga.getValue().getUrl()));
+    }
+
+    void cleanAllCache() {
+        ShareObjUtil.deleteFile(mContext, StringUtil.getKeyFromUrl(manga.getValue().getUrl()));
     }
 
     void getIsCollected(String url) {
@@ -162,13 +167,6 @@ public class OnlineDetailVM extends ViewModel {
 
     SpiderBase getSpider() {
         return spider;
-    }
-
-    private String getKeyFromUrl(String url) {
-        String result = "";
-        int index = url.lastIndexOf("/") + 1;
-        result = url.substring(index);
-        return result;
     }
 
     @Override
