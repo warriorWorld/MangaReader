@@ -14,6 +14,7 @@ import java.util.ArrayList;
  */
 
 public abstract class SpiderBase implements Serializable {
+    protected static final int timeout = 60000;
 
     public enum SearchType {
         BY_MANGA_NAME,

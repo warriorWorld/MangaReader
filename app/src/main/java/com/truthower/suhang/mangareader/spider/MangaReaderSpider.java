@@ -63,10 +63,10 @@ public class MangaReaderSpider extends SpiderBase {
                 try {
                     if (TextUtils.isEmpty(type) || type.equals("all")) {
                         doc = Jsoup.connect(webUrl + "popular/" + page)
-                                .timeout(10000).get();
+                                .timeout(timeout).get();
                     } else {
                         doc = Jsoup.connect(webUrl + "popular/" + type + "/" + page)
-                                .timeout(10000).get();
+                                .timeout(timeout).get();
                     }
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -114,7 +114,7 @@ public class MangaReaderSpider extends SpiderBase {
                 org.jsoup.nodes.Document doc = null;
                 try {
                     doc = Jsoup.connect(mangaURL)
-                            .timeout(10000).get();
+                            .timeout(timeout).get();
                 } catch (IOException e) {
                     e.printStackTrace();
                     jsoupCallBack.loadFailed(e.toString());
@@ -236,7 +236,7 @@ public class MangaReaderSpider extends SpiderBase {
             @Override
             public void loadSucceed(Integer result) {
 //                initPicPathList(context, chapterUrl, 1, result, jsoupCallBack);
-                initPicPathList(chapterUrl, result, jsoupCallBack);
+                radicalInitPicPathList(chapterUrl, result, jsoupCallBack);
             }
 
             @Override
@@ -261,7 +261,7 @@ public class MangaReaderSpider extends SpiderBase {
                     doc = Jsoup.connect(webUrl + "search/?w=" +
                             keyW +
                             "&rd=0&status=0&order=0&genre=0000000000000000000000000000000000000&p=0")
-                            .timeout(10000).get();
+                            .timeout(timeout).get();
                 } catch (Exception e) {
                     e.printStackTrace();
                     jsoupCallBack.loadFailed(e.toString());
@@ -358,8 +358,7 @@ public class MangaReaderSpider extends SpiderBase {
 //                .add(request);
 //    }
 
-    private <ResultObj> void initPicPathList(final Context context, final String chapterUrl, final int page,
-                                             final int pageSize, final JsoupCallBack<ResultObj> jsoupCallBack) {
+    private <ResultObj> void initPicPathList(final String chapterUrl, final int pageSize, final JsoupCallBack<ResultObj> jsoupCallBack) {
         new Thread() {
             @Override
             public void run() {
@@ -367,7 +366,7 @@ public class MangaReaderSpider extends SpiderBase {
                 for (int i = 0; i < pageSize; i++) {
                     try {
                         doc = Jsoup.connect(chapterUrl + "/" + (i + 1))
-                                .timeout(10000).get();
+                                .timeout(timeout).get();
                         Logger.d(chapterUrl + "/" + (i + 1));
                     } catch (IOException e) {
                         e.printStackTrace();
@@ -389,14 +388,15 @@ public class MangaReaderSpider extends SpiderBase {
         }.start();
     }
 
-    private <ResultObj> void initPicPathList(final String chapterUrl, final int pageSize, final JsoupCallBack<ResultObj> jsoupCallBack) {
+    //激进爬虫,通过网站规律获取
+    private <ResultObj> void radicalInitPicPathList(final String chapterUrl, final int pageSize, final JsoupCallBack<ResultObj> jsoupCallBack) {
         new Thread() {
             @Override
             public void run() {
                 org.jsoup.nodes.Document doc = null;
                 try {
                     doc = Jsoup.connect(chapterUrl + "/" + 1)
-                            .timeout(10000).get();
+                            .timeout(timeout).get();
                     Logger.d(chapterUrl + "/" + 1);
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -408,8 +408,36 @@ public class MangaReaderSpider extends SpiderBase {
                     String url = element.getElementsByTag("img").last().attr("src");
                     pathList.add(url);
                     long l = getLFromUrl(url);
-                    for (int i = 1; i < pageSize; i++) {
-                        pathList.add(url.replaceAll(l + ".jpg", (l + i) + ".jpg"));
+                    //再爬一遍最后一张图
+                    org.jsoup.nodes.Document doc1 = null;
+                    try {
+                        doc1 = Jsoup.connect(chapterUrl + "/" + pageSize)
+                                .timeout(timeout).get();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                        jsoupCallBack.loadFailed(e.toString());
+                    }
+                    if (null != doc1) {
+                        Element mangaPicDetailElement1 = doc1.getElementsByClass("episode-table").first();
+                        Element element1 = mangaPicDetailElement1.tagName("img");
+                        String url1 = element1.getElementsByTag("img").last().attr("src");
+                        long l1 = getLFromUrl(url1);
+                        boolean solved = false;
+                        for (int n = 1; n < 10; n++) {
+                            if ((l1 - l + n) % pageSize == 0) {
+                                for (int i = 1; i < pageSize; i++) {
+                                    pathList.add(url.replaceAll(l + ".jpg", (l + i * n) + ".jpg"));
+                                    solved = true;
+                                }
+                                break;
+                            }
+                        }
+
+                        if (!solved) {
+                            //说明都不适用,适用保守方法
+                            initPicPathList(chapterUrl, pageSize, jsoupCallBack);
+                            return;
+                        }
                     }
                 }
 
@@ -436,7 +464,7 @@ public class MangaReaderSpider extends SpiderBase {
                 org.jsoup.nodes.Document doc = null;
                 try {
                     doc = Jsoup.connect(url + "/" + 1)
-                            .timeout(10000).get();
+                            .timeout(timeout).get();
                 } catch (IOException e) {
                     e.printStackTrace();
                     jsoupCallBack.loadFailed(e.toString());

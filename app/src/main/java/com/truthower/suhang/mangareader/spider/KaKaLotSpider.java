@@ -42,10 +42,10 @@ public class KaKaLotSpider extends SpiderBase {
                 try {
                     if (TextUtils.isEmpty(type) || type.equals("all")) {
                         doc = Jsoup.connect(webUrl + "genre-all/"+page+"?type=topview")
-                                .timeout(10000).get();
+                                .timeout(timeout).get();
                     } else {
                         doc = Jsoup.connect(webUrl + "genre-"+type+"/"+page)
-                                .timeout(10000).get();
+                                .timeout(timeout).get();
                     }
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -80,7 +80,7 @@ public class KaKaLotSpider extends SpiderBase {
                 org.jsoup.nodes.Document doc=null;
                 try {
                     doc = Jsoup.connect(mangaURL)
-                            .timeout(10000).get();
+                            .timeout(timeout).get();
                 } catch (IOException e) {
                     e.printStackTrace();
                     jsoupCallBack.loadFailed(e.toString());
@@ -183,7 +183,7 @@ public class KaKaLotSpider extends SpiderBase {
                 org.jsoup.nodes.Document doc=null;
                 try {
                     doc = Jsoup.connect(chapterUrl)
-                            .timeout(10000).get();
+                            .timeout(timeout).get();
                 } catch (IOException e) {
                     e.printStackTrace();
                     jsoupCallBack.loadFailed(e.toString());
@@ -215,7 +215,7 @@ public class KaKaLotSpider extends SpiderBase {
                         case BY_MANGA_AUTHOR:
                         case BY_MANGA_NAME:
                             doc = Jsoup.connect(webUrl + "search/" + keyW)
-                                    .timeout(10000).get();
+                                    .timeout(timeout).get();
                             break;
                     }
                 } catch (Exception e) {

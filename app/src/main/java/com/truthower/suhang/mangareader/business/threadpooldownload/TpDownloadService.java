@@ -25,6 +25,7 @@ import com.truthower.suhang.mangareader.listener.OnResultListener;
 import com.truthower.suhang.mangareader.utils.Logger;
 import com.truthower.suhang.mangareader.utils.SerializableSparseArray;
 import com.truthower.suhang.mangareader.utils.ShareObjUtil;
+import com.truthower.suhang.mangareader.utils.VibratorUtil;
 import com.truthower.suhang.mangareader.widget.toast.EasyToast;
 
 import org.greenrobot.eventbus.EventBus;
@@ -161,6 +162,9 @@ public class TpDownloadService extends Service {
                 @Override
                 public void loadFailed(String error) {
                     Logger.d("chapter load failed: " + error);
+                    getChapterInfo();
+//                    VibratorUtil.Vibrate(TpDownloadService.this,1000);
+//                    stopSelf();
                 }
             });
         }
