@@ -241,6 +241,7 @@ public class MangaReaderSpider extends SpiderBase {
 
             @Override
             public void loadFailed(String error) {
+                jsoupCallBack.loadFailed(error);
                 if (Configure.isTest) {
                     MangaDialog dialog = new MangaDialog(context);
                     dialog.show();
