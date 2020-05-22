@@ -56,7 +56,6 @@ import org.greenrobot.eventbus.EventBus;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
@@ -393,7 +392,7 @@ public class OnlineDetailsActivity extends BaseActivity implements View.OnClickL
             @Override
             public void onChanged(MangaBean bean) {
                 currentManga = bean;
-                CopyOnWriteArrayList<RxDownloadChapterBean> cacheArray = (CopyOnWriteArrayList<RxDownloadChapterBean>) ShareObjUtil.getObject(
+                ArrayList<RxDownloadChapterBean> cacheArray = (ArrayList<RxDownloadChapterBean>) ShareObjUtil.getObject(
                         OnlineDetailsActivity.this, currentManga.getName()
                                 + ShareKeys.BRIDGE_KEY);
                 if (null != cacheArray) {
