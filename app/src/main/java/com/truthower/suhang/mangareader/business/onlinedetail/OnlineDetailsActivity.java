@@ -19,6 +19,7 @@ import com.truthower.suhang.mangareader.base.BaseActivity;
 import com.truthower.suhang.mangareader.bean.MangaBean;
 import com.truthower.suhang.mangareader.bean.RxDownloadBean;
 import com.truthower.suhang.mangareader.bean.RxDownloadChapterBean;
+import com.truthower.suhang.mangareader.bean.RxDownloadPageBean;
 import com.truthower.suhang.mangareader.business.main.MainActivity;
 import com.truthower.suhang.mangareader.business.read.ReadMangaActivity;
 import com.truthower.suhang.mangareader.business.rxdownload.CommonDownloader;
@@ -176,7 +177,7 @@ public class OnlineDetailsActivity extends BaseActivity implements View.OnClickL
 
             @Override
             public void onTitleClick() {
-
+                tempRepairCache();
             }
 
             @Override
@@ -435,6 +436,35 @@ public class OnlineDetailsActivity extends BaseActivity implements View.OnClickL
                 }
             }
         });
+    }
+
+    private void tempRepairCache() {
+//        ArrayList<RxDownloadChapterBean> cacheArray = (ArrayList<RxDownloadChapterBean>) ShareObjUtil.getObject(
+//                OnlineDetailsActivity.this, currentManga.getName()
+//                        + ShareKeys.BRIDGE_KEY);
+//        if (null != cacheArray) {
+//            for (int i = 0; i < cacheArray.size(); i++) {
+//                ArrayList<RxDownloadPageBean> pages = cacheArray.get(i).getPages();
+//                for (int j = 0; j < pages.size() - 1; j++) {
+//                    long l0 = getLFromUrl(pages.get(j).getPageUrl());
+//                    long l1 = getLFromUrl(pages.get(j + 1).getPageUrl());
+//                    if (l0 >= l1) {
+//                        long res = l0 + 1;
+//                        String url = pages.get(j + 1).getPageUrl().replace(l1 + ".jpg", res + ".jpg");
+//                        pages.get(j + 1).setPageUrl(url);
+//                    }
+//                }
+//                cacheArray.get(i).setPages(pages);
+//            }
+//            ShareObjUtil.saveObject(OnlineDetailsActivity.this, cacheArray, currentManga.getName() + ShareKeys.BRIDGE_KEY);
+//        }
+    }
+
+    private long getLFromUrl(String url) {
+        String[] ss = url.split("-");
+        String s = ss[ss.length - 1];
+        s = s.replaceAll(".jpg", "");
+        return Long.valueOf(s);
     }
 
     private void refreshUI() {
