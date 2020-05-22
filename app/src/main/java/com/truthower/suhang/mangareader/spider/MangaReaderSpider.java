@@ -59,7 +59,7 @@ public class MangaReaderSpider extends SpiderBase {
         new Thread() {
             @Override
             public void run() {
-                org.jsoup.nodes.Document doc=null;
+                org.jsoup.nodes.Document doc = null;
                 try {
                     if (TextUtils.isEmpty(type) || type.equals("all")) {
                         doc = Jsoup.connect(webUrl + "popular/" + page)
@@ -111,7 +111,7 @@ public class MangaReaderSpider extends SpiderBase {
         new Thread() {
             @Override
             public void run() {
-                org.jsoup.nodes.Document doc=null;
+                org.jsoup.nodes.Document doc = null;
                 try {
                     doc = Jsoup.connect(mangaURL)
                             .timeout(10000).get();
@@ -235,7 +235,8 @@ public class MangaReaderSpider extends SpiderBase {
         getPageSize(chapterUrl, new JsoupCallBack<Integer>() {
             @Override
             public void loadSucceed(Integer result) {
-                initPicPathList(context, chapterUrl, 1, result, jsoupCallBack);
+//                initPicPathList(context, chapterUrl, 1, result, jsoupCallBack);
+                initPicPathList(chapterUrl, result, jsoupCallBack);
             }
 
             @Override
@@ -254,7 +255,7 @@ public class MangaReaderSpider extends SpiderBase {
         new Thread() {
             @Override
             public void run() {
-                org.jsoup.nodes.Document doc=null;
+                org.jsoup.nodes.Document doc = null;
                 try {
                     String keyW = keyWord.replaceAll(" ", "+");
                     doc = Jsoup.connect(webUrl + "search/?w=" +
@@ -362,7 +363,7 @@ public class MangaReaderSpider extends SpiderBase {
         new Thread() {
             @Override
             public void run() {
-                org.jsoup.nodes.Document doc=null;
+                org.jsoup.nodes.Document doc = null;
                 for (int i = 0; i < pageSize; i++) {
                     try {
                         doc = Jsoup.connect(chapterUrl + "/" + (i + 1))
@@ -388,11 +389,51 @@ public class MangaReaderSpider extends SpiderBase {
         }.start();
     }
 
+    private <ResultObj> void initPicPathList(final String chapterUrl, final int pageSize, final JsoupCallBack<ResultObj> jsoupCallBack) {
+        new Thread() {
+            @Override
+            public void run() {
+                org.jsoup.nodes.Document doc = null;
+                try {
+                    doc = Jsoup.connect(chapterUrl + "/" + 1)
+                            .timeout(10000).get();
+                    Logger.d(chapterUrl + "/" + 1);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    jsoupCallBack.loadFailed(e.toString());
+                }
+                if (null != doc) {
+                    Element mangaPicDetailElement = doc.getElementsByClass("episode-table").first();
+                    Element element = mangaPicDetailElement.tagName("img");
+                    String url = element.getElementsByTag("img").last().attr("src");
+                    pathList.add(url);
+                    long l = getLFromUrl(url);
+                    for (int i = 1; i < pageSize; i++) {
+                        pathList.add(url.replaceAll(l + ".jpg", (l + i) + ".jpg"));
+                    }
+                }
+
+                if (null != pathList && pathList.size() > 0) {
+                    jsoupCallBack.loadSucceed((ResultObj) pathList);
+                } else {
+                    jsoupCallBack.loadFailed("doc load failed");
+                }
+            }
+        }.start();
+    }
+
+    private long getLFromUrl(String url) {
+        String[] ss = url.split("-");
+        String s = ss[ss.length - 1];
+        s = s.replaceAll(".jpg", "");
+        return Long.valueOf(s);
+    }
+
     private <ResultObj> void getPageSize(final String url, final JsoupCallBack<ResultObj> jsoupCallBack) {
         new Thread() {
             @Override
             public void run() {
-                org.jsoup.nodes.Document doc=null;
+                org.jsoup.nodes.Document doc = null;
                 try {
                     doc = Jsoup.connect(url + "/" + 1)
                             .timeout(10000).get();
