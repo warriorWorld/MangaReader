@@ -4,11 +4,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class RxDownloadChapterBean extends BaseBean {
+    private static final long serialVersionUID = 8131338942807515398L;
     private String chapterUrl;
     private String chapterName;
     private volatile int downloadedCount;
     private int pageCount;
-    private List<RxDownloadPageBean> pages;
+    private ArrayList<RxDownloadPageBean> pages;
 
     public String getChapterUrl() {
         return chapterUrl;
@@ -26,11 +27,11 @@ public class RxDownloadChapterBean extends BaseBean {
         this.chapterName = chapterName;
     }
 
-    public List<RxDownloadPageBean> getPages() {
+    public ArrayList<RxDownloadPageBean> getPages() {
         return pages;
     }
 
-    public void setPages(List<RxDownloadPageBean> pages) {
+    public void setPages(ArrayList<RxDownloadPageBean> pages) {
         this.pages = pages;
     }
 
