@@ -71,6 +71,7 @@ public class MangaReaderSpider extends SpiderBase {
                 } catch (IOException e) {
                     e.printStackTrace();
                     jsoupCallBack.loadFailed(e.toString());
+                    return;
                 }
                 if (null != doc) {
                     Elements test = doc.select("div.mangaresultitem h3 a");
@@ -101,6 +102,7 @@ public class MangaReaderSpider extends SpiderBase {
                     jsoupCallBack.loadSucceed((ResultObj) mangaListBean);
                 } else {
                     jsoupCallBack.loadFailed("doc load failed");
+                    return;
                 }
             }
         }.start();
@@ -118,6 +120,7 @@ public class MangaReaderSpider extends SpiderBase {
                 } catch (IOException e) {
                     e.printStackTrace();
                     jsoupCallBack.loadFailed(e.toString());
+                    return;
                 }
                 try {
                     if (null != doc) {
@@ -187,9 +190,11 @@ public class MangaReaderSpider extends SpiderBase {
                         jsoupCallBack.loadSucceed((ResultObj) item);
                     } else {
                         jsoupCallBack.loadFailed("doc load failed");
+                        return;
                     }
                 } catch (Exception e) {
                     jsoupCallBack.loadFailed(Configure.WRONG_WEBSITE_EXCEPTION);
+                    return;
                 }
             }
         }.start();
@@ -266,6 +271,7 @@ public class MangaReaderSpider extends SpiderBase {
                 } catch (Exception e) {
                     e.printStackTrace();
                     jsoupCallBack.loadFailed(e.toString());
+                    return;
                 }
                 if (null != doc) {
                     Elements test = null;
@@ -299,6 +305,7 @@ public class MangaReaderSpider extends SpiderBase {
                     jsoupCallBack.loadSucceed((ResultObj) mangaListBean);
                 } else {
                     jsoupCallBack.loadFailed("doc load failed");
+                    return;
                 }
             }
         }.start();
@@ -372,6 +379,7 @@ public class MangaReaderSpider extends SpiderBase {
                     } catch (IOException e) {
                         e.printStackTrace();
                         jsoupCallBack.loadFailed(e.toString());
+                        return;
                     }
                     if (null != doc) {
                         Element mangaPicDetailElement = doc.getElementsByClass("episode-table").first();
@@ -402,6 +410,7 @@ public class MangaReaderSpider extends SpiderBase {
                 } catch (IOException e) {
                     e.printStackTrace();
                     jsoupCallBack.loadFailed(e.toString());
+                    return;
                 }
                 if (null != doc) {
                     Element mangaPicDetailElement = doc.getElementsByClass("episode-table").first();
@@ -417,6 +426,7 @@ public class MangaReaderSpider extends SpiderBase {
                     } catch (IOException e) {
                         e.printStackTrace();
                         jsoupCallBack.loadFailed(e.toString());
+                        return;
                     }
                     if (null != doc1) {
                         Element mangaPicDetailElement1 = doc1.getElementsByClass("episode-table").first();
@@ -446,6 +456,7 @@ public class MangaReaderSpider extends SpiderBase {
                     jsoupCallBack.loadSucceed((ResultObj) pathList);
                 } else {
                     jsoupCallBack.loadFailed("doc load failed");
+                    return;
                 }
             }
         }.start();
@@ -469,6 +480,7 @@ public class MangaReaderSpider extends SpiderBase {
                 } catch (IOException e) {
                     e.printStackTrace();
                     jsoupCallBack.loadFailed(e.toString());
+                    return;
                 }
                 if (null != doc) {
                     Element page = doc.getElementById("selectpage");
@@ -477,6 +489,7 @@ public class MangaReaderSpider extends SpiderBase {
                     jsoupCallBack.loadSucceed((ResultObj) Integer.valueOf(lastPage.text()));
                 } else {
                     jsoupCallBack.loadFailed("getPageSize doc load failed");
+                    return;
                 }
             }
         }.start();
