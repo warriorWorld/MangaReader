@@ -162,8 +162,8 @@ public class TpDownloadService extends Service {
                 @Override
                 public void loadFailed(String error) {
                     Logger.d("chapter load failed: " + error);
+                    VibratorUtil.Vibrate(TpDownloadService.this,1000);
                     getChapterInfo();
-//                    VibratorUtil.Vibrate(TpDownloadService.this,1000);
 //                    stopSelf();
                 }
             });
