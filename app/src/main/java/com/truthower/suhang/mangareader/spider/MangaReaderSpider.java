@@ -412,44 +412,55 @@ public class MangaReaderSpider extends SpiderBase {
                     jsoupCallBack.loadFailed(e.toString());
                     return;
                 }
-                if (null != doc) {
-                    Element mangaPicDetailElement = doc.getElementsByClass("episode-table").first();
-                    Element element = mangaPicDetailElement.tagName("img");
-                    String url = element.getElementsByTag("img").last().attr("src");
-                    pathList.add(url);
-                    long l = getLFromUrl(url);
-                    //再爬一遍最后一张图
-                    org.jsoup.nodes.Document doc1 = null;
-                    try {
-                        doc1 = Jsoup.connect(chapterUrl + "/" + pageSize)
-                                .timeout(timeout).get();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                        jsoupCallBack.loadFailed(e.toString());
-                        return;
-                    }
-                    if (null != doc1) {
-                        Element mangaPicDetailElement1 = doc1.getElementsByClass("episode-table").first();
-                        Element element1 = mangaPicDetailElement1.tagName("img");
-                        String url1 = element1.getElementsByTag("img").last().attr("src");
-                        long l1 = getLFromUrl(url1);
-                        boolean solved = false;
-                        for (int n = 1; n < 10; n++) {
-                            if ((l1 - l + n) % pageSize == 0) {
-                                for (int i = 1; i < pageSize; i++) {
-                                    pathList.add(url.replaceAll(l + ".jpg", (l + i * n) + ".jpg"));
-                                    solved = true;
-                                }
-                                break;
-                            }
-                        }
+                Element mangaPicDetailElement = doc.getElementsByClass("episode-table").first();
+                Element element = mangaPicDetailElement.tagName("img");
+                String url = element.getElementsByTag("img").last().attr("src");
+                pathList.add(url);
+                long l = getLFromUrl(url);
+                //再爬一遍最后一张图
+                org.jsoup.nodes.Document doc1 = null;
+                try {
+                    doc1 = Jsoup.connect(chapterUrl + "/" + pageSize)
+                            .timeout(timeout).get();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    jsoupCallBack.loadFailed(e.toString());
+                    return;
+                }
+                Element mangaPicDetailElement1 = doc1.getElementsByClass("episode-table").first();
+                Element element1 = mangaPicDetailElement1.tagName("img");
+                String url1 = element1.getElementsByTag("img").last().attr("src");
+                long l1 = getLFromUrl(url1);
+                //再爬一遍倒数第二图
+                org.jsoup.nodes.Document doc2 = null;
+                try {
+                    doc2 = Jsoup.connect(chapterUrl + "/" + (pageSize - 1))
+                            .timeout(timeout).get();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    jsoupCallBack.loadFailed(e.toString());
+                    return;
+                }
+                Element mangaPicDetailElement2 = doc2.getElementsByClass("episode-table").first();
+                Element element2 = mangaPicDetailElement2.tagName("img");
+                String url2 = element2.getElementsByTag("img").last().attr("src");
+                long l2 = getLFromUrl(url2);
 
-                        if (!solved) {
-                            //说明都不适用,适用保守方法
-                            initPicPathList(chapterUrl, pageSize, jsoupCallBack);
-                            return;
+                boolean solved = false;
+                for (int n = 1; n < 10; n++) {
+                    if (((l1 - l + n) % pageSize == 0) && ((l2 - l + n) % (pageSize - 1) == 0)) {
+                        for (int i = 1; i < pageSize; i++) {
+                            pathList.add(url.replaceAll(l + ".jpg", (l + i * n) + ".jpg"));
+                            solved = true;
                         }
+                        break;
                     }
+                }
+
+                if (!solved) {
+                    //说明都不适用,适用保守方法
+                    initPicPathList(chapterUrl, pageSize, jsoupCallBack);
+                    return;
                 }
 
                 if (null != pathList && pathList.size() > 0) {
