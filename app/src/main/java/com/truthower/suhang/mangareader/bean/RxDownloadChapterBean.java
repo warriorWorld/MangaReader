@@ -1,13 +1,14 @@
 package com.truthower.suhang.mangareader.bean;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class RxDownloadChapterBean extends BaseBean {
     private String chapterUrl;
     private String chapterName;
     private volatile int downloadedCount;
     private int pageCount;
-    private ArrayList<RxDownloadPageBean> pages;
+    private List<RxDownloadPageBean> pages;
 
     public String getChapterUrl() {
         return chapterUrl;
@@ -25,11 +26,11 @@ public class RxDownloadChapterBean extends BaseBean {
         this.chapterName = chapterName;
     }
 
-    public ArrayList<RxDownloadPageBean> getPages() {
+    public List<RxDownloadPageBean> getPages() {
         return pages;
     }
 
-    public void setPages(ArrayList<RxDownloadPageBean> pages) {
+    public void setPages(List<RxDownloadPageBean> pages) {
         this.pages = pages;
     }
 

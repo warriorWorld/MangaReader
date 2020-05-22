@@ -34,6 +34,7 @@ import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.List;
 
 import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
@@ -118,12 +119,12 @@ public class DownloadService extends Service {
                 .onBackpressureBuffer()
                 .subscribeOn(Schedulers.computation())
                 .observeOn(Schedulers.computation())
-                .concatMap(new Function<RxDownloadChapterBean, Publisher<ArrayList<RxDownloadPageBean>>>() {
+                .concatMap(new Function<RxDownloadChapterBean, Publisher<List<RxDownloadPageBean>>>() {
                     @Override
-                    public Publisher<ArrayList<RxDownloadPageBean>> apply(final RxDownloadChapterBean bean) throws Exception {
-                        return new Publisher<ArrayList<RxDownloadPageBean>>() {
+                    public Publisher<List<RxDownloadPageBean>> apply(final RxDownloadChapterBean bean) throws Exception {
+                        return new Publisher<List<RxDownloadPageBean>>() {
                             @Override
-                            public void subscribe(final Subscriber<? super ArrayList<RxDownloadPageBean>> s) {
+                            public void subscribe(final Subscriber<? super List<RxDownloadPageBean>> s) {
                                 if (null != bean.getPages() && bean.getPages().size() > 0) {
                                     //之前获取过该章节的图片地址的情况
                                     s.onNext(bean.getPages());
@@ -156,9 +157,9 @@ public class DownloadService extends Service {
                         };
                     }
                 })
-                .flatMap(new Function<ArrayList<RxDownloadPageBean>, Publisher<RxDownloadPageBean>>() {
+                .flatMap(new Function<List<RxDownloadPageBean>, Publisher<RxDownloadPageBean>>() {
                     @Override
-                    public Publisher<RxDownloadPageBean> apply(final ArrayList<RxDownloadPageBean> beans) throws Exception {
+                    public Publisher<RxDownloadPageBean> apply(final List<RxDownloadPageBean> beans) throws Exception {
                         return new Publisher<RxDownloadPageBean>() {
                             @Override
                             public void subscribe(Subscriber<? super RxDownloadPageBean> s) {
