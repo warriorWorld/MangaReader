@@ -32,6 +32,7 @@ import org.greenrobot.eventbus.EventBus;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -60,9 +61,9 @@ public class TpDownloadService extends Service {
         //chapters在很多线程中同时操作 需要线程安全
         chapters = Collections.synchronizedList(downloadBean.getChapters());
         mDownloader = downloadBean.getDownloader();
-        cacheChapters =(ArrayList<RxDownloadChapterBean>) ShareObjUtil.getObject(this, downloadBean.getMangaName() + ShareKeys.BRIDGE_KEY);
+        cacheChapters = (ArrayList<RxDownloadChapterBean>) ShareObjUtil.getObject(this, downloadBean.getMangaName() + ShareKeys.BRIDGE_KEY);
         if (null == cacheChapters) {
-            cacheChapters =new ArrayList<RxDownloadChapterBean>();
+            cacheChapters = new ArrayList<RxDownloadChapterBean>();
         }
         createNotification(this);
         startForeground(10, notificationBuilder.build());
@@ -136,7 +137,7 @@ public class TpDownloadService extends Service {
                 @Override
                 public void loadSucceed(ArrayList<String> result) {
                     currentChapter.setPageCount(result.size());
-                    List<RxDownloadPageBean> pages = Collections.synchronizedList(new ArrayList<RxDownloadPageBean>());
+                    CopyOnWriteArrayList<RxDownloadPageBean> pages = new CopyOnWriteArrayList<>();
                     for (int i = 0; i < result.size(); i++) {
                         RxDownloadPageBean item = new RxDownloadPageBean();
                         item.setPageUrl(result.get(i));
@@ -147,7 +148,7 @@ public class TpDownloadService extends Service {
 
                         executeRunable(item);
                     }
-                    currentChapter.setPages((ArrayList<RxDownloadPageBean>) pages);
+                    currentChapter.setPages(pages);
                     try {
                         //处理缓存
                         cacheChapters.add(currentChapter);

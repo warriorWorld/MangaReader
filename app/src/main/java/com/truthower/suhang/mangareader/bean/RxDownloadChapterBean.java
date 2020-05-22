@@ -2,6 +2,7 @@ package com.truthower.suhang.mangareader.bean;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public class RxDownloadChapterBean extends BaseBean {
     private static final long serialVersionUID = 8131338942807515398L;
@@ -9,7 +10,7 @@ public class RxDownloadChapterBean extends BaseBean {
     private String chapterName;
     private volatile int downloadedCount;
     private int pageCount;
-    private ArrayList<RxDownloadPageBean> pages;
+    private CopyOnWriteArrayList<RxDownloadPageBean> pages;
 
     public String getChapterUrl() {
         return chapterUrl;
@@ -27,11 +28,11 @@ public class RxDownloadChapterBean extends BaseBean {
         this.chapterName = chapterName;
     }
 
-    public ArrayList<RxDownloadPageBean> getPages() {
+    public CopyOnWriteArrayList<RxDownloadPageBean> getPages() {
         return pages;
     }
 
-    public void setPages(ArrayList<RxDownloadPageBean> pages) {
+    public void setPages(CopyOnWriteArrayList<RxDownloadPageBean> pages) {
         this.pages = pages;
     }
 

@@ -23,13 +23,10 @@ import com.truthower.suhang.mangareader.base.TTSActivity;
 import com.truthower.suhang.mangareader.bean.MangaBean;
 import com.truthower.suhang.mangareader.bean.RxDownloadBean;
 import com.truthower.suhang.mangareader.bean.RxDownloadChapterBean;
-import com.truthower.suhang.mangareader.business.download.DownloadActivity;
 import com.truthower.suhang.mangareader.business.main.MainActivity;
 import com.truthower.suhang.mangareader.business.read.ReadMangaActivity;
 import com.truthower.suhang.mangareader.business.rxdownload.CommonDownloader;
 import com.truthower.suhang.mangareader.business.rxdownload.DownloadCaretaker;
-import com.truthower.suhang.mangareader.business.rxdownload.DownloadService;
-import com.truthower.suhang.mangareader.business.rxdownload.RxDownloadActivity;
 import com.truthower.suhang.mangareader.business.search.SearchActivity;
 import com.truthower.suhang.mangareader.business.threadpooldownload.TpDownloadActivity;
 import com.truthower.suhang.mangareader.business.threadpooldownload.TpDownloadService;
@@ -598,7 +595,7 @@ public class WebMangaDetailsActivity extends TTSActivity implements AdapterView.
             // Already have permission, do the thing
             // ...
             baseToast.showToast("开始下载!");
-            Intent stopIntent=new Intent(this,TpDownloadService.class);
+            Intent stopIntent = new Intent(this, TpDownloadService.class);
             if (ServiceUtil.isServiceWork(this,
                     TpDownloadService.SERVICE_PCK_NAME)) {
                 //先结束
