@@ -4,16 +4,19 @@ import android.content.Context;
 import android.os.Handler;
 
 import com.truthower.suhang.mangareader.bean.MangaBean;
+import com.truthower.suhang.mangareader.bean.RxDownloadChapterBean;
 import com.truthower.suhang.mangareader.config.Configure;
 import com.truthower.suhang.mangareader.config.ShareKeys;
 import com.truthower.suhang.mangareader.db.DbAdapter;
 import com.truthower.suhang.mangareader.listener.JsoupCallBack;
+import com.truthower.suhang.mangareader.spider.FileSpider;
 import com.truthower.suhang.mangareader.spider.SpiderBase;
 import com.truthower.suhang.mangareader.utils.BaseParameterUtil;
 import com.truthower.suhang.mangareader.utils.ShareObjUtil;
 import com.truthower.suhang.mangareader.utils.StringUtil;
 import com.truthower.suhang.mangareader.widget.toast.EasyToast;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 
 import androidx.lifecycle.LiveData;
@@ -103,6 +106,18 @@ public class OnlineDetailVM extends ViewModel {
                 });
             }
         });
+    }
+
+    void exportCache() {
+        ArrayList<RxDownloadChapterBean> cacheArray = (ArrayList<RxDownloadChapterBean>) ShareObjUtil.getObject(
+                mContext, manga.getValue().getName()
+                        + ShareKeys.BRIDGE_KEY);
+        if (null != cacheArray && cacheArray.size() > 0) {
+            FileSpider.getInstance().fileSave2SDCard(manga.getValue().getName(),cacheArray);
+            message.setValue("已成功将缓存导出到manga文件夹下!");
+        } else {
+            message.setValue("缓存为空!");
+        }
     }
 
     void cacheDetail() {

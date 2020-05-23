@@ -1,7 +1,10 @@
 package com.truthower.suhang.mangareader.spider;
 
+import android.content.Context;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Environment;
 import android.os.Message;
 import android.text.TextUtils;
@@ -27,7 +30,10 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.OutputStream;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -286,6 +292,94 @@ public class FileSpider {
             }
             return file;
         }
+    }
+
+    //保存在sd卡
+    public boolean fileSave2SDCard(String fileName, Object obj) {
+        File sdFile = new File(Configure.DOWNLOAD_PATH, fileName + ".mangaCache");
+        FileOutputStream fos = null;
+        ObjectOutputStream oos = null;
+        try {
+            fos = new FileOutputStream(sdFile);
+            oos = new ObjectOutputStream(fos);
+            oos.writeObject(obj); //写入
+            oos.flush();
+            return true;
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (fos != null) fos.close();
+                if (oos != null) oos.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return false;
+    }
+
+    public String getPath(Context context, Uri uri) throws URISyntaxException {
+        if ("content".equalsIgnoreCase(uri.getScheme())) {
+            String[] projection = {"_data"};
+            Cursor cursor = null;
+            try {
+                cursor = context.getContentResolver().query(uri, projection, null, null, null);
+                int column_index = cursor.getColumnIndexOrThrow("_data");
+                if (cursor.moveToFirst()) {
+                    return cursor.getString(column_index);
+                }
+            } catch (Exception e) {
+                // Eat it  Or Log it.
+            }
+        } else if ("file".equalsIgnoreCase(uri.getScheme())) {
+            return uri.getPath();
+        }
+        return null;
+    }
+
+    public Object readFileFromLocal(String fileName) {
+        FileInputStream fileInputStream = null;
+        ObjectInputStream objectInputStream = null;
+        try {
+            fileInputStream = new FileInputStream(fileName);
+            objectInputStream = new ObjectInputStream(fileInputStream);
+            Object obj = objectInputStream.readObject();
+
+            return obj;
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (fileInputStream != null) fileInputStream.close();
+                if (objectInputStream != null) objectInputStream.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return null;
+    }
+
+    public Object readObjFromSDCard(String filePath) {
+        Object obj;
+        File sdFile = new File(filePath);
+        FileInputStream fis = null;
+        ObjectInputStream ois = null;
+        try {
+            fis = new FileInputStream(sdFile); //获得输入流
+            ois = new ObjectInputStream(fis);
+            obj = ois.readObject();
+            return obj;
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (fis != null) fis.close();
+                if (ois != null) ois.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return null;
     }
 
     /**

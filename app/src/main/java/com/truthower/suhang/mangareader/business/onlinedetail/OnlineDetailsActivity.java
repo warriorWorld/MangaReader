@@ -1,7 +1,9 @@
 package com.truthower.suhang.mangareader.business.onlinedetail;
 
 import android.Manifest;
+import android.app.Activity;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -35,6 +37,7 @@ import com.truthower.suhang.mangareader.eventbus.TagClickEvent;
 import com.truthower.suhang.mangareader.listener.OnRecycleItemClickListener;
 import com.truthower.suhang.mangareader.listener.OnResultListener;
 import com.truthower.suhang.mangareader.listener.OnSevenFourteenListDialogListener;
+import com.truthower.suhang.mangareader.spider.FileSpider;
 import com.truthower.suhang.mangareader.utils.ActivityPoor;
 import com.truthower.suhang.mangareader.utils.BaseParameterUtil;
 import com.truthower.suhang.mangareader.utils.DisplayUtil;
@@ -54,9 +57,11 @@ import com.truthower.suhang.mangareader.widget.wheelview.wheelselector.SingleSel
 
 import org.greenrobot.eventbus.EventBus;
 
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 
+import androidx.annotation.Nullable;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -81,7 +86,7 @@ public class OnlineDetailsActivity extends BaseActivity implements View.OnClickL
     private String mangaUrl;
     private boolean chooseing = false;//判断是否在选择状态
     private boolean firstChoose = true;
-    private String[] optionsList = {"下载全部", "区间下载", "缓存详情", "清空缓存"};
+    private String[] optionsList = {"下载全部", "区间下载", "缓存详情", "清空缓存", "导入缓存", "导出缓存"};
     private int downloadStartPoint = 0;
     private SparseArray<RxDownloadChapterBean> cacheChapters = new SparseArray<>();
 
@@ -218,11 +223,66 @@ public class OnlineDetailsActivity extends BaseActivity implements View.OnClickL
                     case 3:
                         showCleanCacheDialog();
                         break;
+                    case 4:
+                        showFileChooser();
+                        break;
+                    case 5:
+                        mOnlineDetailVM.exportCache();
+                        break;
                 }
             }
         });
         listDialog.show();
         listDialog.setOptionsList(optionsList);
+    }
+
+    /**
+     * 调用文件选择软件来选择文件
+     **/
+    public void showFileChooser() {
+        baseToast.showToast("请选择.mangaCachew文件");
+        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+//        intent.setType("text/plain");//设置类型和后缀 txt
+        intent.setType("*/*");//设置类型和后缀  全部文件
+        intent.addCategory(Intent.CATEGORY_OPENABLE);
+        startActivityForResult(intent, 1);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        if (resultCode == Activity.RESULT_OK) {//是否选择，没选择就不会继续
+            switch (requestCode) {
+                case 1:
+                    // Get the Uri of the selected file
+                    Uri uri = data.getData();
+                    // Get the path
+                    String path = null;
+                    try {
+                        path = FileSpider.getInstance().getPath(this, uri);
+                    } catch (URISyntaxException e) {
+                        e.printStackTrace();
+                    }
+                    if (TextUtils.isEmpty(path)) {
+                        return;
+                    }
+                    assert path != null;
+                    if (path.endsWith(".mangaCache")) {
+                        try {
+                            ArrayList<RxDownloadChapterBean> cacheArray =
+                                    (ArrayList<RxDownloadChapterBean>) FileSpider.getInstance().readObjFromSDCard(path);
+                            ShareObjUtil.saveObject(OnlineDetailsActivity.this, cacheArray,
+                                    currentManga.getName() + ShareKeys.BRIDGE_KEY);
+                            initCacheData();
+                            initRec();
+                        } catch (ClassCastException e) {
+                            e.printStackTrace();
+                        }
+                    } else {
+                        baseToast.showToast("请选择.mangaCache文件");
+                    }
+                    break;
+            }
+        }
     }
 
     private void showCleanCacheDialog() {
@@ -392,14 +452,7 @@ public class OnlineDetailsActivity extends BaseActivity implements View.OnClickL
             @Override
             public void onChanged(MangaBean bean) {
                 currentManga = bean;
-                ArrayList<RxDownloadChapterBean> cacheArray = (ArrayList<RxDownloadChapterBean>) ShareObjUtil.getObject(
-                        OnlineDetailsActivity.this, currentManga.getName()
-                                + ShareKeys.BRIDGE_KEY);
-                if (null != cacheArray) {
-                    for (int i = 0; i < cacheArray.size(); i++) {
-                        cacheChapters.put(Integer.valueOf(cacheArray.get(i).getChapterName()), cacheArray.get(i));
-                    }
-                }
+                initCacheData();
                 refreshUI();
                 showDescription();
             }
@@ -436,6 +489,17 @@ public class OnlineDetailsActivity extends BaseActivity implements View.OnClickL
                 }
             }
         });
+    }
+
+    private void initCacheData() {
+        ArrayList<RxDownloadChapterBean> cacheArray = (ArrayList<RxDownloadChapterBean>) ShareObjUtil.getObject(
+                OnlineDetailsActivity.this, currentManga.getName()
+                        + ShareKeys.BRIDGE_KEY);
+        if (null != cacheArray) {
+            for (int i = 0; i < cacheArray.size(); i++) {
+                cacheChapters.put(Integer.valueOf(cacheArray.get(i).getChapterName()), cacheArray.get(i));
+            }
+        }
     }
 
     private void tempRepairCache() {
