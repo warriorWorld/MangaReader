@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:app="http://schemas.android.com/apk/res-auto"
-              xmlns:tools="http://schemas.android.com/tools"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:background="@color/divide"
-              android:orientation="vertical">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/ic_launch"
+    android:orientation="vertical">
 
     <Button
         android:id="@+id/test_btn"
@@ -13,7 +13,7 @@
         android:layout_height="wrap_content"
         android:background="@drawable/btn_click_rewrite"
         android:text="测试"
-        android:textColor="@color/white"/>
+        android:textColor="@color/white" />
 
     <Button
         android:id="@+id/test_btn1"
@@ -22,7 +22,8 @@
         android:layout_marginTop="8dp"
         android:background="@drawable/btn_click_rewrite"
         android:text="测试1"
-        android:textColor="@color/white"/>
+        android:textColor="@color/white" />
+
     <Button
         android:id="@+id/test_btn2"
         android:layout_width="match_parent"
@@ -30,5 +31,5 @@
         android:layout_marginTop="8dp"
         android:background="@drawable/btn_click_rewrite"
         android:text="测试2"
-        android:textColor="@color/white"/>
+        android:textColor="@color/white" />
 </LinearLayout>

@@ -66,7 +66,7 @@ public class OnlineMangaFragment extends BaseFragment implements PullToRefreshBa
     private TopBar topBar;
     private int gradientMagicNum = 500;
     private String[] optionsList = {"切换站点", "搜索", "分类", "跳转"};
-    private SingleSelectorDialog  typesSelector, webSelector;
+    private SingleSelectorDialog typesSelector, webSelector;
     private MangaEditDialog searchDialog, toPageDialog;
     private int startPage = 1;
     private boolean onLoadingMore = false;
@@ -122,11 +122,11 @@ public class OnlineMangaFragment extends BaseFragment implements PullToRefreshBa
             @Override
             public void onLeftClick() {
                 String lastUrl = SharedPreferencesUtils.getSharedPreferencesData(getActivity(), ShareKeys.LAST_READ_MANGA_URL);
-                if (!TextUtils.isEmpty(lastUrl)){
+                if (!TextUtils.isEmpty(lastUrl)) {
                     Intent intent = new Intent(getActivity(), OnlineDetailsActivity.class);
                     intent.putExtra("mangaUrl", lastUrl);
                     startActivity(intent);
-                }else {
+                } else {
                     baseToast.showToast("没有最近阅读记录");
                 }
             }
@@ -154,7 +154,7 @@ public class OnlineMangaFragment extends BaseFragment implements PullToRefreshBa
 
             @Override
             public void onTitleLongClick() {
-                if (Configure.isTest) {
+                if (Configure.isTest || PermissionUtil.isCreator(getActivity())) {
                     Intent intent = new Intent(getActivity(), TestActivity.class);
                     startActivity(intent);
                 }
