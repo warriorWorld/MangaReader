@@ -7,11 +7,18 @@
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
     </style>
+    <!-- Base application theme. -->
+    <style name="SplashActivityTheme"  parent="Theme.AppCompat.Light.NoActionBar">
+        <!-- Customize your theme here. -->
+        <item name="android:windowBackground">@drawable/ic_launch</item>
+    </style>
+
     <declare-styleable name="TopBar">
         <attr name="titleTextColor" format="color" />
         <attr name="titleTextSize" format="dimension" />
         <attr name="titleText" format="string" />
     </declare-styleable>
+
     <style name="TransparentDialog" parent="android:style/Theme.Dialog">
         <!--背景颜色及透明程度-->
         <item name="android:windowBackground">@android:color/transparent</item>
@@ -24,6 +31,7 @@
         <!--是否显示边框-->
         <item name="android:windowFrame">@null</item>
     </style>
+
     <style name="StyleProgressBarMini" parent="@android:style/Widget.ProgressBar.Horizontal">
         <item name="android:maxHeight">50dip</item>
         <item name="android:minHeight">10dip</item>
@@ -33,6 +41,7 @@
         </item>
         <item name="android:progressDrawable">@drawable/shape_progressbar_mini</item>
     </style>
+
     <style name="FloatingStyle" parent="@android:style/TextAppearance">
         <item name="android:textColor">@color/tag_blue</item>
         <item name="android:textSize">12sp</item>

@@ -55,7 +55,8 @@
 
         <activity
             android:name=".business.lunch.LunchActivity"
-            android:launchMode="standard">
+            android:launchMode="standard"
+            android:theme="@style/SplashActivityTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
