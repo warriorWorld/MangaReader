@@ -15,6 +15,7 @@ import com.truthower.suhang.mangareader.crash.CrashHandler;
 import com.truthower.suhang.mangareader.utils.DisplayUtil;
 import com.youdao.sdk.app.YouDaoApplication;
 
+import androidx.multidex.BuildConfig;
 import androidx.multidex.MultiDexApplication;
 
 /**
@@ -32,6 +33,20 @@ public class App extends MultiDexApplication {
 //        initUmeng();
         initYouDao();
         Configure.isPad = DisplayUtil.isPad(this);
+        checkMemoryLeak();
+    }
+
+    private void checkMemoryLeak() {
+        if (!BuildConfig.DEBUG)
+            return;
+        StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
+        builder
+                .detectActivityLeaks()
+                .detectLeakedClosableObjects()
+                .detectLeakedRegistrationObjects()
+                .detectLeakedSqlLiteObjects();
+        builder.penaltyLog();
+        StrictMode.setVmPolicy(builder.build());
     }
 
     private void initYouDao() {

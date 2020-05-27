@@ -49,6 +49,7 @@ public class TpDownloadActivity extends BaseActivity implements View.OnClickList
     private RecyclerView chapterRcv;
     private Button downloadBtn;
     private View emptyView;
+    private TextView stateTv;
     private DownloadContract.Presenter mPresenter;
     private RxDownloadBean mDownloadBean;
     private DownloadRecyclerAdapter adapter;
@@ -152,6 +153,26 @@ public class TpDownloadActivity extends BaseActivity implements View.OnClickList
     }
 
     @Override
+    public void onEventMainThread(final EventBusEvent event) {
+        try {
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    if (null == event)
+                        return;
+                    switch (event.getEventType()) {
+                        case EventBusEvent.DOWNLOAD_MESSAGE_EVENT:
+                            stateTv.setText(event.getMsg());
+                            break;
+                    }
+                }
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         initUI();
@@ -185,6 +206,7 @@ public class TpDownloadActivity extends BaseActivity implements View.OnClickList
         chapterProgressTv = (TextView) findViewById(R.id.chapter_progress_tv);
         downloadProgressBar = (ProgressBar) findViewById(R.id.download_progress_bar);
         totalProgressTv = (TextView) findViewById(R.id.total_progress_tv);
+        stateTv = findViewById(R.id.state_tv);
         totalProgressBar = (ProgressBar) findViewById(R.id.total_progress_bar);
         totalProgressBar.setMax(100);
         chapterRcv = (RecyclerView) findViewById(R.id.chapter_rcv);

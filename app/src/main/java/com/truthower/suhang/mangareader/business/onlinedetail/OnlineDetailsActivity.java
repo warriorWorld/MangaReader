@@ -391,6 +391,9 @@ public class OnlineDetailsActivity extends BaseActivity implements View.OnClickL
                     baseToast.showToast("已经是最后一章");
                 }
                 break;
+            case EventBusEvent.DOWNLOAD_CHAPTER_FINISH_EVENT:
+                initRec();
+                break;
         }
         if (null != intent) {
             startActivity(intent);

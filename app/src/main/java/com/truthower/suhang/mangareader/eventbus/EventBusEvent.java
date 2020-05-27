@@ -19,6 +19,7 @@ public class EventBusEvent {
     public static final int ON_TAP_EVENT = 25;
     public static final int TO_LAST_CHAPTER = 26;
     public static final int TO_NEXT_CHAPTER = 27;
+    public static final int DOWNLOAD_MESSAGE_EVENT = 28;
     private String msg;
     private int intMsg;
     private int eventType;

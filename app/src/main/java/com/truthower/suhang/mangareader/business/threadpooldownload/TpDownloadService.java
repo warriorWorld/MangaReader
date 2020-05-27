@@ -150,6 +150,7 @@ public class TpDownloadService extends Service {
                         executeRunable(item);
                     }
                     currentChapter.setPages(pages);
+                    EventBus.getDefault().post(new EventBusEvent("获取图片地址成功,开始下载图片.", EventBusEvent.DOWNLOAD_MESSAGE_EVENT));
                     try {
                         //处理缓存
                         cacheChapters.add(currentChapter);
@@ -162,7 +163,8 @@ public class TpDownloadService extends Service {
                 @Override
                 public void loadFailed(String error) {
                     Logger.d("chapter load failed: " + error);
-                    VibratorUtil.Vibrate(TpDownloadService.this,1000);
+                    EventBus.getDefault().post(new EventBusEvent("获取图片地址失败:" + error, EventBusEvent.DOWNLOAD_MESSAGE_EVENT));
+                    VibratorUtil.Vibrate(TpDownloadService.this, 1000);
                     getChapterInfo();
 //                    stopSelf();
                 }
