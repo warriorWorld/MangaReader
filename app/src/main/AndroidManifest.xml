@@ -54,8 +54,8 @@
             android:required="false" />
 
         <activity
-            android:name=".business.lunch.LunchActivity"
-            android:launchMode="standard"
+            android:name=".business.main.MainActivity"
+            android:launchMode="singleTask"
             android:theme="@style/SplashActivityTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -66,9 +66,6 @@
         <activity android:name=".business.detail.WebMangaDetailsActivity"></activity>
         <activity android:name=".business.detail.LocalMangaDetailsActivity"></activity>
         <activity android:name=".business.onlinedetail.OnlineDetailsActivity"></activity>
-        <activity
-            android:name=".business.main.MainActivity"
-            android:launchMode="singleTask"></activity>
         <activity
             android:name=".business.read.ReadMangaActivity"
             android:configChanges="orientation|screenSize"

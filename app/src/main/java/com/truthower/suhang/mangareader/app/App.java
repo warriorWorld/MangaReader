@@ -12,6 +12,7 @@ import com.truthower.suhang.mangareader.bean.DownloadBean;
 import com.truthower.suhang.mangareader.business.download.DownloadMangaManager;
 import com.truthower.suhang.mangareader.config.Configure;
 import com.truthower.suhang.mangareader.crash.CrashHandler;
+import com.truthower.suhang.mangareader.utils.BaseParameterUtil;
 import com.truthower.suhang.mangareader.utils.DisplayUtil;
 import com.youdao.sdk.app.YouDaoApplication;
 
@@ -34,6 +35,7 @@ public class App extends MultiDexApplication {
         initYouDao();
         Configure.isPad = DisplayUtil.isPad(this);
         checkMemoryLeak();
+        BaseParameterUtil.getInstance();
     }
 
     private void checkMemoryLeak() {

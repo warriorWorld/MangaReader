@@ -10,7 +10,7 @@
     <!-- Base application theme. -->
     <style name="SplashActivityTheme"  parent="Theme.AppCompat.Light.NoActionBar">
         <!-- Customize your theme here. -->
-        <item name="android:windowBackground">@drawable/ic_launch</item>
+        <item name="android:windowBackground">@drawable/launch</item>
     </style>
 
     <declare-styleable name="TopBar">
