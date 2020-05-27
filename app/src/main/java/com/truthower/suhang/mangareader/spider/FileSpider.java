@@ -167,8 +167,8 @@ public class FileSpider {
      * @return
      * @childFolder 子文件夹名 因为漫画图片数量太大 所以在多一层子文件夹 自动建立
      */
-    public String saveBitmap(Bitmap b, String bmpName,
-                             String childFolder, String mangaName) {
+    public boolean saveBitmap(Bitmap b, String bmpName,
+                              String childFolder, String mangaName) {
 //        b = ImageUtil.imageZoom(b, 600);
         String path = Configure.storagePath + "/" + mangaName;
         String jpegName = path + "/" + childFolder + "/" + bmpName;
@@ -186,10 +186,12 @@ public class FileSpider {
             bos.close();
         } catch (IOException e) {
             e.printStackTrace();
+            return false;
         } catch (NullPointerException e) {
             e.printStackTrace();
+            return false;
         }
-        return jpegName;
+        return true;
     }
 
     public static void saveBitmap(Bitmap b, String folderName, String bmpName) {

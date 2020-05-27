@@ -17,6 +17,7 @@ import com.truthower.suhang.mangareader.bean.RxDownloadBean;
 import com.truthower.suhang.mangareader.bean.RxDownloadChapterBean;
 import com.truthower.suhang.mangareader.bean.RxDownloadPageBean;
 import com.truthower.suhang.mangareader.business.rxdownload.DownloadCaretaker;
+import com.truthower.suhang.mangareader.business.rxdownload.FailedPageCaretaker;
 import com.truthower.suhang.mangareader.config.ShareKeys;
 import com.truthower.suhang.mangareader.eventbus.EventBusEvent;
 import com.truthower.suhang.mangareader.listener.JsoupCallBack;
@@ -54,12 +55,17 @@ public class TpDownloadService extends Service {
     private ExecutorService mExecutorService = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
     private ArrayList<RxDownloadChapterBean> cacheChapters;
     private TpDownloadEvent mEvent;
+    private CopyOnWriteArrayList<RxDownloadPageBean> failedPages = new CopyOnWriteArrayList<>();
 
     @Override
     public void onCreate() {
         super.onCreate();
         Logger.setTag("TpDownloadService");
         downloadBean = DownloadCaretaker.getDownloadMemoto(this);
+        failedPages = FailedPageCaretaker.getFailedPages(this);
+        if (null == failedPages) {
+            failedPages = new CopyOnWriteArrayList<>();
+        }
         //chapters在很多线程中同时操作 需要线程安全
         chapters = Collections.synchronizedList(downloadBean.getChapters());
         mDownloader = downloadBean.getDownloader();
@@ -120,11 +126,11 @@ public class TpDownloadService extends Service {
     private void getChapterInfo() {
         if (null == chapters || chapters.size() <= 0) {
             //下载完成
-            mEasyToast.showToast(downloadBean.getMangaName() + "全部下载完成!");
-            DownloadCaretaker.clean(this);
-            mEvent.setEventType(EventBusEvent.DOWNLOAD_FINISH_EVENT);
-            EventBus.getDefault().post(mEvent);
-            stopSelf();
+            if (null == failedPages || failedPages.size() <= 0) {
+                downloadFinished();
+            } else {
+                retryFaliedPages();
+            }
             return;
         }
         currentChapter = chapters.get(0);
@@ -175,7 +181,50 @@ public class TpDownloadService extends Service {
         }
     }
 
-    private void executeRunable(RxDownloadPageBean item) {
+    private void downloadFinished() {
+        //下载完成
+        mEasyToast.showToast(downloadBean.getMangaName() + "全部下载完成!");
+        chapters.clear();
+        DownloadCaretaker.clean(this);
+        FailedPageCaretaker.clean(this);
+        mEvent.setEventType(EventBusEvent.DOWNLOAD_FINISH_EVENT);
+        EventBus.getDefault().post(mEvent);
+        stopSelf();
+    }
+
+    private void retryFaliedPages() {
+        currentChapter = new RxDownloadChapterBean();
+        currentChapter.setPages(failedPages);
+        currentChapter.setPageCount(failedPages.size());
+        currentChapter.setChapterName("失败图片合集");
+        for (RxDownloadPageBean item : failedPages) {
+            mExecutorService.execute(new PageDownloadRunner(item, new OnResultListener() {
+                @Override
+                public void onFinish() {
+                    oneFailedPageFinished();
+                }
+
+                @Override
+                public void onFailed() {
+                    VibratorUtil.Vibrate(TpDownloadService.this, 1000);
+                }
+            }));
+        }
+    }
+
+    private synchronized void oneFailedPageFinished() {
+        currentChapter.addDownloadedCount();
+        mEvent.setCurrentChapter(currentChapter);
+        mEvent.setEventType(EventBusEvent.DOWNLOAD_PAGE_FINISH_EVENT);
+        EventBus.getDefault().post(mEvent);
+        updateNotification();
+        Logger.d("downloaded: " + currentChapter.getDownloadedCount() + "/" + currentChapter.getPageCount());
+        if (currentChapter.isDownloaded()) {
+            downloadFinished();
+        }
+    }
+
+    private void executeRunable(final RxDownloadPageBean item) {
         try {
             mExecutorService.execute(new PageDownloadRunner(item, new OnResultListener() {
                 @Override
@@ -185,7 +234,9 @@ public class TpDownloadService extends Service {
 
                 @Override
                 public void onFailed() {
-
+                    failedPages.add(item);
+                    //即使失败也继续下载
+                    onePageFinished();
                 }
             }));
         } catch (Exception e) {
@@ -208,6 +259,7 @@ public class TpDownloadService extends Service {
             mEvent.setDownloadBean(downloadBean);
             EventBus.getDefault().post(mEvent);
             DownloadCaretaker.saveDownloadMemoto(TpDownloadService.this, downloadBean);
+            FailedPageCaretaker.saveFailedPages(TpDownloadService.this, failedPages);
             getChapterInfo();
         }
     }
@@ -223,5 +275,6 @@ public class TpDownloadService extends Service {
         super.onDestroy();
         mExecutorService.shutdown();
         DownloadCaretaker.saveDownloadMemoto(this, downloadBean);
+        FailedPageCaretaker.saveFailedPages(this, failedPages);
     }
 }

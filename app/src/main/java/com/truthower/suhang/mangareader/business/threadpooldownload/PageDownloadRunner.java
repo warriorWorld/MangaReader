@@ -28,11 +28,20 @@ public class PageDownloadRunner implements Runnable {
     public void run() {
         Bitmap bp = ImageLoader.getInstance().loadImageSync(mPageBean.getPageUrl(), Configure.smallImageOptions);
         //把图片保存到本地
-        FileSpider.getInstance().saveBitmap(bp, mPageBean.getPageName(), mPageBean.getChapterName(), mPageBean.getMangaName());
+        boolean isSuccess;
+        if (null != bp) {
+            isSuccess = FileSpider.getInstance().saveBitmap(bp, mPageBean.getPageName(), mPageBean.getChapterName(), mPageBean.getMangaName());
+        } else {
+            isSuccess = false;
+        }
         mPageBean.setDownloaded(true);
         Logger.d("one page downloaded; chapter: " + mPageBean.getChapterName() + " page: " + mPageBean.getPageName());
         if (null != mOnResultListener) {
-            mOnResultListener.onFinish();
+            if (isSuccess) {
+                mOnResultListener.onFinish();
+            } else {
+                mOnResultListener.onFailed();
+            }
         }
     }
 
