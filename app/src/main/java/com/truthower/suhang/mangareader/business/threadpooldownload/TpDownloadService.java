@@ -53,6 +53,7 @@ public class TpDownloadService extends Service {
     private RxDownloadChapterBean currentChapter;
     private ExecutorService mExecutorService = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
     private ArrayList<RxDownloadChapterBean> cacheChapters;
+    private TpDownloadEvent mEvent;
 
     @Override
     public void onCreate() {
@@ -66,6 +67,7 @@ public class TpDownloadService extends Service {
         if (null == cacheChapters) {
             cacheChapters = new ArrayList<RxDownloadChapterBean>();
         }
+        mEvent = new TpDownloadEvent(EventBusEvent.DOWNLOAD_PAGE_FINISH_EVENT);
         createNotification(this);
         startForeground(10, notificationBuilder.build());
         mEasyToast = new EasyToast(this);
@@ -120,7 +122,8 @@ public class TpDownloadService extends Service {
             //下载完成
             mEasyToast.showToast(downloadBean.getMangaName() + "全部下载完成!");
             DownloadCaretaker.clean(this);
-            EventBus.getDefault().post(new TpDownloadEvent(EventBusEvent.DOWNLOAD_FINISH_EVENT));
+            mEvent.setEventType(EventBusEvent.DOWNLOAD_FINISH_EVENT);
+            EventBus.getDefault().post(mEvent);
             stopSelf();
             return;
         }
@@ -193,13 +196,17 @@ public class TpDownloadService extends Service {
     //addDownloadedCount 虽然能保证原子性 但该方法也必须保证原子性 否则有可能迅速调用多次该方法导致多次remove chapter
     private synchronized void onePageFinished() {
         currentChapter.addDownloadedCount();
-        EventBus.getDefault().post(new TpDownloadEvent(EventBusEvent.DOWNLOAD_PAGE_FINISH_EVENT, currentChapter));
+        mEvent.setCurrentChapter(currentChapter);
+        mEvent.setEventType(EventBusEvent.DOWNLOAD_PAGE_FINISH_EVENT);
+        EventBus.getDefault().post(mEvent);
         updateNotification();
         Logger.d("downloaded: " + currentChapter.getDownloadedCount() + "/" + currentChapter.getPageCount());
         if (currentChapter.isDownloaded()) {
             Logger.d("one chapter downloaded; chapter:" + currentChapter.getChapterName());
             chapters.remove(0);
-            EventBus.getDefault().post(new TpDownloadEvent(EventBusEvent.DOWNLOAD_CHAPTER_FINISH_EVENT, downloadBean));
+            mEvent.setEventType(EventBusEvent.DOWNLOAD_CHAPTER_FINISH_EVENT);
+            mEvent.setDownloadBean(downloadBean);
+            EventBus.getDefault().post(mEvent);
             DownloadCaretaker.saveDownloadMemoto(TpDownloadService.this, downloadBean);
             getChapterInfo();
         }

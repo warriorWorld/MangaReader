@@ -373,6 +373,7 @@ public class MangaReaderSpider extends SpiderBase {
             @Override
             public void run() {
                 org.jsoup.nodes.Document doc = null;
+                EventBusEvent event = new EventBusEvent(EventBusEvent.DOWNLOAD_MESSAGE_EVENT);
                 for (int i = 0; i < pageSize; i++) {
                     try {
                         doc = Jsoup.connect(chapterUrl + "/" + (i + 1))
@@ -388,8 +389,12 @@ public class MangaReaderSpider extends SpiderBase {
                         Element element = mangaPicDetailElement.tagName("img");
                         String url = element.getElementsByTag("img").last().attr("src");
                         pathList.add(url);
+                        event.setMsg("保守爬虫:得到第" + i + "/" + pageSize + "张图片地址");
+                        EventBus.getDefault().post(event);
                     }
                 }
+                event.setMsg("保守爬虫完成任务.");
+                EventBus.getDefault().post(event);
                 if (null != pathList && pathList.size() > 0) {
                     jsoupCallBack.loadSucceed((ResultObj) pathList);
                 } else {
@@ -405,6 +410,7 @@ public class MangaReaderSpider extends SpiderBase {
             @Override
             public void run() {
                 org.jsoup.nodes.Document doc = null;
+                EventBusEvent event = new EventBusEvent(EventBusEvent.DOWNLOAD_MESSAGE_EVENT);
                 try {
                     doc = Jsoup.connect(chapterUrl + "/" + 1)
                             .timeout(timeout).get();
@@ -418,7 +424,8 @@ public class MangaReaderSpider extends SpiderBase {
                 Element element = mangaPicDetailElement.tagName("img");
                 String url = element.getElementsByTag("img").last().attr("src");
                 pathList.add(url);
-                EventBus.getDefault().post(new EventBusEvent("获取第一张图片地址成功", EventBusEvent.DOWNLOAD_MESSAGE_EVENT));
+                event.setMsg("获取第一张图片地址成功");
+                EventBus.getDefault().post(event);
                 long l = getLFromUrl(url);
                 //再爬一遍最后一张图
                 org.jsoup.nodes.Document doc1 = null;
@@ -433,7 +440,8 @@ public class MangaReaderSpider extends SpiderBase {
                 Element mangaPicDetailElement1 = doc1.getElementsByClass("episode-table").first();
                 Element element1 = mangaPicDetailElement1.tagName("img");
                 String url1 = element1.getElementsByTag("img").last().attr("src");
-                EventBus.getDefault().post(new EventBusEvent("获取第二张图片地址成功", EventBusEvent.DOWNLOAD_MESSAGE_EVENT));
+                event.setMsg("获取第二张图片地址成功");
+                EventBus.getDefault().post(event);
                 long l1 = getLFromUrl(url1);
                 //再爬一遍倒数第二图
                 org.jsoup.nodes.Document doc2 = null;
@@ -448,7 +456,8 @@ public class MangaReaderSpider extends SpiderBase {
                 Element mangaPicDetailElement2 = doc2.getElementsByClass("episode-table").first();
                 Element element2 = mangaPicDetailElement2.tagName("img");
                 String url2 = element2.getElementsByTag("img").last().attr("src");
-                EventBus.getDefault().post(new EventBusEvent("获取第三张图片地址成功", EventBusEvent.DOWNLOAD_MESSAGE_EVENT));
+                event.setMsg("获取第三张图片地址成功");
+                EventBus.getDefault().post(event);
                 long l2 = getLFromUrl(url2);
 
                 boolean solved = false;
@@ -464,11 +473,13 @@ public class MangaReaderSpider extends SpiderBase {
 
                 if (!solved) {
                     //说明都不适用,适用保守方法
-                    EventBus.getDefault().post(new EventBusEvent("网站太狡猾,采用保守爬虫策略.", EventBusEvent.DOWNLOAD_MESSAGE_EVENT));
+                    event.setMsg("网站太狡猾,采用保守爬虫策略.");
+                    EventBus.getDefault().post(event);
                     initPicPathList(chapterUrl, pageSize, jsoupCallBack);
                     return;
                 }
-                EventBus.getDefault().post(new EventBusEvent("激进爬虫的大胜利", EventBusEvent.DOWNLOAD_MESSAGE_EVENT));
+                event.setMsg("激进爬虫的大胜利");
+                EventBus.getDefault().post(event);
                 if (null != pathList && pathList.size() > 0) {
                     jsoupCallBack.loadSucceed((ResultObj) pathList);
                 } else {
