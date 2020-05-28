@@ -189,7 +189,7 @@ public class OnlineDetailVM extends ViewModel {
     @Override
     protected void onCleared() {
         super.onCleared();
-        new EasyToast(mContext).showToast("viewmodel销毁了");
+//        new EasyToast(mContext).showToast("viewmodel销毁了");
         isUpdating.setValue(false);
         db.closeDb();
     }

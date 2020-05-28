@@ -453,12 +453,9 @@ public class OnlineDetailsActivity extends BaseActivity implements View.OnClickL
         mOnlineDetailVM = new ViewModelProvider(this, new ViewModelProvider.Factory() {
             @NonNull
             @Override
+            @SuppressWarnings("unchecked")
             public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
-                if (modelClass.equals(OnlineDetailVM.class)) {
-                    return (T) new OnlineDetailVM(OnlineDetailsActivity.this);
-                } else {
-                    return null;
-                }
+                return (T) new OnlineDetailVM(OnlineDetailsActivity.this);
             }
         }).get(OnlineDetailVM.class);
         mOnlineDetailVM.getManga().observe(this, new Observer<MangaBean>() {
