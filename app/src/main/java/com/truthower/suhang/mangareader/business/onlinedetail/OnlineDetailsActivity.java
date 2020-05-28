@@ -21,7 +21,6 @@ import com.truthower.suhang.mangareader.base.BaseActivity;
 import com.truthower.suhang.mangareader.bean.MangaBean;
 import com.truthower.suhang.mangareader.bean.RxDownloadBean;
 import com.truthower.suhang.mangareader.bean.RxDownloadChapterBean;
-import com.truthower.suhang.mangareader.bean.RxDownloadPageBean;
 import com.truthower.suhang.mangareader.business.main.MainActivity;
 import com.truthower.suhang.mangareader.business.read.ReadMangaActivity;
 import com.truthower.suhang.mangareader.business.rxdownload.CommonDownloader;
@@ -41,7 +40,6 @@ import com.truthower.suhang.mangareader.spider.FileSpider;
 import com.truthower.suhang.mangareader.utils.ActivityPoor;
 import com.truthower.suhang.mangareader.utils.BaseParameterUtil;
 import com.truthower.suhang.mangareader.utils.DisplayUtil;
-import com.truthower.suhang.mangareader.utils.SerializableSparseArray;
 import com.truthower.suhang.mangareader.utils.ServiceUtil;
 import com.truthower.suhang.mangareader.utils.ShareObjUtil;
 import com.truthower.suhang.mangareader.utils.SharedPreferencesUtils;
@@ -61,9 +59,11 @@ import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProviders;
+import androidx.lifecycle.ViewModel;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
@@ -449,8 +449,18 @@ public class OnlineDetailsActivity extends BaseActivity implements View.OnClickL
     }
 
     private void initViewModel() {
-        mOnlineDetailVM = ViewModelProviders.of(this).get(OnlineDetailVM.class);
-        mOnlineDetailVM.init(this);
+//        mOnlineDetailVM = ViewModelProviders.of(this).get(OnlineDetailVM.class);
+        mOnlineDetailVM = new ViewModelProvider(this, new ViewModelProvider.Factory() {
+            @NonNull
+            @Override
+            public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
+                if (modelClass.equals(OnlineDetailVM.class)) {
+                    return (T) new OnlineDetailVM(OnlineDetailsActivity.this);
+                } else {
+                    return null;
+                }
+            }
+        }).get(OnlineDetailVM.class);
         mOnlineDetailVM.getManga().observe(this, new Observer<MangaBean>() {
             @Override
             public void onChanged(MangaBean bean) {

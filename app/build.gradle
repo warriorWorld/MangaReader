@@ -75,5 +75,5 @@ dependencies {
     implementation files('libs/YoudaoBase_v2.0.2.jar')
     implementation files('libs/YoudaoTranslateOnline_v2.0.0.jar')
     //mvvm
-    implementation "android.arch.lifecycle:extensions:1.1.1"
+//    implementation "android.arch.lifecycle:extensions:1.1.1"
 }

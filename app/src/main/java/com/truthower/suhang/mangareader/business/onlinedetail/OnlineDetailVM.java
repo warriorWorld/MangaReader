@@ -37,7 +37,7 @@ public class OnlineDetailVM extends ViewModel {
     private Handler mHandler = new Handler();
     private MangaBean cacheManga = null;
 
-    void init(Context context) {
+    public OnlineDetailVM(Context context) {
         mContext = context.getApplicationContext();
         db = new DbAdapter(mContext);
         initSpider();
@@ -113,7 +113,7 @@ public class OnlineDetailVM extends ViewModel {
                 mContext, manga.getValue().getName()
                         + ShareKeys.BRIDGE_KEY);
         if (null != cacheArray && cacheArray.size() > 0) {
-            FileSpider.getInstance().fileSave2SDCard(manga.getValue().getName(),cacheArray);
+            FileSpider.getInstance().fileSave2SDCard(manga.getValue().getName(), cacheArray);
             message.setValue("已成功将缓存导出到manga文件夹下!");
         } else {
             message.setValue("缓存为空!");
@@ -189,7 +189,7 @@ public class OnlineDetailVM extends ViewModel {
     @Override
     protected void onCleared() {
         super.onCleared();
-//        new EasyToast(mContext).showToast("viewmodel销毁了");
+        new EasyToast(mContext).showToast("viewmodel销毁了");
         isUpdating.setValue(false);
         db.closeDb();
     }
