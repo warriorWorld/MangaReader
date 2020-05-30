@@ -63,12 +63,10 @@ public class ReadMangaAdapter extends PagerAdapter {
     public Object instantiateItem(ViewGroup container, int position) {
         if (pathList.get(position).endsWith(".gif") ||
                 pathList.get(position).endsWith(".GIF")) {
-            GifImageView gv = (GifImageView) LayoutInflater.from(context).inflate(R.layout.item_gif, container, false);
-//            ImageLoader.getInstance().displayImage(pathList.get(position), gv, Configure.smallImageOptions);
-            Uri uri = Uri.parse(pathList.get(position));
-            gv.setImageURI(uri);
-            container.addView(gv);
-            return gv;
+            GlidePhotoView glidePhotoView = (GlidePhotoView) LayoutInflater.from(context).inflate(R.layout.item_glidephotoview, container, false);
+            glidePhotoView.setImgUrl(pathList.get(position), position);
+            container.addView(glidePhotoView);
+            return glidePhotoView;
         } else {
             WrapPhotoView wrapPhotoView = (WrapPhotoView) LayoutInflater.from(context).inflate(R.layout.item_wrapphotoview, container, false);
             wrapPhotoView.setImgUrl(pathList.get(position), Configure.smallImageOptions, position);
