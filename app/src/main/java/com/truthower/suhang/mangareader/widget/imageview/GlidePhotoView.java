@@ -10,7 +10,9 @@ import android.view.ViewGroup;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.DataSource;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.engine.GlideException;
+import com.bumptech.glide.load.resource.gif.GifDrawable;
 import com.bumptech.glide.request.FutureTarget;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.RequestOptions;
@@ -129,80 +131,72 @@ public class GlidePhotoView extends PhotoView {
         });
     }
 
-    public void setImgUrl(final String url, final DisplayImageOptions options) {
-        setImgUrl(url, options, -1);
+    public void setImgUrl(final String url) {
+        setImgUrl(url, -1);
     }
 
-    public void setImgUrl(final String url, final DisplayImageOptions options, final int position) {
-        setImageResource(R.drawable.spider_hat_color512);
-        Glide.with(mContext)
-                .asBitmap()
-                .load(url)
-                .addListener(new RequestListener<Bitmap>() {
-                    @Override
-                    public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Bitmap> target, boolean isFirstResource) {
-                        setImageResource(R.drawable.spider_hat_gray512);
-                        return false;
-                    }
-
-                    @Override
-                    public boolean onResourceReady(Bitmap resource, Object model, Target<Bitmap> target, DataSource dataSource, boolean isFirstResource) {
-                        if (!SharedPreferencesUtils.getBooleanSharedPreferencesData(mContext, ShareKeys.CLOSE_WRAP_IMG, false)) {
-                            //获取bitmap的宽度
-                            float bitWidth = resource.getWidth();
-                            //获取bitmap的宽度
-                            float bithight = resource.getHeight();
-                            // 高按照比例计算
-                            if (bitWidth > bithight) {
-                                EventBus.getDefault().post(new EventBusEvent(position, EventBusEvent.NEED_LANDSCAPE_EVENT));
-//                                    mBitmap = ImageUtil.getRotateBitmap(mBitmap, Configure.currentOrientation);
-                            } else {
-                                EventBus.getDefault().post(new EventBusEvent(position, EventBusEvent.NEED_PORTRAIT_EVENT));
-                            }
+    public void setImgUrl(final String url, final int position) {
+        if (url.endsWith(".gif") || url.endsWith(".GIF")) {
+            Glide.with(mContext)
+                    .asGif()
+                    .load(url)
+                    .thumbnail(0.1f)
+                    .addListener(new RequestListener<GifDrawable>() {
+                        @Override
+                        public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<GifDrawable> target, boolean isFirstResource) {
+                            return false;
                         }
-                        return false;
-                    }
-                })
-                .into(this);
 
+                        @Override
+                        public boolean onResourceReady(GifDrawable resource, Object model, Target<GifDrawable> target, DataSource dataSource, boolean isFirstResource) {
+                            if (!SharedPreferencesUtils.getBooleanSharedPreferencesData(mContext, ShareKeys.CLOSE_WRAP_IMG, false)) {
+                                //获取bitmap的宽度
+                                float bitWidth = resource.getIntrinsicWidth();
+                                //获取bitmap的宽度
+                                float bithight = resource.getIntrinsicHeight();
+                                // 高按照比例计算
+                                if (bitWidth > bithight) {
+                                    EventBus.getDefault().post(new EventBusEvent(position, EventBusEvent.NEED_LANDSCAPE_EVENT));
+//                                    mBitmap = ImageUtil.getRotateBitmap(mBitmap, Configure.currentOrientation);
+                                } else {
+                                    EventBus.getDefault().post(new EventBusEvent(position, EventBusEvent.NEED_PORTRAIT_EVENT));
+                                }
+                            }
+                            return false;
+                        }
+                    })
+                    .into(this);
+        } else {
+            Glide.with(mContext)
+                    .asBitmap()
+                    .load(url)
+                    .thumbnail(0.1f)
+                    .addListener(new RequestListener<Bitmap>() {
+                        @Override
+                        public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Bitmap> target, boolean isFirstResource) {
+                            setImageResource(R.drawable.spider_hat_gray512);
+                            return false;
+                        }
 
-//        this.position = position;
-//        setImageResource(R.drawable.spider_hat_color512);
-//        new Thread(new Runnable() {
-//            @Override
-//            public void run() {
-//                FutureTarget<Bitmap> futureTarget =
-//                        Glide.with(mContext)
-//                                .asBitmap()
-//                                .load(url)
-//                                .submit();
-//                try {
-//                    mBitmap = futureTarget.get();
-//                    Message msg = Message.obtain();
-//                    msg.what = 0;
-//                    mHandler.sendMessage(msg);
-//                } catch (ExecutionException e) {
-//                    e.printStackTrace();
-//                } catch (InterruptedException e) {
-//                    e.printStackTrace();
-//                } finally {
-//                    // Do something with the Bitmap and then when you're done with it:
-//                    Glide.with(mContext).clear(futureTarget);
-//                }
-//            }
-//        }).start();
-
-
-//        this.position = position;
-//        setImageResource(R.drawable.spider_hat_color512);
-//        new Thread(new Runnable() {
-//            @Override
-//            public void run() {
-//                mBitmap = ImageLoader.getInstance().loadImageSync(url, options);
-//                Message msg = Message.obtain();
-//                msg.what = 0;
-//                mHandler.sendMessage(msg);
-//            }
-//        }).start();
+                        @Override
+                        public boolean onResourceReady(Bitmap resource, Object model, Target<Bitmap> target, DataSource dataSource, boolean isFirstResource) {
+                            if (!SharedPreferencesUtils.getBooleanSharedPreferencesData(mContext, ShareKeys.CLOSE_WRAP_IMG, false)) {
+                                //获取bitmap的宽度
+                                float bitWidth = resource.getWidth();
+                                //获取bitmap的宽度
+                                float bithight = resource.getHeight();
+                                // 高按照比例计算
+                                if (bitWidth > bithight) {
+                                    EventBus.getDefault().post(new EventBusEvent(position, EventBusEvent.NEED_LANDSCAPE_EVENT));
+//                                    mBitmap = ImageUtil.getRotateBitmap(mBitmap, Configure.currentOrientation);
+                                } else {
+                                    EventBus.getDefault().post(new EventBusEvent(position, EventBusEvent.NEED_PORTRAIT_EVENT));
+                                }
+                            }
+                            return false;
+                        }
+                    })
+                    .into(this);
+        }
     }
 }

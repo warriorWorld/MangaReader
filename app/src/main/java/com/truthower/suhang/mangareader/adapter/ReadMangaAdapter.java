@@ -59,28 +59,30 @@ public class ReadMangaAdapter extends PagerAdapter {
         container.removeView((ImageView) object);
     }
 
-
     @Override
     public Object instantiateItem(ViewGroup container, int position) {
         if (pathList.get(position).endsWith(".gif") ||
                 pathList.get(position).endsWith(".GIF")) {
             GifImageView gv = (GifImageView) LayoutInflater.from(context).inflate(R.layout.item_gif, container, false);
 //            ImageLoader.getInstance().displayImage(pathList.get(position), gv, Configure.smallImageOptions);
-            Uri uri= Uri.parse(pathList.get(position));
+            Uri uri = Uri.parse(pathList.get(position));
             gv.setImageURI(uri);
             container.addView(gv);
             return gv;
         } else {
-            GlidePhotoView wrapPhotoView = (GlidePhotoView) LayoutInflater.from(context).inflate(R.layout.item_wrapphotoview, container, false);
-            wrapPhotoView.setImgUrl(pathList.get(position),Configure.smallImageOptions,position);
+            WrapPhotoView wrapPhotoView = (WrapPhotoView) LayoutInflater.from(context).inflate(R.layout.item_wrapphotoview, container, false);
+            wrapPhotoView.setImgUrl(pathList.get(position), Configure.smallImageOptions, position);
             container.addView(wrapPhotoView);
             return wrapPhotoView;
         }
     }
-//根据源码 这个方法可以解决缓存至少是2的问题 但是这个方法不太好 所以我改成用六个缓存view
+
 //    @Override
-//    public float getPageWidth(int position) {
-//        return 1.01f;
+//    public Object instantiateItem(ViewGroup container, int position) {
+//        GlidePhotoView wrapPhotoView = (GlidePhotoView) LayoutInflater.from(context).inflate(R.layout.item_glidephotoview, container, false);
+//        wrapPhotoView.setImgUrl(pathList.get(position), position);
+//        container.addView(wrapPhotoView);
+//        return wrapPhotoView;
 //    }
 
     //为解决删除后不刷新问题

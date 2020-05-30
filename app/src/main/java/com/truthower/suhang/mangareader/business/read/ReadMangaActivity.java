@@ -401,6 +401,11 @@ public class ReadMangaActivity extends TTSActivity implements OnClickListener, S
                     }
                 }
                 break;
+            case EventBusEvent.DOWNLOAD_MESSAGE_EVENT:
+                if (null != loadBar && loadBar.isShowing()) {
+                    loadBar.setMessage(event.getMsg());
+                }
+                break;
         }
         if (null != intent) {
             startActivity(intent);
