@@ -11,6 +11,7 @@ import android.widget.ImageView;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.truthower.suhang.mangareader.R;
 import com.truthower.suhang.mangareader.config.Configure;
+import com.truthower.suhang.mangareader.widget.imageview.GlidePhotoView;
 import com.truthower.suhang.mangareader.widget.imageview.WrapPhotoView;
 
 import java.util.ArrayList;
@@ -70,7 +71,7 @@ public class ReadMangaAdapter extends PagerAdapter {
             container.addView(gv);
             return gv;
         } else {
-            WrapPhotoView wrapPhotoView = (WrapPhotoView) LayoutInflater.from(context).inflate(R.layout.item_wrapphotoview, container, false);
+            GlidePhotoView wrapPhotoView = (GlidePhotoView) LayoutInflater.from(context).inflate(R.layout.item_wrapphotoview, container, false);
             wrapPhotoView.setImgUrl(pathList.get(position),Configure.smallImageOptions,position);
             container.addView(wrapPhotoView);
             return wrapPhotoView;
