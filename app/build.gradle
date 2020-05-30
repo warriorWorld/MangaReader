@@ -62,8 +62,6 @@ dependencies {
     implementation 'io.reactivex.rxjava2:rxandroid:2.0.1'
     implementation 'com.squareup.retrofit2:adapter-rxjava2:2.2.0'
     implementation "org.reactivestreams:reactive-streams:1.0.2"
-    //gif
-    implementation 'com.roger.gifloadinglibrary:gifloadinglibrary:1.0.0'
     //圆角
     implementation 'com.makeramen:roundedimageview:2.3.0'
     implementation 'com.github.warriorWorld:StyleLibrary:1.1.7'

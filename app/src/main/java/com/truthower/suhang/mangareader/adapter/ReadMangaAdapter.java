@@ -2,13 +2,11 @@ package com.truthower.suhang.mangareader.adapter;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
-import com.nostra13.universalimageloader.core.ImageLoader;
 import com.truthower.suhang.mangareader.R;
 import com.truthower.suhang.mangareader.config.Configure;
 import com.truthower.suhang.mangareader.widget.imageview.GlidePhotoView;
@@ -17,8 +15,6 @@ import com.truthower.suhang.mangareader.widget.imageview.WrapPhotoView;
 import java.util.ArrayList;
 
 import androidx.viewpager.widget.PagerAdapter;
-import pl.droidsonroids.gif.GifImageView;
-import uk.co.senab.photoview.PhotoView;
 
 
 public class ReadMangaAdapter extends PagerAdapter {
