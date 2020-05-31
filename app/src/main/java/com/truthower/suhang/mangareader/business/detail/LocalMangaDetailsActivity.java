@@ -7,11 +7,9 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
-import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.nostra13.universalimageloader.core.ImageLoader;
 import com.truthower.suhang.mangareader.R;
 import com.truthower.suhang.mangareader.adapter.LocalRecyclerAdapter;
 import com.truthower.suhang.mangareader.base.BaseActivity;
@@ -32,7 +30,6 @@ import com.truthower.suhang.mangareader.utils.SharedPreferencesUtils;
 import com.truthower.suhang.mangareader.widget.bar.TopBar;
 import com.truthower.suhang.mangareader.widget.dialog.ListDialog;
 import com.truthower.suhang.mangareader.widget.dialog.MangaDialog;
-import com.truthower.suhang.mangareader.widget.pulltorefresh.PullToRefreshBase;
 import com.truthower.suhang.mangareader.widget.recyclerview.RecyclerGridDecoration;
 
 import java.io.File;
@@ -376,8 +373,6 @@ public class LocalMangaDetailsActivity extends BaseActivity implements
                         FileSpider.getInstance().copyFile
                                 (mangaList.get(selectedPosition).getLocalThumbnailUrl().replaceAll("file://", ""),
                                         Configure.thumnailPath + File.separator + thumbnailFilePath);
-                        ImageLoader.getInstance().clearDiskCache();
-                        ImageLoader.getInstance().clearMemoryCache();
                         baseToast.showToast("设置成功");
                         break;
                     case 1:

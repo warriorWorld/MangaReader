@@ -9,7 +9,6 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.nostra13.universalimageloader.core.assist.QueueProcessingType;
 import com.truthower.suhang.mangareader.bean.DownloadBean;
-import com.truthower.suhang.mangareader.business.download.DownloadMangaManager;
 import com.truthower.suhang.mangareader.config.Configure;
 import com.truthower.suhang.mangareader.crash.CrashHandler;
 import com.truthower.suhang.mangareader.utils.BaseParameterUtil;
@@ -56,7 +55,6 @@ public class App extends MultiDexApplication {
     }
 
     private void initDownloadManger() {
-        DownloadMangaManager.getInstance().getCurrentChapter(getApplicationContext());
         DownloadBean.getInstance().setDownloadInfo(getApplicationContext(), DownloadBean.
                 getInstance().getDownloadInfo(getApplicationContext()));
     }

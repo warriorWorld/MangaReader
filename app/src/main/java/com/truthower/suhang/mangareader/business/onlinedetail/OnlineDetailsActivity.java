@@ -14,7 +14,7 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.nostra13.universalimageloader.core.ImageLoader;
+import com.bumptech.glide.Glide;
 import com.truthower.suhang.mangareader.R;
 import com.truthower.suhang.mangareader.adapter.OnlineMangaDetailsRecyclerAdapter;
 import com.truthower.suhang.mangareader.base.BaseActivity;
@@ -546,7 +546,11 @@ public class OnlineDetailsActivity extends BaseActivity implements View.OnClickL
             return;
         }
         baseTopBar.setTitle(currentManga.getName());
-        ImageLoader.getInstance().displayImage(currentManga.getWebThumbnailUrl(), thumbnailIv, Configure.smallImageOptions);
+        Glide.with(this)
+                .load(currentManga.getWebThumbnailUrl())
+                .apply(Configure.ROUND_CORNERS_OPTIONS)
+                .thumbnail(0.1f)
+                .into(thumbnailIv);
         nameTv.setText("漫画名称:" + currentManga.getName());
         if (!TextUtils.isEmpty(currentManga.getAuthor())) {
             authorTv.setVisibility(View.VISIBLE);

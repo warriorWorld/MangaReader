@@ -9,7 +9,7 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.nostra13.universalimageloader.core.ImageLoader;
+import com.bumptech.glide.Glide;
 import com.truthower.suhang.mangareader.R;
 import com.truthower.suhang.mangareader.adapter.DownloadRecyclerAdapter;
 import com.truthower.suhang.mangareader.base.BaseActivity;
@@ -71,9 +71,11 @@ public class TpDownloadActivity extends BaseActivity implements View.OnClickList
     public void displayInfo(RxDownloadBean downloadBean) {
         mDownloadBean = downloadBean;
         try {
-            ImageLoader.getInstance().displayImage
-                    (mDownloadBean.getThumbnailUrl(),
-                            thumbnailIv, Configure.normalImageOptions);
+            Glide.with(this)
+                    .load(mDownloadBean.getThumbnailUrl())
+                    .apply(Configure.ROUND_CORNERS_OPTIONS)
+                    .thumbnail(0.1f)
+                    .into(thumbnailIv);
             mangaNameTv.setText("漫画名称:  " + mDownloadBean.getMangaName());
 
             toggleDownloading(ServiceUtil.isServiceWork(this,

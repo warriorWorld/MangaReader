@@ -1,8 +1,6 @@
 package com.truthower.suhang.mangareader.adapter;
 
 import android.content.Context;
-import android.graphics.Typeface;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,10 +9,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.nostra13.universalimageloader.core.ImageLoader;
 import com.truthower.suhang.mangareader.R;
 import com.truthower.suhang.mangareader.bean.MangaBean;
-import com.truthower.suhang.mangareader.config.Configure;
 
 import java.util.ArrayList;
 

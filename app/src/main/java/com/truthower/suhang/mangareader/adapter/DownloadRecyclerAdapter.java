@@ -1,29 +1,15 @@
 package com.truthower.suhang.mangareader.adapter;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.text.Html;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.assist.FailReason;
-import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
 import com.truthower.suhang.mangareader.R;
-import com.truthower.suhang.mangareader.bean.MangaBean;
 import com.truthower.suhang.mangareader.bean.RxDownloadChapterBean;
-import com.truthower.suhang.mangareader.config.Configure;
-import com.truthower.suhang.mangareader.listener.OnRecycleItemClickListener;
-import com.truthower.suhang.mangareader.listener.OnRecycleItemLongClickListener;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 
 import androidx.recyclerview.widget.RecyclerView;
 
