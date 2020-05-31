@@ -15,12 +15,11 @@
         android:background="@drawable/peanut_btn_bg_white_round1"
         android:elevation="5dp">
 
-        <com.makeramen.roundedimageview.RoundedImageView
+        <ImageView
             android:id="@+id/manga_view"
             android:layout_width="match_parent"
             android:layout_height="380dp"
-            android:scaleType="centerCrop"
-            app:riv_corner_radius="5dp"></com.makeramen.roundedimageview.RoundedImageView>
+            android:scaleType="centerCrop"></ImageView>
 
         <ImageView
             android:id="@+id/edit_mode_iv"

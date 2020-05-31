@@ -1,51 +1,52 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="wrap_content"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:gravity="center"
-    android:orientation="vertical"
-    android:padding="2dp">
+    android:orientation="vertical">
 
-    <RelativeLayout
-        android:layout_width="wrap_content"
+    <ImageView
+        android:id="@+id/manga_view"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_margin="10dp"
-        android:background="@drawable/peanut_btn_bg_white_round1"
-        android:elevation="5dp">
+        android:layout_margin="5dp"
+        android:adjustViewBounds="true"
+        android:background="@drawable/rect_white_c20"
+        android:elevation="3dp"
+        android:maxWidth="500dp"
+        android:maxHeight="500dp"
+        android:scaleType="fitXY"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
-        <com.makeramen.roundedimageview.RoundedImageView
-            android:id="@+id/manga_view"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:adjustViewBounds="true"
-            android:maxWidth="500dp"
-            android:maxHeight="500dp"
-            android:scaleType="fitCenter"
-            app:riv_corner_radius="5dp"></com.makeramen.roundedimageview.RoundedImageView>
+    <ImageView
+        android:id="@+id/edit_mode_iv"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:src="@drawable/check_box_icon"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@+id/manga_view"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/manga_view" />
 
-        <ImageView
-            android:id="@+id/edit_mode_iv"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:layout_centerInParent="true"
-            android:src="@drawable/check_box_icon"
-            android:visibility="gone" />
-
-        <ImageView
-            android:id="@+id/checked_iv"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:layout_centerInParent="true"
-            android:src="@drawable/check_mark_icon"
-            android:visibility="gone" />
-    </RelativeLayout>
-
+    <ImageView
+        android:id="@+id/checked_iv"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:src="@drawable/check_mark_icon"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@+id/manga_view"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/manga_view" />
 
     <TextView
         android:id="@+id/manga_title"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:ellipsize="marquee"
         android:gravity="center"
@@ -54,5 +55,8 @@
         android:singleLine="true"
         android:text="XXX"
         android:textColor="@color/main_text_color"
-        android:textSize="22sp" />
-</LinearLayout>
+        android:textSize="22sp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/manga_view" />
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -8,18 +8,17 @@
     android:background="@color/divide"
     android:padding="2dp">
 
-    <com.makeramen.roundedimageview.RoundedImageView
+    <ImageView
         android:id="@+id/manga_thumbnail_iv"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="10dp"
         android:adjustViewBounds="true"
-        android:background="@drawable/peanut_btn_bg_white_round1"
+        android:background="@drawable/rect_white_c20"
         android:elevation="5dp"
         android:maxWidth="500dp"
         android:maxHeight="500dp"
-        android:scaleType="fitCenter"
-        app:riv_corner_radius="5dp" />
+        android:scaleType="fitXY" />
 
 
     <TextView

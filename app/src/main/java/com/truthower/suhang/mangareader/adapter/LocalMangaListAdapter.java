@@ -74,7 +74,7 @@ public class LocalMangaListAdapter extends BaseAdapter {
         }
         MangaBean item = mangaList.get(position);
         if (!TextUtils.isEmpty(item.getUserThumbnailUrl())) {
-            Glide.with(context).load(item.getWebThumbnailUrl()).thumbnail(0.1f).into(viewHolder.manga_view);
+            Glide.with(context).load(item.getUserThumbnailUrl()).thumbnail(0.1f).into(viewHolder.manga_view);
         } else if (!TextUtils.isEmpty(item.getLocalThumbnailUrl())) {
             Glide.with(context).load(item.getLocalThumbnailUrl()).thumbnail(0.1f).into(viewHolder.manga_view);
         }

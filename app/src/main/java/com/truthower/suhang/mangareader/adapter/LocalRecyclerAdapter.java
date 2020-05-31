@@ -9,9 +9,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.makeramen.roundedimageview.RoundedImageView;
 import com.truthower.suhang.mangareader.R;
 import com.truthower.suhang.mangareader.bean.MangaBean;
+import com.truthower.suhang.mangareader.config.Configure;
 import com.truthower.suhang.mangareader.listener.OnRecycleItemClickListener;
 import com.truthower.suhang.mangareader.listener.OnRecycleItemLongClickListener;
 
@@ -48,9 +48,9 @@ public class LocalRecyclerAdapter extends RecyclerView.Adapter<LocalRecyclerAdap
     public void onBindViewHolder(ViewHolder viewHolder, final int position) {
         final MangaBean item = list.get(position);
         if (!TextUtils.isEmpty(item.getUserThumbnailUrl())) {
-            Glide.with(context).load(item.getWebThumbnailUrl()).thumbnail(0.1f).into(viewHolder.mangaView);
+            Glide.with(context).load(item.getUserThumbnailUrl()).apply(Configure.ROUND_CORNERS_OPTIONS).thumbnail(0.1f).into(viewHolder.mangaView);
         } else if (!TextUtils.isEmpty(item.getLocalThumbnailUrl())) {
-            Glide.with(context).load(item.getLocalThumbnailUrl()).thumbnail(0.1f).into(viewHolder.mangaView);
+            Glide.with(context).load(item.getLocalThumbnailUrl()).apply(Configure.ROUND_CORNERS_OPTIONS).thumbnail(0.1f).into(viewHolder.mangaView);
         }
         viewHolder.mangaTitle.setText(item.getName());
         if (isInEditMode) {
@@ -111,14 +111,14 @@ public class LocalRecyclerAdapter extends RecyclerView.Adapter<LocalRecyclerAdap
 
     //自定义的ViewHolder，持有每个Item的的所有界面元素
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        private RoundedImageView mangaView;
+        private ImageView mangaView;
         private ImageView editModeIv;
         private ImageView checkedIv;
         private TextView mangaTitle;
 
         public ViewHolder(View view) {
             super(view);
-            mangaView = (RoundedImageView) view.findViewById(R.id.manga_view);
+            mangaView = (ImageView) view.findViewById(R.id.manga_view);
             editModeIv = (ImageView) view.findViewById(R.id.edit_mode_iv);
             checkedIv = (ImageView) view.findViewById(R.id.checked_iv);
             mangaTitle = (TextView) view.findViewById(R.id.manga_title);

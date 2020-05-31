@@ -6,11 +6,11 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.makeramen.roundedimageview.RoundedImageView;
 import com.truthower.suhang.mangareader.R;
 import com.truthower.suhang.mangareader.bean.MangaBean;
 import com.truthower.suhang.mangareader.config.Configure;
@@ -61,9 +61,9 @@ public class OnlineMangaRecyclerListAdapter extends RecyclerView.Adapter<OnlineM
     public void onBindViewHolder(ViewHolder viewHolder, final int position) {
         final MangaBean item = list.get(position);
         if (!TextUtils.isEmpty(item.getWebThumbnailUrl())) {
-            Glide.with(context).load(item.getWebThumbnailUrl()).thumbnail(0.1f).into(viewHolder.mangaThumbnailIv);
+            Glide.with(context).load(item.getWebThumbnailUrl()).apply(Configure.ROUND_CORNERS_OPTIONS).thumbnail(0.1f).into(viewHolder.mangaThumbnailIv);
         } else {
-            Glide.with(context).load(item.getLocalThumbnailUrl()).thumbnail(0.1f).into(viewHolder.mangaThumbnailIv);
+            Glide.with(context).load(item.getLocalThumbnailUrl()).apply(Configure.ROUND_CORNERS_OPTIONS).thumbnail(0.1f).into(viewHolder.mangaThumbnailIv);
         }
         if (!TextUtils.isEmpty(item.getName())) {
             if (TextUtils.isEmpty(item.getLast_update())) {
@@ -106,14 +106,14 @@ public class OnlineMangaRecyclerListAdapter extends RecyclerView.Adapter<OnlineM
 
     //自定义的ViewHolder，持有每个Item的的所有界面元素
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        public RoundedImageView mangaThumbnailIv;
+        public ImageView mangaThumbnailIv;
         public TextView mangaTitleTv;
         public RelativeLayout item_collect_manga_rl;
 
         public ViewHolder(View view) {
             super(view);
             item_collect_manga_rl = (RelativeLayout) view.findViewById(R.id.item_collect_manga_rl);
-            mangaThumbnailIv = (RoundedImageView) view.findViewById(R.id.manga_thumbnail_iv);
+            mangaThumbnailIv = (ImageView) view.findViewById(R.id.manga_thumbnail_iv);
             mangaTitleTv = (TextView) view.findViewById(R.id.manga_title_tv);
         }
     }

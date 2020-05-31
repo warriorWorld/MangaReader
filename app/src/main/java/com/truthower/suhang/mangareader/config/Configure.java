@@ -3,8 +3,11 @@ package com.truthower.suhang.mangareader.config;
 import android.graphics.Bitmap;
 import android.os.Environment;
 
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
+import com.bumptech.glide.request.RequestOptions;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.truthower.suhang.mangareader.R;
+import com.truthower.suhang.mangareader.utils.DisplayUtil;
 
 import java.io.File;
 
@@ -14,8 +17,8 @@ import java.io.File;
 
 public class Configure {
     public final static boolean isTest = false;
-    public static boolean isPad=false;
-    public static int currentOrientation=90;
+    public static boolean isPad = false;
+    public static int currentOrientation = 90;
     //数据库版本号
     public static final int DB_VERSION = 5;
     public final static String[] websList = {"KaKaLot", "MangaReader"};
@@ -51,6 +54,8 @@ public class Configure {
             .showImageOnLoading(R.drawable.spider_hat_color512)
             .showImageOnFail(R.drawable.spider_hat_gray512)
             .build();
+    //通过RequestOptions扩展功能
+    final public static RequestOptions ROUND_CORNERS_OPTIONS = RequestOptions.bitmapTransform(new RoundedCorners(20));
     // 3DES加密key
     final public static String key = "iq2szojof6x1ckgejwe52urw";
     //数字随便写的  权限request code
@@ -58,9 +63,9 @@ public class Configure {
     final public static int PERMISSION_LOCATION_REQUST_CODE = 8022;
     final public static int PERMISSION_FILE_REQUST_CODE = 8023;
     final public static int PERMISSION_READ_PHONE_STATE_REQUST_CODE = 8024;
-//    //OCR识别
+    //    //OCR识别
 //    final public static OCRParameters tps = new OCRParameters.Builder().source("youdaoocr").timeout(100000)
 //            .type(OCRParameters.TYPE_LINE).lanType(RecognizeLanguage.LINE_CHINESE_ENGLISH.getCode()).build();//
-    public static final String DOWNLOAD_URL="https://github.com/warriorWorld/MangaReader/raw/master/app/release/app-release.apk";
-    public static  final String QQ="772192594";
+    public static final String DOWNLOAD_URL = "https://github.com/warriorWorld/MangaReader/raw/master/app/release/app-release.apk";
+    public static final String QQ = "772192594";
 }
