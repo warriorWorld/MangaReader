@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:app="http://schemas.android.com/apk/res-auto"
-              xmlns:tools="http://schemas.android.com/tools"
-              android:layout_width="wrap_content"
-              android:layout_height="300dp"
-              android:gravity="center"
-              android:orientation="vertical"
-              android:padding="2dp">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="300dp"
+    android:gravity="center"
+    android:orientation="vertical"
+    android:padding="2dp">
 
     <RelativeLayout
         android:layout_width="wrap_content"
@@ -18,10 +18,13 @@
 
         <com.makeramen.roundedimageview.RoundedImageView
             android:id="@+id/manga_view"
-            app:riv_corner_radius="5dp"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:scaleType="centerCrop"></com.makeramen.roundedimageview.RoundedImageView>
+            android:layout_height="wrap_content"
+            android:adjustViewBounds="true"
+            android:maxWidth="500dp"
+            android:maxHeight="500dp"
+            android:scaleType="fitCenter"
+            app:riv_corner_radius="5dp"></com.makeramen.roundedimageview.RoundedImageView>
 
         <ImageView
             android:id="@+id/edit_mode_iv"
@@ -29,7 +32,7 @@
             android:layout_height="30dp"
             android:layout_centerInParent="true"
             android:src="@drawable/check_box_icon"
-            android:visibility="gone"/>
+            android:visibility="gone" />
 
         <ImageView
             android:id="@+id/checked_iv"
@@ -37,7 +40,7 @@
             android:layout_height="30dp"
             android:layout_centerInParent="true"
             android:src="@drawable/check_mark_icon"
-            android:visibility="gone"/>
+            android:visibility="gone" />
     </RelativeLayout>
 
 
@@ -53,6 +56,6 @@
         android:singleLine="true"
         android:text="XXX"
         android:textColor="@color/main_text_color"
-        android:textSize="22sp"/>
+        android:textSize="22sp" />
 
 </LinearLayout>

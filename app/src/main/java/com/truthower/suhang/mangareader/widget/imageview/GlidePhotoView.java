@@ -208,10 +208,4 @@ public class GlidePhotoView extends PhotoView {
                 .addListener(listener)
                 .into(this);
     }
-
-    @Override
-    public void setImageBitmap(Bitmap bm) {
-        super.setImageBitmap(bm);
-        Logger.d("glidephotoview: " + bm);
-    }
 }

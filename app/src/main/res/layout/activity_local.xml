@@ -1,36 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.swiperefreshlayout.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/divide">
 
-
-    <com.truthower.suhang.mangareader.widget.pulltorefresh.PullToRefreshGridView
-        android:id="@+id/ptf_local_grid_view"
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/swipe_target"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/gradient_bar"
-        android:layout_marginTop="7dp"
-        android:padding="10dp"></com.truthower.suhang.mangareader.widget.pulltorefresh.PullToRefreshGridView>
-
-    <com.truthower.suhang.mangareader.widget.bar.TopBar
-        android:id="@+id/gradient_bar"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:background="@color/manga_reader"
-        app:left_text=""
-        app:right_text=""
-        app:title_text="本地"></com.truthower.suhang.mangareader.widget.bar.TopBar>
+        android:layout_margin="3dp"></androidx.recyclerview.widget.RecyclerView>
 
     <include
         android:id="@+id/empty_view"
         layout="@layout/emptyview_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/gradient_bar"
         android:layout_centerInParent="true"
         android:visibility="gone" />
-
-</RelativeLayout>
+</androidx.swiperefreshlayout.widget.SwipeRefreshLayout>

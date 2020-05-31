@@ -9,6 +9,7 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.truthower.suhang.mangareader.R;
 import com.truthower.suhang.mangareader.bean.MangaBean;
@@ -22,7 +23,7 @@ import java.util.ArrayList;
 
 public class LocalMangaListAdapter extends BaseAdapter {
     private Context context;
-    private boolean isInEditMode=false;
+    private boolean isInEditMode = false;
     private ArrayList<MangaBean> mangaList = new ArrayList<MangaBean>();
 
     public LocalMangaListAdapter(Context context) {
@@ -55,13 +56,8 @@ public class LocalMangaListAdapter extends BaseAdapter {
     public View getView(int position, View convertView, ViewGroup parent) {
         ViewHolder viewHolder = null;
         if (convertView == null) {
-            if (Configure.isPad){
-                convertView = LayoutInflater.from(context).inflate(
-                        R.layout.item_lv_manga_pad, parent, false);
-            }else {
-                convertView = LayoutInflater.from(context).inflate(
-                        R.layout.item_manga, parent, false);
-            }
+            convertView = LayoutInflater.from(context).inflate(
+                    R.layout.item_manga, parent, false);
             viewHolder = new ViewHolder();
             viewHolder.manga_view = (ImageView) convertView
                     .findViewById(R.id.manga_view);
@@ -78,19 +74,19 @@ public class LocalMangaListAdapter extends BaseAdapter {
         }
         MangaBean item = mangaList.get(position);
         if (!TextUtils.isEmpty(item.getUserThumbnailUrl())) {
-            ImageLoader.getInstance().displayImage(item.getUserThumbnailUrl(), viewHolder.manga_view, Configure.smallImageOptions);
+            Glide.with(context).load(item.getWebThumbnailUrl()).thumbnail(0.1f).into(viewHolder.manga_view);
         } else if (!TextUtils.isEmpty(item.getLocalThumbnailUrl())) {
-            ImageLoader.getInstance().displayImage(item.getLocalThumbnailUrl(), viewHolder.manga_view, Configure.smallImageOptions);
+            Glide.with(context).load(item.getLocalThumbnailUrl()).thumbnail(0.1f).into(viewHolder.manga_view);
         }
         viewHolder.manga_title.setText(item.getName());
-        if (isInEditMode){
+        if (isInEditMode) {
             viewHolder.editModeIv.setVisibility(View.VISIBLE);
-        }else {
+        } else {
             viewHolder.editModeIv.setVisibility(View.GONE);
         }
-        if (item.isChecked()&&isInEditMode){
+        if (item.isChecked() && isInEditMode) {
             viewHolder.checkedIv.setVisibility(View.VISIBLE);
-        }else {
+        } else {
             viewHolder.checkedIv.setVisibility(View.GONE);
         }
         return convertView;
@@ -111,6 +107,6 @@ public class LocalMangaListAdapter extends BaseAdapter {
     private class ViewHolder {
         private ImageView manga_view;
         private TextView manga_title;
-        private ImageView editModeIv,checkedIv;
+        private ImageView editModeIv, checkedIv;
     }
 }

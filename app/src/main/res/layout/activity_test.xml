@@ -1,19 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:layout_height="match_parent">
 
-
-    <com.truthower.suhang.mangareader.widget.imageview.WrapPhotoView
-        android:id="@+id/wrap_pv"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="300dp"></com.truthower.suhang.mangareader.widget.imageview.WrapPhotoView>
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
-    <com.truthower.suhang.mangareader.widget.imageview.GlidePhotoView
-        android:id="@+id/glide_pv"
-        android:layout_width="match_parent"
-        android:layout_height="300dp"></com.truthower.suhang.mangareader.widget.imageview.GlidePhotoView>
-</LinearLayout>
+        <com.truthower.suhang.mangareader.widget.imageview.WrapPhotoView
+            android:id="@+id/wrap_pv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/main_text_color_blue"></com.truthower.suhang.mangareader.widget.imageview.WrapPhotoView>
+
+        <com.truthower.suhang.mangareader.widget.imageview.GlidePhotoView
+            android:id="@+id/glide_pv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/manga_reader_red"></com.truthower.suhang.mangareader.widget.imageview.GlidePhotoView>
+    </LinearLayout>
+</ScrollView>

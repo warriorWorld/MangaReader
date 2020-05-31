@@ -10,6 +10,7 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.truthower.suhang.mangareader.R;
 import com.truthower.suhang.mangareader.bean.MangaBean;
@@ -82,7 +83,7 @@ public class OnlineMangaListAdapter extends BaseAdapter {
         }
 
         MangaBean item = list.get(position);
-        ImageLoader.getInstance().displayImage(item.getWebThumbnailUrl(), viewHolder.thumbnail_iv, Configure.smallImageOptions);
+        Glide.with(context).load(item.getWebThumbnailUrl()).thumbnail(0.1f).into(viewHolder.thumbnail_iv);
         viewHolder.name_tv.setText(item.getName());
         return convertView;
     }

@@ -168,7 +168,7 @@ public class RecommendFragment extends BaseFragment implements
         item13.setUrl("https://manganelo.com/manga/read_gantz_manga");
         mangaList.add(item13);
         MangaBean item14 = new MangaBean();
-        item14.setWebThumbnailUrl("https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1588935478024&di=4e5462a8641437e5b4e0370324203551&imgtype=0&src=http%3A%2F%2Fhbimg.b0.upaiyun.com%2F269daa3662b9ed352bc8a747d58300204ca8ee9d38787-uLPKac_fw658");
+        item14.setWebThumbnailUrl("https://bkimg.cdn.bcebos.com/pic/6d81800a19d8bc3e4d749523898ba61ea9d345df?x-bce-process=image/resize,m_lfit,w_268,limit_1/format,f_jpg");
         item14.setName("恶魔人");
         item14.setUrl("https://manganelo.com/manga/devilman");
         mangaList.add(item14);

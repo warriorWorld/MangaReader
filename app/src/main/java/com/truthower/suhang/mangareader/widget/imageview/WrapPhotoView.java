@@ -182,10 +182,4 @@ public class WrapPhotoView extends PhotoView {
             }
         }).start();
     }
-
-    @Override
-    public void setImageBitmap(Bitmap bm) {
-        super.setImageBitmap(bm);
-        Logger.d("wrapphotoview: " + bm);
-    }
 }

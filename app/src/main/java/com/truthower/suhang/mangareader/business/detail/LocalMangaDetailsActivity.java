@@ -45,14 +45,10 @@ import pub.devrel.easypermissions.EasyPermissions;
 public class LocalMangaDetailsActivity extends BaseActivity implements AdapterView.OnItemClickListener,
         PullToRefreshBase.OnRefreshListener<GridView>, AdapterView.OnItemLongClickListener,
         EasyPermissions.PermissionCallbacks {
-    private PullToRefreshGridView pullToRefreshGridView;
     private View emptyView;
     private ImageView emptyIV;
     private TextView emptyTV;
-    private GridView mangaGV;
     private ArrayList<MangaBean> mangaList = new ArrayList<MangaBean>();
-    private LocalMangaListAdapter adapter;
-    private TopBar topBar;
     private String filePath;
     private ArrayList<String> pathList;
     private String currentMangaName;
