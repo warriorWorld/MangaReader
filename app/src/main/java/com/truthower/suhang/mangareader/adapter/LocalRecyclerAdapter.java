@@ -48,9 +48,9 @@ public class LocalRecyclerAdapter extends RecyclerView.Adapter<LocalRecyclerAdap
     public void onBindViewHolder(ViewHolder viewHolder, final int position) {
         final MangaBean item = list.get(position);
         if (!TextUtils.isEmpty(item.getUserThumbnailUrl())) {
-            Glide.with(context).load(item.getUserThumbnailUrl()).apply(Configure.ROUND_CORNERS_OPTIONS).thumbnail(0.1f).into(viewHolder.mangaView);
+            Glide.with(context).load(item.getUserThumbnailUrl()).apply(Configure.ROUND_CORNERS_OPTIONS).into(viewHolder.mangaView);
         } else if (!TextUtils.isEmpty(item.getLocalThumbnailUrl())) {
-            Glide.with(context).load(item.getLocalThumbnailUrl()).apply(Configure.ROUND_CORNERS_OPTIONS).thumbnail(0.1f).into(viewHolder.mangaView);
+            Glide.with(context).load(item.getLocalThumbnailUrl()).apply(Configure.ROUND_CORNERS_OPTIONS).into(viewHolder.mangaView);
         }
         viewHolder.mangaTitle.setText(item.getName());
         if (isInEditMode) {

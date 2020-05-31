@@ -61,9 +61,9 @@ public class OnlineMangaRecyclerListAdapter extends RecyclerView.Adapter<OnlineM
     public void onBindViewHolder(ViewHolder viewHolder, final int position) {
         final MangaBean item = list.get(position);
         if (!TextUtils.isEmpty(item.getWebThumbnailUrl())) {
-            Glide.with(context).load(item.getWebThumbnailUrl()).apply(Configure.ROUND_CORNERS_OPTIONS).thumbnail(0.1f).into(viewHolder.mangaThumbnailIv);
+            Glide.with(context).load(item.getWebThumbnailUrl()).apply(Configure.ROUND_CORNERS_OPTIONS).into(viewHolder.mangaThumbnailIv);
         } else {
-            Glide.with(context).load(item.getLocalThumbnailUrl()).apply(Configure.ROUND_CORNERS_OPTIONS).thumbnail(0.1f).into(viewHolder.mangaThumbnailIv);
+            Glide.with(context).load(item.getLocalThumbnailUrl()).apply(Configure.ROUND_CORNERS_OPTIONS).into(viewHolder.mangaThumbnailIv);
         }
         if (!TextUtils.isEmpty(item.getName())) {
             if (TextUtils.isEmpty(item.getLast_update())) {
