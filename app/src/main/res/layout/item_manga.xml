@@ -3,16 +3,15 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
-    android:layout_height="300dp"
+    android:layout_height="wrap_content"
     android:gravity="center"
     android:orientation="vertical"
     android:padding="2dp">
 
     <RelativeLayout
         android:layout_width="wrap_content"
-        android:layout_height="0dp"
+        android:layout_height="wrap_content"
         android:layout_margin="10dp"
-        android:layout_weight="4"
         android:background="@drawable/peanut_btn_bg_white_round1"
         android:elevation="5dp">
 
@@ -47,8 +46,7 @@
     <TextView
         android:id="@+id/manga_title"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
+        android:layout_height="wrap_content"
         android:ellipsize="marquee"
         android:gravity="center"
         android:marqueeRepeatLimit="marquee_forever"
@@ -57,5 +55,4 @@
         android:text="XXX"
         android:textColor="@color/main_text_color"
         android:textSize="22sp" />
-
 </LinearLayout>

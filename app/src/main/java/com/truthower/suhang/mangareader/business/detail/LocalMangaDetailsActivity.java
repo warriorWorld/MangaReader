@@ -2,52 +2,57 @@ package com.truthower.suhang.mangareader.business.detail;
 
 import android.Manifest;
 import android.content.Intent;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.truthower.suhang.mangareader.R;
-import com.truthower.suhang.mangareader.adapter.LocalMangaListAdapter;
+import com.truthower.suhang.mangareader.adapter.LocalRecyclerAdapter;
 import com.truthower.suhang.mangareader.base.BaseActivity;
 import com.truthower.suhang.mangareader.bean.MangaBean;
 import com.truthower.suhang.mangareader.business.read.ReadMangaActivity;
 import com.truthower.suhang.mangareader.config.Configure;
 import com.truthower.suhang.mangareader.config.ShareKeys;
+import com.truthower.suhang.mangareader.listener.OnRecycleItemClickListener;
+import com.truthower.suhang.mangareader.listener.OnRecycleItemLongClickListener;
 import com.truthower.suhang.mangareader.listener.OnSevenFourteenListDialogListener;
 import com.truthower.suhang.mangareader.sort.FileComparator;
 import com.truthower.suhang.mangareader.sort.FileComparatorAllNum;
 import com.truthower.suhang.mangareader.sort.FileComparatorDirectory;
 import com.truthower.suhang.mangareader.sort.FileComparatorWithBracket;
 import com.truthower.suhang.mangareader.spider.FileSpider;
-import com.truthower.suhang.mangareader.utils.ReplaceUtil;
+import com.truthower.suhang.mangareader.utils.DisplayUtil;
 import com.truthower.suhang.mangareader.utils.SharedPreferencesUtils;
 import com.truthower.suhang.mangareader.widget.bar.TopBar;
 import com.truthower.suhang.mangareader.widget.dialog.ListDialog;
 import com.truthower.suhang.mangareader.widget.dialog.MangaDialog;
 import com.truthower.suhang.mangareader.widget.pulltorefresh.PullToRefreshBase;
-import com.truthower.suhang.mangareader.widget.pulltorefresh.PullToRefreshGridView;
+import com.truthower.suhang.mangareader.widget.recyclerview.RecyclerGridDecoration;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.StaggeredGridLayoutManager;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import pub.devrel.easypermissions.AfterPermissionGranted;
 import pub.devrel.easypermissions.EasyPermissions;
 
-public class LocalMangaDetailsActivity extends BaseActivity implements AdapterView.OnItemClickListener,
-        PullToRefreshBase.OnRefreshListener<GridView>, AdapterView.OnItemLongClickListener,
+public class LocalMangaDetailsActivity extends BaseActivity implements
         EasyPermissions.PermissionCallbacks {
     private View emptyView;
     private ImageView emptyIV;
     private TextView emptyTV;
+    private RecyclerView mangaRcv;
+    private SwipeRefreshLayout mangaSrl;
     private ArrayList<MangaBean> mangaList = new ArrayList<MangaBean>();
     private String filePath;
     private ArrayList<String> pathList;
@@ -58,6 +63,7 @@ public class LocalMangaDetailsActivity extends BaseActivity implements AdapterVi
     private boolean isInSectionDeleteMode = false;
     private boolean firstChoose = true;
     private int deleteStartPoint = 0;
+    private LocalRecyclerAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,7 +75,6 @@ public class LocalMangaDetailsActivity extends BaseActivity implements AdapterVi
         }
 
         initUI();
-        initPullGridView();
         initGridView();
 
         initFile();
@@ -167,31 +172,114 @@ public class LocalMangaDetailsActivity extends BaseActivity implements AdapterVi
     }
 
     private void initGridView() {
-        if (null == adapter) {
-            adapter = new LocalMangaListAdapter(this, mangaList);
-            mangaGV.setAdapter(adapter);
-            mangaGV.setOnItemClickListener(this);
-            mangaGV.setOnItemLongClickListener(this);
-            mangaGV.setEmptyView(emptyView);
-//            mangaGV.setColumnWidth(100);
-            mangaGV.setNumColumns(2);
-            mangaGV.setVerticalSpacing(12);
-            mangaGV.setGravity(Gravity.CENTER);
-            mangaGV.setHorizontalSpacing(15);
-        } else {
-            adapter.setMangaList(mangaList);
-            adapter.notifyDataSetChanged();
+        try {
+            if (null == mangaList || mangaList.size() <= 0) {
+                emptyView.setVisibility(View.VISIBLE);
+            } else {
+                emptyView.setVisibility(View.GONE);
+            }
+            if (null == adapter) {
+                adapter = new LocalRecyclerAdapter(this);
+                adapter.setList(mangaList);
+                adapter.setOnRecycleItemClickListener(new OnRecycleItemClickListener() {
+                    @Override
+                    public void onItemClick(int position) {
+                        //        baseToast.showToast(mangaList.get(position).getUrl());
+                        if (isInEditMode) {
+                            if (isInSectionDeleteMode) {
+                                if (firstChoose) {
+                                    baseToast.showToast("请点击删除终点!");
+                                    deleteStartPoint = position;
+                                    firstChoose = false;
+                                    mangaList.get(deleteStartPoint).setChecked(true);
+                                    adapter.notifyDataSetChanged();
+                                } else {
+                                    int count = position - deleteStartPoint;
+                                    if (count > 0) {
+                                        for (int i = 0; i <= count; i++) {
+                                            mangaList.get(deleteStartPoint + i).setChecked(true);
+                                        }
+                                    } else {
+                                        for (int i = 0; i <= Math.abs(count); i++) {
+                                            mangaList.get(deleteStartPoint - i).setChecked(true);
+                                        }
+                                    }
+                                    adapter.notifyDataSetChanged();
+                                }
+                            } else {
+                                mangaList.get(position).setChecked(!mangaList.get(position).isChecked());
+                                adapter.notifyDataSetChanged();
+                            }
+                        } else {
+                            Intent intent = null;
+                            if (isNextDirectory(mangaList.get(position).getUrl())) {
+                                intent = new Intent(LocalMangaDetailsActivity.this, LocalMangaDetailsActivity.class);
+                                intent.putExtra("filePath", mangaList.get(position).getUrl());
+                            } else {
+//            baseToast.showToast("接下来就要进入看漫画页了" + mangaList.get(position).getLocalThumbnailUrl());
+                                intent = new Intent(LocalMangaDetailsActivity.this, ReadMangaActivity.class);
+                                Bundle pathListBundle = new Bundle();
+                                pathListBundle.putSerializable("pathList", pathList);
+                                intent.putExtras(pathListBundle);
+                                intent.putExtra("img_position", position);
+                            }
+                            intent.putExtra("currentMangaName", currentMangaName);
+                            if (null != intent) {
+                                startActivity(intent);
+                            }
+                        }
+                    }
+                });
+                adapter.setOnRecycleItemLongClickListener(new OnRecycleItemLongClickListener() {
+                    @Override
+                    public void onItemLongClick(int position) {
+                        if (!isNextDirectory(mangaList.get(0).getUrl())) {
+                            //阅读页的前一页
+                            showOptionsDialog(position);
+                        } else {
+                            showDeleteDialog(position);
+                        }
+                    }
+                });
+                mangaRcv.setAdapter(adapter);
+                ColorDrawable dividerDrawable = new ColorDrawable(0x00000000) {
+                    @Override
+                    public int getIntrinsicHeight() {
+                        return DisplayUtil.dip2px(LocalMangaDetailsActivity.this, 8);
+                    }
+
+                    @Override
+                    public int getIntrinsicWidth() {
+                        return DisplayUtil.dip2px(LocalMangaDetailsActivity.this, 8);
+                    }
+                };
+                RecyclerGridDecoration itemDecoration = new RecyclerGridDecoration(LocalMangaDetailsActivity.this,
+                        dividerDrawable, true);
+                mangaRcv.addItemDecoration(itemDecoration);
+            } else {
+                adapter.setList(mangaList);
+                adapter.notifyDataSetChanged();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        pullToRefreshGridView.onPullDownRefreshComplete();// 动画结束方法
-        pullToRefreshGridView.onPullUpRefreshComplete();
+        mangaSrl.setRefreshing(false);
     }
 
 
     private void initUI() {
-        pullToRefreshGridView = (PullToRefreshGridView) findViewById(R.id.ptf_local_grid_view);
-        topBar = (TopBar) findViewById(R.id.gradient_bar);
-        topBar.setVisibility(View.GONE);
-        mangaGV = (GridView) pullToRefreshGridView.getRefreshableView();
+        mangaRcv = findViewById(R.id.manga_rcv);
+        mangaRcv.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
+        mangaRcv.setFocusableInTouchMode(false);
+        mangaRcv.setFocusable(false);
+        mangaRcv.setHasFixedSize(true);
+        mangaSrl = findViewById(R.id.manga_srl);
+        mangaSrl.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                initFile();
+            }
+        });
         emptyView = findViewById(R.id.empty_view);
         emptyIV = (ImageView) findViewById(R.id.empty_image);
         emptyIV.setOnClickListener(new View.OnClickListener() {
@@ -243,62 +331,6 @@ public class LocalMangaDetailsActivity extends BaseActivity implements AdapterVi
         }
     }
 
-    private void initPullGridView() {
-        // 上拉加载更多
-        pullToRefreshGridView.setPullLoadEnabled(false);
-        // 滚到底部自动加载
-        pullToRefreshGridView.setScrollLoadEnabled(false);
-        pullToRefreshGridView.setOnRefreshListener(this);
-    }
-
-    @Override
-    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-//        baseToast.showToast(mangaList.get(position).getUrl());
-        if (isInEditMode) {
-            if (isInSectionDeleteMode) {
-                if (firstChoose) {
-                    baseToast.showToast("请点击删除终点!");
-                    deleteStartPoint = position;
-                    firstChoose = false;
-                    mangaList.get(deleteStartPoint).setChecked(true);
-                    adapter.notifyDataSetChanged();
-                } else {
-                    int count = position - deleteStartPoint;
-                    if (count > 0) {
-                        for (int i = 0; i <= count; i++) {
-                            mangaList.get(deleteStartPoint + i).setChecked(true);
-                        }
-                    } else {
-                        for (int i = 0; i <= Math.abs(count); i++) {
-                            mangaList.get(deleteStartPoint - i).setChecked(true);
-                        }
-                    }
-                    adapter.notifyDataSetChanged();
-                }
-            } else {
-                mangaList.get(position).setChecked(!mangaList.get(position).isChecked());
-                adapter.notifyDataSetChanged();
-            }
-        } else {
-            Intent intent = null;
-            if (isNextDirectory(mangaList.get(position).getUrl())) {
-                intent = new Intent(LocalMangaDetailsActivity.this, LocalMangaDetailsActivity.class);
-                intent.putExtra("filePath", mangaList.get(position).getUrl());
-            } else {
-//            baseToast.showToast("接下来就要进入看漫画页了" + mangaList.get(position).getLocalThumbnailUrl());
-                intent = new Intent(LocalMangaDetailsActivity.this, ReadMangaActivity.class);
-                Bundle pathListBundle = new Bundle();
-                pathListBundle.putSerializable("pathList", pathList);
-                intent.putExtras(pathListBundle);
-                intent.putExtra("img_position", position);
-            }
-            intent.putExtra("currentMangaName", currentMangaName);
-            if (null != intent) {
-                startActivity(intent);
-            }
-        }
-    }
-
     private boolean isNextDirectory(String path) {
         File f = new File(path);
         if (!f.exists()) {
@@ -309,18 +341,6 @@ public class LocalMangaDetailsActivity extends BaseActivity implements AdapterVi
         } else {
             return false;
         }
-    }
-
-
-    @Override
-    public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
-        if (!isNextDirectory(mangaList.get(0).getUrl())) {
-            //阅读页的前一页
-            showOptionsDialog(i);
-        } else {
-            showDeleteDialog(i);
-        }
-        return true;
     }
 
     private void showOptionsDialog(final int selectedPosition) {
@@ -463,16 +483,6 @@ public class LocalMangaDetailsActivity extends BaseActivity implements AdapterVi
         deleteDialog.setOkText("删除");
         deleteDialog.setCancelText("算了");
         deleteDialog.setCancelable(true);
-    }
-
-    @Override
-    public void onPullDownToRefresh(PullToRefreshBase<GridView> refreshView) {
-        initFile();
-    }
-
-    @Override
-    public void onPullUpToRefresh(PullToRefreshBase<GridView> refreshView) {
-        initFile();
     }
 
     @Override
