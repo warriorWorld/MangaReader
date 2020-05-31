@@ -24,6 +24,7 @@ import com.truthower.suhang.mangareader.config.ShareKeys;
 import com.truthower.suhang.mangareader.eventbus.EventBusEvent;
 import com.truthower.suhang.mangareader.listener.OnImgSizeListener;
 import com.truthower.suhang.mangareader.utils.DisplayUtil;
+import com.truthower.suhang.mangareader.utils.Logger;
 import com.truthower.suhang.mangareader.utils.SharedPreferencesUtils;
 
 import org.greenrobot.eventbus.EventBus;
@@ -174,7 +175,6 @@ public class GlidePhotoView extends PhotoView {
                     .addListener(new RequestListener<Bitmap>() {
                         @Override
                         public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Bitmap> target, boolean isFirstResource) {
-                            setImageResource(R.drawable.spider_hat_gray512);
                             return false;
                         }
 
@@ -198,5 +198,20 @@ public class GlidePhotoView extends PhotoView {
                     })
                     .into(this);
         }
+    }
+
+    public void setImgUrl(final String url, RequestListener<Bitmap> listener) {
+        Glide.with(mContext)
+                .asBitmap()
+                .load(url)
+                .thumbnail(0.1f)
+                .addListener(listener)
+                .into(this);
+    }
+
+    @Override
+    public void setImageBitmap(Bitmap bm) {
+        super.setImageBitmap(bm);
+        Logger.d("glidephotoview: " + bm);
     }
 }

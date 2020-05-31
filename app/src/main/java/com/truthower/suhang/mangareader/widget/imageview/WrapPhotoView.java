@@ -28,42 +28,10 @@ import uk.co.senab.photoview.PhotoViewAttacher;
 
 public class WrapPhotoView extends PhotoView {
     private Context mContext;
-    private Bitmap mBitmap;
-    private int position;
     /**
      * Handler处理类
      */
-    Handler mHandler = new Handler() {
-        public void handleMessage(Message msg) {
-            switch (msg.what) {
-                case 0:
-                    post(new Runnable() {
-                        @Override
-                        public void run() {
-                            if (mBitmap == null) {
-                                setImageResource(R.drawable.spider_hat_gray512);
-                                return;
-                            }
-                            if (!SharedPreferencesUtils.getBooleanSharedPreferencesData(mContext, ShareKeys.CLOSE_WRAP_IMG, false)) {
-                                //获取bitmap的宽度
-                                float bitWidth = mBitmap.getWidth();
-                                //获取bitmap的宽度
-                                float bithight = mBitmap.getHeight();
-                                // 高按照比例计算
-                                if (bitWidth > bithight) {
-                                    EventBus.getDefault().post(new EventBusEvent(position, EventBusEvent.NEED_LANDSCAPE_EVENT));
-//                                    mBitmap = ImageUtil.getRotateBitmap(mBitmap, Configure.currentOrientation);
-                                } else {
-                                    EventBus.getDefault().post(new EventBusEvent(position, EventBusEvent.NEED_PORTRAIT_EVENT));
-                                }
-                            }
-                            setImageBitmap(mBitmap);
-                        }
-                    });
-                    break;
-            }
-        }
-    };
+    private Handler mHandler;
 
     public WrapPhotoView(Context context) {
         super(context);
@@ -82,10 +50,11 @@ public class WrapPhotoView extends PhotoView {
 
     private void init(Context context) {
         this.mContext = context;
+        mHandler = new ImageHandler(mContext, this);
         setOnPhotoTapListener(new PhotoViewAttacher.OnPhotoTapListener() {
             @Override
             public void onPhotoTap(View view, float x, float y) {
-                EventBus.getDefault().post(new EventBusEvent(EventBusEvent.ON_TAP_EVENT,new float[]{x,y}));
+                EventBus.getDefault().post(new EventBusEvent(EventBusEvent.ON_TAP_EVENT, new float[]{x, y}));
             }
 
             @Override
@@ -159,21 +128,64 @@ public class WrapPhotoView extends PhotoView {
         });
     }
 
+    private static class ImageHandler extends Handler {
+        private Context mContext;
+        private ImageView mImageView;
+
+        public ImageHandler(Context context, ImageView imageView) {
+            mContext = context.getApplicationContext();
+            mImageView = imageView;
+        }
+
+        public void handleMessage(Message msg) {
+            switch (msg.what) {
+                case 0:
+                    Bitmap mBitmap = (Bitmap) msg.obj;
+                    if (mBitmap == null) {
+                        mImageView.setImageResource(R.drawable.spider_hat_gray512);
+                        return;
+                    }
+                    if (!SharedPreferencesUtils.getBooleanSharedPreferencesData(mContext, ShareKeys.CLOSE_WRAP_IMG, false)) {
+                        //获取bitmap的宽度
+                        float bitWidth = mBitmap.getWidth();
+                        //获取bitmap的宽度
+                        float bithight = mBitmap.getHeight();
+                        // 高按照比例计算
+                        if (bitWidth > bithight) {
+                            EventBus.getDefault().post(new EventBusEvent(msg.arg1, EventBusEvent.NEED_LANDSCAPE_EVENT));
+//                                    mBitmap = ImageUtil.getRotateBitmap(mBitmap, Configure.currentOrientation);
+                        } else {
+                            EventBus.getDefault().post(new EventBusEvent(msg.arg1, EventBusEvent.NEED_PORTRAIT_EVENT));
+                        }
+                    }
+                    mImageView.setImageBitmap(mBitmap);
+                    break;
+            }
+        }
+    }
+
     public void setImgUrl(final String url, final DisplayImageOptions options) {
         setImgUrl(url, options, -1);
     }
 
-    public void setImgUrl(final String url, final DisplayImageOptions options, int position) {
-        this.position = position;
+    public void setImgUrl(final String url, final DisplayImageOptions options, final int position) {
         setImageResource(R.drawable.spider_hat_color512);
         new Thread(new Runnable() {
             @Override
             public void run() {
-                mBitmap = ImageLoader.getInstance().loadImageSync(url, options);
+                Bitmap mBitmap = ImageLoader.getInstance().loadImageSync(url, options);
                 Message msg = Message.obtain();
                 msg.what = 0;
+                msg.arg1 = position;
+                msg.obj = mBitmap;
                 mHandler.sendMessage(msg);
             }
         }).start();
+    }
+
+    @Override
+    public void setImageBitmap(Bitmap bm) {
+        super.setImageBitmap(bm);
+        Logger.d("wrapphotoview: " + bm);
     }
 }
