@@ -14,6 +14,7 @@ import com.truthower.suhang.mangareader.bean.RxDownloadBean;
 import com.truthower.suhang.mangareader.bean.RxDownloadChapterBean;
 import com.truthower.suhang.mangareader.business.detail.WebMangaDetailsActivity;
 import com.truthower.suhang.mangareader.business.rxdownload.DownloadCaretaker;
+import com.truthower.suhang.mangareader.business.rxdownload.FailedPageCaretaker;
 import com.truthower.suhang.mangareader.config.Configure;
 import com.truthower.suhang.mangareader.config.ShareKeys;
 import com.truthower.suhang.mangareader.spider.NDownloader;
@@ -112,6 +113,7 @@ public class ManageDownloadActivity extends BaseActivity implements View.OnClick
             Logger.d("lastChapterNum: " + lastChapterNum);
         }
         DownloadCaretaker.clean(this);
+        FailedPageCaretaker.clean(this);
         RxDownloadBean downloadBean = new RxDownloadBean();
         downloadBean.setDownloader(new NDownloader());
         downloadBean.setMangaName(mangaName);

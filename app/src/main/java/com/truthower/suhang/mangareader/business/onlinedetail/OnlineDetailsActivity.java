@@ -25,6 +25,7 @@ import com.truthower.suhang.mangareader.business.main.MainActivity;
 import com.truthower.suhang.mangareader.business.read.ReadMangaActivity;
 import com.truthower.suhang.mangareader.business.rxdownload.CommonDownloader;
 import com.truthower.suhang.mangareader.business.rxdownload.DownloadCaretaker;
+import com.truthower.suhang.mangareader.business.rxdownload.FailedPageCaretaker;
 import com.truthower.suhang.mangareader.business.search.SearchActivity;
 import com.truthower.suhang.mangareader.business.threadpooldownload.TpDownloadActivity;
 import com.truthower.suhang.mangareader.business.threadpooldownload.TpDownloadService;
@@ -322,6 +323,7 @@ public class OnlineDetailsActivity extends BaseActivity implements View.OnClickL
                 stopService(stopIntent);
             }
             DownloadCaretaker.clean(this);
+            FailedPageCaretaker.clean(this);
             RxDownloadBean downloadBean = new RxDownloadBean();
             downloadBean.setDownloader(new CommonDownloader(mOnlineDetailVM.getSpider()));
             downloadBean.setMangaName(currentManga.getName());

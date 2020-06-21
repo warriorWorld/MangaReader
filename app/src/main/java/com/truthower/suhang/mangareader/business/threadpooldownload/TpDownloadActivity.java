@@ -17,6 +17,7 @@ import com.truthower.suhang.mangareader.bean.RxDownloadBean;
 import com.truthower.suhang.mangareader.bean.RxDownloadChapterBean;
 import com.truthower.suhang.mangareader.business.rxdownload.DownloadCaretaker;
 import com.truthower.suhang.mangareader.business.rxdownload.DownloadContract;
+import com.truthower.suhang.mangareader.business.rxdownload.FailedPageCaretaker;
 import com.truthower.suhang.mangareader.config.Configure;
 import com.truthower.suhang.mangareader.config.ShareKeys;
 import com.truthower.suhang.mangareader.eventbus.EventBusEvent;
@@ -138,6 +139,7 @@ public class TpDownloadActivity extends BaseActivity implements View.OnClickList
                         case EventBusEvent.DOWNLOAD_FINISH_EVENT:
                             toggleEmpty(true);
                             DownloadCaretaker.clean(TpDownloadActivity.this);
+                            FailedPageCaretaker.clean(TpDownloadActivity.this);
                             MangaDialog dialog = new MangaDialog(TpDownloadActivity.this);
                             dialog.show();
                             dialog.setTitle("全部下载完成!");
@@ -236,6 +238,7 @@ public class TpDownloadActivity extends BaseActivity implements View.OnClickList
                 Intent stopService = new Intent(TpDownloadActivity.this, TpDownloadService.class);
                 stopService(stopService);
                 DownloadCaretaker.clean(TpDownloadActivity.this);
+                FailedPageCaretaker.clean(TpDownloadActivity.this);
                 displayInfo(null);
             }
 
