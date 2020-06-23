@@ -115,7 +115,8 @@ public class LocalMangaDetailsActivity extends BaseActivity implements
             //阅读页的前一页
             //获取第一张图片的路径
             String firstImgName = pathList.get(0);
-            if (firstImgName.contains(".jpg") || firstImgName.contains(".png") || firstImgName.contains(".bmp")) {
+            if (firstImgName.contains(".jpg") || firstImgName.contains(".png") || firstImgName.contains(".bmp")
+                    || firstImgName.contains(".gif")) {
                 firstImgName = firstImgName.substring(0, firstImgName.length() - 1 - 3);
                 Log.d("s", "裁剪后的字符串" + firstImgName);
             } else if (firstImgName.contains(".jpeg")) {
@@ -149,7 +150,7 @@ public class LocalMangaDetailsActivity extends BaseActivity implements
                     FileComparatorAllNum comparator2 = new FileComparatorAllNum();
                     Collections.sort(pathList, comparator2);
                 } catch (NumberFormatException e) {
-
+                    e.printStackTrace();
                 }
             }
             //将得到的排序结果给mangaList
