@@ -87,9 +87,21 @@
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/ptf_grid_view"
             android:layout_width="match_parent"
-            android:layout_marginTop="8dp"
-            android:layout_marginLeft="5dp"
             android:layout_height="match_parent"
-            android:layout_below="@+id/manga_info_rl"></androidx.recyclerview.widget.RecyclerView>
+            android:layout_below="@+id/manga_info_rl"
+            android:layout_marginLeft="5dp"
+            android:layout_marginTop="8dp"></androidx.recyclerview.widget.RecyclerView>
+
+        <TextView
+            android:id="@+id/spider_name_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginRight="10dp"
+            android:layout_marginBottom="20dp"
+            android:text="spider"
+            android:textColor="@color/main_text_color_gray"
+            android:textSize="12sp" />
     </RelativeLayout>
 </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>

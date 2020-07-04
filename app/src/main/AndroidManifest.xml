@@ -55,7 +55,6 @@
 
         <activity
             android:name=".business.main.MainActivity"
-            android:launchMode="singleTask"
             android:theme="@style/SplashActivityTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

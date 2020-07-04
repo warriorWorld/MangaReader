@@ -30,6 +30,7 @@ public class OnlineDetailVM extends ViewModel {
     private MutableLiveData<String> message = new MutableLiveData<>();
     private MutableLiveData<String[]> authorOptions = new MutableLiveData<>();
     private MutableLiveData<Boolean> isCollected = new MutableLiveData<>();
+    private MutableLiveData<String> spiderName = new MutableLiveData<>();
     private DbAdapter db;//数据库
     private Context mContext;
     private SpiderBase spider;
@@ -48,6 +49,7 @@ public class OnlineDetailVM extends ViewModel {
         try {
             spider = (SpiderBase) Class.forName
                     ("com.truthower.suhang.mangareader.spider." + BaseParameterUtil.getInstance().getCurrentWebSite(mContext) + "Spider").newInstance();
+            spiderName.setValue(BaseParameterUtil.getInstance().getCurrentWebSite(mContext));
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         } catch (java.lang.InstantiationException e) {
@@ -78,6 +80,7 @@ public class OnlineDetailVM extends ViewModel {
                     @Override
                     public void run() {
                         isUpdating.setValue(false);
+                        message.setValue("success");
                         manga.setValue(result);
                         if (null != cacheManga) {
                             //说明使用了缓存,那就更新缓存
@@ -152,6 +155,10 @@ public class OnlineDetailVM extends ViewModel {
 
     LiveData<String> getMessage() {
         return message;
+    }
+
+    public MutableLiveData<String> getSpiderName() {
+        return spiderName;
     }
 
     LiveData<String[]> getAuthorOptions() {

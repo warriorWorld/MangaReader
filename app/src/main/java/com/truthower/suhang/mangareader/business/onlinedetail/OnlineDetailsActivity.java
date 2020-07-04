@@ -81,6 +81,7 @@ public class OnlineDetailsActivity extends BaseActivity implements View.OnClickL
     private View collectView;
     private RecyclerView ptfGridView;
     private SwipeRefreshLayout detailsSrl;
+    private TextView spiderNameTv;
     private OnlineDetailVM mOnlineDetailVM;
     private MangaBean currentManga;
     private OnlineMangaDetailsRecyclerAdapter adapter;
@@ -114,6 +115,7 @@ public class OnlineDetailsActivity extends BaseActivity implements View.OnClickL
         authorTv = (TextView) findViewById(R.id.author_tv);
         typeTv = (TextView) findViewById(R.id.type_tv);
         updateTimeTv = (TextView) findViewById(R.id.update_time_tv);
+        spiderNameTv = findViewById(R.id.spider_name_tv);
         detailsSrl = findViewById(R.id.detail_srl);
         detailsSrl.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -499,6 +501,12 @@ public class OnlineDetailsActivity extends BaseActivity implements View.OnClickL
                 } else {
                     detailsSrl.setRefreshing(false);
                 }
+            }
+        });
+        mOnlineDetailVM.getSpiderName().observe(this, new Observer<String>() {
+            @Override
+            public void onChanged(String s) {
+                spiderNameTv.setText(s);
             }
         });
     }
