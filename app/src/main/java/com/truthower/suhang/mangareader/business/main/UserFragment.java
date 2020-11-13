@@ -27,11 +27,13 @@ import com.truthower.suhang.mangareader.business.words.WordsActivity;
 import com.truthower.suhang.mangareader.business.wordsbook.WordsBookActivity;
 import com.truthower.suhang.mangareader.config.Configure;
 import com.truthower.suhang.mangareader.config.ShareKeys;
+import com.truthower.suhang.mangareader.listener.OnEditResultListener;
 import com.truthower.suhang.mangareader.utils.NumberUtil;
 import com.truthower.suhang.mangareader.utils.PermissionUtil;
 import com.truthower.suhang.mangareader.utils.SharedPreferencesUtils;
 import com.truthower.suhang.mangareader.widget.dialog.DownloadDialog;
 import com.truthower.suhang.mangareader.widget.dialog.MangaDialog;
+import com.truthower.suhang.mangareader.widget.dialog.MangaEditDialog;
 import com.truthower.suhang.mangareader.widget.dialog.ShareDialog;
 
 import net.tsz.afinal.FinalHttp;
@@ -63,6 +65,7 @@ public class UserFragment extends BaseFragment implements View.OnClickListener,
     private ClipboardManager clip;//复制文本用
     private TextView qqTv;
     private DownloadDialog downloadDialog;
+    private View userHead;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -98,6 +101,7 @@ public class UserFragment extends BaseFragment implements View.OnClickListener,
         collectRl = (RelativeLayout) v.findViewById(R.id.collect_rl);
         shareRl = (RelativeLayout) v.findViewById(R.id.share_rl);
         manageDownloadRl = v.findViewById(R.id.manage_download_rl);
+        userHead = v.findViewById(R.id.user_head_civ);
         qqTv = (TextView) v.findViewById(R.id.qq_tv);
         qqTv.setText
                 ("获取最新版App，请加qq：" + Configure.QQ + "（点击群号可复制），或直接点击下载最新App。",
@@ -176,6 +180,14 @@ public class UserFragment extends BaseFragment implements View.OnClickListener,
         userTopBarRl.setOnClickListener(this);
         aboutRl.setOnClickListener(this);
         manageDownloadRl.setOnClickListener(this);
+        userHead.setOnClickListener(this);
+        userHead.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                showFilterDialog();
+                return true;
+            }
+        });
     }
 
     private void showVersionDialog() {
@@ -205,6 +217,31 @@ public class UserFragment extends BaseFragment implements View.OnClickListener,
         }
         downloadDialog.show();
         downloadDialog.setCancelable(false);
+    }
+
+    private void showFilterDialog() {
+        MangaEditDialog dialog = new MangaEditDialog(getActivity());
+        dialog.setOnEditResultListener(new OnEditResultListener() {
+            @Override
+            public void onResult(String text) {
+                SharedPreferencesUtils.setSharedPreferencesData
+                        (getActivity(), ShareKeys.KILLABLE_TIME_KEY, Integer.valueOf(text));
+            }
+
+            @Override
+            public void onCancelClick() {
+
+            }
+        });
+        dialog.show();
+        dialog.setOnlyNumInput(true);
+        dialog.setTitle("可斩次数设置");
+        dialog.setHint("默认值为3 仅供参考");
+        dialog.setMessage("请输入要设置的可斩次数，如需一次既斩请输入1。");
+        int height = SharedPreferencesUtils.getIntSharedPreferencesData(getActivity(), ShareKeys.KILLABLE_TIME_KEY, -1);
+        if (height != -1) {
+            dialog.setEditText(height + "");
+        }
     }
 
     @AfterPermissionGranted(111)
@@ -329,6 +366,9 @@ public class UserFragment extends BaseFragment implements View.OnClickListener,
                 break;
             case R.id.manage_download_rl:
                 intent = new Intent(getActivity(), ManageDownloadActivity.class);
+                break;
+            case R.id.user_head_civ:
+
                 break;
         }
         if (null != intent) {
