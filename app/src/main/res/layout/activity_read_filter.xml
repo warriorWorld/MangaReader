@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".business.filter.ReadFilterActivity">
+
+    <com.truthower.suhang.mangareader.business.read.HackyViewPager
+        android:id="@+id/manga_viewpager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_centerInParent="true"
+        android:clipToPadding="false" />
+
+    <ImageView
+        android:id="@+id/delete_iv"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="20dp"
+        android:src="@drawable/delete"
+        android:visibility="gone" />
+
+    <TextView
+        android:id="@+id/read_progress_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginRight="7dp"
+        android:layout_marginBottom="7dp"
+        android:textColor="@color/main_text_color"
+        android:textSize="10sp" />
+
+    <TextView
+        android:id="@+id/img_size_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginLeft="7dp"
+        android:layout_marginBottom="7dp"
+        android:textColor="@color/main_text_color"
+        android:textSize="10sp" />
+</RelativeLayout>

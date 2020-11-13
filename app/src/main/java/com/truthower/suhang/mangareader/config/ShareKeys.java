@@ -53,4 +53,5 @@ public class ShareKeys {
     public static final String OPEN_PREMIUM_KEY = "open_premium_key";
     public static final String OPEN_PREMIUM_VOICE_KEY = "open_premium_voice_key";
     public static final String BRIDGE_KEY = "bridge";
+    public static final String FILTER_KEY = "filter_key";
 }

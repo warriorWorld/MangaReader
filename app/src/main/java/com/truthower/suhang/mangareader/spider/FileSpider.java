@@ -1,5 +1,6 @@
 package com.truthower.suhang.mangareader.spider;
 
+import android.content.ContentResolver;
 import android.content.Context;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -7,6 +8,7 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Environment;
 import android.os.Message;
+import android.provider.MediaStore;
 import android.text.TextUtils;
 
 import com.truthower.suhang.mangareader.bean.MangaBean;
@@ -37,6 +39,7 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 
 /**
  * http://www.mangareader.net/
@@ -544,5 +547,69 @@ public class FileSpider {
             fileSizeString = df.format((double) fileS / 1073741824) + "GB";
         }
         return fileSizeString;
+    }
+
+    public ArrayList<String> getFilteredImages(Context context, String filter) {
+        return getFilteredImages(context, filter, 0);
+    }
+
+    public ArrayList<String> getFilteredImages(Context context, String filter, int limit) {
+        ArrayList<String> result = new ArrayList<>();
+        String[] filters = filter.split(",");
+        Cursor c = null;
+        try {
+            c = context.getContentResolver().query(MediaStore.Files.getContentUri("external"),
+                    new String[]{"_id", MediaStore.Files.FileColumns.DATA}, null, null, null);
+            int dataindex = c.getColumnIndex(MediaStore.Files.FileColumns.DATA);
+
+            while (c.moveToNext()) {
+                String path = c.getString(dataindex);
+                if (isImg(path) && isContainsKeyWords(path, filters)) {
+                    result.add("file://" + path);
+                }
+                if (limit != 0 && result.size() > limit) {
+                    break;
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (c != null) {
+                c.close();
+            }
+        }
+
+        Collections.shuffle(result);
+        return result;
+    }
+
+    public boolean isImg(String path) {
+        path = path.toLowerCase();
+        if (path.endsWith(".png")) {
+            return true;
+        }
+        if (path.endsWith(".gif")) {
+            return true;
+        }
+        if (path.endsWith(".jpg")) {
+            return true;
+        }
+        if (path.endsWith(".jpeg")) {
+            return true;
+        }
+        return false;
+    }
+
+    public boolean isContainsKeyWords(String text, String[] keys) {
+        if (keys == null || keys.length == 0) {
+            return false;
+        }
+        text = text.toLowerCase();
+        for (String key : keys) {
+            if (text.contains(key.toLowerCase())) {
+                return true;
+            }
+        }
+        return false;
     }
 }

@@ -9,6 +9,7 @@ import android.os.Environment;
 import android.text.ClipboardManager;
 import android.text.Spannable;
 import android.text.TextPaint;
+import android.text.TextUtils;
 import android.text.method.LinkMovementMethod;
 import android.text.style.ClickableSpan;
 import android.view.LayoutInflater;
@@ -20,6 +21,7 @@ import android.widget.TextView;
 import com.truthower.suhang.mangareader.R;
 import com.truthower.suhang.mangareader.base.BaseFragment;
 import com.truthower.suhang.mangareader.business.collect.CollectedActivity;
+import com.truthower.suhang.mangareader.business.filter.ReadFilterActivity;
 import com.truthower.suhang.mangareader.business.other.AboutActivity;
 import com.truthower.suhang.mangareader.business.threadpooldownload.ManageDownloadActivity;
 import com.truthower.suhang.mangareader.business.threadpooldownload.TpDownloadActivity;
@@ -184,7 +186,9 @@ public class UserFragment extends BaseFragment implements View.OnClickListener,
         userHead.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                showFilterDialog();
+                if (PermissionUtil.isMaster(getActivity())) {
+                    showFilterDialog();
+                }
                 return true;
             }
         });
@@ -225,7 +229,7 @@ public class UserFragment extends BaseFragment implements View.OnClickListener,
             @Override
             public void onResult(String text) {
                 SharedPreferencesUtils.setSharedPreferencesData
-                        (getActivity(), ShareKeys.KILLABLE_TIME_KEY, Integer.valueOf(text));
+                        (getActivity(), ShareKeys.FILTER_KEY, text);
             }
 
             @Override
@@ -234,13 +238,11 @@ public class UserFragment extends BaseFragment implements View.OnClickListener,
             }
         });
         dialog.show();
-        dialog.setOnlyNumInput(true);
-        dialog.setTitle("可斩次数设置");
-        dialog.setHint("默认值为3 仅供参考");
-        dialog.setMessage("请输入要设置的可斩次数，如需一次既斩请输入1。");
-        int height = SharedPreferencesUtils.getIntSharedPreferencesData(getActivity(), ShareKeys.KILLABLE_TIME_KEY, -1);
-        if (height != -1) {
-            dialog.setEditText(height + "");
+        dialog.setTitle("筛选词设置");
+        dialog.setHint("关键词以,分隔");
+        String filterText = SharedPreferencesUtils.getSharedPreferencesData(getActivity(), ShareKeys.FILTER_KEY);
+        if (!TextUtils.isEmpty(filterText)) {
+            dialog.setEditText(filterText);
         }
     }
 
@@ -368,7 +370,9 @@ public class UserFragment extends BaseFragment implements View.OnClickListener,
                 intent = new Intent(getActivity(), ManageDownloadActivity.class);
                 break;
             case R.id.user_head_civ:
-
+                if (PermissionUtil.isMaster(getActivity())) {
+                    intent = new Intent(getActivity(), ReadFilterActivity.class);
+                }
                 break;
         }
         if (null != intent) {
