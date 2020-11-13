@@ -19,6 +19,7 @@ import android.view.View
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.viewpager.widget.ViewPager.GONE
 import androidx.viewpager.widget.ViewPager.OnPageChangeListener
 import com.android.volley.Request
 import com.android.volley.VolleyError
@@ -174,6 +175,7 @@ class ReadFilterActivity : BaseActivity(), View.OnClickListener {
                 override fun onPageSelected(position: Int) {
                     currentPos = position
                     read_progress_tv.text = "${currentPos + 1}/${pathList?.size}"
+                    path_tv.text=pathList?.get(position)
                     showImgSize(position)
                 }
 
@@ -196,8 +198,10 @@ class ReadFilterActivity : BaseActivity(), View.OnClickListener {
     private fun toggleControlUI() {
         if (delete_iv.isShown) {
             delete_iv.visibility = View.GONE
+            path_tv.visibility= View.GONE
         } else {
             delete_iv.visibility = View.VISIBLE
+            path_tv.visibility= View.VISIBLE
         }
     }
 
