@@ -335,20 +335,20 @@ public class ReadMangaActivity extends TTSActivity implements OnClickListener, S
         Intent intent = null;
         switch (event.getEventType()) {
             case EventBusEvent.COPY_BOARD_EVENT:
-                showBaseDialog("检测到你复制了某漫画地址，是否跳转到详情页？", "", "是", "否",
-                        new MangaDialog.OnPeanutDialogClickListener() {
-                            @Override
-                            public void onOkClick() {
-                                Intent intent1 = new Intent(ReadMangaActivity.this, WebMangaDetailsActivity.class);
-                                intent1.putExtra("mangaUrl", event.getMsg());
-                                startActivity(intent1);
-                            }
-
-                            @Override
-                            public void onCancelClick() {
-
-                            }
-                        });
+//                showBaseDialog("检测到你复制了某漫画地址，是否跳转到详情页？", "", "是", "否",
+//                        new MangaDialog.OnPeanutDialogClickListener() {
+//                            @Override
+//                            public void onOkClick() {
+//                                Intent intent1 = new Intent(ReadMangaActivity.this, WebMangaDetailsActivity.class);
+//                                intent1.putExtra("mangaUrl", event.getMsg());
+//                                startActivity(intent1);
+//                            }
+//
+//                            @Override
+//                            public void onCancelClick() {
+//
+//                            }
+//                        });
                 break;
             case EventBusEvent.NEED_LANDSCAPE_EVENT:
                 int orientation;
