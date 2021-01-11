@@ -122,10 +122,12 @@ public class ManageDownloadActivity extends BaseActivity implements View.OnClick
         if (content.contains("\n")) {
             String[] urls = content.split("\n");
             for (int i = 0; i < urls.length; i++) {
-                RxDownloadChapterBean item = new RxDownloadChapterBean();
-                item.setChapterUrl(urls[i]);
-                item.setChapterName((lastChapterNum + i + 1) + "");
-                chapters.add(item);
+                if (!TextUtils.isEmpty(urls[i])) {
+                    RxDownloadChapterBean item = new RxDownloadChapterBean();
+                    item.setChapterUrl(urls[i]);
+                    item.setChapterName((lastChapterNum + i + 1) + "");
+                    chapters.add(item);
+                }
             }
         } else {
             RxDownloadChapterBean item = new RxDownloadChapterBean();
