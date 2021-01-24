@@ -13,7 +13,6 @@ import java.io.Serializable;
 import java.util.ArrayList;
 
 public class NDownloader implements MangaDownloader, Serializable {
-    //"https://nhentai.net/g/308419/1/"
     @Override
     public <ResultObj> void getMangaChapterPics(Context context, final String chapterUrl, final JsoupCallBack<ResultObj> jsoupCallBack) {
         new Thread() {

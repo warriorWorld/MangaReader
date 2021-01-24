@@ -22,7 +22,7 @@ public class Configure {
     //数据库版本号
     public static final int DB_VERSION = 5;
     public final static String[] websList = {"KaKaLot", "MangaReader"};
-    public final static String[] masterWebsList = {"MangaReader", "NManga", "KaKaLot", "LManga"};
+    public final static String[] masterWebsList = {"MangaReader", "KaKaLot"};
     public final static String[] VPN_MUST_LIST = {"NOTHING"};
     public final static String DST_FOLDER_NAME = "aSpider";
     final public static String storagePath = Environment
