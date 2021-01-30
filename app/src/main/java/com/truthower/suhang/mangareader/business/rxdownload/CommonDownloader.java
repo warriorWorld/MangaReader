@@ -8,7 +8,7 @@ import com.truthower.suhang.mangareader.spider.SpiderBase;
 
 import java.io.Serializable;
 
-public class CommonDownloader implements MangaDownloader , Serializable {
+public class CommonDownloader extends MangaDownloader implements Serializable {
     private SpiderBase spider;
 
     public CommonDownloader(SpiderBase spider) {

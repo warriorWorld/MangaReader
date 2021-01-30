@@ -56,6 +56,7 @@ public class TpDownloadService extends Service {
     private ArrayList<RxDownloadChapterBean> cacheChapters;
     private TpDownloadEvent mEvent;
     private CopyOnWriteArrayList<RxDownloadPageBean> failedPages = new CopyOnWriteArrayList<>();
+    private CopyOnWriteArrayList<RxDownloadPageBean> finalFailedPages = new CopyOnWriteArrayList<>();
 
     @Override
     public void onCreate() {
@@ -173,7 +174,7 @@ public class TpDownloadService extends Service {
                 public void loadFailed(String error) {
                     Logger.d("chapter load failed: " + error);
                     EventBus.getDefault().post(new EventBusEvent("获取图片地址失败:" + error, EventBusEvent.DOWNLOAD_MESSAGE_EVENT));
-                    VibratorUtil.Vibrate(TpDownloadService.this, 1000);
+                    VibratorUtil.Vibrate(TpDownloadService.this, 200);
                     getChapterInfo();
 //                    stopSelf();
                 }
@@ -187,17 +188,20 @@ public class TpDownloadService extends Service {
         chapters.clear();
         DownloadCaretaker.clean(this);
         FailedPageCaretaker.clean(this);
+        failedPages.clear();
+        finalFailedPages.clear();
         mEvent.setEventType(EventBusEvent.DOWNLOAD_FINISH_EVENT);
         EventBus.getDefault().post(mEvent);
         stopSelf();
     }
 
     private void retryFaliedPages() {
+        finalFailedPages.clear();
         currentChapter = new RxDownloadChapterBean();
         currentChapter.setPages(failedPages);
         currentChapter.setPageCount(failedPages.size());
         currentChapter.setChapterName("失败图片合集");
-        for (RxDownloadPageBean item : failedPages) {
+        for (final RxDownloadPageBean item : failedPages) {
             mExecutorService.execute(new PageDownloadRunner(item, new OnResultListener() {
                 @Override
                 public void onFinish() {
@@ -206,7 +210,9 @@ public class TpDownloadService extends Service {
 
                 @Override
                 public void onFailed() {
-                    VibratorUtil.Vibrate(TpDownloadService.this, 1000);
+                    VibratorUtil.Vibrate(TpDownloadService.this, 50);
+                    finalFailedPages.add(item);
+                    oneFailedPageFinished();
                 }
             }));
         }
@@ -220,7 +226,18 @@ public class TpDownloadService extends Service {
         updateNotification();
         Logger.d("downloaded: " + currentChapter.getDownloadedCount() + "/" + currentChapter.getPageCount());
         if (currentChapter.isDownloaded()) {
-            downloadFinished();
+            if (null != finalFailedPages && finalFailedPages.size() > 0) {
+                List<RxDownloadPageBean> list = mDownloader.getFixedUrls(finalFailedPages);
+                if (list == null) {
+                    //有些网站没有这个问题所以直接结束
+                    downloadFinished();
+                } else {
+                    failedPages = new CopyOnWriteArrayList<>(list);
+                    retryFaliedPages();
+                }
+            } else {
+                downloadFinished();
+            }
         }
     }
 

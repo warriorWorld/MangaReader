@@ -240,6 +240,7 @@ public class TpDownloadActivity extends BaseActivity implements View.OnClickList
                 DownloadCaretaker.clean(TpDownloadActivity.this);
                 FailedPageCaretaker.clean(TpDownloadActivity.this);
                 displayInfo(null);
+                baseToast.showToast("已清空");
             }
 
             @Override
