@@ -53,8 +53,7 @@ public abstract class TTSActivity extends BaseActivity implements TextToSpeech.O
         }
         tts.setPitch(1f);// 设置音调，值越大声音越尖（女生），值越小则变成男声,1.0是常规
         HashMap<String, String> myHashAlarm = new HashMap();
-        myHashAlarm.put(TextToSpeech.Engine.KEY_PARAM_STREAM,
-                String.valueOf(AudioManager.STREAM_ALARM));
+
         myHashAlarm.put(TextToSpeech.Engine.KEY_PARAM_VOLUME,
                 VolumeUtil.getMusicVolumeRate(this) + "");
 
@@ -63,6 +62,11 @@ public abstract class TTSActivity extends BaseActivity implements TextToSpeech.O
 //            mAudioManager.setStreamMute(AudioManager.STREAM_ALARM, true);
             mAudioManager.adjustStreamVolume(AudioManager.STREAM_ALARM, AudioManager.ADJUST_MUTE, 0);
             mAudioManager.startBluetoothSco();
+            myHashAlarm.put(TextToSpeech.Engine.KEY_PARAM_STREAM,
+                    "6");
+        }else {
+            myHashAlarm.put(TextToSpeech.Engine.KEY_PARAM_STREAM,
+                    String.valueOf(AudioManager.STREAM_ALARM));
         }
         tts.speak(text,
                 TextToSpeech.QUEUE_FLUSH, myHashAlarm);
