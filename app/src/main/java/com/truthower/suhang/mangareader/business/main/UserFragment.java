@@ -57,6 +57,8 @@ public class UserFragment extends BaseFragment implements View.OnClickListener,
     private RelativeLayout aboutRl;
     private RelativeLayout userTopBarRl;
     private View manageDownloadRl;
+    private View gifRl;
+    private View storyRl;
     private TextView dayTv;
     private TextView monthTv;
     private TextView dayOfWeekTv;
@@ -103,6 +105,9 @@ public class UserFragment extends BaseFragment implements View.OnClickListener,
         collectRl = (RelativeLayout) v.findViewById(R.id.collect_rl);
         shareRl = (RelativeLayout) v.findViewById(R.id.share_rl);
         manageDownloadRl = v.findViewById(R.id.manage_download_rl);
+        gifRl = v.findViewById(R.id.gif_rl);
+        storyRl = v.findViewById(R.id.story_rl);
+
         userHead = v.findViewById(R.id.user_head_civ);
         qqTv = (TextView) v.findViewById(R.id.qq_tv);
         qqTv.setText
@@ -172,8 +177,12 @@ public class UserFragment extends BaseFragment implements View.OnClickListener,
 
         if (PermissionUtil.isMaster(getActivity())) {
             manageDownloadRl.setVisibility(View.VISIBLE);
+            gifRl.setVisibility(View.VISIBLE);
+            storyRl.setVisibility(View.VISIBLE);
         } else {
             manageDownloadRl.setVisibility(View.GONE);
+            gifRl.setVisibility(View.GONE);
+            storyRl.setVisibility(View.GONE);
         }
         collectRl.setOnClickListener(this);
         shareRl.setOnClickListener(this);
@@ -182,12 +191,23 @@ public class UserFragment extends BaseFragment implements View.OnClickListener,
         userTopBarRl.setOnClickListener(this);
         aboutRl.setOnClickListener(this);
         manageDownloadRl.setOnClickListener(this);
+        gifRl.setOnClickListener(this);
+        storyRl.setOnClickListener(this);
+        storyRl.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                if (PermissionUtil.isMaster(getActivity())) {
+                    showFilterDialog(ShareKeys.STORY_FILTER_KEY);
+                }
+                return true;
+            }
+        });
         userHead.setOnClickListener(this);
         userHead.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
                 if (PermissionUtil.isMaster(getActivity())) {
-                    showFilterDialog();
+                    showFilterDialog(ShareKeys.FILTER_KEY);
                 }
                 return true;
             }
@@ -223,13 +243,13 @@ public class UserFragment extends BaseFragment implements View.OnClickListener,
         downloadDialog.setCancelable(false);
     }
 
-    private void showFilterDialog() {
+    private void showFilterDialog(String shareKey) {
         MangaEditDialog dialog = new MangaEditDialog(getActivity());
         dialog.setOnEditResultListener(new OnEditResultListener() {
             @Override
             public void onResult(String text) {
                 SharedPreferencesUtils.setSharedPreferencesData
-                        (getActivity(), ShareKeys.FILTER_KEY, text);
+                        (getActivity(), shareKey, text);
             }
 
             @Override
@@ -240,7 +260,7 @@ public class UserFragment extends BaseFragment implements View.OnClickListener,
         dialog.show();
         dialog.setTitle("筛选词设置");
         dialog.setHint("关键词以,分隔");
-        String filterText = SharedPreferencesUtils.getSharedPreferencesData(getActivity(), ShareKeys.FILTER_KEY);
+        String filterText = SharedPreferencesUtils.getSharedPreferencesData(getActivity(), shareKey);
         if (!TextUtils.isEmpty(filterText)) {
             dialog.setEditText(filterText);
         }
@@ -372,6 +392,19 @@ public class UserFragment extends BaseFragment implements View.OnClickListener,
             case R.id.user_head_civ:
                 if (PermissionUtil.isMaster(getActivity())) {
                     intent = new Intent(getActivity(), ReadFilterActivity.class);
+                }
+                break;
+            case R.id.gif_rl:
+                if (PermissionUtil.isMaster(getActivity())) {
+                    intent = new Intent(getActivity(), ReadFilterActivity.class);
+                    intent.putExtra("filter", "gif,GIF");
+                }
+                break;
+            case R.id.story_rl:
+                if (PermissionUtil.isMaster(getActivity())) {
+                    intent = new Intent(getActivity(), ReadFilterActivity.class);
+                    intent.putExtra("filter", SharedPreferencesUtils.getSharedPreferencesData
+                            (getActivity(), ShareKeys.STORY_FILTER_KEY));
                 }
                 break;
         }
