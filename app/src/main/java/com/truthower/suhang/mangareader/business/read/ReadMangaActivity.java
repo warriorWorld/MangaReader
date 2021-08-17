@@ -1106,6 +1106,9 @@ public class ReadMangaActivity extends TTSActivity implements OnClickListener, S
     }
 
     private void saveState() {
+        if (realMangaName.equals("RandomManga")) {
+            return;
+        }
         initProgressKey();
         SharedPreferencesUtils.setSharedPreferencesData(this, progressSaveKey + "progress",
                 historyPosition);

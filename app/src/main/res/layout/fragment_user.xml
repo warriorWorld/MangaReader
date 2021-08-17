@@ -159,17 +159,14 @@
                 android:id="@+id/download_rl"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/user_item_h"
-                android:background="@color/white"
-                android:paddingLeft="@dimen/item_padding_horizontal"
-                android:paddingRight="@dimen/item_padding_horizontal"
-                android:visibility="visible">
-
+                android:background="@color/white">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
                     android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="@dimen/activity_horizontal_margin"
                     android:gravity="center_vertical"
                     android:text="下        载"
                     android:textColor="@color/main_text_color"
@@ -181,29 +178,30 @@
                     android:layout_height="10dp"
                     android:layout_alignParentRight="true"
                     android:layout_centerVertical="true"
+                    android:layout_marginRight="@dimen/activity_horizontal_margin"
                     android:src="@drawable/forward" />
-            </RelativeLayout>
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1px"
-                android:background="@color/divide_line" />
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1px"
+                    android:layout_alignParentBottom="true"
+                    android:background="@color/divide_line"
+                    android:visibility="visible" />
+            </RelativeLayout>
 
             <RelativeLayout
                 android:id="@+id/gif_rl"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/user_item_h"
                 android:background="@color/white"
-                android:paddingLeft="@dimen/item_padding_horizontal"
-                android:paddingRight="@dimen/item_padding_horizontal"
                 android:visibility="gone">
-
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
                     android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="@dimen/activity_horizontal_margin"
                     android:gravity="center_vertical"
                     android:text="动        图"
                     android:textColor="@color/main_text_color"
@@ -215,29 +213,30 @@
                     android:layout_height="10dp"
                     android:layout_alignParentRight="true"
                     android:layout_centerVertical="true"
+                    android:layout_marginRight="@dimen/activity_horizontal_margin"
                     android:src="@drawable/forward" />
-            </RelativeLayout>
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1px"
-                android:background="@color/divide_line" />
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1px"
+                    android:layout_alignParentBottom="true"
+                    android:background="@color/divide_line"
+                    android:visibility="visible" />
+            </RelativeLayout>
 
             <RelativeLayout
                 android:id="@+id/story_rl"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/user_item_h"
                 android:background="@color/white"
-                android:paddingLeft="@dimen/item_padding_horizontal"
-                android:paddingRight="@dimen/item_padding_horizontal"
                 android:visibility="gone">
-
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
                     android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="@dimen/activity_horizontal_margin"
                     android:gravity="center_vertical"
                     android:text="漫        画"
                     android:textColor="@color/main_text_color"
@@ -249,13 +248,16 @@
                     android:layout_height="10dp"
                     android:layout_alignParentRight="true"
                     android:layout_centerVertical="true"
+                    android:layout_marginRight="@dimen/activity_horizontal_margin"
                     android:src="@drawable/forward" />
-            </RelativeLayout>
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1px"
-                android:background="@color/divide_line" />
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1px"
+                    android:layout_alignParentBottom="true"
+                    android:background="@color/divide_line"
+                    android:visibility="visible" />
+            </RelativeLayout>
 
             <RelativeLayout
                 android:id="@+id/about_rl"
