@@ -92,7 +92,7 @@ class ReadFilterActivity : BaseActivity(), View.OnClickListener {
     }
 
     private fun initUI() {
-        manga_viewpager.offscreenPageLimit = 3
+        manga_viewpager.offscreenPageLimit = 1
         manga_viewpager.setPageTransformer(true, DepthPageTransformer())
         delete_iv!!.setOnClickListener(this)
         path_tv.setOnClickListener(this)
@@ -174,8 +174,17 @@ class ReadFilterActivity : BaseActivity(), View.OnClickListener {
                 intent.putExtra("currentMangaName", "RandomManga")
                 val pngFile = File(path_tv.text.toString().replace("file://", "")).parentFile
                 val files = pngFile.listFiles()
-                files.sortBy { it.name }
-                val storyImgPathList = ArrayList<String>(files.map { "file://"+it.path })
+                try {
+                    files.sortBy { Integer.valueOf(ReplaceUtil.onlyNumber(it.name)) }
+                } catch (e: java.lang.Exception) {
+                    e.printStackTrace()
+                }
+                val storyImgPathList = ArrayList<String>(files.map { "file://" + it.path }.filter {
+                    (it.endsWith(".png") || it.endsWith(".jpg") ||
+                            it.endsWith(".jpeg") || it.endsWith(".gif") ||
+                            it.endsWith(".PNG") || it.endsWith(".JPG") ||
+                            it.endsWith(".JPEG") || it.endsWith(".GIF"))
+                })
                 val pathListBundle = Bundle()
                 pathListBundle.putSerializable("pathList", storyImgPathList)
                 intent.putExtras(pathListBundle)
