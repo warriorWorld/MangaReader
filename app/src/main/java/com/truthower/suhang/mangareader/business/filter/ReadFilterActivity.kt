@@ -9,6 +9,7 @@ import androidx.viewpager.widget.ViewPager.OnPageChangeListener
 import com.truthower.suhang.mangareader.R
 import com.truthower.suhang.mangareader.adapter.ReadMangaAdapter
 import com.truthower.suhang.mangareader.base.BaseActivity
+import com.truthower.suhang.mangareader.business.detail.LocalMangaDetailsActivity
 import com.truthower.suhang.mangareader.business.read.DepthPageTransformer
 import com.truthower.suhang.mangareader.business.read.ReadMangaActivity
 import com.truthower.suhang.mangareader.config.ShareKeys
@@ -170,24 +171,10 @@ class ReadFilterActivity : BaseActivity(), View.OnClickListener {
                 }
             }
             R.id.path_tv -> {
-                val intent = Intent(this@ReadFilterActivity, ReadMangaActivity::class.java)
+                val intent = Intent(this@ReadFilterActivity, LocalMangaDetailsActivity::class.java)
                 intent.putExtra("currentMangaName", "RandomManga")
                 val pngFile = File(path_tv.text.toString().replace("file://", "")).parentFile
-                val files = pngFile.listFiles()
-                try {
-                    files.sortBy { Integer.valueOf(ReplaceUtil.onlyNumber(it.name)) }
-                } catch (e: java.lang.Exception) {
-                    e.printStackTrace()
-                }
-                val storyImgPathList = ArrayList<String>(files.map { "file://" + it.path }.filter {
-                    (it.endsWith(".png") || it.endsWith(".jpg") ||
-                            it.endsWith(".jpeg") || it.endsWith(".gif") ||
-                            it.endsWith(".PNG") || it.endsWith(".JPG") ||
-                            it.endsWith(".JPEG") || it.endsWith(".GIF"))
-                })
-                val pathListBundle = Bundle()
-                pathListBundle.putSerializable("pathList", storyImgPathList)
-                intent.putExtras(pathListBundle)
+                intent.putExtra("filePath",pngFile.path)
                 startActivity(intent)
             }
         }
