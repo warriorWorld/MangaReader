@@ -4,6 +4,9 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/MangaReader.iml" filepath="$PROJECT_DIR$/MangaReader.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/MangaReader.app.iml" filepath="$PROJECT_DIR$/.idea/modules/app/MangaReader.app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/MangaReader.app.androidTest.iml" filepath="$PROJECT_DIR$/.idea/modules/app/MangaReader.app.androidTest.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/MangaReader.app.main.iml" filepath="$PROJECT_DIR$/.idea/modules/app/MangaReader.app.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/MangaReader.app.unitTest.iml" filepath="$PROJECT_DIR$/.idea/modules/app/MangaReader.app.unitTest.iml" />
     </modules>
   </component>
 </project>
