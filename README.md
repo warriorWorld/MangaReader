@@ -1,34 +1,10 @@
-# MangaReader
-MangaReader是一款看英文漫画的Android APP
+As the name suggested, it is an application for users to read mangas(in English), I developed this for myself to learn English, and it actually worked. Because of this, I expanded my vocabulary a lot.
+This app has a translation feature.
 
+![ss](https://github.com/warriorWorld/MangaReader/blob/master/app/screenshot/ss1.jpg) ![ss](https://github.com/warriorWorld/MangaReader/blob/master/app/screenshot/ss2.jpg) ![ss](https://github.com/warriorWorld/MangaReader/blob/master/app/screenshot/ss6.jpg)
 
-[点击下载](https://github.com/warriorWorld/MangaReader/raw/master/app/release/app-release.apk "Android apk 安装包")
+##### Technical detail(if you are not interested, just ignore this part)
+This app included a download feature, I used a thread pool to solve this. First, I would get all the image links, and then I would use a thread pool to execute the actual download threads. At every step, I would save its status, this guaranteed that if the process was interrupted, the app could still download the manga from the last point.
 
-
-通过爬虫获取漫画资源（爬了两个网站）
-
-![github](https://github.com/warriorWorld/MangaReader/blob/master/app/screenshot/d3581257b41b2823c03031df92e9a8c.jpg)
-
-![github](https://github.com/warriorWorld/MangaReader/blob/master/app/screenshot/6370438f0e35261e19c6af64b81249e.jpg)
-
-支持下载后本地阅读
-
-![github](https://github.com/warriorWorld/MangaReader/blob/master/app/screenshot/a045bb474919ff42a5bafd4e4bbfc46.jpg)
-
-![github](https://github.com/warriorWorld/MangaReader/blob/master/app/screenshot/ae7544dbb1889d3fc93154597fd0869.jpg)
-
-漫画更新非常快
-
-![github](https://github.com/warriorWorld/MangaReader/blob/master/app/screenshot/23940de1e254f2ad8e24a4c4f7c1a81.jpg)
-
-内置词典（有道）
-
-![github](https://github.com/warriorWorld/MangaReader/blob/master/app/screenshot/42e4b0def7520e82907d8c831ea655a.jpg)
-
-![github](https://github.com/warriorWorld/MangaReader/blob/master/app/screenshot/6122c9dd5711c40be6fd30d73dd1ff5.jpg)
-
-生词本功能
-
-![github](https://github.com/warriorWorld/MangaReader/blob/master/app/screenshot/c1e957f582c3535ee64a9dce833e9c6.jpg)
-
-
+![ss](https://github.com/warriorWorld/MangaReader/blob/master/app/screenshot/ss3.jpg) ![ss](https://github.com/warriorWorld/MangaReader/blob/master/app/screenshot/ss4.jpg) ![ss](https://github.com/warriorWorld/MangaReader/blob/master/app/screenshot/ss5.jpg) 
+![ss](https://github.com/warriorWorld/MangaReader/blob/master/app/screenshot/ss7.jpg) ![ss](https://github.com/warriorWorld/MangaReader/blob/master/app/screenshot/ss8.jpg)
