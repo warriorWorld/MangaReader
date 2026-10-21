@@ -35,7 +35,7 @@
         </com.truthower.suhang.mangareader.business.read.HackyViewPager>
 
 
-        <org.adw.library.widgets.discreteseekbar.DiscreteSeekBar
+        <SeekBar
             android:id="@+id/seekbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -43,9 +43,7 @@
             android:layout_marginLeft="5dp"
             android:layout_marginRight="5dp"
             android:layout_marginBottom="15dp"
-            android:visibility="gone"
-            app:dsb_max="100"
-            app:dsb_min="1" />
+            android:visibility="gone" />
 
         <ImageView
             android:id="@+id/delete_iv"

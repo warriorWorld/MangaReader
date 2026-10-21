@@ -6,7 +6,7 @@
     android:background="@color/transparency"
     android:orientation="vertical">
 
-    <uk.co.senab.photoview.PhotoView
+    <com.github.chrisbanes.photoview.PhotoView
         android:id="@+id/image_view"
         style="@style/TransparentDialog"
         android:layout_width="match_parent"

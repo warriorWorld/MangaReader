@@ -20,6 +20,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.android.volley.Request;
@@ -74,7 +75,6 @@ import com.youdao.sdk.ydtranslate.TranslateErrorCode;
 import com.youdao.sdk.ydtranslate.TranslateListener;
 import com.youdao.sdk.ydtranslate.TranslateParameters;
 
-import org.adw.library.widgets.discreteseekbar.DiscreteSeekBar;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
@@ -95,7 +95,7 @@ import androidx.viewpager.widget.ViewPager;
 public class ReadMangaActivity extends TTSActivity implements OnClickListener, SensorEventListener {
     private HackyViewPager mangaPager;
     private SpiderBase spider;
-    private DiscreteSeekBar seekBar;
+    private SeekBar seekBar;
     private Button ocrBtn;
     private TextView readProgressTv;
     // 截图的view
@@ -300,22 +300,21 @@ public class ReadMangaActivity extends TTSActivity implements OnClickListener, S
      * 进度条
      */
     private void initSeekBar() {
-        seekBar.setMin(1);
         seekBar.setMax(pathList.size());
         seekBar.setProgress(historyPosition);
-        seekBar.setOnProgressChangeListener(new DiscreteSeekBar.OnProgressChangeListener() {
+        seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
-            public void onProgressChanged(DiscreteSeekBar seekBar, int value, boolean fromUser) {
+            public void onProgressChanged(SeekBar seekBar, int value, boolean fromUser) {
                 finalPosition = value;
             }
 
             @Override
-            public void onStartTrackingTouch(DiscreteSeekBar seekBar) {
+            public void onStartTrackingTouch(SeekBar seekBar) {
 
             }
 
             @Override
-            public void onStopTrackingTouch(DiscreteSeekBar seekBar) {
+            public void onStopTrackingTouch(SeekBar seekBar) {
                 if (finalPosition >= 0) {
                     mangaPager.setCurrentItem(finalPosition - 1);
                 }
@@ -461,7 +460,7 @@ public class ReadMangaActivity extends TTSActivity implements OnClickListener, S
 
     private void initUI() {
         mangaPager = (HackyViewPager) findViewById(R.id.manga_viewpager);
-        seekBar = (DiscreteSeekBar) findViewById(R.id.seekbar);
+        seekBar = (SeekBar) findViewById(R.id.seekbar);
         ocrBtn = (Button) findViewById(R.id.ocr_btn);
         readProgressTv = (TextView) findViewById(R.id.read_progress_tv);
         deleteIv = findViewById(R.id.delete_iv);

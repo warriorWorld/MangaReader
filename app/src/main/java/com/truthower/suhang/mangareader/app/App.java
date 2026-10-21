@@ -15,14 +15,15 @@ import com.truthower.suhang.mangareader.utils.BaseParameterUtil;
 import com.truthower.suhang.mangareader.utils.DisplayUtil;
 import com.youdao.sdk.app.YouDaoApplication;
 
-import androidx.multidex.BuildConfig;
-import androidx.multidex.MultiDexApplication;
+import android.app.Application;
+
+import com.truthower.suhang.mangareader.BuildConfig;
 
 /**
  * Created by Administrator on 2017/7/19.
  */
 
-public class App extends MultiDexApplication {
+public class App extends Application {
     @Override
     public void onCreate() {
         super.onCreate();

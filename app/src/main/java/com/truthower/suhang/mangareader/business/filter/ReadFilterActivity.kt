@@ -5,19 +5,21 @@ import android.content.Intent
 import android.os.Bundle
 import android.text.TextUtils
 import android.view.View
+import android.widget.ImageView
+import android.widget.TextView
 import androidx.viewpager.widget.ViewPager.OnPageChangeListener
 import com.truthower.suhang.mangareader.R
 import com.truthower.suhang.mangareader.adapter.ReadMangaAdapter
 import com.truthower.suhang.mangareader.base.BaseActivity
 import com.truthower.suhang.mangareader.business.detail.LocalMangaDetailsActivity
 import com.truthower.suhang.mangareader.business.read.DepthPageTransformer
+import com.truthower.suhang.mangareader.business.read.HackyViewPager
 import com.truthower.suhang.mangareader.business.read.ReadMangaActivity
 import com.truthower.suhang.mangareader.config.ShareKeys
 import com.truthower.suhang.mangareader.eventbus.EventBusEvent
 import com.truthower.suhang.mangareader.spider.FileSpider
 import com.truthower.suhang.mangareader.utils.*
 import com.truthower.suhang.mangareader.widget.dialog.*
-import kotlinx.android.synthetic.main.activity_read_filter.*
 import org.greenrobot.eventbus.Subscribe
 import java.io.File
 import java.util.*
@@ -33,6 +35,11 @@ class ReadFilterActivity : BaseActivity(), View.OnClickListener {
     private var pathList: ArrayList<String>? = ArrayList()
     private var loadBar: ProgressDialog? = null
     private var currentPos = 0
+    private lateinit var mangaViewpager: HackyViewPager
+    private lateinit var readProgressTv: TextView
+    private lateinit var deleteIv: ImageView
+    private lateinit var pathTv: TextView
+    private lateinit var imgSizeTv: TextView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -88,15 +95,20 @@ class ReadFilterActivity : BaseActivity(), View.OnClickListener {
 
     private fun refresh() {
         initViewPager()
-        read_progress_tv.text = "${currentPos + 1}/${pathList?.size}"
+        readProgressTv.text = "${currentPos + 1}/${pathList?.size}"
         showImgSize(currentPos)
     }
 
     private fun initUI() {
-        manga_viewpager.offscreenPageLimit = 1
-        manga_viewpager.setPageTransformer(true, DepthPageTransformer())
-        delete_iv!!.setOnClickListener(this)
-        path_tv.setOnClickListener(this)
+        mangaViewpager = findViewById(R.id.manga_viewpager)
+        readProgressTv = findViewById(R.id.read_progress_tv)
+        deleteIv = findViewById(R.id.delete_iv)
+        pathTv = findViewById(R.id.path_tv)
+        imgSizeTv = findViewById(R.id.img_size_tv)
+        mangaViewpager.offscreenPageLimit = 1
+        mangaViewpager.setPageTransformer(true, DepthPageTransformer())
+        deleteIv!!.setOnClickListener(this)
+        pathTv.setOnClickListener(this)
         hideBaseTopBar()
     }
 
@@ -106,7 +118,7 @@ class ReadFilterActivity : BaseActivity(), View.OnClickListener {
             override fun onOkClick() {
                 FileSpider.getInstance().deleteFile(fileName)
                 pathList!!.removeAt(currentPos)
-                baseToast.showToast("已删除")
+                baseToast.showToast("\u5df2\u5220\u9664")
                 initViewPager()
             }
 
@@ -122,13 +134,13 @@ class ReadFilterActivity : BaseActivity(), View.OnClickListener {
     private fun initViewPager() {
         if (null == adapter) {
             adapter = ReadMangaAdapter(this@ReadFilterActivity, pathList)
-            manga_viewpager.adapter = adapter
-            manga_viewpager.setOnPageChangeListener(object : OnPageChangeListener {
+            mangaViewpager.adapter = adapter
+            mangaViewpager.setOnPageChangeListener(object : OnPageChangeListener {
                 override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {}
                 override fun onPageSelected(position: Int) {
                     currentPos = position
-                    read_progress_tv.text = "${currentPos + 1}/${pathList?.size}"
-                    path_tv.text = pathList?.get(position)
+                    readProgressTv.text = "${currentPos + 1}/${pathList?.size}"
+                    pathTv.text = pathList?.get(position)
                     showImgSize(position)
                 }
 
@@ -142,19 +154,19 @@ class ReadFilterActivity : BaseActivity(), View.OnClickListener {
 
     private fun showImgSize(position: Int) {
         try {
-            img_size_tv.text = FileSpider.getInstance().toFileSize(FileSpider.getInstance().getFileSize(File(pathList?.get(position)?.replace("file://".toRegex(), ""))))
+            imgSizeTv.text = FileSpider.getInstance().toFileSize(FileSpider.getInstance().getFileSize(File(pathList?.get(position)?.replace("file://".toRegex(), ""))))
         } catch (e: Exception) {
             e.printStackTrace()
         }
     }
 
     private fun toggleControlUI() {
-        if (delete_iv.isShown) {
-            delete_iv.visibility = View.GONE
-            path_tv.visibility = View.GONE
+        if (deleteIv.isShown) {
+            deleteIv.visibility = View.GONE
+            pathTv.visibility = View.GONE
         } else {
-            delete_iv.visibility = View.VISIBLE
-            path_tv.visibility = View.VISIBLE
+            deleteIv.visibility = View.VISIBLE
+            pathTv.visibility = View.VISIBLE
         }
     }
 
@@ -173,7 +185,7 @@ class ReadFilterActivity : BaseActivity(), View.OnClickListener {
             R.id.path_tv -> {
                 val intent = Intent(this@ReadFilterActivity, LocalMangaDetailsActivity::class.java)
                 intent.putExtra("currentMangaName", "RandomManga")
-                val pngFile = File(path_tv.text.toString().replace("file://", "")).parentFile
+                val pngFile = File(pathTv.text.toString().replace("file://", "")).parentFile
                 intent.putExtra("filePath",pngFile.path)
                 startActivity(intent)
             }

@@ -23,8 +23,7 @@ import com.truthower.suhang.mangareader.utils.SharedPreferencesUtils;
 
 import org.greenrobot.eventbus.EventBus;
 
-import uk.co.senab.photoview.PhotoView;
-import uk.co.senab.photoview.PhotoViewAttacher;
+import com.github.chrisbanes.photoview.PhotoView;
 
 public class WrapPhotoView extends PhotoView {
     private Context mContext;
@@ -51,14 +50,15 @@ public class WrapPhotoView extends PhotoView {
     private void init(Context context) {
         this.mContext = context;
         mHandler = new ImageHandler(mContext, this);
-        setOnPhotoTapListener(new PhotoViewAttacher.OnPhotoTapListener() {
+        setOnPhotoTapListener(new com.github.chrisbanes.photoview.OnPhotoTapListener() {
             @Override
-            public void onPhotoTap(View view, float x, float y) {
+            public void onPhotoTap(ImageView view, float x, float y) {
                 EventBus.getDefault().post(new EventBusEvent(EventBusEvent.ON_TAP_EVENT, new float[]{x, y}));
             }
-
+        });
+        setOnOutsidePhotoTapListener(new com.github.chrisbanes.photoview.OnOutsidePhotoTapListener() {
             @Override
-            public void onOutsidePhotoTap() {
+            public void onOutsidePhotoTap(ImageView view) {
 
             }
         });

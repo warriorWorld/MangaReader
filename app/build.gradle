@@ -1,91 +1,83 @@
-apply plugin: 'com.android.application'
-apply plugin: 'kotlin-android-extensions'
-apply plugin: 'kotlin-android'
+plugins {
+    id 'com.android.application'
+}
 
 android {
-    compileSdkVersion 28
-    buildToolsVersion '28.0.3'
+    namespace 'com.truthower.suhang.mangareader'
+    compileSdk 36
+
     defaultConfig {
         applicationId "com.truthower.suhang.mangareader"
-        minSdkVersion 17
-        targetSdkVersion 28
+        minSdk 21
+        targetSdk 36
         versionCode 55
         versionName "4.4.4"
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
-        //分包 65535
-        multiDexEnabled true
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
+
     buildTypes {
         release {
             minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
-    lintOptions {
+
+    lint {
         checkReleaseBuilds false
-        // Or, if you prefer, you can continue to check for errors in release builds,
-        // but continue the build even when errors are found:
         abortOnError false
     }
-    sourceSets.main.jniLibs.srcDirs = ['libs']//YOUDAO OCR
-    dataBinding {
-        enabled = true
-    }
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+
+    sourceSets.main.jniLibs.srcDirs = ['libs']
+
+    buildFeatures {
+        buildConfig true
     }
 
-    kotlinOptions {
-        jvmTarget = "1.8"
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
     }
 }
 
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
-    androidTestImplementation('com.android.support.test.espresso:espresso-core:2.2.2', {
-        exclude group: 'com.android.support', module: 'support-annotations'
-    })
-    implementation 'androidx.appcompat:appcompat:1.3.0'
-    implementation 'com.android.support:design:28.0.0'
-    implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
-    testImplementation 'junit:junit:4.12'
-    // jsoup HTML parser library @ https://jsoup.org/
-    implementation 'org.jsoup:jsoup:1.10.3'
-    implementation 'org.greenrobot:eventbus:3.0.0'
-    implementation 'pub.devrel:easypermissions:0.4.2'
-    implementation files('libs/afinal-0.3.32-bin.jar')
-    //可缩放的view
-    implementation 'com.commit451:PhotoView:1.2.5'
-    implementation 'org.adw.library:discrete-seekbar:1.0.1'
-    implementation files('libs/Volley.jar')
-    //google的flexbox
-    implementation 'com.google.android:flexbox:0.3.0'
-    //上下拉刷新
-    implementation 'com.github.Aspsine:SwipeToLoadLayout:1.0.4'
-    //RXJAVA
-    implementation 'com.squareup.retrofit2:retrofit:2.4.0'
-    implementation 'io.reactivex.rxjava2:rxjava:2.0.1'
-    implementation 'io.reactivex.rxjava2:rxandroid:2.0.1'
-    implementation 'com.squareup.retrofit2:adapter-rxjava2:2.2.0'
-    implementation "org.reactivestreams:reactive-streams:1.0.2"
+
+    implementation 'androidx.appcompat:appcompat:1.7.0'
+    implementation 'androidx.constraintlayout:constraintlayout:2.2.0'
+    implementation 'androidx.core:core-ktx:1.13.1'
+    implementation 'androidx.lifecycle:lifecycle-livedata:2.8.7'
+    implementation 'androidx.lifecycle:lifecycle-viewmodel:2.8.7'
+    implementation 'androidx.recyclerview:recyclerview:1.4.0'
+    implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.1.0'
+    implementation 'androidx.viewpager:viewpager:1.1.0'
+    implementation 'com.google.android.material:material:1.12.0'
+
+    implementation 'com.google.android.flexbox:flexbox:3.0.0'
+    implementation 'pub.devrel:easypermissions:3.0.0'
+
+    implementation 'org.jsoup:jsoup:1.18.3'
+    implementation 'org.greenrobot:eventbus:3.3.1'
+    implementation 'com.google.code.gson:gson:2.11.0'
+
+    implementation 'io.reactivex.rxjava2:rxjava:2.2.21'
+    implementation 'io.reactivex.rxjava2:rxandroid:2.1.1'
+    implementation 'com.squareup.retrofit2:retrofit:2.11.0'
+    implementation 'com.squareup.retrofit2:adapter-rxjava2:2.11.0'
+
+    implementation 'com.github.bumptech.glide:glide:4.16.0'
+    annotationProcessor 'com.github.bumptech.glide:compiler:4.16.0'
+    implementation 'com.github.bumptech.glide:okhttp3-integration:4.16.0'
+
+    implementation('com.github.chrisbanes:PhotoView:2.3.0') {
+        exclude group: 'com.android.support'
+    }
+    implementation('com.github.Aspsine:SwipeToLoadLayout:1.0.4') {
+        exclude group: 'com.android.support'
+    }
     implementation 'com.github.warriorWorld:StyleLibrary:1.1.7'
-    implementation 'com.google.code.gson:gson:2.8.5'
-    //分包 65535
-    implementation 'com.android.support:multidex:1.0.0'
-    implementation files('libs/universal-image-loader-1.9.5.jar')
-    //有道
-    implementation files('libs/YoudaoBase_v2.0.2.jar')
-    implementation files('libs/YoudaoTranslateOnline_v2.0.0.jar')
-    //mvvm
-//    implementation "android.arch.lifecycle:extensions:1.1.1"
-    //glide
-    implementation 'com.github.bumptech.glide:glide:4.11.0'
-    annotationProcessor 'com.github.bumptech.glide:compiler:4.11.0'
-    implementation "com.github.bumptech.glide:okhttp3-integration:4.11.0"
-    implementation "androidx.core:core-ktx:+"
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
-}
-repositories {
-    mavenCentral()
+
+    testImplementation 'junit:junit:4.13.2'
+    androidTestImplementation 'androidx.test.ext:junit:1.2.1'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.6.1'
 }

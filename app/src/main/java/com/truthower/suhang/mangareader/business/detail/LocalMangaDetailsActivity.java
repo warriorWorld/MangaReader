@@ -26,6 +26,7 @@ import com.truthower.suhang.mangareader.sort.FileComparatorDirectory;
 import com.truthower.suhang.mangareader.sort.FileComparatorWithBracket;
 import com.truthower.suhang.mangareader.spider.FileSpider;
 import com.truthower.suhang.mangareader.utils.DisplayUtil;
+import com.truthower.suhang.mangareader.utils.PermissionUtil;
 import com.truthower.suhang.mangareader.utils.SharedPreferencesUtils;
 import com.truthower.suhang.mangareader.widget.bar.TopBar;
 import com.truthower.suhang.mangareader.widget.dialog.ListDialog;
@@ -86,8 +87,7 @@ public class LocalMangaDetailsActivity extends BaseActivity implements
 
     @AfterPermissionGranted(Configure.PERMISSION_FILE_REQUST_CODE)
     private void initFile() {
-        String[] perms = {Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE};
-        if (EasyPermissions.hasPermissions(this, perms)) {
+        if (PermissionUtil.hasStorageAccess(this)) {
             // Already have permission, do the thing
             // ...
             try {
@@ -100,8 +100,7 @@ public class LocalMangaDetailsActivity extends BaseActivity implements
             }
         } else {
             // Do not have permissions, request them now
-            EasyPermissions.requestPermissions(this, "我们需要写入/读取权限",
-                    Configure.PERMISSION_FILE_REQUST_CODE, perms);
+            PermissionUtil.requestStorageAccess(this, Configure.PERMISSION_FILE_REQUST_CODE);
         }
     }
 

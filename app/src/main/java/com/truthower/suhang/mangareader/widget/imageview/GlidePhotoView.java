@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.DataSource;
@@ -21,8 +22,7 @@ import com.truthower.suhang.mangareader.utils.SharedPreferencesUtils;
 import org.greenrobot.eventbus.EventBus;
 
 import androidx.annotation.Nullable;
-import uk.co.senab.photoview.PhotoView;
-import uk.co.senab.photoview.PhotoViewAttacher;
+import com.github.chrisbanes.photoview.PhotoView;
 
 public class GlidePhotoView extends PhotoView {
     private Context mContext;
@@ -44,14 +44,15 @@ public class GlidePhotoView extends PhotoView {
 
     private void init(Context context) {
         this.mContext = context;
-        setOnPhotoTapListener(new PhotoViewAttacher.OnPhotoTapListener() {
+        setOnPhotoTapListener(new com.github.chrisbanes.photoview.OnPhotoTapListener() {
             @Override
-            public void onPhotoTap(View view, float x, float y) {
+            public void onPhotoTap(ImageView view, float x, float y) {
                 EventBus.getDefault().post(new EventBusEvent(EventBusEvent.ON_TAP_EVENT, new float[]{x, y}));
             }
-
+        });
+        setOnOutsidePhotoTapListener(new com.github.chrisbanes.photoview.OnOutsidePhotoTapListener() {
             @Override
-            public void onOutsidePhotoTap() {
+            public void onOutsidePhotoTap(ImageView view) {
 
             }
         });

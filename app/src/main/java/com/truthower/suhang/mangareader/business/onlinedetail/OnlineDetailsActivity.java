@@ -41,6 +41,7 @@ import com.truthower.suhang.mangareader.spider.FileSpider;
 import com.truthower.suhang.mangareader.utils.ActivityPoor;
 import com.truthower.suhang.mangareader.utils.BaseParameterUtil;
 import com.truthower.suhang.mangareader.utils.DisplayUtil;
+import com.truthower.suhang.mangareader.utils.PermissionUtil;
 import com.truthower.suhang.mangareader.utils.ServiceUtil;
 import com.truthower.suhang.mangareader.utils.ShareObjUtil;
 import com.truthower.suhang.mangareader.utils.SharedPreferencesUtils;
@@ -313,8 +314,7 @@ public class OnlineDetailsActivity extends BaseActivity implements View.OnClickL
 
     @AfterPermissionGranted(Configure.PERMISSION_FILE_REQUST_CODE)
     private void doDownload(int start, int end) {
-        String[] perms = {Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE};
-        if (EasyPermissions.hasPermissions(this, perms)) {
+        if (PermissionUtil.hasStorageAccess(this)) {
             // Already have permission, do the thing
             // ...
             baseToast.showToast("开始下载!");
@@ -357,8 +357,7 @@ public class OnlineDetailsActivity extends BaseActivity implements View.OnClickL
             this.finish();
         } else {
             // Do not have permissions, request them now
-            EasyPermissions.requestPermissions(this, "我们需要写入/读取权限",
-                    Configure.PERMISSION_FILE_REQUST_CODE, perms);
+            PermissionUtil.requestStorageAccess(this, Configure.PERMISSION_FILE_REQUST_CODE);
         }
     }
 

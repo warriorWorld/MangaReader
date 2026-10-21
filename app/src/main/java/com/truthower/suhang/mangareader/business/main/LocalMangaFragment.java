@@ -116,11 +116,15 @@ public class LocalMangaFragment extends BaseFragment implements
         }
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        initFile();
+    }
 
     @AfterPermissionGranted(Configure.PERMISSION_FILE_REQUST_CODE)
     public void initFile() {
-        String[] perms = {Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE};
-        if (EasyPermissions.hasPermissions(getActivity(), perms)) {
+        if (PermissionUtil.hasStorageAccess(getActivity())) {
             // Already have permission, do the thing
             // ...
             try {
@@ -134,8 +138,7 @@ public class LocalMangaFragment extends BaseFragment implements
             }
         } else {
             // Do not have permissions, request them now
-            EasyPermissions.requestPermissions(this, "我们需要写入/读取权限",
-                    Configure.PERMISSION_FILE_REQUST_CODE, perms);
+            PermissionUtil.requestStorageAccess(getActivity(), Configure.PERMISSION_FILE_REQUST_CODE);
         }
     }
 
