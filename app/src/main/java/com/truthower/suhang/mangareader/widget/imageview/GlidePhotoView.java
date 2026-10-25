@@ -2,6 +2,7 @@ package com.truthower.suhang.mangareader.widget.imageview;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.RectF;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewGroup;
@@ -56,6 +57,20 @@ public class GlidePhotoView extends PhotoView {
 
             }
         });
+    }
+
+    @Override
+    public boolean canScrollHorizontally(int direction) {
+        RectF rect = getDisplayRect();
+        if (rect == null) {
+            return false;
+        }
+        if (direction < 0) {
+            return rect.left < -0.5f;
+        } else if (direction > 0) {
+            return rect.right > getWidth() + 0.5f;
+        }
+        return false;
     }
 
     public void setBitmap(final Bitmap bm, final int width, final int height) {

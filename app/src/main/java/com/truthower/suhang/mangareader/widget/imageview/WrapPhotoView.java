@@ -2,6 +2,7 @@ package com.truthower.suhang.mangareader.widget.imageview;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.RectF;
 import android.os.Handler;
 import android.os.Message;
 import android.util.AttributeSet;
@@ -62,6 +63,20 @@ public class WrapPhotoView extends PhotoView {
 
             }
         });
+    }
+
+    @Override
+    public boolean canScrollHorizontally(int direction) {
+        RectF rect = getDisplayRect();
+        if (rect == null) {
+            return false;
+        }
+        if (direction < 0) {
+            return rect.left < -0.5f;
+        } else if (direction > 0) {
+            return rect.right > getWidth() + 0.5f;
+        }
+        return false;
     }
 
     public void setBitmap(final Bitmap bm, final int width, final int height) {
