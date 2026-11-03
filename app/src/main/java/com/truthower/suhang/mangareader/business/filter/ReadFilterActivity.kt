@@ -67,6 +67,16 @@ class ReadFilterActivity : BaseActivity(), View.OnClickListener {
         return R.layout.activity_read_filter
     }
 
+    override fun onResume() {
+        super.onResume()
+        adapter?.resumeActiveVideo()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        adapter?.pauseAllVideos()
+    }
+
     private fun initProgressBar() {
         loadBar = ProgressDialog(this@ReadFilterActivity)
         loadBar!!.setCancelable(false)
@@ -141,14 +151,17 @@ class ReadFilterActivity : BaseActivity(), View.OnClickListener {
                     currentPos = position
                     readProgressTv.text = "${currentPos + 1}/${pathList?.size}"
                     pathTv.text = pathList?.get(position)
+                    adapter?.setActivePosition(position)
                     showImgSize(position)
                 }
 
                 override fun onPageScrollStateChanged(state: Int) {}
             })
+            adapter?.setActivePosition(mangaViewpager.currentItem)
         } else {
             adapter?.setPathList(pathList)
             adapter?.notifyDataSetChanged()
+            adapter?.setActivePosition(mangaViewpager.currentItem)
         }
     }
 

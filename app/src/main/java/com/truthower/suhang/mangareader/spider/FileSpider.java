@@ -584,20 +584,39 @@ public class FileSpider {
     }
 
     public boolean isImg(String path) {
+        if (path == null) {
+            return false;
+        }
         path = path.toLowerCase();
-        if (path.endsWith(".png")) {
-            return true;
+        return path.endsWith(".png")
+                || path.endsWith(".gif")
+                || path.endsWith(".jpg")
+                || path.endsWith(".jpeg")
+                || isVideo(path);
+    }
+
+    public boolean isGif(String path) {
+        if (path == null) {
+            return false;
         }
-        if (path.endsWith(".gif")) {
-            return true;
+        path = path.toLowerCase();
+        return path.endsWith(".gif");
+    }
+
+    public boolean isVideo(String path) {
+        if (path == null) {
+            return false;
         }
-        if (path.endsWith(".jpg")) {
-            return true;
-        }
-        if (path.endsWith(".jpeg")) {
-            return true;
-        }
-        return false;
+        path = path.toLowerCase();
+        return path.endsWith(".mp4")
+                || path.endsWith(".mkv")
+                || path.endsWith(".webm")
+                || path.endsWith(".mov")
+                || path.endsWith(".3gp")
+                || path.endsWith(".m4v")
+                || path.endsWith(".avi")
+                || path.endsWith(".flv")
+                || path.endsWith(".wmv");
     }
 
     public boolean isContainsKeyWords(String text, String[] keys) {

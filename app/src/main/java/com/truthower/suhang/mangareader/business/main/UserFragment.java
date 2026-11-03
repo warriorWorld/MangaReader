@@ -395,7 +395,7 @@ public class UserFragment extends BaseFragment implements View.OnClickListener,
             case R.id.gif_rl:
                 if (PermissionUtil.isMaster(getActivity())) {
                     intent = new Intent(getActivity(), ReadFilterActivity.class);
-                    intent.putExtra("filter", "gif,GIF");
+                    intent.putExtra("filter", "gif,mp4,mkv,webm,mov,3gp,m4v,avi,flv,wmv");
                 }
                 break;
             case R.id.story_rl:

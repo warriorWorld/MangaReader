@@ -26,13 +26,7 @@ public class FileComparatorAllNum implements Comparator<String> {
     }
 
     private void analysis(String s, boolean which) {
-        if (s.contains(".jpg") || s.contains(".png") || s.contains(".bmp")) {
-            s = s.substring(0, s.length() - 1 - 3);
-            Log.d("s", "裁剪后的字符串" + s);
-        } else if (s.contains(".jpeg")) {
-            s = s.substring(0, s.length() - 1 - 4);
-            Log.d("s", "裁剪后的字符串" + s);
-        }
+        s = s.replaceAll("\\.[a-zA-Z0-9]+$", "");
         String[] arri = s.split("/");
         s = arri[arri.length - 1];
         try {

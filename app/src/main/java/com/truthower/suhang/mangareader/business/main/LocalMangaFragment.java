@@ -223,12 +223,12 @@ public class LocalMangaFragment extends BaseFragment implements
             public void onRightClick() {
                 String name = SharedPreferencesUtils.getSharedPreferencesData(getActivity(), ShareKeys.LAST_READ_MANGA_NAME);
                 String path = SharedPreferencesUtils.getSharedPreferencesData(getActivity(), ShareKeys.LAST_READ_MANGA_PATH);
-                if (!TextUtils.isEmpty(name)&&!TextUtils.isEmpty(path)){
+                if (!TextUtils.isEmpty(name) && !TextUtils.isEmpty(path)) {
                     Intent intent = new Intent(getActivity(), LocalMangaDetailsActivity.class);
                     intent.putExtra("filePath", path);
                     intent.putExtra("currentMangaName", name);
                     startActivity(intent);
-                }else {
+                } else {
                     baseToast.showToast("没有最近阅读记录");
                 }
             }
@@ -270,16 +270,21 @@ public class LocalMangaFragment extends BaseFragment implements
 //            gifFolder.mkdirs();
 //        }
         for (int i = 0; i < fileArrayList.size(); i++) {
-            if (fileArrayList.get(i).toString().endsWith(".jpg")||fileArrayList.get(i).toString().endsWith(".png")
-            ||fileArrayList.get(i).toString().endsWith(".webp")) {
+            if (fileArrayList.get(i).toString().endsWith(".jpg") || fileArrayList.get(i).toString().endsWith(".png")
+                    || fileArrayList.get(i).toString().endsWith(".webp")) {
                 File to = new File(newPath, manganame + "(" + i + ")" + ".jpg");
 
                 fileArrayList.get(i).renameTo(to);
-            } else if (fileArrayList.get(i).toString().endsWith(".gif")){
+            } else if (fileArrayList.get(i).toString().endsWith(".gif")) {
                 File to = new File(newPath, manganame + "(" + i + ")" + ".gif");
 
                 fileArrayList.get(i).renameTo(to);
-            }else {
+            } else if (FileSpider.getInstance().isVideo(fileArrayList.get(i).toString())) {
+                String name = fileArrayList.get(i).getName();
+                String ext = name.substring(name.lastIndexOf('.'));
+                File to = new File(newPath, manganame + "(" + i + ")" + ext);
+                fileArrayList.get(i).renameTo(to);
+            } else {
                 fileArrayList.get(i).delete();
             }
 //            else {

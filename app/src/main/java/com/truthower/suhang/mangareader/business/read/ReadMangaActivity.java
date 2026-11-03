@@ -250,6 +250,9 @@ public class ReadMangaActivity extends TTSActivity implements OnClickListener, S
     protected void onResume() {
         super.onResume();
         sManager.registerListener(this, mSensorAccelerometer, SensorManager.SENSOR_DELAY_UI);
+        if (adapter != null) {
+            adapter.resumeActiveVideo();
+        }
     }
 
     private void doGetWebPics() {
@@ -998,12 +1001,14 @@ public class ReadMangaActivity extends TTSActivity implements OnClickListener, S
                             adapter.notifyDataSetChanged();
                         }
                     }
-                    if ((pathList.get(position).endsWith(".gif") ||
-                            pathList.get(position).endsWith(".GIF"))) {
+                    String currentPath = pathList.get(position);
+                    if (FileSpider.getInstance().isGif(currentPath)
+                            || FileSpider.getInstance().isVideo(currentPath)) {
                         gifToggleOptionsV.setVisibility(View.VISIBLE);
                     } else {
                         gifToggleOptionsV.setVisibility(View.GONE);
                     }
+                    adapter.setActivePosition(position);
                     showImgSize(position);
                 }
 
@@ -1016,6 +1021,7 @@ public class ReadMangaActivity extends TTSActivity implements OnClickListener, S
             adapter.setPathList(pathList);
             adapter.notifyDataSetChanged();
         }
+        adapter.setActivePosition(mangaPager.getCurrentItem());
     }
 
     private void showImgSize(int position) {
@@ -1088,6 +1094,9 @@ public class ReadMangaActivity extends TTSActivity implements OnClickListener, S
     @Override
     protected void onPause() {
         super.onPause();
+        if (adapter != null) {
+            adapter.pauseAllVideos();
+        }
         saveState();
         sManager.unregisterListener(this);
     }

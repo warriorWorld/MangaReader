@@ -113,15 +113,7 @@ public class LocalMangaDetailsActivity extends BaseActivity implements
         if (!isNextDirectory(mangaList.get(0).getUrl())) {
             //阅读页的前一页
             //获取第一张图片的路径
-            String firstImgName = pathList.get(0);
-            if (firstImgName.contains(".jpg") || firstImgName.contains(".png") || firstImgName.contains(".bmp")
-                    || firstImgName.contains(".gif")) {
-                firstImgName = firstImgName.substring(0, firstImgName.length() - 1 - 3);
-                Log.d("s", "裁剪后的字符串" + firstImgName);
-            } else if (firstImgName.contains(".jpeg")) {
-                firstImgName = firstImgName.substring(0, firstImgName.length() - 1 - 4);
-                Log.d("s", "裁剪后的字符串" + firstImgName);
-            }
+            String firstImgName = pathList.get(0).replaceAll("\\.[a-zA-Z0-9]+$", "");
             String[] arr = firstImgName.split("_");
             if (arr.length == 0) {
                 arr = firstImgName.split("-");
