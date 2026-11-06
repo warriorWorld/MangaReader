@@ -39,10 +39,10 @@ public class MainActivity extends BaseFragmentActivity implements View.OnClickLi
     /**
      * Fragment
      */
-    private OnlineMangaFragment onlinePageFg;
+//    private OnlineMangaFragment onlinePageFg;
     private LocalMangaFragment localFg;
     private UserFragment userFg;
-    private RecommendFragment mRecommendFragment;
+//    private RecommendFragment mRecommendFragment;
     /**
      * 当前选中页
      */
@@ -95,10 +95,10 @@ public class MainActivity extends BaseFragmentActivity implements View.OnClickLi
     private void initFragment() {
         localFg = new LocalMangaFragment();
         userFg = new UserFragment();
-        onlinePageFg = new OnlineMangaFragment();
-        mRecommendFragment = new RecommendFragment();
+//        onlinePageFg = new OnlineMangaFragment();
+//        mRecommendFragment = new RecommendFragment();
 
-        switchContent(null, onlinePageFg);
+        switchContent(null, localFg);
     }
 
     /**
@@ -113,12 +113,12 @@ public class MainActivity extends BaseFragmentActivity implements View.OnClickLi
         if (event.getEventType() == EventBusEvent.JUMP_EVENT) {
             switch (event.getJumpPoint()) {
                 case 0:
-                    switchContent(curFragment, onlinePageFg);
-                    toggleBottomBar(mTabOnlinePageLL);
+//                    switchContent(curFragment, onlinePageFg);
+//                    toggleBottomBar(mTabOnlinePageLL);
                     break;
                 case 1:
-                    switchContent(curFragment, mRecommendFragment);
-                    toggleBottomBar(mTabRecommendLL);
+//                    switchContent(curFragment, mRecommendFragment);
+//                    toggleBottomBar(mTabRecommendLL);
                     break;
                 case 2:
                     switchContent(curFragment, localFg);
@@ -137,11 +137,11 @@ public class MainActivity extends BaseFragmentActivity implements View.OnClickLi
         if (null == event)
             return;
         if (event.getEventType() == EventBusEvent.TAG_CLICK_EVENT) {
-            if (TextUtils.isEmpty(event.getSelectCode())) {
-                onlinePageFg.toggleTag(event.getSelectTag());
-            } else {
-                onlinePageFg.toggleTag(event.getSelectTag(), event.getSelectCode());
-            }
+//            if (TextUtils.isEmpty(event.getSelectCode())) {
+//                onlinePageFg.toggleTag(event.getSelectTag());
+//            } else {
+//                onlinePageFg.toggleTag(event.getSelectTag(), event.getSelectCode());
+//            }
         }
     }
 
@@ -164,12 +164,6 @@ public class MainActivity extends BaseFragmentActivity implements View.OnClickLi
             to.onHiddenChanged(false);
         }
     }
-
-    @Override
-    public void onBackPressed() {
-        showLogoutDialog();
-    }
-
 
     private void showLogoutDialog() {
         if (null == logoutDialog) {
@@ -220,7 +214,7 @@ public class MainActivity extends BaseFragmentActivity implements View.OnClickLi
         toggleBottomBar(v);
         switch (v.getId()) {
             case R.id.online_bottom_ll:
-                switchContent(curFragment, onlinePageFg);
+//                switchContent(curFragment, onlinePageFg);
                 break;
             case R.id.local_bottom_ll:
                 switchContent(curFragment, localFg);
@@ -229,7 +223,7 @@ public class MainActivity extends BaseFragmentActivity implements View.OnClickLi
                 switchContent(curFragment, userFg);
                 break;
             case R.id.recommend_bottom_ll:
-                switchContent(curFragment, mRecommendFragment);
+//                switchContent(curFragment, mRecommendFragment);
                 break;
         }
     }

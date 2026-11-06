@@ -39,7 +39,8 @@
                 android:layout_gravity="center_vertical"
                 android:layout_weight="1"
                 android:gravity="center"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:visibility="gone">
 
                 <ImageView
                     android:id="@+id/online_bottom_iv"
@@ -67,7 +68,8 @@
                 android:clickable="true"
                 android:gravity="center"
                 android:orientation="vertical"
-                android:saveEnabled="false">
+                android:saveEnabled="false"
+                android:visibility="gone">
 
                 <ImageView
                     android:id="@+id/recommend_bottom_iv"
