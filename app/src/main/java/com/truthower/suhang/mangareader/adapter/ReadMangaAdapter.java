@@ -55,14 +55,14 @@ public class ReadMangaAdapter extends PagerAdapter {
             if (videoViews.keyAt(i) == position) {
                 videoView.start();
             } else {
-                videoView.pause();
+                videoView.stopPlayback();
             }
         }
     }
 
     public void pauseAllVideos() {
         for (int i = 0; i < videoViews.size(); i++) {
-            videoViews.valueAt(i).pause();
+            videoViews.valueAt(i).stopPlayback();
         }
     }
 

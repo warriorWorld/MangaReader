@@ -10,8 +10,8 @@ import android.view.TextureView;
 
 /**
  * A TextureView based player that behaves like a GIF: muted, looping, centered and without
- * any playback controls. TextureView is used instead of VideoView so the video follows page
- * transforms and never leaves a stale SurfaceView frame on top of the neighbouring page.
+ * any playback controls. Only the active page keeps a MediaPlayer, so decoders are not
+ * exhausted while sliding through several videos.
  */
 public class LoopVideoView extends TextureView implements TextureView.SurfaceTextureListener {
     private MediaPlayer mediaPlayer;
@@ -42,13 +42,28 @@ public class LoopVideoView extends TextureView implements TextureView.SurfaceTex
     }
 
     public void setVideoUrl(String url) {
-        videoUri = Uri.parse(url);
-        openVideo();
+        Uri uri = Uri.parse(url);
+        if (uri.equals(videoUri)) {
+            if (mediaPlayer == null && wantedPlaying) {
+                openVideo();
+            }
+            return;
+        }
+        videoUri = uri;
+        videoWidth = 0;
+        videoHeight = 0;
+        releasePlayer();
+        requestLayout();
+        if (wantedPlaying) {
+            openVideo();
+        }
     }
 
     public void start() {
         wantedPlaying = true;
-        if (prepared && mediaPlayer != null) {
+        if (mediaPlayer == null) {
+            openVideo();
+        } else if (prepared && surface != null) {
             mediaPlayer.start();
         }
     }
@@ -66,31 +81,45 @@ public class LoopVideoView extends TextureView implements TextureView.SurfaceTex
     }
 
     private void openVideo() {
-        releasePlayer();
         if (videoUri == null || !isAvailable()) {
             return;
         }
-        try {
-            mediaPlayer = new MediaPlayer();
+        if (surface == null) {
             surface = new Surface(getSurfaceTexture());
+        }
+        if (mediaPlayer != null) {
             mediaPlayer.setSurface(surface);
-            mediaPlayer.setLooping(true);
-            mediaPlayer.setVolume(0f, 0f);
-            mediaPlayer.setOnPreparedListener(mp -> {
+            if (prepared && wantedPlaying) {
+                mediaPlayer.start();
+            }
+            return;
+        }
+        try {
+            final MediaPlayer player = new MediaPlayer();
+            mediaPlayer = player;
+            player.setSurface(surface);
+            player.setLooping(true);
+            player.setVolume(0f, 0f);
+            player.setOnPreparedListener(mp -> {
+                if (mp != mediaPlayer) {
+                    return;
+                }
                 prepared = true;
                 videoWidth = mp.getVideoWidth();
                 videoHeight = mp.getVideoHeight();
                 requestLayout();
-                if (wantedPlaying) {
+                if (wantedPlaying && surface != null) {
                     mp.start();
                 }
             });
-            mediaPlayer.setOnErrorListener((mp, what, extra) -> {
-                releasePlayer();
+            player.setOnErrorListener((mp, what, extra) -> {
+                if (mp == mediaPlayer) {
+                    releasePlayer();
+                }
                 return true;
             });
-            mediaPlayer.setDataSource(getContext(), videoUri);
-            mediaPlayer.prepareAsync();
+            player.setDataSource(getContext(), videoUri);
+            player.prepareAsync();
         } catch (Exception e) {
             e.printStackTrace();
             releasePlayer();
@@ -100,6 +129,10 @@ public class LoopVideoView extends TextureView implements TextureView.SurfaceTex
     private void releasePlayer() {
         prepared = false;
         if (mediaPlayer != null) {
+            try {
+                mediaPlayer.setSurface(null);
+            } catch (Exception ignored) {
+            }
             try {
                 mediaPlayer.release();
             } catch (Exception ignored) {
@@ -128,7 +161,25 @@ public class LoopVideoView extends TextureView implements TextureView.SurfaceTex
 
     @Override
     public void onSurfaceTextureAvailable(SurfaceTexture surfaceTexture, int width, int height) {
-        openVideo();
+        if (mediaPlayer != null) {
+            try {
+                mediaPlayer.setSurface(null);
+            } catch (Exception ignored) {
+            }
+        }
+        if (surface != null) {
+            surface.release();
+            surface = null;
+        }
+        surface = new Surface(surfaceTexture);
+        if (mediaPlayer == null) {
+            openVideo();
+        } else {
+            mediaPlayer.setSurface(surface);
+            if (prepared && wantedPlaying) {
+                mediaPlayer.start();
+            }
+        }
     }
 
     @Override
@@ -137,17 +188,24 @@ public class LoopVideoView extends TextureView implements TextureView.SurfaceTex
 
     @Override
     public boolean onSurfaceTextureDestroyed(SurfaceTexture surfaceTexture) {
-        releasePlayer();
+        if (mediaPlayer != null) {
+            try {
+                mediaPlayer.pause();
+            } catch (Exception ignored) {
+            }
+            try {
+                mediaPlayer.setSurface(null);
+            } catch (Exception ignored) {
+            }
+        }
+        if (surface != null) {
+            surface.release();
+            surface = null;
+        }
         return true;
     }
 
     @Override
     public void onSurfaceTextureUpdated(SurfaceTexture surfaceTexture) {
-    }
-
-    @Override
-    protected void onDetachedFromWindow() {
-        pause();
-        super.onDetachedFromWindow();
     }
 }
