@@ -78,7 +78,7 @@
             android:layout_alignParentBottom="true"
             android:layout_marginRight="7dp"
             android:layout_marginBottom="7dp"
-            android:textColor="@color/white"
+            android:textColor="@color/manga_reader"
             android:textSize="10sp" />
 
         <TextView
@@ -88,7 +88,7 @@
             android:layout_alignParentBottom="true"
             android:layout_marginLeft="7dp"
             android:layout_marginBottom="7dp"
-            android:textColor="@color/white"
+            android:textColor="@color/manga_reader"
             android:textSize="10sp" />
 
         <View
