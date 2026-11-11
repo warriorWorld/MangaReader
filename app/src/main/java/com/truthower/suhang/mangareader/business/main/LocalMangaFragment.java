@@ -270,12 +270,16 @@ public class LocalMangaFragment extends BaseFragment implements
 //            gifFolder.mkdirs();
 //        }
         for (int i = 0; i < fileArrayList.size(); i++) {
-            if (fileArrayList.get(i).toString().endsWith(".jpg") || fileArrayList.get(i).toString().endsWith(".png")
-                    || fileArrayList.get(i).toString().endsWith(".webp")) {
+            if (fileArrayList.get(i).toString().toLowerCase().endsWith(".jpg")
+                    || fileArrayList.get(i).toString().toLowerCase().endsWith(".png")
+                    || fileArrayList.get(i).toString().toLowerCase().endsWith(".webp")
+                    || fileArrayList.get(i).toString().toLowerCase().endsWith(".bmp")
+                    || fileArrayList.get(i).toString().toLowerCase().endsWith(".raw")
+                    || fileArrayList.get(i).toString().toLowerCase().endsWith(".jpeg")) {
                 File to = new File(newPath, manganame + "(" + i + ")" + ".jpg");
 
                 fileArrayList.get(i).renameTo(to);
-            } else if (fileArrayList.get(i).toString().endsWith(".gif")) {
+            } else if (fileArrayList.get(i).toString().toLowerCase().endsWith(".gif")) {
                 File to = new File(newPath, manganame + "(" + i + ")" + ".gif");
 
                 fileArrayList.get(i).renameTo(to);
