@@ -20,10 +20,8 @@ import com.truthower.suhang.mangareader.config.ShareKeys;
 import com.truthower.suhang.mangareader.listener.OnRecycleItemClickListener;
 import com.truthower.suhang.mangareader.listener.OnRecycleItemLongClickListener;
 import com.truthower.suhang.mangareader.listener.OnSevenFourteenListDialogListener;
-import com.truthower.suhang.mangareader.sort.FileComparator;
-import com.truthower.suhang.mangareader.sort.FileComparatorAllNum;
-import com.truthower.suhang.mangareader.sort.FileComparatorDirectory;
-import com.truthower.suhang.mangareader.sort.FileComparatorWithBracket;
+import com.truthower.suhang.mangareader.sort.FileNameNumberUtil;
+import com.truthower.suhang.mangareader.sort.FileNumberComparator;
 import com.truthower.suhang.mangareader.spider.FileSpider;
 import com.truthower.suhang.mangareader.utils.DisplayUtil;
 import com.truthower.suhang.mangareader.utils.PermissionUtil;
@@ -93,10 +91,14 @@ public class LocalMangaDetailsActivity extends BaseActivity implements
             try {
                 mangaList.clear();
                 mangaList = FileSpider.getInstance().getMangaList(filePath);
+                if (null == mangaList) {
+                    mangaList = new ArrayList<MangaBean>();
+                }
                 sortFiles();
                 initGridView();
             } catch (Exception e) {
-
+                e.printStackTrace();
+                initGridView();
             }
         } else {
             // Do not have permissions, request them now
@@ -105,59 +107,54 @@ public class LocalMangaDetailsActivity extends BaseActivity implements
     }
 
     private void sortFiles() {
+        //阅读页要用的图片路径列表，先按原来的顺序填好，排序失败也不会让阅读页没东西可看
         pathList = new ArrayList<>();
+        if (null == mangaList || mangaList.isEmpty()) {
+            return;
+        }
         for (int i = 0; i < mangaList.size(); i++) {
             pathList.add(mangaList.get(i).getLocalThumbnailUrl());
         }
 
-        if (!isNextDirectory(mangaList.get(0).getUrl())) {
-            //阅读页的前一页
-            //获取第一张图片的路径
-            String firstImgName = pathList.get(0).replaceAll("\\.[a-zA-Z0-9]+$", "");
-            String[] arr = firstImgName.split("_");
-            if (arr.length == 0) {
-                arr = firstImgName.split("-");
+        //排序规则：把文件名里的非数字字符都去掉，再比较剩下的数字（见FileNameNumberUtil）
+        //整个列表里都没有数字的话就不排序（个别没数字的文件会被当成相等，留在原位置）
+        if (isNextDirectory(mangaList.get(0).getUrl())) {
+            //有很多话的漫画的文件夹层  按文件夹名里的数字排序
+            if (!hasAnyNumber(false)) {
+                return;
             }
-
-            if (pathList.get(0).contains("_") ||
-                    pathList.get(0).contains("-")) {
-                //正常的漫画
-                if (arr.length != 3) {
-                    return;
-                }
-                FileComparator comparator = new FileComparator();
-                Collections.sort(pathList, comparator);
-            } else if (pathList.get(0).contains("(")) {
-                FileComparatorWithBracket comparator1 = new FileComparatorWithBracket();
-                Collections.sort(pathList, comparator1);
-            } else {
-                String[] arri = firstImgName.split("/");
-                //最终获得图片名字
-                firstImgName = arri[arri.length - 1];
-                try {
-                    //用于判断是否位数字的异教徒写法
-                    int isInt = Integer.valueOf(firstImgName);
-                    //没抛出异常 所以是纯数字
-                    FileComparatorAllNum comparator2 = new FileComparatorAllNum();
-                    Collections.sort(pathList, comparator2);
-                } catch (NumberFormatException e) {
-                    e.printStackTrace();
-                }
+            Collections.sort(mangaList, new FileNumberComparator());
+        } else {
+            //阅读页的前一页  按图片名里的数字排序
+            if (!hasAnyNumber(true)) {
+                return;
             }
-            //将得到的排序结果给mangaList
-            for (int i = 0; i < pathList.size(); i++) {
-                mangaList.get(i).setLocalThumbnailUrl(pathList.get(i));
+            Collections.sort(mangaList, new FileNumberComparator(true));
+            //图片页的标题就是页码
+            for (int i = 0; i < mangaList.size(); i++) {
                 mangaList.get(i).setName((i + 1) + "");
             }
-        } else {
-            //有很多话的漫画的文件夹层
-            try {
-                FileComparatorDirectory comparator4 = new FileComparatorDirectory();
-                Collections.sort(mangaList, comparator4);
-            } catch (Exception e) {
-                e.printStackTrace();
+        }
+
+        //排序结果排的是整个mangaList，重新生成和它一一对应的pathList
+        pathList.clear();
+        for (int i = 0; i < mangaList.size(); i++) {
+            pathList.add(mangaList.get(i).getLocalThumbnailUrl());
+        }
+    }
+
+    /**
+     * 列表里有没有带数字的文件名，没有的话就不用排序了
+     */
+    private boolean hasAnyNumber(boolean byThumbnail) {
+        for (int i = 0; i < mangaList.size(); i++) {
+            String path = byThumbnail ? mangaList.get(i).getLocalThumbnailUrl()
+                    : mangaList.get(i).getUrl();
+            if (FileNameNumberUtil.hasNumber(path)) {
+                return true;
             }
         }
+        return false;
     }
 
     private void initGridView() {
@@ -321,6 +318,9 @@ public class LocalMangaDetailsActivity extends BaseActivity implements
     }
 
     private boolean isNextDirectory(String path) {
+        if (TextUtils.isEmpty(path)) {
+            return false;
+        }
         File f = new File(path);
         if (!f.exists()) {
             return false;
